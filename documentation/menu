@@ -1,0 +1,37 @@
+**Vaadin**
+Oltre al menu base interno, ci sono 3 possibilità
+
+*App Layout Add-on*
+by Johannes Goebel
+<dependency>
+   <groupId>com.github.appreciated</groupId>
+   <artifactId>app-layout-addon</artifactId>
+   <version>3.0.0.beta1</version>
+</dependency>
+Exemples: https://github.com/appreciated/vaadin-app-layout/tree/master/app-layout-examples
+Version 3.0.0.beta1
+
+
+
+*HybridMenu*
+by Kaes Dingeling
+<dependency>
+   <groupId>de.kaesdingeling</groupId>
+   <artifactId>hybridmenu</artifactId>
+   <version>3.0.16.vaadin10</version>
+</dependency>
+Vaadin Platform 10+
+
+
+*App Layout Addon*
+by Flowing Code S.A.
+<dependency>
+   <groupId>com.flowingcode.addons.applayout</groupId>
+   <artifactId>app-layout-addon</artifactId>
+   <version>1.0.6</version>
+</dependency>
+Vaadin Platform 10+
+Version 1.0.6
+Dewmo: https://addonsv10.flowingcode.com/applayout
+Github:https://github.com/FlowingCode/AppLayoutAddon
+

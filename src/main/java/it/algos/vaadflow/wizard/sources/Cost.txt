@@ -1,0 +1,23 @@
+package it.algos.@MODULELOWER@.application;
+
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import it.algos.vaadflow.annotation.AIScript;
+
+/**
+ * Project @MODULELOWER@
+ * Created by Algos
+ * User: gac
+ * Date: ven, 8-mag-2018
+ * <p>
+ * Completa la classe BaseCost con le costanti statiche specifiche di questa applicazione <br>
+ * <p>
+ * Not annotated with @SpringComponent (inutile) <br>
+ * Not annotated with @Scope (inutile) <br>
+ * Annotated with @AIScript (facoltativo) per controllare la ri-creazione di questo file nello script di algos <br>
+ */
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@AIScript(sovrascrivibile = false)
+public class @MODULEUPPER@Cost {
+}// end of static class

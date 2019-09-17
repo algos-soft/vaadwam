@@ -1,0 +1,14 @@
+    History history = UI.getCurrent().getPage().getHistory();
+    history.back();
+
+
+    //--singolo parametro
+    //--si aggiunge all'URL dopo lo slash
+    ui.navigate(TAG_VIEW_FORM+"/"+alfa)
+
+
+    //--diversi parametri
+    //--si aggiunge, come secondo parametro di navigate(), una query costruita da una mappa chiave=valore
+    final QueryParameters query = new QueryParameters(mappa);
+    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
+    8080/turnoedit?servizio=crfAmb-pom&giorno=4

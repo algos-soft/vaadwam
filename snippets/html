@@ -1,0 +1,2 @@
+label.getElement().setProperty("innerHTML", htmlCode);
+https://github.com/vaadin/flow-and-components-documentation/blob/master/documentation/polymer-templates/tutorial-template-event-handlers.asciidoc

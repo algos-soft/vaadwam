@@ -1,0 +1,23 @@
+
+
+<dependency>
+   <groupId>org.claspina</groupId>
+   <artifactId>confirm-dialog</artifactId>
+   <version>1.0.0</version>
+</dependency>
+
+<repository>
+   <id>vaadin-addons</id>
+   <url>http://maven.vaadin.com/vaadin-addons</url>
+</repository>
+
+
+ConfirmDialog
+    .createQuestion()
+    .withCaption("System alert")
+    .withMessage("Do you want to continue?")
+    .withOkButton(() -> {
+        System.out.println("YES. Implement logic here.")
+    }, ButtonOption.focus(), ButtonOption.caption("YES"))
+    .withCancelButton(ButtonOption.caption("NO"))
+    .open();

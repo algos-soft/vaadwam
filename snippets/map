@@ -1,0 +1,7 @@
+        for (Map.Entry<String, ArrayList<WrapDidascalia>> entry : mappaParagrafi.entrySet()) {
+            mappaChiaveDue = creaMappaChiaveDue(entry.getValue());
+        }// end of for cycle
+
+        for (String key : mappaParagrafi.keySet()) {
+            mappaChiaveDue = creaMappaChiaveDue(mappaParagrafi.get(key));
+        }// end of for cycle

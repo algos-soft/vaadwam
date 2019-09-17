@@ -1,0 +1,1574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="vaadwam" default="all">
+  
+  
+  <property file="vaadwam.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="lib/ant-javafx.jar"/>
+      <include name="lib/dt.jar"/>
+      <include name="lib/javafx-mx.jar"/>
+      <include name="lib/jconsole.jar"/>
+      <include name="lib/packager.jar"/>
+      <include name="lib/sa-jdi.jar"/>
+      <include name="lib/tools.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.maven:_ch.qos.logback:logback-classic:1.2.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_ch.qos.logback:logback-core:1.2.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.9.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.core:jackson-core:2.9.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-core/2.9.4/jackson-core-2.9.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.9.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-databind/2.9.4/jackson-databind-2.9.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.4/jackson-datatype-jdk8-2.9.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.4/jackson-datatype-jsr310-2.9.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/module/jackson-module-parameter-names/2.9.4/jackson-module-parameter-names-2.9.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml:classmate:1.3.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/classmate/1.3.4/classmate-1.3.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.google.errorprone:error_prone_annotations:2.0.18.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/google/errorprone/error_prone_annotations/2.0.18/error_prone_annotations-2.0.18.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.google.guava:guava:22.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/google/guava/guava/22.0/guava-22.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.google.gwt:gwt-elemental:2.8.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/google/gwt/gwt-elemental/2.8.2/gwt-elemental-2.8.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.googlecode.gentyref:gentyref:1.2.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/googlecode/gentyref/gentyref/1.2.0/gentyref-1.2.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.helger:ph-commons:9.0.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/helger/ph-commons/9.0.2/ph-commons-9.0.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.helger:ph-css:6.1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/helger/ph-css/6.1.1/ph-css-6.1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin.external.atmosphere:atmosphere-runtime:2.4.24.vaadin1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/external/atmosphere/atmosphere-runtime/2.4.24.vaadin1/atmosphere-runtime-2.4.24.vaadin1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/external/slf4j/vaadin-slf4j-jdk14/1.6.1/vaadin-slf4j-jdk14-1.6.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow-client:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow-client/1.0.0.beta9/flow-client-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow-data:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow-data/1.0.0.beta9/flow-data-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow-html-components:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow-html-components/1.0.0.beta9/flow-html-components-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow-push:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow-push/1.0.0.beta9/flow-push-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow-server:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow-server/1.0.0.beta9/flow-server-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:flow:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/flow/1.0.0.beta9/flow-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-button-flow:1.0.0.beta7.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-button-flow/1.0.0.beta7/vaadin-button-flow-1.0.0.beta7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-checkbox-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-checkbox-flow/1.0.0.beta6/vaadin-checkbox-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-combo-box-flow:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-combo-box-flow/1.0.0.beta9/vaadin-combo-box-flow-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-core:10.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-core/10.0.0.beta9/vaadin-core-10.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-date-picker-flow:1.0.0.beta10.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-date-picker-flow/1.0.0.beta10/vaadin-date-picker-flow-1.0.0.beta10.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-dialog-flow:1.0.0.beta7.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-dialog-flow/1.0.0.beta7/vaadin-dialog-flow-1.0.0.beta7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-form-layout-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-form-layout-flow/1.0.0.beta6/vaadin-form-layout-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-grid-flow:1.0.0.beta10.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-grid-flow/1.0.0.beta10/vaadin-grid-flow-1.0.0.beta10.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-icons-flow:1.0.0.beta5.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-icons-flow/1.0.0.beta5/vaadin-icons-flow-1.0.0.beta5.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-iron-list-flow:1.0.0.beta5.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-iron-list-flow/1.0.0.beta5/vaadin-iron-list-flow-1.0.0.beta5.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-list-box-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-list-box-flow/1.0.0.beta6/vaadin-list-box-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-lumo-theme:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-lumo-theme/1.0.0.beta9/vaadin-lumo-theme-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-notification-flow:1.0.0.beta7.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-notification-flow/1.0.0.beta7/vaadin-notification-flow-1.0.0.beta7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-ordered-layout-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-ordered-layout-flow/1.0.0.beta6/vaadin-ordered-layout-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-progress-bar-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-progress-bar-flow/1.0.0.beta6/vaadin-progress-bar-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-radio-button-flow:1.0.0.beta7.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-radio-button-flow/1.0.0.beta7/vaadin-radio-button-flow-1.0.0.beta7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-split-layout-flow:1.0.0.beta5.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-split-layout-flow/1.0.0.beta5/vaadin-split-layout-flow-1.0.0.beta5.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-spring-boot-starter:10.0.0.beta1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-spring-boot-starter/10.0.0.beta1/vaadin-spring-boot-starter-10.0.0.beta1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-spring:10.0.0.beta1.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-spring/10.0.0.beta1/vaadin-spring-10.0.0.beta1.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-tabs-flow:1.0.0.beta6.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-tabs-flow/1.0.0.beta6/vaadin-tabs-flow-1.0.0.beta6.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-text-field-flow:1.0.0.beta8.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-text-field-flow/1.0.0.beta8/vaadin-text-field-flow-1.0.0.beta8.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.vaadin:vaadin-upload-flow:1.0.0.beta9.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/vaadin/vaadin-upload-flow/1.0.0.beta9/vaadin-upload-flow-1.0.0.beta9.jar"/>
+  </path>
+  
+  <path id="library.maven:_commons-fileupload:commons-fileupload:1.3.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/commons-fileupload/commons-fileupload/1.3.3/commons-fileupload-1.3.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_commons-io:commons-io:2.5.classpath">
+    <pathelement location="${path.variable.maven_repository}/commons-io/commons-io/2.5/commons-io-2.5.jar"/>
+  </path>
+  
+  <path id="library.maven:_it.sauronsoftware.cron4j:cron4j:2.2.5.classpath">
+    <pathelement location="${path.variable.maven_repository}/it/sauronsoftware/cron4j/cron4j/2.2.5/cron4j-2.2.5.jar"/>
+  </path>
+  
+  <path id="library.maven:_javax.annotation:javax.annotation-api:1.3.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_javax.validation:validation-api:2.0.1.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_mysql:mysql-connector-java:5.1.45.classpath">
+    <pathelement location="${path.variable.maven_repository}/mysql/mysql-connector-java/5.1.45/mysql-connector-java-5.1.45.jar"/>
+  </path>
+  
+  <path id="library.maven:_name.falgout.jeffrey.testing.junit5:mockito-extension:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/name/falgout/jeffrey/testing/junit5/mockito-extension/1.0.0/mockito-extension-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_net.bytebuddy:byte-buddy-agent:1.7.10.classpath">
+    <pathelement location="${path.variable.maven_repository}/net/bytebuddy/byte-buddy-agent/1.7.10/byte-buddy-agent-1.7.10.jar"/>
+  </path>
+  
+  <path id="library.maven:_net.bytebuddy:byte-buddy:1.7.10.classpath">
+    <pathelement location="${path.variable.maven_repository}/net/bytebuddy/byte-buddy/1.7.10/byte-buddy-1.7.10.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.commons:commons-lang3:3.7.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.logging.log4j:log4j-api:2.10.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/logging/log4j/log4j-api/2.10.0/log4j-api-2.10.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.logging.log4j:log4j-to-slf4j:2.10.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/logging/log4j/log4j-to-slf4j/2.10.0/log4j-to-slf4j-2.10.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.tomcat.embed:tomcat-embed-core:8.5.28.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/tomcat/embed/tomcat-embed-core/8.5.28/tomcat-embed-core-8.5.28.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.tomcat.embed:tomcat-embed-el:8.5.28.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/tomcat/embed/tomcat-embed-el/8.5.28/tomcat-embed-el-8.5.28.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apache.tomcat.embed:tomcat-embed-websocket:8.5.28.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/tomcat/embed/tomcat-embed-websocket/8.5.28/tomcat-embed-websocket-8.5.28.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.apiguardian:apiguardian-api:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/eclipse/persistence/commonj.sdo/2.1.1/commonj.sdo-2.1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.eclipse.persistence:eclipselink:2.5.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/eclipse/persistence/eclipselink/2.5.0/eclipselink-2.5.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.eclipse.persistence:javax.persistence:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/eclipse/persistence/javax.persistence/2.1.0/javax.persistence-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.hibernate.validator:hibernate-validator:6.0.7.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/hibernate/validator/hibernate-validator/6.0.7.Final/hibernate-validator-6.0.7.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jsoup:jsoup:1.10.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jsoup/jsoup/1.10.3/jsoup-1.10.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/junit/jupiter/junit-jupiter-api/5.1.0/junit-jupiter-api-5.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/junit/jupiter/junit-jupiter-engine/5.1.0/junit-jupiter-engine-5.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.junit.platform:junit-platform-commons:1.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/junit/platform/junit-platform-commons/1.1.0/junit-platform-commons-1.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.junit.platform:junit-platform-engine:1.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/junit/platform/junit-platform-engine/1.1.0/junit-platform-engine-1.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mockito:mockito-all:1.9.5.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mockito/mockito-all/1.9.5/mockito-all-1.9.5.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mockito:mockito-core:2.16.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mockito/mockito-core/2.16.0/mockito-core-2.16.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mockito:mockito-junit-jupiter:2.17.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mockito/mockito-junit-jupiter/2.17.0/mockito-junit-jupiter-2.17.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mongodb:bson:3.6.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mongodb/bson/3.6.3/bson-3.6.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mongodb:mongodb-driver-core:3.6.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mongodb/mongodb-driver-core/3.6.3/mongodb-driver-core-3.6.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.mongodb:mongodb-driver:3.6.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/mongodb/mongodb-driver/3.6.3/mongodb-driver-3.6.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.objenesis:objenesis:2.6.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/objenesis/objenesis/2.6/objenesis-2.6.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.opentest4j:opentest4j:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.projectlombok:lombok:1.16.20.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/projectlombok/lombok/1.16.20/lombok-1.16.20.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.slf4j:jul-to-slf4j:1.7.25.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/slf4j/jul-to-slf4j/1.7.25/jul-to-slf4j-1.7.25.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.slf4j:slf4j-api:1.7.25.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-autoconfigure:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-autoconfigure/2.0.0.RELEASE/spring-boot-autoconfigure-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-devtools:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-devtools/2.0.0.RELEASE/spring-boot-devtools-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter-data-mongodb:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-data-mongodb/2.0.0.RELEASE/spring-boot-starter-data-mongodb-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter-json:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-json/2.0.0.RELEASE/spring-boot-starter-json-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter-logging:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-logging/2.0.0.RELEASE/spring-boot-starter-logging-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter-tomcat:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-tomcat/2.0.0.RELEASE/spring-boot-starter-tomcat-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter-web:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-web/2.0.0.RELEASE/spring-boot-starter-web-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot-starter:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter/2.0.0.RELEASE/spring-boot-starter-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.boot:spring-boot:2.0.0.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/boot/spring-boot/2.0.0.RELEASE/spring-boot-2.0.0.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.data:spring-data-commons:2.0.5.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/data/spring-data-commons/2.0.5.RELEASE/spring-data-commons-2.0.5.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework.data:spring-data-mongodb:2.0.5.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/data/spring-data-mongodb/2.0.5.RELEASE/spring-data-mongodb-2.0.5.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-aop:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-aop/5.0.4.RELEASE/spring-aop-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-beans:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-beans/5.0.4.RELEASE/spring-beans-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-context:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-context/5.0.4.RELEASE/spring-context-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-core:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-core/5.0.4.RELEASE/spring-core-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-expression:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-expression/5.0.4.RELEASE/spring-expression-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-jcl:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-jcl/5.0.4.RELEASE/spring-jcl-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-tx:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-tx/5.0.4.RELEASE/spring-tx-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-web:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-web/5.0.4.RELEASE/spring-web-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-webmvc:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-webmvc/5.0.4.RELEASE/spring-webmvc-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.springframework:spring-websocket:5.0.4.release.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/springframework/spring-websocket/5.0.4.RELEASE/spring-websocket-5.0.4.RELEASE.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymer:polymer:2.6.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymer/polymer/2.6.0/polymer-2.6.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-announcer:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-a11y-announcer/2.1.0/iron-a11y-announcer-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-keys-behavior:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-a11y-keys-behavior/2.1.0/iron-a11y-keys-behavior-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-fit-behavior:2.1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-fit-behavior/2.1.1/iron-fit-behavior-2.1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-flex-layout:2.0.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-flex-layout/2.0.3/iron-flex-layout-2.0.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-icon:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-icon/2.1.0/iron-icon-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-iconset-svg:2.2.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-iconset-svg/2.2.1/iron-iconset-svg-2.2.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-list:2.0.12.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-list/2.0.12/iron-list-2.0.12.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-media-query:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-media-query/2.1.0/iron-media-query-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-meta:2.1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-meta/2.1.1/iron-meta-2.1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-overlay-behavior:2.3.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-overlay-behavior/2.3.3/iron-overlay-behavior-2.3.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-resizable-behavior:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-resizable-behavior/2.1.0/iron-resizable-behavior-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.polymerelements:iron-scroll-target-behavior:2.1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-scroll-target-behavior/2.1.0/iron-scroll-target-behavior-2.1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-button:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-button/2.0.0/vaadin-button-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-checkbox:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-checkbox/2.0.0/vaadin-checkbox-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-combo-box:4.0.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-combo-box/4.0.1/vaadin-combo-box-4.0.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-control-state-mixin:2.0.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-control-state-mixin/2.0.3/vaadin-control-state-mixin-2.0.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-date-picker:3.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-date-picker/3.0.0/vaadin-date-picker-3.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-development-mode-detector:1.0.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-development-mode-detector/1.0.3/vaadin-development-mode-detector-1.0.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-dialog:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-dialog/2.0.0/vaadin-dialog-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-element-mixin:1.0.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-element-mixin/1.0.2/vaadin-element-mixin-1.0.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-form-layout:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-form-layout/2.0.0/vaadin-form-layout-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-grid:5.0.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-grid/5.0.3/vaadin-grid-5.0.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-icons:4.1.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-icons/4.1.4/vaadin-icons-4.1.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-item:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-item/2.0.0/vaadin-item-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-box:1.0.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-list-box/1.0.1/vaadin-list-box-1.0.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-mixin:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-list-mixin/2.0.0/vaadin-list-mixin-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-lumo-styles:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-lumo-styles/1.0.0/vaadin-lumo-styles-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-notification:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-notification/1.0.0/vaadin-notification-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-ordered-layout:1.0.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-ordered-layout/1.0.1/vaadin-ordered-layout-1.0.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-overlay:3.0.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-overlay/3.0.2/vaadin-overlay-3.0.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-progress-bar:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-progress-bar/1.0.0/vaadin-progress-bar-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-radio-button:1.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-radio-button/1.0.0/vaadin-radio-button-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-split-layout:4.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-split-layout/4.0.0/vaadin-split-layout-4.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-tabs:2.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-tabs/2.0.0/vaadin-tabs-2.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-text-field:2.0.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-text-field/2.0.1/vaadin-text-field-2.0.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-themable-mixin:1.1.6.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-themable-mixin/1.1.6/vaadin-themable-mixin-1.1.6.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-upload:4.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-upload/4.0.0/vaadin-upload-4.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.vaadin:vaadin-usage-statistics:1.0.8.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-usage-statistics/1.0.8/vaadin-usage-statistics-1.0.8.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.webcomponents:shadycss:1.1.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/webcomponents/shadycss/1.1.3/shadycss-1.1.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.webjars.bowergithub.webcomponents:webcomponentsjs:1.2.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/webjars/bowergithub/webcomponents/webcomponentsjs/1.2.0/webcomponentsjs-1.2.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.yaml:snakeyaml:1.19.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/yaml/snakeyaml/1.19/snakeyaml-1.19.jar"/>
+  </path>
+  
+  
+  <!-- Application Server Libraries -->
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="jgoodies-forms.jar"/>
+    </fileset>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module vaadwam -->
+  
+  <dirname property="module.vaadwam.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.vaadwam" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.vaadwam" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.vaadwam" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.vaadwam" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="vaadwam.output.dir" value="${module.vaadwam.basedir}/target/classes"/>
+  <property name="vaadwam.testoutput.dir" value="${module.vaadwam.basedir}/target/test-classes"/>
+  
+  <path id="vaadwam.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="vaadwam.module.production.classpath">
+    <path refid="${module.jdk.classpath.vaadwam}"/>
+    <path refid="library.maven:_com.vaadin:vaadin-core:10.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-server:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.google.gwt:gwt-elemental:2.8.2.classpath"/>
+    <path refid="library.maven:_commons-fileupload:commons-fileupload:1.3.3.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.5.classpath"/>
+    <path refid="library.maven:_org.jsoup:jsoup:1.10.3.classpath"/>
+    <path refid="library.maven:_com.helger:ph-css:6.1.1.classpath"/>
+    <path refid="library.maven:_com.helger:ph-commons:9.0.2.classpath"/>
+    <path refid="library.maven:_com.googlecode.gentyref:gentyref:1.2.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-push:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.atmosphere:atmosphere-runtime:2.4.24.vaadin1.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-client:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-data:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-lumo-theme:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-lumo-styles:1.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymer:polymer:2.6.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:shadycss:1.1.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:webcomponentsjs:1.2.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-icon:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-flex-layout:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-meta:2.1.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-iconset-svg:2.2.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-button:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-control-state-mixin:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-themable-mixin:1.1.6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-element-mixin:1.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-usage-statistics:1.0.8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-development-mode-detector:1.0.3.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-checkbox-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-checkbox:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-combo-box-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-combo-box:4.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-resizable-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-announcer:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-keys-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-item:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-overlay:3.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-overlay-behavior:2.3.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-fit-behavior:2.1.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-date-picker-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-date-picker:3.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-media-query:2.1.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-dialog-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-dialog:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-form-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-form-layout:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-grid-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-grid:5.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-scroll-target-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-icons-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-icons:4.1.4.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-iron-list-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-list:2.0.12.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-list-box-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-box:1.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-mixin:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-ordered-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-ordered-layout:1.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-progress-bar-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-progress-bar:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-radio-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-radio-button:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-split-layout-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-split-layout:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-tabs-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-tabs:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-text-field-flow:1.0.0.beta8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-text-field:2.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-upload-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-upload:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-notification-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-notification:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring-boot-starter:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-webmvc:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-aop:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-websocket:5.0.4.release.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-html-components:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-web:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-json:2.0.0.release.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.9.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-tomcat:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-core:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-el:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-websocket:8.5.28.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.7.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-web:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-devtools:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-core:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-jcl:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-context:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-autoconfigure:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-data-mongodb:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-logging:2.0.0.release.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-classic:1.2.3.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-core:1.2.3.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-to-slf4j:2.10.0.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.10.0.classpath"/>
+    <path refid="library.maven:_org.slf4j:jul-to-slf4j:1.7.25.classpath"/>
+    <path refid="library.maven:_javax.annotation:javax.annotation-api:1.3.2.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:bson:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver-core:3.6.3.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-mongodb:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-tx:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-beans:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-expression:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-commons:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.25.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.45.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.5.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.1.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.16.20.classpath"/>
+    <path refid="library.maven:_name.falgout.jeffrey.testing.junit5:mockito-extension:1.0.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:22.0.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.0.18.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.7.10.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-junit-jupiter:2.17.0.classpath"/>
+    <path refid="library.maven:_it.sauronsoftware.cron4j:cron4j:2.2.5.classpath"/>
+  </path>
+  
+  <path id="vaadwam.runtime.production.module.classpath">
+    <pathelement location="${vaadwam.output.dir}"/>
+    <path refid="library.maven:_com.vaadin:vaadin-core:10.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-server:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.google.gwt:gwt-elemental:2.8.2.classpath"/>
+    <path refid="library.maven:_commons-fileupload:commons-fileupload:1.3.3.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.5.classpath"/>
+    <path refid="library.maven:_org.jsoup:jsoup:1.10.3.classpath"/>
+    <path refid="library.maven:_com.helger:ph-css:6.1.1.classpath"/>
+    <path refid="library.maven:_com.helger:ph-commons:9.0.2.classpath"/>
+    <path refid="library.maven:_com.googlecode.gentyref:gentyref:1.2.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-push:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.atmosphere:atmosphere-runtime:2.4.24.vaadin1.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-client:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-data:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-lumo-theme:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-lumo-styles:1.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymer:polymer:2.6.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:shadycss:1.1.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:webcomponentsjs:1.2.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-icon:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-flex-layout:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-meta:2.1.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-iconset-svg:2.2.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-button:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-control-state-mixin:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-themable-mixin:1.1.6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-element-mixin:1.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-usage-statistics:1.0.8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-development-mode-detector:1.0.3.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-checkbox-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-checkbox:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-combo-box-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-combo-box:4.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-resizable-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-announcer:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-keys-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-item:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-overlay:3.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-overlay-behavior:2.3.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-fit-behavior:2.1.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-date-picker-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-date-picker:3.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-media-query:2.1.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-dialog-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-dialog:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-form-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-form-layout:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-grid-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-grid:5.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-scroll-target-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-icons-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-icons:4.1.4.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-iron-list-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-list:2.0.12.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-list-box-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-box:1.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-mixin:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-ordered-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-ordered-layout:1.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-progress-bar-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-progress-bar:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-radio-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-radio-button:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-split-layout-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-split-layout:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-tabs-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-tabs:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-text-field-flow:1.0.0.beta8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-text-field:2.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-upload-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-upload:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-notification-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-notification:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring-boot-starter:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-webmvc:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-aop:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-websocket:5.0.4.release.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-html-components:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-web:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-json:2.0.0.release.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.9.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-tomcat:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-core:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-el:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-websocket:8.5.28.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.7.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-web:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-devtools:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-core:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-jcl:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-context:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-autoconfigure:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-data-mongodb:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-logging:2.0.0.release.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-classic:1.2.3.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-core:1.2.3.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-to-slf4j:2.10.0.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.10.0.classpath"/>
+    <path refid="library.maven:_org.slf4j:jul-to-slf4j:1.7.25.classpath"/>
+    <path refid="library.maven:_javax.annotation:javax.annotation-api:1.3.2.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.19.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:bson:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver-core:3.6.3.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-mongodb:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-tx:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-beans:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-expression:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-commons:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.25.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.45.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.5.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.1.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.16.20.classpath"/>
+    <path refid="library.maven:_name.falgout.jeffrey.testing.junit5:mockito-extension:1.0.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:22.0.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.0.18.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.7.10.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-junit-jupiter:2.17.0.classpath"/>
+    <path refid="library.maven:_it.sauronsoftware.cron4j:cron4j:2.2.5.classpath"/>
+  </path>
+  
+  <path id="vaadwam.module.classpath">
+    <path refid="${module.jdk.classpath.vaadwam}"/>
+    <pathelement location="${vaadwam.output.dir}"/>
+    <path refid="library.maven:_com.vaadin:vaadin-core:10.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-server:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.google.gwt:gwt-elemental:2.8.2.classpath"/>
+    <path refid="library.maven:_commons-fileupload:commons-fileupload:1.3.3.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.5.classpath"/>
+    <path refid="library.maven:_org.jsoup:jsoup:1.10.3.classpath"/>
+    <path refid="library.maven:_com.helger:ph-css:6.1.1.classpath"/>
+    <path refid="library.maven:_com.helger:ph-commons:9.0.2.classpath"/>
+    <path refid="library.maven:_com.googlecode.gentyref:gentyref:1.2.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-push:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.atmosphere:atmosphere-runtime:2.4.24.vaadin1.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-client:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-data:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-lumo-theme:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-lumo-styles:1.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymer:polymer:2.6.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:shadycss:1.1.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:webcomponentsjs:1.2.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-icon:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-flex-layout:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-meta:2.1.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-iconset-svg:2.2.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-button:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-control-state-mixin:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-themable-mixin:1.1.6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-element-mixin:1.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-usage-statistics:1.0.8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-development-mode-detector:1.0.3.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-checkbox-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-checkbox:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-combo-box-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-combo-box:4.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-resizable-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-announcer:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-keys-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-item:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-overlay:3.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-overlay-behavior:2.3.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-fit-behavior:2.1.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-date-picker-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-date-picker:3.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-media-query:2.1.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-dialog-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-dialog:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-form-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-form-layout:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-grid-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-grid:5.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-scroll-target-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-icons-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-icons:4.1.4.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-iron-list-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-list:2.0.12.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-list-box-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-box:1.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-mixin:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-ordered-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-ordered-layout:1.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-progress-bar-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-progress-bar:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-radio-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-radio-button:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-split-layout-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-split-layout:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-tabs-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-tabs:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-text-field-flow:1.0.0.beta8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-text-field:2.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-upload-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-upload:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-notification-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-notification:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring-boot-starter:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-webmvc:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-aop:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-websocket:5.0.4.release.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-html-components:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-web:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-json:2.0.0.release.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.9.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-tomcat:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-core:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-el:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-websocket:8.5.28.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.7.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-web:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-devtools:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-core:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-jcl:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-context:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-autoconfigure:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-data-mongodb:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-logging:2.0.0.release.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-classic:1.2.3.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-core:1.2.3.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-to-slf4j:2.10.0.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.10.0.classpath"/>
+    <path refid="library.maven:_org.slf4j:jul-to-slf4j:1.7.25.classpath"/>
+    <path refid="library.maven:_javax.annotation:javax.annotation-api:1.3.2.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.19.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:bson:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver-core:3.6.3.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-mongodb:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-tx:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-beans:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-expression:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-commons:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.25.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.45.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.5.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.1.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.16.20.classpath"/>
+    <path refid="library.maven:_name.falgout.jeffrey.testing.junit5:mockito-extension:1.0.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:22.0.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.0.18.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="library.maven:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.maven:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.maven:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.maven:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.maven:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath"/>
+    <path refid="library.maven:_org.junit.platform:junit-platform-engine:1.1.0.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-all:1.9.5.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-core:2.16.0.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.7.10.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy-agent:1.7.10.classpath"/>
+    <path refid="library.maven:_org.objenesis:objenesis:2.6.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-junit-jupiter:2.17.0.classpath"/>
+    <path refid="library.maven:_it.sauronsoftware.cron4j:cron4j:2.2.5.classpath"/>
+  </path>
+  
+  <path id="vaadwam.runtime.module.classpath">
+    <pathelement location="${vaadwam.testoutput.dir}"/>
+    <pathelement location="${vaadwam.output.dir}"/>
+    <path refid="library.maven:_com.vaadin:vaadin-core:10.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-server:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.google.gwt:gwt-elemental:2.8.2.classpath"/>
+    <path refid="library.maven:_commons-fileupload:commons-fileupload:1.3.3.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.5.classpath"/>
+    <path refid="library.maven:_org.jsoup:jsoup:1.10.3.classpath"/>
+    <path refid="library.maven:_com.helger:ph-css:6.1.1.classpath"/>
+    <path refid="library.maven:_com.helger:ph-commons:9.0.2.classpath"/>
+    <path refid="library.maven:_com.googlecode.gentyref:gentyref:1.2.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-push:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.atmosphere:atmosphere-runtime:2.4.24.vaadin1.classpath"/>
+    <path refid="library.maven:_com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-client:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-data:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-lumo-theme:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-lumo-styles:1.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymer:polymer:2.6.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:shadycss:1.1.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.webcomponents:webcomponentsjs:1.2.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-icon:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-flex-layout:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-meta:2.1.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-iconset-svg:2.2.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-button:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-control-state-mixin:2.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-themable-mixin:1.1.6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-element-mixin:1.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-usage-statistics:1.0.8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-development-mode-detector:1.0.3.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-checkbox-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-checkbox:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-combo-box-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-combo-box:4.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-resizable-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-announcer:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-a11y-keys-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-item:2.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-overlay:3.0.2.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-overlay-behavior:2.3.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-fit-behavior:2.1.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-date-picker-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-date-picker:3.0.0.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-media-query:2.1.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-dialog-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-dialog:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-form-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-form-layout:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-grid-flow:1.0.0.beta10.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-grid:5.0.3.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-scroll-target-behavior:2.1.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-icons-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-icons:4.1.4.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-iron-list-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.polymerelements:iron-list:2.0.12.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-list-box-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-box:1.0.1.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-list-mixin:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-ordered-layout-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-ordered-layout:1.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-progress-bar-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-progress-bar:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-radio-button-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-radio-button:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-split-layout-flow:1.0.0.beta5.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-split-layout:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-tabs-flow:1.0.0.beta6.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-tabs:2.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-text-field-flow:1.0.0.beta8.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-text-field:2.0.1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-upload-flow:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-upload:4.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-notification-flow:1.0.0.beta7.classpath"/>
+    <path refid="library.maven:_org.webjars.bowergithub.vaadin:vaadin-notification:1.0.0.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring-boot-starter:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_com.vaadin:vaadin-spring:10.0.0.beta1.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-webmvc:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-aop:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-websocket:5.0.4.release.classpath"/>
+    <path refid="library.maven:_com.vaadin:flow-html-components:1.0.0.beta9.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-web:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-json:2.0.0.release.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.9.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-tomcat:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-core:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-el:8.5.28.classpath"/>
+    <path refid="library.maven:_org.apache.tomcat.embed:tomcat-embed-websocket:8.5.28.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.7.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-web:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-devtools:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-core:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-jcl:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-context:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-autoconfigure:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-data-mongodb:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter:2.0.0.release.classpath"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-logging:2.0.0.release.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-classic:1.2.3.classpath"/>
+    <path refid="library.maven:_ch.qos.logback:logback-core:1.2.3.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-to-slf4j:2.10.0.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.10.0.classpath"/>
+    <path refid="library.maven:_org.slf4j:jul-to-slf4j:1.7.25.classpath"/>
+    <path refid="library.maven:_javax.annotation:javax.annotation-api:1.3.2.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.19.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:bson:3.6.3.classpath"/>
+    <path refid="library.maven:_org.mongodb:mongodb-driver-core:3.6.3.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-mongodb:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-tx:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-beans:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework:spring-expression:5.0.4.release.classpath"/>
+    <path refid="library.maven:_org.springframework.data:spring-data-commons:2.0.5.release.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.25.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.45.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.5.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.1.0.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.16.20.classpath"/>
+    <path refid="library.maven:_name.falgout.jeffrey.testing.junit5:mockito-extension:1.0.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:22.0.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.0.18.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="library.maven:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.maven:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.maven:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.maven:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.maven:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath"/>
+    <path refid="library.maven:_org.junit.platform:junit-platform-engine:1.1.0.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-all:1.9.5.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-core:2.16.0.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.7.10.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy-agent:1.7.10.classpath"/>
+    <path refid="library.maven:_org.objenesis:objenesis:2.6.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-junit-jupiter:2.17.0.classpath"/>
+    <path refid="library.maven:_it.sauronsoftware.cron4j:cron4j:2.2.5.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.vaadwam">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.vaadwam">
+    <patternset refid="excluded.from.module.vaadwam"/>
+  </patternset>
+  
+  <path id="vaadwam.module.sourcepath">
+    <dirset dir="${module.vaadwam.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="vaadwam.module.test.sourcepath">
+    <dirset dir="${module.vaadwam.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.vaadwam" depends="compile.module.vaadwam.production,compile.module.vaadwam.tests" description="Compile module vaadwam"/>
+  
+  <target name="compile.module.vaadwam.production" depends="register.custom.compilers" description="Compile module vaadwam; production classes">
+    <mkdir dir="${vaadwam.output.dir}"/>
+    <javac2 destdir="${vaadwam.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.vaadwam}/javac">
+      <compilerarg line="${compiler.args.vaadwam}"/>
+      <bootclasspath refid="vaadwam.module.bootclasspath"/>
+      <classpath refid="vaadwam.module.production.classpath"/>
+      <src refid="vaadwam.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.vaadwam"/>
+    </javac2>
+    
+    <copy todir="${vaadwam.output.dir}">
+      <fileset dir="${module.vaadwam.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.vaadwam.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.vaadwam.tests" depends="register.custom.compilers,compile.module.vaadwam.production" description="compile module vaadwam; test classes" unless="skip.tests">
+    <mkdir dir="${vaadwam.testoutput.dir}"/>
+    <javac2 destdir="${vaadwam.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.vaadwam}/javac">
+      <compilerarg line="${compiler.args.vaadwam}"/>
+      <bootclasspath refid="vaadwam.module.bootclasspath"/>
+      <classpath refid="vaadwam.module.classpath"/>
+      <src refid="vaadwam.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.vaadwam"/>
+    </javac2>
+    
+    <copy todir="${vaadwam.testoutput.dir}">
+      <fileset dir="${module.vaadwam.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.vaadwam" description="cleanup module">
+    <delete dir="${vaadwam.output.dir}"/>
+    <delete dir="${vaadwam.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.vaadwam, clean.artifact.vaadwam:war_exploded" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.vaadwam" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.vaadwam:war" value="${basedir}/target"/>
+    <property name="artifact.output.vaadwam:war_exploded" value="${basedir}/target/vaadwam-1.0-SNAPSHOT"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.vaadwam-1.0-SNAPSHOT.war" value="${artifacts.temp.dir}/vaadwam-1.0-SNAPSHOT.war"/>
+  </target>
+  
+  <target name="clean.artifact.vaadwam:war_exploded" description="clean vaadwam:war exploded artifact output">
+    <delete dir="${artifact.output.vaadwam:war_exploded}"/>
+  </target>
+  
+  <target name="artifact.vaadwam:war" depends="init.artifacts, artifact.vaadwam:war_exploded" description="Build &#39;vaadwam:war&#39; artifact">
+    <property name="artifact.temp.output.vaadwam:war" value="${artifacts.temp.dir}/vaadwam_war"/>
+    <mkdir dir="${artifact.temp.output.vaadwam:war}"/>
+    <zip destfile="${temp.jar.path.vaadwam-1.0-SNAPSHOT.war}">
+      <zipfileset dir="${artifact.output.vaadwam:war_exploded}"/>
+    </zip>
+    <copy file="${temp.jar.path.vaadwam-1.0-SNAPSHOT.war}" tofile="${artifact.temp.output.vaadwam:war}/vaadwam-1.0-SNAPSHOT.war"/>
+  </target>
+  
+  <target name="artifact.vaadwam:war_exploded" depends="init.artifacts, compile.module.vaadwam" description="Build &#39;vaadwam:war exploded&#39; artifact">
+    <mkdir dir="${artifact.output.vaadwam:war_exploded}"/>
+    <mkdir dir="${artifact.output.vaadwam:war_exploded}/WEB-INF"/>
+    <mkdir dir="${artifact.output.vaadwam:war_exploded}/WEB-INF/classes"/>
+    <copy todir="${artifact.output.vaadwam:war_exploded}/WEB-INF/classes">
+      <fileset dir="${vaadwam.output.dir}"/>
+    </copy>
+    <mkdir dir="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-core/10.0.0.beta9/vaadin-core-10.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-core-10.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow/1.0.0.beta9/flow-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow-server/1.0.0.beta9/flow-server-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-server-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/google/gwt/gwt-elemental/2.8.2/gwt-elemental-2.8.2.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/gwt-elemental-2.8.2.jar"/>
+    <copy file="${path.variable.maven_repository}/commons-fileupload/commons-fileupload/1.3.3/commons-fileupload-1.3.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/commons-fileupload-1.3.3.jar"/>
+    <copy file="${path.variable.maven_repository}/commons-io/commons-io/2.5/commons-io-2.5.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/commons-io-2.5.jar"/>
+    <copy file="${path.variable.maven_repository}/org/jsoup/jsoup/1.10.3/jsoup-1.10.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jsoup-1.10.3.jar"/>
+    <copy file="${path.variable.maven_repository}/com/helger/ph-css/6.1.1/ph-css-6.1.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/ph-css-6.1.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/helger/ph-commons/9.0.2/ph-commons-9.0.2.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/ph-commons-9.0.2.jar"/>
+    <copy file="${path.variable.maven_repository}/com/googlecode/gentyref/gentyref/1.2.0/gentyref-1.2.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/gentyref-1.2.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow-push/1.0.0.beta9/flow-push-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-push-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/external/atmosphere/atmosphere-runtime/2.4.24.vaadin1/atmosphere-runtime-2.4.24.vaadin1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/atmosphere-runtime-2.4.24.vaadin1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/external/slf4j/vaadin-slf4j-jdk14/1.6.1/vaadin-slf4j-jdk14-1.6.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-slf4j-jdk14-1.6.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow-client/1.0.0.beta9/flow-client-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-client-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow-data/1.0.0.beta9/flow-data-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-data-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/validation-api-2.0.1.Final.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-lumo-theme/1.0.0.beta9/vaadin-lumo-theme-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-lumo-theme-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-lumo-styles/1.0.0/vaadin-lumo-styles-1.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-lumo-styles-1.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymer/polymer/2.6.0/polymer-2.6.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/polymer-2.6.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/webcomponents/shadycss/1.1.3/shadycss-1.1.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/shadycss-1.1.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/webcomponents/webcomponentsjs/1.2.0/webcomponentsjs-1.2.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/webcomponentsjs-1.2.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-icon/2.1.0/iron-icon-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-icon-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-flex-layout/2.0.3/iron-flex-layout-2.0.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-flex-layout-2.0.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-meta/2.1.1/iron-meta-2.1.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-meta-2.1.1.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-iconset-svg/2.2.1/iron-iconset-svg-2.2.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-iconset-svg-2.2.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-button-flow/1.0.0.beta7/vaadin-button-flow-1.0.0.beta7.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-button-flow-1.0.0.beta7.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-button/2.0.0/vaadin-button-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-button-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-control-state-mixin/2.0.3/vaadin-control-state-mixin-2.0.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-control-state-mixin-2.0.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-themable-mixin/1.1.6/vaadin-themable-mixin-1.1.6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-themable-mixin-1.1.6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-element-mixin/1.0.2/vaadin-element-mixin-1.0.2.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-element-mixin-1.0.2.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-usage-statistics/1.0.8/vaadin-usage-statistics-1.0.8.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-usage-statistics-1.0.8.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-development-mode-detector/1.0.3/vaadin-development-mode-detector-1.0.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-development-mode-detector-1.0.3.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-checkbox-flow/1.0.0.beta6/vaadin-checkbox-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-checkbox-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-checkbox/2.0.0/vaadin-checkbox-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-checkbox-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-combo-box-flow/1.0.0.beta9/vaadin-combo-box-flow-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-combo-box-flow-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-combo-box/4.0.1/vaadin-combo-box-4.0.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-combo-box-4.0.1.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-resizable-behavior/2.1.0/iron-resizable-behavior-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-resizable-behavior-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-a11y-announcer/2.1.0/iron-a11y-announcer-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-a11y-announcer-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-a11y-keys-behavior/2.1.0/iron-a11y-keys-behavior-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-a11y-keys-behavior-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-item/2.0.0/vaadin-item-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-item-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-overlay/3.0.2/vaadin-overlay-3.0.2.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-overlay-3.0.2.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-overlay-behavior/2.3.3/iron-overlay-behavior-2.3.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-overlay-behavior-2.3.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-fit-behavior/2.1.1/iron-fit-behavior-2.1.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-fit-behavior-2.1.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-date-picker-flow/1.0.0.beta10/vaadin-date-picker-flow-1.0.0.beta10.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-date-picker-flow-1.0.0.beta10.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-date-picker/3.0.0/vaadin-date-picker-3.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-date-picker-3.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-media-query/2.1.0/iron-media-query-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-media-query-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-dialog-flow/1.0.0.beta7/vaadin-dialog-flow-1.0.0.beta7.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-dialog-flow-1.0.0.beta7.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-dialog/2.0.0/vaadin-dialog-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-dialog-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-form-layout-flow/1.0.0.beta6/vaadin-form-layout-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-form-layout-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-form-layout/2.0.0/vaadin-form-layout-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-form-layout-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-grid-flow/1.0.0.beta10/vaadin-grid-flow-1.0.0.beta10.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-grid-flow-1.0.0.beta10.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-grid/5.0.3/vaadin-grid-5.0.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-grid-5.0.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-scroll-target-behavior/2.1.0/iron-scroll-target-behavior-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-scroll-target-behavior-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/commons-lang3-3.7.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-icons-flow/1.0.0.beta5/vaadin-icons-flow-1.0.0.beta5.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-icons-flow-1.0.0.beta5.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-icons/4.1.4/vaadin-icons-4.1.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-icons-4.1.4.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-iron-list-flow/1.0.0.beta5/vaadin-iron-list-flow-1.0.0.beta5.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-iron-list-flow-1.0.0.beta5.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/polymerelements/iron-list/2.0.12/iron-list-2.0.12.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/iron-list-2.0.12.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-list-box-flow/1.0.0.beta6/vaadin-list-box-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-list-box-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-list-box/1.0.1/vaadin-list-box-1.0.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-list-box-1.0.1.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-list-mixin/2.0.0/vaadin-list-mixin-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-list-mixin-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-ordered-layout-flow/1.0.0.beta6/vaadin-ordered-layout-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-ordered-layout-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-ordered-layout/1.0.1/vaadin-ordered-layout-1.0.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-ordered-layout-1.0.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-progress-bar-flow/1.0.0.beta6/vaadin-progress-bar-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-progress-bar-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-progress-bar/1.0.0/vaadin-progress-bar-1.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-progress-bar-1.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-radio-button-flow/1.0.0.beta7/vaadin-radio-button-flow-1.0.0.beta7.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-radio-button-flow-1.0.0.beta7.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-radio-button/1.0.0/vaadin-radio-button-1.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-radio-button-1.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-split-layout-flow/1.0.0.beta5/vaadin-split-layout-flow-1.0.0.beta5.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-split-layout-flow-1.0.0.beta5.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-split-layout/4.0.0/vaadin-split-layout-4.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-split-layout-4.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-tabs-flow/1.0.0.beta6/vaadin-tabs-flow-1.0.0.beta6.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-tabs-flow-1.0.0.beta6.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-tabs/2.0.0/vaadin-tabs-2.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-tabs-2.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-text-field-flow/1.0.0.beta8/vaadin-text-field-flow-1.0.0.beta8.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-text-field-flow-1.0.0.beta8.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-text-field/2.0.1/vaadin-text-field-2.0.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-text-field-2.0.1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-upload-flow/1.0.0.beta9/vaadin-upload-flow-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-upload-flow-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-upload/4.0.0/vaadin-upload-4.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-upload-4.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-notification-flow/1.0.0.beta7/vaadin-notification-flow-1.0.0.beta7.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-notification-flow-1.0.0.beta7.jar"/>
+    <copy file="${path.variable.maven_repository}/org/webjars/bowergithub/vaadin/vaadin-notification/1.0.0/vaadin-notification-1.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-notification-1.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-spring-boot-starter/10.0.0.beta1/vaadin-spring-boot-starter-10.0.0.beta1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-spring-boot-starter-10.0.0.beta1.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/vaadin-spring/10.0.0.beta1/vaadin-spring-10.0.0.beta1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/vaadin-spring-10.0.0.beta1.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-webmvc/5.0.4.RELEASE/spring-webmvc-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-webmvc-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-aop/5.0.4.RELEASE/spring-aop-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-aop-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-websocket/5.0.4.RELEASE/spring-websocket-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-websocket-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/com/vaadin/flow-html-components/1.0.0.beta9/flow-html-components-1.0.0.beta9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/flow-html-components-1.0.0.beta9.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-web/2.0.0.RELEASE/spring-boot-starter-web-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-starter-web-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-json/2.0.0.RELEASE/spring-boot-starter-json-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-starter-json-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-databind/2.9.4/jackson-databind-2.9.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-databind-2.9.4.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-annotations-2.9.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-core/2.9.4/jackson-core-2.9.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-core-2.9.4.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.4/jackson-datatype-jdk8-2.9.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-datatype-jdk8-2.9.4.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.4/jackson-datatype-jsr310-2.9.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-datatype-jsr310-2.9.4.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/jackson/module/jackson-module-parameter-names/2.9.4/jackson-module-parameter-names-2.9.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jackson-module-parameter-names-2.9.4.jar"/>
+    <copy file="${path.variable.maven_repository}/org/hibernate/validator/hibernate-validator/6.0.7.Final/hibernate-validator-6.0.7.Final.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/hibernate-validator-6.0.7.Final.jar"/>
+    <copy file="${path.variable.maven_repository}/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jboss-logging-3.3.2.Final.jar"/>
+    <copy file="${path.variable.maven_repository}/com/fasterxml/classmate/1.3.4/classmate-1.3.4.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/classmate-1.3.4.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-web/5.0.4.RELEASE/spring-web-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-web-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot/2.0.0.RELEASE/spring-boot-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-core/5.0.4.RELEASE/spring-core-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-core-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-jcl/5.0.4.RELEASE/spring-jcl-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-jcl-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-context/5.0.4.RELEASE/spring-context-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-context-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-autoconfigure/2.0.0.RELEASE/spring-boot-autoconfigure-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-autoconfigure-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-data-mongodb/2.0.0.RELEASE/spring-boot-starter-data-mongodb-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-starter-data-mongodb-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter/2.0.0.RELEASE/spring-boot-starter-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-starter-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/boot/spring-boot-starter-logging/2.0.0.RELEASE/spring-boot-starter-logging-2.0.0.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-boot-starter-logging-2.0.0.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/logback-classic-1.2.3.jar"/>
+    <copy file="${path.variable.maven_repository}/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/logback-core-1.2.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/apache/logging/log4j/log4j-to-slf4j/2.10.0/log4j-to-slf4j-2.10.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/log4j-to-slf4j-2.10.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/apache/logging/log4j/log4j-api/2.10.0/log4j-api-2.10.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/log4j-api-2.10.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/slf4j/jul-to-slf4j/1.7.25/jul-to-slf4j-1.7.25.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jul-to-slf4j-1.7.25.jar"/>
+    <copy file="${path.variable.maven_repository}/org/yaml/snakeyaml/1.19/snakeyaml-1.19.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/snakeyaml-1.19.jar"/>
+    <copy file="${path.variable.maven_repository}/org/mongodb/mongodb-driver/3.6.3/mongodb-driver-3.6.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/mongodb-driver-3.6.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/mongodb/bson/3.6.3/bson-3.6.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/bson-3.6.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/mongodb/mongodb-driver-core/3.6.3/mongodb-driver-core-3.6.3.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/mongodb-driver-core-3.6.3.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/data/spring-data-mongodb/2.0.5.RELEASE/spring-data-mongodb-2.0.5.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-data-mongodb-2.0.5.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-tx/5.0.4.RELEASE/spring-tx-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-tx-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-beans/5.0.4.RELEASE/spring-beans-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-beans-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/spring-expression/5.0.4.RELEASE/spring-expression-5.0.4.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-expression-5.0.4.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/springframework/data/spring-data-commons/2.0.5.RELEASE/spring-data-commons-2.0.5.RELEASE.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/spring-data-commons-2.0.5.RELEASE.jar"/>
+    <copy file="${path.variable.maven_repository}/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/slf4j-api-1.7.25.jar"/>
+    <copy file="${path.variable.maven_repository}/mysql/mysql-connector-java/5.1.45/mysql-connector-java-5.1.45.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/mysql-connector-java-5.1.45.jar"/>
+    <copy file="${path.variable.maven_repository}/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/javax.annotation-api-1.3.2.jar"/>
+    <copy file="${path.variable.maven_repository}/org/eclipse/persistence/eclipselink/2.5.0/eclipselink-2.5.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/eclipselink-2.5.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/eclipse/persistence/javax.persistence/2.1.0/javax.persistence-2.1.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/javax.persistence-2.1.0.jar"/>
+    <copy file="${path.variable.maven_repository}/org/eclipse/persistence/commonj.sdo/2.1.1/commonj.sdo-2.1.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/commonj.sdo-2.1.1.jar"/>
+    <copy file="${path.variable.maven_repository}/name/falgout/jeffrey/testing/junit5/mockito-extension/1.0.0/mockito-extension-1.0.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/mockito-extension-1.0.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/google/guava/guava/22.0/guava-22.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/guava-22.0.jar"/>
+    <copy file="${path.variable.maven_repository}/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/jsr305-1.3.9.jar"/>
+    <copy file="${path.variable.maven_repository}/com/google/errorprone/error_prone_annotations/2.0.18/error_prone_annotations-2.0.18.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/error_prone_annotations-2.0.18.jar"/>
+    <copy file="${path.variable.maven_repository}/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/j2objc-annotations-1.1.jar"/>
+    <copy file="${path.variable.maven_repository}/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/animal-sniffer-annotations-1.14.jar"/>
+    <copy file="${path.variable.maven_repository}/net/bytebuddy/byte-buddy/1.7.10/byte-buddy-1.7.10.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/byte-buddy-1.7.10.jar"/>
+    <copy file="${path.variable.maven_repository}/org/mockito/mockito-junit-jupiter/2.17.0/mockito-junit-jupiter-2.17.0.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/mockito-junit-jupiter-2.17.0.jar"/>
+    <copy file="${path.variable.maven_repository}/it/sauronsoftware/cron4j/cron4j/2.2.5/cron4j-2.2.5.jar" tofile="${artifact.output.vaadwam:war_exploded}/WEB-INF/lib/cron4j-2.2.5.jar"/>
+    <mkdir dir="${artifact.output.vaadwam:war_exploded}/META-INF"/>
+    <copy file="${basedir}/target/vaadwam-1.0-SNAPSHOT/META-INF/MANIFEST.MF" tofile="${artifact.output.vaadwam:war_exploded}/META-INF/MANIFEST.MF"/>
+    <copy todir="${artifact.output.vaadwam:war_exploded}">
+      <fileset dir="${basedir}/src/main/webapp"/>
+    </copy>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.vaadwam:war, artifact.vaadwam:war_exploded" description="Build all artifacts">
+    <mkdir dir="${artifact.output.vaadwam:war}"/>
+    <copy todir="${artifact.output.vaadwam:war}">
+      <fileset dir="${artifact.temp.output.vaadwam:war}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>

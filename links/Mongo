@@ -1,0 +1,44 @@
+https://engineering.universe.com/mongo-aggregations-in-5-minutes-b8e1d9c274bb
+https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
+https://docs.mongodb.com/manual/reference/method/db.collection.updateMany/
+
+https://devua.co/2016/06/10/spring-data-mongo-testing-using-in-memory-db/?i=1
+
+https://github.com/fakemongo/fongo
+https://www.paradigmadigital.com/dev/tests-integrados-spring-boot-fongo/
+
+https://medium.com/@mladen.maravic/spring-data-mongodb-my-take-on-inheritance-support-102361c08e3d
+https://lishman.io/object-mapping-with-spring-data-mongodb
+
+https://stackoverflow.com/questions/35112165/mongodb-bulk-insert-bulk-insert-vs-insert-multiple-insert
+
+https://stackoverflow.com/questions/18566590/remove-multiple-documents-from-mongo-in-a-single-query
+
+
+==Find property==
+https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/
+http://mongodb.github.io/mongo-java-driver/3.4/driver/getting-started/quick-start/
+https://stackoverflow.com/questions/47903629/specify-single-field-projection-in-spring-mongodb-query
+
+
+https://dzone.com/articles/top-10-most-common-commands-for-beginners
+
+https://mongodb.github.io/node-mongodb-native/api-articles/nodekoarticle1.html
+
+
+Mongo DB data types
+
+So there is an important thing to keep in mind when working with Mongo DB, and that is the slight mapping difference between types Mongo DB supports and native Javascript data types. Let’s have a look at the types supported out of the box and then how types are promoted by the driver to fit as close to native Javascript types as possible.
+
+    Float is a 8 byte and is directly convertible to the Javascript type Number
+    Double class a special class representing a float value, this is especially useful when using capped collections where you need to ensure your values are always floats.
+    Integers is a bit trickier due to the fact that Javascript represents all Numbers as 64 bit floats meaning that the maximum integer value is at a 53 bit. Mongo has two types for integers, a 32 bit and a 64 bit. The driver will try to fit the value into 32 bits if it can and promote it to 64 bits if it has to. Similarly it will deserialize attempting to fit it into 53 bits if it can. If it cannot it will return an instance of Long to avoid losing precision.
+    Long class a special class that lets you store 64 bit integers and also lets you operate on the 64 bit integers.
+    Date maps directly to a Javascript Date
+    RegExp maps directly to a Javascript RegExp
+    String maps directly to a Javascript String (encoded in utf8)
+    Binary class a special class that lets you store data in Mongo DB
+    Code class a special class that lets you store javascript functions in Mongo DB, can also provide a scope to run the method in
+    ObjectID class a special class that holds a MongoDB document identifier (the equivalent to a Primary key)
+    DbRef class a special class that lets you include a reference in a document pointing to another object
+    Symbol class a special class that lets you specify a symbol, not really relevant for javascript but for languages that supports the concept of symbols.

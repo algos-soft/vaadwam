@@ -1,0 +1,35 @@
+ * Le singole property sono pubbliche in modo da poterne leggere il valore tramite 'reflection' <br>
+ * Le singole property sono annotate con @AIColumn (facoltativo Algos) per il tipo di Column nella Grid <br>
+ * Le singole property sono annotate con @AIField (obbligatorio Algos) per il tipo di fields nel dialogo del Form <br>
+ * Le singole property sono annotate con @Field("xxx") (facoltativo)
+ * -which gives a name to the key to be used to store the field inside the document.
+ * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
+ * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
+ * Le property non primitive, di default sono EMBEDDED con un riferimento statico
+ *      (EAFieldType.link e XxxPresenter.class)
+ * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
+ *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+
+
+
+
+    (default)
+    /**
+     * indirizzo (facoltativo, non unica)
+     * riferimento statico SENZA @DBRef (embedded)
+     */
+    @Field("ind")
+    @AIField(type = EAFieldType.link, clazz = AddressPresenter.class, help = "Indirizzo")
+    @AIColumn(name = "ind", flexGrow = true)
+    public Address indirizzoStatico;
+
+
+    /**
+     * indirizzo (facoltativo, non unica)
+     * riferimento dinamico CON @DBRef
+     */
+    @DBRef
+    @Field("ind2")
+    @AIField(type = EAFieldType.combo, clazz = AddressService.class, help = "Indirizzo")
+    @AIColumn(name = "ind2", flexGrow = true)
+    public Address indirizzoDinamico;

@@ -1,0 +1,9 @@
+                     String methodName;
+                     Method metodo = null;
+                     Object serviceInstance = null;
+                     Class<? extends Object> serviceClazz = null;
+                     Object entity;
+
+                     metodo = serviceClazz.getDeclaredMethod(methodName, AEntity.class);
+                     serviceInstance = appContext.getBean(serviceClazz);
+                     String value = (String) metodo.invoke(serviceInstance, entity);

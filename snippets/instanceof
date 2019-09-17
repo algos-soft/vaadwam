@@ -1,0 +1,3 @@
+        if (WamEntity.class.isAssignableFrom(entityClass)||Milite.class.isAssignableFrom(entityClass)) {
+            codice
+        }// end of if cycle

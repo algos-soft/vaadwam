@@ -1,0 +1,86 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<dom-module id="turno-cell">
+    <template>
+        <style>
+            #container {
+                padding-top: 1px;
+                /*font-size: small;*/
+                display: flex;
+                flex-direction: column;
+                /*border-style: solid;*/
+                /*border-width: 0.1em;*/
+                /*border-radius: 0.5em;*/
+                /*border-color: rgb(101, 101, 104);*/
+            }
+
+            #iscrizione {
+                margin-bottom: 1px;
+                font-size: large;
+                font-weight: bold;
+                display: flex;
+                flex-direction: column;
+                /*border-style: solid;*/
+                /*border-width: 0.1em;*/
+                /*border-radius: 0.4em;*/
+                /*border-color: rgb(40, 40, 0);*/
+            }
+
+            #bottone {
+                text-align: left;
+            }
+        </style>
+
+        <!--Client-initiated events:-->
+        <!--Client side template code:-->
+        <!--Un click nel container lancia un evento sincrono (di nome handleClick) in questo Client-->
+        <!--Un click nel container lancia un evento asincrono (di nome handleClick) nel Server-->
+        <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
+        <div id="container" on-click="handleClick">
+            <!--<template is="dom-repeat" items="[[iscrizioni]]">-->
+            <!--<div>{{item.milite.ordine}}</div>-->
+            <!--</template>-->
+            <!--<template is="dom-repeat" items="[[militi]]">-->
+            <!--<div>{{item.sigla}}</div>-->
+            <!--</template>-->
+            <!--            <template is="dom-repeat" items="[[funzioni]]">-->
+            <!--                <div id="iscrizione" style="background-color:[[colore]]">{{item}}</div>-->
+            <!--            </template>-->
+            <template is="dom-repeat" items="[[righecella]]">
+                <button
+                        style="width: 10em; text-align: left; font-size:medium; font-weight: bold; background-color:{{item.colore}};">
+                    <iron-icon icon=[[item.icona]] slot="prefix" style="font-size:small; "></iron-icon>
+                    {{item.milite}}
+                </button>
+
+                <!--                <div style="display: flex; flex-direction:row; align-items: center;">-->
+                <!--                    <iron-icon  icon="vaadin:[[item.icona]]" style="background-color:[[item.colore]]; margin-top: 0em; margin-bottom: 0em;" slot="suffix"></iron-icon>-->
+                <!--                    <vaadin-button  style="width: 11em; background-color:{{item.colore}}; margin-top: 0em; margin-bottom: 0em; text-align: left;  font-size:medium; font-weight: bold">{{item.milite}}</vaadin-button>-->
+                <!--                </div>-->
+
+            </template>
+
+        </div>
+
+    </template>
+
+    <script>
+        class TurnoCellPolymer extends Polymer.Element {
+            static get is() {
+                return 'turno-cell'
+            }// end of static script method
+            // Eventuale JavaScript event handler, run immediately
+            handleClick() {
+                // window.alert('Button was clicked');
+            }// end of script method
+        }// end of script class
+        customElements.define(TurnoCellPolymer.is, TurnoCellPolymer);
+    </script>
+
+</dom-module>
+

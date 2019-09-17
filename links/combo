@@ -1,0 +1,7 @@
+https://vaadin.com/directory/component/multiselect-combo-box/overview
+
+<dependency>
+   <groupId>org.vaadin.gatanaso</groupId>
+   <artifactId>multiselect-combo-box-flow</artifactId>
+   <version>0.0.7</version>
+</dependency>

@@ -1,0 +1,146 @@
+package it.algos.@MODULELOWER@.modules.@PACKAGE@;
+
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
+import it.algos.vaadbase.annotation.AIScript;
+import it.algos.vaadbase.backend.service.AService;
+import it.algos.vaadbase.backend.entity.AEntity;
+import it.algos.vaadbase.modules.company.Company;
+import static it.algos.@MODULELOWER@.application.@APPCOST@.@QUALIFIER@;
+
+/**
+ * Project @MODULELOWER@ <br>
+ * Created by Algos <br>
+ * User: @USER@ <br>
+ * Date: @TODAY@ <br>
+ * <br>
+ * Estende la classe astratta AService. Layer di collegamento per la Repository. <br>
+ * <br>
+ * Annotated with @SpringComponent (obbligatorio) <br>
+ * Annotated with @Service (ridondante) <br>
+ * Annotated with @Scope (obbligatorio = 'singleton') <br>
+ * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
+ * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
+ * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ */
+@SpringComponent
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Qualifier(@QUALIFIER@)
+@Slf4j
+@AIScript(sovrascrivibile = false)
+public class @ENTITY@Service extends AService {
+
+DEPRECATED
+    /**
+     * versione della classe per la serializzazione
+     */
+    private final static long serialVersionUID = 1L;
+
+
+    /**
+     * Costruttore <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     *
+     * @param repository per la persistenza dei dati
+     */
+    @Autowired
+    public @ENTITY@Service(@Qualifier(@QUALIFIER@) MongoRepository repository) {
+        super(repository);
+    }// end of Spring constructor
+
+
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata <br>
+     * Eventuali regolazioni iniziali delle properties <br>
+     * Senza parametri per compatibilità con la superclasse <br>
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    @Override
+    public AEntity newEntity() {
+        return addCompany(@ENTITY@.builder()@BUILDER@.build());
+    }// end of method
+
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<@ENTITY@> findAllByCompany() {
+        List<@ENTITY@> lista = null;
+        Company company = null;
+
+        if (login != null) {
+            company = (Company) login.getCompany();
+        }// end of if cycle
+
+        if (company != null) {
+            lista = findAllByCompany(company);
+        }// end of if cycle
+
+        return lista;
+    }// end of method
+
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<@ENTITY@> findAllByCompany(Company company) {
+        return ((@ENTITY@Repository) repository).@FINDALL@;
+    }// end of method
+
+
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria ed unica) <br>
+     *
+     * @param code di riferimento (obbligatorio)
+     *
+     * @return istanza della Entity, null se non trovata
+     */
+    public @ENTITY@ findByKeyUnica(String code) {
+        @ENTITY@ entity = null;
+        Company company = null;
+
+        if (login != null) {
+            company = login.getCompany();
+        }// end of if cycle
+
+        if (company != null) {
+            entity = findByKeyUnica(company, code);
+        }// end of if cycle
+
+        return entity;
+    }// end of method
+
+
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria ed unica) <br>
+     *
+     * @param code di riferimento (obbligatorio)
+     *
+     * @return istanza della Entity, null se non trovata
+     */
+    public @ENTITY@ findByKeyUnica(Company company, String code) {
+        return ((@ENTITY@Repository) repository).findByCompanyAndCode(company, code);
+    }// end of method
+
+    @IDKEYSPECIFICA@
+
+}// end of class

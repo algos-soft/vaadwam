@@ -1,0 +1,27 @@
+    /**
+     * Ricerca di una entity (la crea se non la trova) <br>
+     *
+     * @param code di riferimento (obbligatorio ed unico)
+     *
+     * @return la entity trovata o appena creata
+     */
+    public @ENTITY@ findOrCrea(String code) {
+        @ENTITY@ entity = findByKeyUnica(code);
+
+        if (entity == null) {
+            entity = crea(code);
+        }// end of if cycle
+
+        return entity;
+    }// end of method
+
+    /**
+     * Crea una entity e la registra <br>
+     *
+     * @param code di riferimento (obbligatorio ed unico)
+     *
+     * @return la entity appena creata
+     */
+    public @ENTITY@ crea(String code) {
+         return (@ENTITY@)save(newEntity(@PARAMETERSFIND@));
+    }// end of method

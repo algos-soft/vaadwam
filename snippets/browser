@@ -1,0 +1,2 @@
+        String link = "\"" + PATH_WIKI + titoloCategoria + "\"";
+        UI.getCurrent().getPage().executeJavaScript("window.open(" + link + ");");

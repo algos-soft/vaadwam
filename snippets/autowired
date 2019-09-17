@@ -1,0 +1,170 @@
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring in automatico <br>
+     * Metodo più semplice. Non si possono passare parametri <br>
+     * Viene iniettata nel ciclo di 'init()' di questa classe ed è quindi disponibile solo DOPO il ciclo <br>
+     * <p>
+     * Se serve prima, sempre senza possibilità di passare parametri, occorre: <br>
+     * 1) dichiararla nel costruttore  <br>
+     * 2) spostare il suo uso in un metodo @PostConstruct  <br>
+     * 3) dichiararla con Xxx.getInstance(), ma la classe Xxx DEVE essere un istanza esplicita di Singleton Class <br>
+     * 4) dichiararla (sconsigliato per l'uso dei Test) con StaticContextAccessor.getBean(Xxx.class) <br>
+     */
+    @Autowired
+    private ATextService text;
+
+
+    /**
+     * Istanza (@Scope = 'prototype') inietta da Spring in automatico <br>
+     * Si possono passare parametri <br>
+     * Dichiararla con appContext.getBean(Xxx.class, ....);
+     */
+
+
+
+    DEPRECATO
+    /**
+     * Service iniettato da Spring (@Scope = 'singleton'). Unica per tutta l'applicazione. Usata come libreria.
+     */
+    @Autowired
+
+
+    /**
+     * L'istanza viene  dichiarata nel costruttore @Autowired della sottoclasse concreta <br>
+     */
+
+
+
+    /**
+     * Service (@Scope = 'singleton') iniettato dal costruttore @Autowired di Spring <br>
+     * Unico per tutta l'applicazione. Usato come libreria.
+     */
+    private RoleService service;
+
+
+
+    /**
+     * Recupera da StaticContextAccessor una istanza della classe <br>
+     * La classe deve avere l'annotation @Scope = 'singleton', and is created at the time of class loading <br>
+     */
+    public AddressPresenter addressPresenter = StaticContextAccessor.getBean(AddressPresenter.class);
+
+
+    /**
+     * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
+     * Unico per tutta l'applicazione. Usato come libreria.
+     */
+    public ATextService text = StaticContextAccessor.getBean(ATextService.class);
+
+
+    /**
+     * Service (@Scope = 'singleton') recuperato come istanza dalla classe e usato come libreria <br>
+     * The class MUST be an instance of Singleton Class and is created at the time of class loading <br>
+     */
+    public ATextService text = ATextService.getInstance();
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected RoleData roleData;
+
+    /**
+     * Istanza (@Scope = 'prototype') inietta da Spring ogni volta che necessita <br>
+     */
+    @Autowired
+    private TurnoCell turno;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_FUN)
+    private ATask task;
+
+
+    /**
+     * Costruttore @Autowired <br>
+     */
+    public APresenter() {
+    }// end of Spring constructor
+
+
+ * Eventuali injection sono disponibili in un metodo @PostConstruct (non nell'Init del costruttore), oppure
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * 1) iniettata automaticamente dal costruttore @Autowired di SpringBoot <br>
+     * 2) disponibile dopo @PostConstruct se questa classe è creata da VaadinFlow @Route <br>
+     * 3) disponibile dopo @PostConstruct se questa classe è creata da appContext.getBean(QuestaClasse.class); <br>
+     * 4) MAI disponibile (NULL) se questa classe è creata da new QuestaClasse(); <br>
+     * Istanza unica per tutta l'applicazione. Usata come libreria. <br>
+     */
+    @Autowired
+    private PreferenzaService pref;
+
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile SOLO DOPO @PostConstruct <br>
+     */
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile SOLO DOPO @PostConstruct <br>
+     */
+    @Autowired
+    protected ApplicationContext appContext;
+
+    //--Classe che parte da @Route
+    /**
+     * Istanza (@Scope = 'singleton') inietta da @Route <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected PreferenzaService pref;
+
+
+    //--Classe che NON parte da @Route
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Disponibile solo dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected PreferenzaService pref;
+
+
+    /**
+     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
+     * Chiamato DOPO @PostConstruct <br>
+     *
+     * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+    }// end of method
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_CRO)
+    private ATask task;

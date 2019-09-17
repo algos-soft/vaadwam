@@ -1,0 +1,10 @@
+Per usare un'applicazione SENZA login, disabilitare l'Annotation della classe SecurityConfiguration
+
+//@EnableWebSecurity
+
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+
+ed aggiungere 'exclude'
+@SpringBootApplication(scanBasePackages = {"it.algos.vaadflow", "it.algos.vaadtest"}, exclude = {SecurityAutoConfiguration.class})
+(forse non serve escludere il file)

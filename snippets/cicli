@@ -1,0 +1,20 @@
+    public static List<String> getValues() {
+        List<String> lista = new ArrayList<>();
+
+        for (EACroce croce : values()) {
+            lista.add(croce.name());
+        }// end of for cycle
+
+        return lista;
+    }// end of static method
+
+
+
+	// classic way, loop a Map
+	for (Map.Entry<String, String> entry : map.entrySet()) {
+		System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+	}
+
+
+	        // Java 8, forEach and Lambda. recommend!
+            map.forEach((k, v) -> System.out.println("Key : " + k + " Value : " + v));

@@ -1,0 +1,12 @@
+        buttonCroci.addClickListener(e -> migration.importOnlyCroci());
+
+
+        buttonFunzioni.addClickListener(e -> {
+            migration.importOnlyFunzioni();
+            layoutFunzioni.add(new Checkbox("Fatto", true));
+        });//end of lambda expressions and anonymous inner class
+
+
+        bottone.addClickListener(click -> {
+            // esegue l'azione
+        });

@@ -1,0 +1,36 @@
+    /**
+     * Costruttore @Autowired <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     */
+
+
+    /**
+     * Costruttore @Autowired <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Regola il modello-dati specifico e lo passa al costruttore della superclasse <br>
+     */
+
+
+    }// end of Spring constructor
+
+
+    /**
+     * Costruttore @Autowired <br>
+     * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
+     */
+
+
+     /**
+      * Costruttore base senza parametri <br>
+      * Annotated with @Autowired annotation, perché c'è un altro costruttore <br>
+      */
+      @Autowired
+
+
+          /**
+           * Costruttore base senza parametri <br>
+           * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
+           * Se manca, manda in rosso il parametro del costruttore usato <br>
+           */

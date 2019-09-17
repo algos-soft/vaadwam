@@ -1,0 +1,29 @@
+mongo -> per entrare
+exit      -> per uscire
+
+show dbs  -> lista db esistenti
+use vaadwam -> seleziona il db di lavoro
+show collections -> mostra le collezioni del db
+db.dropDatabase(); -> cancella il db
+db.role.find() -> cerca tutte le entities della collezione
+
+
+> db.adminCommand({getParameter: '*'})
+> db.adminCommand({getParameter: 1, 'internalQueryExecMaxBlockingSortBytes': 1})
+> use admin
+> db.adminCommand({setParameter: 1, internalQueryExecMaxBlockingSortBytes:50151432})
+> db.adminCommand({getParameter: '*'})
+
+
+==backup e restore==
+mongodump -h dbhost -d dbname -o dbdirectory
+mongorestore -h dbhost -d dbname --directoryperdb dbdirectory
+
+es:
+mongodump -d vaadwiki -o /Users/gac/Desktop/backup
+mongorestore -d test /Users/gac/Desktop/backup/test
+
+==dal mio server al mio computer==
+(terminale sul server) mongodump -d vaadwiki -o /Users/admin/Desktop/backup
+trasferire la cartella
+(terminale sul computer) mongorestore -d vaadwiki /Users/gac/Desktop/backup/vaadwiki

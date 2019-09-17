@@ -1,0 +1,43 @@
+package it.algos.@MODULELOWER@.application;
+
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.*;
+import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.ui.MainLayout;
+
+
+/**
+ * Project @MODULELOWER@
+ * Created by Algos
+ * User: gac
+ * Date: ven, 8-mag-2018
+ * Vista di partenza iniziale di questa applicazione <br>
+ * <p>
+ * Not annotated with @SpringComponent (sbagliato) <br>
+ * Not annotated with @Scope (inutile) <br>
+ * Not annotated with @SpringView (sbagliato) perché usa la @Route di VaadinFlow
+ * Annotated with @Route (obbligatorio) per la selezione della vista. @Route(value = "") per la vista iniziale
+ * Annotated with @AIScript (facoltativo) per controllare la ri-creazione di questo file nello script di algos <br>
+ */
+@Route(value = "", layout = MainLayout.class)
+@AIScript(sovrascrivibile = false)
+public class HomeView extends VerticalLayout {
+
+    /**
+     * Icona visibile nel menu (facoltativa)
+     */
+    public static final VaadinIcon VIEW_ICON = VaadinIcon.HOME;
+
+
+    /**
+     * Costruttore
+     */
+    public HomeView() {
+        removeAll();
+        add(new Label("Pagina di avvio"));
+    }// end of constructor
+
+
+}// end of class

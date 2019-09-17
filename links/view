@@ -1,0 +1,6 @@
+https://stackoverflow.com/questions/41879209/vaadin-passing-data-to-view
+    Can I pass objects between views ? – diftodi Jan 27 '17 at 10:19
+    Not directly. You can store objects in the VaadinSession through – Chris M Jan 27 '17 at 10:21
+
+
+https://github.com/vaadin/flow/issues/3474

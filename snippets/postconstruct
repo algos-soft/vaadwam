@@ -1,0 +1,73 @@
+  (preferito)
+     /**
+      * Metodo invocato subito DOPO il costruttore
+      * L'istanza DEVE essere creata da SpringBoot con Object algos = appContext.getBean(AlgosClass.class);  <br>
+      * <p>
+      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+      * <p>
+      * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, <br>
+      * ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+      */
+     @PostConstruct
+     protected void inizia() {
+         ...
+     }// end of method
+
+
+
+    /**
+     * Metodo invocato subito DOPO il costruttore
+     * <p>
+     * Performing the initialization in a constructor is not suggested
+     * as the state of the UI is not properly set up when the constructor is invoked.
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti,
+     * ma l'ordine con cui vengono chiamati NON è garantito
+     */
+    @PostConstruct
+    protected void inizia() {
+    }// end of method
+
+
+    /**
+     * Metodo invocato subito DOPO il costruttore.
+     * DEVE essere inserito nella sottoclasse e invocare (eventualmente) un metodo della superclasse.
+     * <p>
+     * Performing the initialization in a constructor is not suggested
+     * as the state of the UI is not properly set up when the constructor is invoked.
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti,
+     * ma l'ordine con cui vengono chiamati NON è garantito
+     */
+    @PostConstruct
+
+
+    /**
+     * Metodo invocato subito DOPO il costruttore
+     * <p>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, <br>
+     * ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+     * Se hanno la stessa firma, chiama prima @PostConstruct della sottoclasse <br>
+     * Se hanno firme diverse, chiama prima @PostConstruct della superclasse <br>
+     */
+    @PostConstruct
+    protected void inizia() {
+        ...
+    }// end of method
+
+
+    Ordine in cui vengono chiamati i metodi (@PostConstruct con la stessa firma)
+
+    Constructor of child class is called.
+    Constructor of child class calls super
+    Constructor of parent class is called
+    Constructor of parent class is executed
+    Constructor of parent class is finished
+    Constructor of child class is executed
+    Constructor of child class is finished
+    @PostConstruct of child class is called, executed, and finished(because we called the constructor of child class)
+    @PostConstruct of parent class is called, executed, and finished(because we called the constructor of parent class)

@@ -1,0 +1,61 @@
+
+The list property updates are propagated only from the server side to the client side.
+The two-way data binding doesn’t work with the list property.
+It means that client side changes in the list property are not sent to the server.
+
+Il nome del dom  ed il relativo tag per identificarlo DEVE contenere un 'trattino' e non un CamelCase
+Corretto: storefront-view
+Errato: storefrontView
+La classe java invece può avere qualsiasi nome
+
+Il percorso per individuare il file html parte da src/main/webapp/frontend
+Ogni html si interfaccia con un solo file java con lo stesso Tag
+
+EVENT
+1) Bottone collegato collegato col tag @Id("first")
+    Si può aggiungere un listener al bottone lato server:
+    close.addClickListener(event -> notification.close());
+2) Bottone NON collegato collegato col tag @Id("first")
+    Si aggiunge On-click col nome di un metodo @EventHandler laro server
+
+
+Data binding
+Don’t forget: Polymer camel-cases properties, so if in JavaScript you use myProperty, in HTML you would use my-property.
+Lato server occorre il tag @Id("first")
+Se manca lato server non si collega ma non da errore
+Se manca lato client da errore
+
+*QUADRE
+One way binding:when myProperty changes, theirProperty gets updated:
+<some-element their-property="[[myProperty]]"></some-element>
+
+
+GRAFFE
+*Two way binding: when myProperty changes, theirProperty gets updated, and vice versa:
+<some-element their-property="{{myProperty}}"></some-element>
+
+
+The two-way data binding doesn’t work with the list property.
+
+*Attribute binding: when myProperty is true, the element is hidden; when it’s false, the element is visible.
+The difference between attribute and property binding is that property binding is equivalent to someElement.someProp = value, whereas attribute binding is equivalent to: someElement.setAttribute(someProp, value)
+<some-element hidden$="[[myProperty]]"></some-element>
+
+
+*Computed binding: binding to the class attribute will recompile styles when myProperty changes:
+<some-element class$="[[_computeSomething(myProperty)]]"></some-element>
+<script>
+_computeSomething: function(prop) {
+  return prop ? 'a-class-name' : 'another-class-name';
+}
+</script>
+
+
+    <!-- All users will see this -->
+    <my-user-profile user="{{user}}"></my-user-profile>
+
+
+    <template is="dom-if" if="{{user.isAdmin}}">
+      <!-- Only admins will see this. -->
+      <my-admin-panel user="{{user}}"></my-admin-panel>
+    </template>

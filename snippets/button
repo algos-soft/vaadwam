@@ -1,0 +1,31 @@
+        Button edit = new Button(testoBottoneEdit, event -> dialog.open(entityBean, EAOperation.edit, context));
+
+
+        Button newButton = new Button("New entity", new Icon("lumo", "plus"));
+        newButton.getElement().setAttribute("theme", "primary");
+        newButton.addClassName("view-toolbar__button");
+        newButton.addClickListener(e -> dialog.open(service.newEntity(), EAOperation.addNew, context));
+
+
+*Usando proprietà già definite nel css
+button.getClassList().add("blue"));
+
+*Usando proprietà definite 'on line'
+button.getStyle().set("background",input.getProperty("value")));
+
+tinyButton.addStyleName("tiny");
+smallButton.addStyleName("small");
+largeButton.addStyleName("large");
+hugeButton.addStyleName("huge");
+dangerButton.addStyleName("danger");
+friendlyButton.addStyleName("friendly");
+primaryButton.addStyleName("primary");
+borderlessButton.addStyleName("borderless");
+linkButton.addStyleName("link");
+quietButton.addStyleName("quiet");
+
+
+A native button that uses the browser’s look:
+    NativeButton nativeButton = new NativeButton("Native Button");
+    buttonLayout.addComponent(nativeButton);
+

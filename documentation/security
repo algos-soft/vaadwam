@@ -1,0 +1,8 @@
+*Usa security
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+
+*Non usa security
+//@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {

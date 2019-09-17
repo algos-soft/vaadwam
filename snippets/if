@@ -1,0 +1,1 @@
+                getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE));

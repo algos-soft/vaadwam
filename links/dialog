@@ -1,0 +1,18 @@
+https://vaadin.com/components/vaadin-dialog
+https://vaadin.com/components/vaadin-dialog/java-install
+https://vaadin.com/components/vaadin-dialog/java-examples
+https://vaadin.com/components/vaadin-dialog/html-examples
+
+**Posizione bottoni**
+https://vaadin.com/tutorials/confirmation-dialog
+
+https://www.webcomponents.org/element/vaadin/vaadin-dialog
+
+**Iniettato o Java**
+https://github.com/vaadin/vaadin-dialog-flow/issues/69
+
+**Esempio**
+https://mindbug.in/vaadin/vaadin-confirm-dialog-box-example/
+
+**Qualche spunto di codice**
+https://github.com/vaadin/vaadin-confirm-dialog-flow/blob/master/vaadin-confirm-dialog-flow-demo/src/main/java/com/vaadin/flow/component/confirmdialog/ConfirmDialogView.java

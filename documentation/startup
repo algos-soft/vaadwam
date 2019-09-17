@@ -1,0 +1,11 @@
+aprire terminale
+scrivere cd spazio
+trascinare l'icona della cartella contenente il jar
+inviare return
+scrivere ./startup.sh (anche con tab)
+inviare return
+scrivere exit
+inviare return
+chiudere la finestra col bottoncino rosso in alto a sinistra
+chiudere il terminal con mela-Q
+il jar dovrebbe continuare a funzionare

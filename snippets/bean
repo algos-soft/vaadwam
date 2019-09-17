@@ -1,0 +1,22 @@
+==A==
+@Autowired
+ApplicationContext appContext;
+
+ADialog dialogo = appContext.getBean(ADialog.class);
+
+
+==B==
+solo senza parametri
+ADialog dialogo = StaticContextAccessor.getBean(ADialog.class);
+
+==C==
+dal nome
+nomeCompletoDellaClasse: it.algos.vaadflow.modules.utente.UtenteService
+UtenteService utente = (UtenteService)appContext.getBean(Class.forName(nomeCompletoDellaClasse));
+
+oppure (meno probabile, meglio usare il tipo A)
+String nomeCompletoDellaClasse = UtenteService.class.getName();
+UtenteService utente = (UtenteService)appContext.getBean(Class.forName(nomeCompletoDellaClasse));
+
+oppure (meno probabile, meglio usare il tipo A)
+UtenteService utente = (UtenteService)appContext.getBean(Class.forName(UtenteService.class.getName()));

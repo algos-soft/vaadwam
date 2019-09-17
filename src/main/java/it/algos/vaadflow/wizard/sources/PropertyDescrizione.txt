@@ -1,0 +1,10 @@
+
+    /**
+     * descrizione (obbligatoria, non unica) <br>
+     */
+    @NotNull(message = "La descrizione è obbligatoria")
+    @Size(min = 2, max = 50)
+    @Field("desc")
+    @AIField(type = EAFieldType.text, firstCapital = true, widthEM = 24)
+    @AIColumn(width = 370)
+    public String descrizione;

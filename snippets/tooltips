@@ -1,0 +1,2 @@
+**Lato server (java)**
+        button.getElement().setAttribute("title", "Posso scrivere quello che voglio. Senza HTML text, però.");

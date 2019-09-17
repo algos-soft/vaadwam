@@ -1,0 +1,7 @@
+    /**
+     * Property unica (se esiste) <br>
+     */
+    @Override
+    public String getPropertyUnica(AEntity entityBean) {
+        return ((@ENTITY@) entityBean).getCode();
+    }// end of method

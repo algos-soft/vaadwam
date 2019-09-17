@@ -1,0 +1,16 @@
+    /**
+     * Ordine di presentazione (obbligatorio, unico per tutte le company), <br>
+     * Viene calcolato in automatico alla creazione della entity <br>
+     * Recupera dal DB il valore massimo pre-esistente della property <br>
+     * Incrementa di uno il risultato <br>
+     */
+    public int getNewOrdine(Company company) {
+        int ordine = 0;
+        List<@ENTITY@> lista = findAllByCompany(company);
+
+        if (lista != null && lista.size() > 0) {
+            ordine = lista.get(lista.size() - 1).getOrdine();
+        }// end of if cycle
+
+        return ordine + 1;
+    }// end of method

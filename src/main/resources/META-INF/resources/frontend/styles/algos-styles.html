@@ -1,0 +1,322 @@
+<custom-style>
+    <!-- This is where your App's styling should go. You can use .css files too. -->
+    <style>
+
+        .test {
+            background: #ef6c00;
+            background-color: deepskyblue;
+            color: green;
+        }
+
+        /*bottoni del dialogo di scelta funzioni nella scheda funzione*/
+        .bfunzione .v-icon {
+            color: black;
+        }
+
+        /*attributi di tutto il tabellone*/
+        .ctabellone {
+            font-size: 16px;
+        }
+
+        /*attributi ereditati dalle celle del tabellone*/
+        .cbasecell {
+            display: block;
+            white-space: nowrap;
+        }
+
+        /*componente servizio*/
+        .cservizio {
+        @extend . cbasecell;
+            border-top-style: solid;
+            border-top-width: 0.1em;
+            border-top-left-radius: 6px;
+            border-color: rgb(101, 101, 104);
+        }
+
+        /*titolo servizio nel tabellone*/
+        /*(il colore di background è iniettato dinamicamente)*/
+        .cservizio-titolo {
+            color: white;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cpointer {
+            cursor: pointer;
+        }
+
+        /*componente nome nel componente servizio*/
+        .cservizio-nome {
+            font-weight: bold;
+        }
+
+        /*componente funzione (singola funzione nel componente CFunzioni)*/
+        .cfunzione {
+        @extend . cbasecell;
+            border-bottom-style: solid;
+            border-bottom-width: thin;
+            border-color: rgb(101, 101, 104);
+        }
+
+        /*componente funzione obbligatoria*/
+        .cfunzioneobblig {
+        @extend . cbasecell;
+            font-weight: bold;
+        }
+
+        /*componente turno di base*/
+        .cturno {
+        @extend . cbasecell;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /*componente turno di oggi*/
+        .cturno-today {
+            background: rgba(58, 58, 127, 0.65);
+        }
+
+        /*componente turno valido*/
+        .cturno-ok {
+            background: rgb(0, 140, 13);
+        }
+
+        /*componente turno in warning*/
+        .cturno-warning {
+            background: rgba(237, 237, 0, 0.4);
+        }
+
+        /*componente turno in alert*/
+        .cturno-alert {
+            background: rgba(206, 18, 10, 0.89);
+        }
+
+        /*titolo del turno*/
+        .cturno-title {
+            font-size: small;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /*componente no turno*/
+        .cnoturno {
+        @extend . cbasecell;
+            background: repeating-linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.05),
+                    rgba(0, 0, 0, 0.05) 0.3em,
+                    rgba(0, 0, 0, 0.0) 0.3em,
+                    rgba(0, 0, 0, 0.0) 0.6em
+            );
+            border-radius: 6px;
+        }
+
+        /*cursore a forma di pointer (manina)*/
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        /*componente iscrizione*/
+        .ciscrizione {
+        @extend . cbasecell;
+            border-radius: 6px;
+            border-bottom-width: thin;
+            border-bottom-style: solid;
+            border-bottom-color: rgba(255, 255, 255, 0.9);
+            padding-left: 0.2em;
+            padding-right: 0.2em;
+            text-align: left;
+        }
+
+        /*label nel componente iscrizione*/
+        .ciscrizione .v-label {
+        @extend . ciscrizione;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /*icona nel componente iscrizione*/
+        .ciscrizione .v-icon {
+        @extend . ciscrizione;
+            font-weight: normal;
+            font-size: 0.7em;
+            color: red;
+        }
+
+        /*componente iscrizione - testo scuro - label*/
+        .ciscrizione-dark .v-label {
+            color: seagreen;
+        }
+
+        /*componente iscrizione - testo scuro - icon*/
+        .ciscrizione-dark .v-icon {
+            color: seagreen;
+        }
+
+        /*componente iscrizione - testo chiaro - label*/
+        .ciscrizione-light .v-label {
+            color: seagreen;
+        }
+
+        /*componente iscrizione - testo chiaro - icon*/
+        .ciscrizione-light .v-icon {
+            color: seagreen;
+        }
+
+        /*verde*/
+        .verde {
+            color: green;
+            background: #f0fae9;
+        }
+
+        .verde .v-label {
+            color: green;
+        }
+
+        .verde .v-icon {
+            color: green;
+        }
+
+        .verde .v-menubar-menuitem {
+            color: green;
+            background: #E5E4E2;
+        }
+
+        .verde .v-menubar-menuitem-highlight {
+            color: white;
+            background: #6282A3;
+        }
+
+        .verde .v-grid-row {
+            color: green;
+            background: #82a387;
+        }
+
+        /*salmone*/
+        .salmone {
+            color: #FA8072;
+        }
+
+        .salmone .v-label {
+            color: #FA8072;
+        }
+
+        .salmone .v-icon {
+            color: #FA8072;
+        }
+
+        .salmone .v-menubar-menuitem {
+            color: #FA8072;
+            background: #E5E4E2;
+        }
+
+        .salmone .v-menubar-menuitem-highlight {
+            color: white;
+            background: #6282A3;
+        }
+
+        .salmone .v-grid-row {
+            color: #FA8072;
+        }
+
+        /*rosso pompeiano*/
+        .rosso {
+            color: #D21F1B;
+            background: #fad6c7;
+        }
+
+        .rosso .v-label {
+            color: #D21F1B;
+        }
+
+        .rosso .v-icon {
+            color: #D21F1B;
+        }
+
+        .rosso .v-menubar-menuitem {
+            color: #D21F1B;
+            background: #E5E4E2;
+        }
+
+        .rosso .v-menubar-menuitem-highlight {
+            color: white;
+            background: #6282A3;
+        }
+
+        .rosso .v-grid-row {
+            color: #D21F1B;
+        }
+
+        /*altro colore*/
+        .blue {
+            color: blue;
+            background: #c1c9fa;
+        }
+
+        .blue .v-label {
+            color: blue;
+        }
+
+        .blue .v-icon {
+            color: blue;
+        }
+
+        .blue .v-grid-row {
+            color: blue;
+        }
+
+        .green .v-label {
+            color: blue;
+        }
+
+        .green .v-icon {
+            color: green;
+        }
+
+        .green .v-grid-row {
+            color: green;
+        }
+
+        .v-caption-wamTable {
+            color: red;
+            font-weight: bold;
+        }
+
+        .v-select-optiongroup-horizontal .v-select-option {
+            display: inline-block;
+        }
+
+        .v-select-optiongroup-horizontal {
+            white-space: nowrap;
+        }
+
+        .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+            padding-right: 10px;
+        }
+
+        .v-label.bold {
+            font-weight: bold
+        }
+
+        .v-label.small {
+            font-size: small
+        }
+
+        .v-label.red {
+            color: red
+        }
+
+        .v-label.blue {
+            color: blue
+        }
+
+        .v-label.green {
+            color: green
+        }
+    </style>
+</custom-style>

@@ -1,0 +1,5 @@
+Spacing and Padding are only available as on/off for all edges of the layout,
+instead of separately for top/right/bottom/left.
+
+Fine-grained control is available using CSS, e.g.
+component.getElement().getStyle().set("padding-top", "20px")

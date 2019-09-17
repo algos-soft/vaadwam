@@ -1,0 +1,11 @@
+package it.algos.vaadflow.enumeration;
+
+/**
+ * Created by gac on 05 ott 2016.
+ * AlgosFieldType (EAFieldType)
+ * Enumeration of type used with AIField
+ * Enumeration of type used with AIColumn
+ */
+public enum EAFieldType {
+    id, text, integer, pref, noBinder, calculated,integernotzero, lungo, email, password, combo, multicombo, enumeration, radio, date, weekdate, localdate, localdatetime, localtime, dateNotEnabled, decimal, checkbox, checkboxlabel, link, image, resource, vaadinIcon, json, textarea, time, yesno, yesnobold, ugualeAlForm, noone, booleano,color
+}// fine della classe Enumeration

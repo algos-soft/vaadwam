@@ -1,0 +1,16 @@
+if (pref.isTrue(Cost.KEY_USE_SELEZIONE_MULTIPLA_GRID)) {
+
+
+
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected PreferenzaService pref;
+
+
+    if (pref.isBool(EAPreferenza.showCompany.getCode())) {
+        ...;
+    }// end of if cycle

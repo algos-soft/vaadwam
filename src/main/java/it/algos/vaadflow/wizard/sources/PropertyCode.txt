@@ -1,0 +1,10 @@
+    /**
+     * codice di riferimento (obbligatorio, unico) <br>
+     */
+    @NotNull
+    @Indexed()
+    @Size(min = 3)
+    @Field("cod")
+    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
+    @AIColumn(width = 210)
+    public String code;
