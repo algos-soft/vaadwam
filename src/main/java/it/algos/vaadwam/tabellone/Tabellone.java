@@ -365,7 +365,7 @@ private MiliteService militeService;
         Grid.Column column = grid.addComponentColumn(componentProvider);
 
         column.setHeader(periodoHeader());
-        column.setWidth("220px");
+        column.setWidth("180px");
         column.setFlexGrow(0);
         column.setSortable(false);
         column.setResizable(false);
@@ -402,7 +402,7 @@ private MiliteService militeService;
      */
     private Component periodoHeader() {
         AComboBox comboPeriodi = new AComboBox();
-
+        comboPeriodi.setWidth("11em");
         comboPeriodi.setItems(EAPeriodo.values());
         comboPeriodi.setValue(currentPeriodValue);
         comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));

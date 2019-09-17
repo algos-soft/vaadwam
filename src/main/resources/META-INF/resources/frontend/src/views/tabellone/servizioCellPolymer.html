@@ -21,6 +21,8 @@
 
             #right {
                 width: 40%;
+                font-size: small;
+                /*font-size: 40%;*/
                 display: flex;
                 flex-direction: column;
             }
@@ -69,7 +71,7 @@
 
             <div style="width:0.5em"></div>
 
-            <div id="right">
+            <div id="right" style="font-size: 40%">
                 <template is="dom-repeat" items="[[funzioni]]">
                     <div id="ruolo">{{item.code}}</div>
                 </template>
