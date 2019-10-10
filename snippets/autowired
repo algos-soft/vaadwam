@@ -118,8 +118,9 @@
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile SOLO DOPO @PostConstruct <br>
+     * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
+    @Autowired
 
 
     /**

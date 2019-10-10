@@ -16,3 +16,7 @@ https://mindbug.in/vaadin/vaadin-confirm-dialog-box-example/
 
 **Qualche spunto di codice**
 https://github.com/vaadin/vaadin-confirm-dialog-flow/blob/master/vaadin-confirm-dialog-flow-demo/src/main/java/com/vaadin/flow/component/confirmdialog/ConfirmDialogView.java
+
+**javascript example**
+https://vaadin.com/forum/thread/17804368/vaadin-dialog-does-not-detect-property-changes
+https://glitch.com/edit/#!/obtainable-ragdoll?path=app.js:72:25

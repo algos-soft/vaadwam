@@ -10,6 +10,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.schedule.ATask;
@@ -32,9 +33,6 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
  * Date: lun, 30-lug-2018
  * Time: 15:48
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Slf4j
 public abstract class WamViewList extends AGridViewList {
 
     protected Button genericFieldValue;
@@ -59,13 +57,18 @@ public abstract class WamViewList extends AGridViewList {
 
 
     /**
-     * Costruttore @Autowired (nella sottoclasse concreta) <br>
-     * La sottoclasse usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     * La sottoclasse usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Costruttore @Autowired <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
+     *
+     * @param service business class e layer di collegamento per la Repository
+     * @param entityClazz modello-dati specifico di questo modulo
      */
-    public WamViewList(IAPresenter presenter, IADialog dialog) {
-        super(presenter, dialog);
-    }// end of Spring constructor
+    public WamViewList(IAService service, Class<? extends AEntity> entityClazz) {
+        super(service, entityClazz);
+    }// end of Vaadin/@Route constructor
 
 
     /**
@@ -212,17 +215,17 @@ public abstract class WamViewList extends AGridViewList {
     }// end of method
 
 
-    protected Button createEditButton(AEntity entityBean) {
-        if (login.isDeveloper() || login.isAdmin()) {
-            return super.createEditButton(entityBean);
-        } else {
-            Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.showOnly, context));
-            edit.setIcon(new Icon("lumo", "edit"));
-            edit.addClassName("review__edit");
-            edit.getElement().setAttribute("theme", "tertiary");
-            return edit;
-        }// end of if/else cycle
-    }// end of method
+//    protected Button createEditButton(AEntity entityBean) {
+//        if (login.isDeveloper() || login.isAdmin()) {
+//            return super.createEditButton(entityBean);
+//        } else {
+//            Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.showOnly, context));
+//            edit.setIcon(new Icon("lumo", "edit"));
+//            edit.addClassName("review__edit");
+//            edit.getElement().setAttribute("theme", "tertiary");
+//            return edit;
+//        }// end of if/else cycle
+//    }// end of method
 
 
 //    /**

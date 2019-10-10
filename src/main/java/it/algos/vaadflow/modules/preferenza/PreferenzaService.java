@@ -2,6 +2,7 @@ package it.algos.vaadflow.modules.preferenza;
 
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.AService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 26-ott-2018 9.59.58 <br>
+ * Fix date: 21-set-2019 8.28.35 <br>
  * <br>
  * Business class. Layer di collegamento per la Repository. <br>
  * <br>
@@ -32,6 +33,8 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
+ * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -45,6 +48,10 @@ public class PreferenzaService extends AService {
      */
     private final static long serialVersionUID = 1L;
 
+    /**
+     * Riferimento alla sottoclasse specifica di ABoot per utilizzare il metodo sovrascritto resetPreferenze() <br>
+     */
+    public ABoot applicationBoot;
 
     /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
@@ -99,13 +106,47 @@ public class PreferenzaService extends AService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(EAPreferenza eaPref) {
+    public boolean creaIfNotExist(IAPreferenza eaPref) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(eaPref.getCode())) {
             AEntity entity = save(newEntity(eaPref));
             creata = entity != null;
         }// end of if cycle
+
+        return creata;
+    }// end of method
+
+
+    /**
+     * Crea una entity <br>
+     *
+     * @param code        codice di riferimento (obbligatorio)
+     * @param descrizione (facoltativa)
+     * @param type        (obbligatorio) per convertire in byte[] i valori
+     * @param value       (obbligatorio) memorizza tutto in byte[]
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean crea(String code, String descrizione, EAPrefType type, Object value) {
+        boolean creata;
+        AEntity entity = save(newEntity(0, code, descrizione, type, value));
+        creata = entity != null;
+
+        return creata;
+    }// end of method
+
+    /**
+     * Crea una entity <br>
+     *
+     * @param eaPref: enumeration di dati iniziali di prova
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean crea(IAPreferenza eaPref) {
+        boolean creata;
+        AEntity entity = save(newEntity(eaPref));
+        creata = entity != null;
 
         return creata;
     }// end of method
@@ -132,7 +173,7 @@ public class PreferenzaService extends AService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Preferenza newEntity(EAPreferenza eaPref) {
+    public Preferenza newEntity(IAPreferenza eaPref) {
         return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getValue());
     }// end of method
 
@@ -200,53 +241,6 @@ public class PreferenzaService extends AService {
     }// end of method
 
 
-//    /**
-//     * Fetches the entities whose 'main text property' matches the given filter text.
-//     * <p>
-//     * Se esiste la company, filtrate secondo la company <br>
-//     * The matching is case insensitive. When passed an empty filter text,
-//     * the method returns all categories. The returned list is ordered by name.
-//     * The 'main text property' is different in each entity class and chosen in the specific subclass
-//     *
-//     * @param filter the filter text
-//     *
-//     * @return the list of matching entities
-//     */
-//    @Override
-//    public List<? extends AEntity> findFilter(String filter) {
-//        return findAll(); //@todo PROVVISORIO
-//    }
-//
-//
-//    /**
-//     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria ed unica) <br>
-//     *
-//     * @param code di riferimento (obbligatorio)
-//     *
-//     * @return istanza della Entity, null se non trovata
-//     */
-//    public Preferenza findByKeyUnica(String code) {
-//        return repository.findByCode(code);
-//    }// end of method
-//
-//
-//    /**
-//     * Returns all instances of the type <br>
-//     * La Entity è EACompanyRequired.nonUsata. Non usa Company. <br>
-//     * Lista ordinata <br>
-//     *
-//     * @return lista ordinata di tutte le entities
-//     */
-//    @Override
-//    public List<Preferenza> findAll() {
-//        List<Preferenza> lista = null;
-//
-//        lista = repository.findAllByOrderByOrdineAsc();
-//
-//        return lista;
-//    }// end of method
-
-
     /**
      * Metodo invocato da ABoot (o da una sua sottoclasse) <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
@@ -259,31 +253,34 @@ public class PreferenzaService extends AService {
 
 
     /**
-     * Creazione di alcuni dati demo iniziali <br>
-     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
-     * La collezione viene svuotata <br>
-     * I dati possono essere presi da una Enumeration o creati direttamemte <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * Cancella e ricrea le preferenze standard e quelle specifiche <br>
+     * Invoca il metodo resetPreferenze() della sottoclasse specifica di ABoot per accedere alle preferenze specifiche <br>
      *
-     * @return numero di elementi creato
+     * @return numero di preferenze creato
      */
     @Override
     public int reset() {
-        int numRec = super.reset();
-//        int numRec = 0;
-        int numPref = count();
+//        int numRec = super.reset();
+        int numPref = 0;
+//        int numPref = count();
+//
+//        for (EAPreferenza eaPref : EAPreferenza.values()) {
+//            numRec = creaIfNotExist(eaPref) ? numRec + 1 : numRec;
+//        }// end of for cycle
+//
+////        if (numRec == 0) {
+////            log.info("Algos - Data. Le preferenze sono già presenti (" + numPref + ") e non ne sono state aggiunte di nuove");
+////        } else {
+////            log.warn("Algos - Data. Sono state aggiunte: " + numRec + " nuove preferenze");
+////        }// end of if/else cycle
+//
+//        return numRec;
 
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            numRec = creaIfNotExist(eaPref) ? numRec + 1 : numRec;
-        }// end of for cycle
+        if (applicationBoot != null) {
+            numPref = applicationBoot.resetPreferenze();
+        }// end of if cycle
 
-//        if (numRec == 0) {
-//            log.info("Algos - Data. Le preferenze sono già presenti (" + numPref + ") e non ne sono state aggiunte di nuove");
-//        } else {
-//            log.warn("Algos - Data. Sono state aggiunte: " + numRec + " nuove preferenze");
-//        }// end of if/else cycle
-
-        return numRec;
+        return numPref;
     }// end of method
 
 //    /**

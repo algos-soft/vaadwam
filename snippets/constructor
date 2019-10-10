@@ -4,6 +4,12 @@
      * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
      */
 
+    /**
+     * Costruttore @Autowired (nella sottoclasse concreta) <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     */
+
 
     /**
      * Costruttore @Autowired <br>

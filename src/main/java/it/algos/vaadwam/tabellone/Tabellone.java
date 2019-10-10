@@ -15,18 +15,18 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATime;
-import it.algos.vaadflow.modules.role.EARoleType;
+import it.algos.vaadflow.modules.giorno.Giorno;
 import it.algos.vaadflow.presenter.IAPresenter;
-import it.algos.vaadflow.ui.MainLayout;
+import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.migration.MigrationService;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -50,7 +51,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Time: 20:31
  */
 @UIScope
-@Route(value = TAG_TAB_LIST, layout = MainLayout.class)
+@Route(value = TAG_TAB_LIST, layout = MainLayout14.class)
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
 @AIScript(sovrascrivibile = false)
@@ -130,18 +131,23 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     private EAPeriodo currentPeriodValue;
 
     @Autowired
-private MiliteService militeService;
+    private MiliteService militeService;
+
+
     /**
      * Costruttore @Autowired <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param presenter per gestire la business logic del package
+     * @param service business class e layer di collegamento per la Repository
      */
     @Autowired
-    public Tabellone(@Qualifier(TAG_TAB) IAPresenter presenter) {
-        super(presenter, null);
-    }// end of Spring constructor
+    public Tabellone(@Qualifier(TAG_TAB) IAService service) {
+        super(service, Turno.class);
+    }// end of Vaadin/@Route constructor
+
 
 
     /**
@@ -179,8 +185,8 @@ private MiliteService militeService;
         //--Crea il wam-login della sessione
 //        wamLogin = wamService.fixWamLogin();
         ALogin login = vaadinService.getLogin();
-        if (login!=null) {
-            wamLogin= (WamLogin)login;
+        if (login != null) {
+            wamLogin = (WamLogin) login;
 //            String username=login.getUtente()!=null?login.getUtente().username:"";
 //            Milite milite= militeService.findByKeyUnica(username);
 //            wamLogin.setMilite(milite);
@@ -246,7 +252,7 @@ private MiliteService militeService;
             gridPlaceholder.removeAll();
         }
 
-        if (gridPlaceholder!=null) {
+        if (gridPlaceholder != null) {
             grid = buildGrid();
             gridPlaceholder.add(grid);
             gridPlaceholder.add(bottomPlacehorder);
@@ -264,7 +270,6 @@ private MiliteService militeService;
      * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto)
      */
-    @Override
     protected void creaGrid() {
         //@todo info: bypassa quanto previsto nella lista standard. La grid viene creata e regolata in updateView()
     }// end of method

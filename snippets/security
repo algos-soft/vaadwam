@@ -8,3 +8,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 ed aggiungere 'exclude'
 @SpringBootApplication(scanBasePackages = {"it.algos.vaadflow", "it.algos.vaadtest"}, exclude = {SecurityAutoConfiguration.class})
 (forse non serve escludere il file)
+
+
+equivalenti:
+    @Secured("ROLE_VIEWER")
+    @RolesAllowed("ROLE_VIEWER")
+    @PreAuthorize("hasRole('ROLE_VIEWER')")

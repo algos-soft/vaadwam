@@ -1,10 +1,10 @@
     /**
      * codice di riferimento (obbligatorio, unico) <br>
      */
-    @NotNull
+    @NotNull(message = "Il codice è obbligatorio")
     @Indexed()
-    @Size(min = 3)
+    @Size(min = 2)
     @Field("cod")
-    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(width = 210)
+    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 8)
+    @AIColumn(widthEM = 8)
     public String code;

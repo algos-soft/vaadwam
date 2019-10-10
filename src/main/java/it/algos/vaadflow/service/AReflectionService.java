@@ -161,6 +161,7 @@ public class AReflectionService extends AbstractService {
      *
      * @param viewClazz classe view su cui operare la riflessione
      */
+    @Deprecated
     public VaadinIcon getIconView(final Class<?> viewClazz) {
         VaadinIcon icon = null;
         String iconNameProperty = "VIEW_ICON";
@@ -172,6 +173,8 @@ public class AReflectionService extends AbstractService {
 
         return icon;
     }// end of method
+
+
 
 
     /**

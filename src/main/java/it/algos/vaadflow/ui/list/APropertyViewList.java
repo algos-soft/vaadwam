@@ -1,6 +1,6 @@
 package it.algos.vaadflow.ui.list;
 
-import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+//import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -22,6 +22,7 @@ import it.algos.vaadflow.ui.fields.AComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -175,7 +176,7 @@ public abstract class APropertyViewList extends VerticalLayout {
     protected IAService service;
 
     /**
-     * Il modello-dati specifico viene recuperato dal presenter <br>
+     * Modello-dati specifico <br>
      */
     protected Class<? extends AEntity> entityClazz;
 
@@ -209,12 +210,13 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     /**
      * Placeholder per la Grid dichiarata nella superclasse oppure <br>
-     * per la griglia con paginazione che deve essere dichiarata nella sottoclasse specifica <br>
+     * per la PaginatedGrid che deve essere dichiarata nella sottoclasse specifica <br>
+     * Esiste o una o l'altra (a seconda del flag della sottoclasse) <br>
      */
     protected VerticalLayout gridPlaceholder;
 
     /**
-     * Griglia principale con o senza senza paginazione <br>
+     * Griglia principale SENZA paginazione <br>
      * Alcune regolazioni da preferenza o da parametro (bottone Edit, ad esempio) <br>
      */
     protected Grid grid;
@@ -372,7 +374,7 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     protected ADeleteDialog deleteDialog;
 
-    protected ArrayList<AppLayoutMenuItem> specificMenuItems = new ArrayList<AppLayoutMenuItem>();
+//    protected ArrayList<AppLayoutMenuItem> specificMenuItems = new ArrayList<AppLayoutMenuItem>();
 
     /**
      * Flag di preferenza per usare una route view come detail della singola istanza. Normalmente true. <br>

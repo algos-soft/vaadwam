@@ -157,7 +157,6 @@ public class SelectIconDialog extends ADialog {
      * @param operation The operation being performed on the item
      * @param context   legato alla sessione
      */
-    @Override
     public void open(AEntity item, EAOperation operation, AContext context) {
         super.open();
     }// end of method

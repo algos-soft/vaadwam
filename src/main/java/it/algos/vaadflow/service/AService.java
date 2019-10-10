@@ -693,14 +693,14 @@ public abstract class AService extends AbstractService implements IAService {
                     try { // prova ad eseguire il codice
                         Notification.show(entityBean + " non è stata registrata, perché esisteva già con lo stesso code ", 3000, Notification.Position.BOTTOM_START);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        log.info(unErrore.toString());
                     }// fine del blocco try-catch
                 } else {
                     entitySaved = this.save(entityBean);
                     try { // prova ad eseguire il codice
                         Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.warn(unErrore.toString());
+                        log.info(unErrore.toString());
                     }// fine del blocco try-catch
                 }// end of if/else cycle
                 break;

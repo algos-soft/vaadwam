@@ -3,6 +3,7 @@ package it.algos.vaadflow.service;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.mese.EAMese;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -267,7 +268,7 @@ public class ADateService extends AbstractService {
      * @return la data sotto forma di stringa
      */
     public String get() {
-        return get(LocalDate.now(), EATime.standard.getPattern());
+        return get(LocalDate.now());
     }// end of method
 
 
@@ -298,8 +299,38 @@ public class ADateService extends AbstractService {
      *
      * @return la data sotto forma di stringa
      */
-    public String getCompleta(LocalDate localDate) {
+    public String getDataCompleta(LocalDate localDate) {
         return get(localDate, EATime.completa.getPattern());
+    }// end of method
+
+
+    /**
+     * Restituisce la data attuale nella forma del pattern completo
+     * <p>
+     * Returns a string representation of the date <br>
+     * Not using leading zeroes in day <br>
+     * Two numbers for year <b>
+     *
+     * @param localDate da rappresentare
+     *
+     * @return la data sotto forma di stringa
+     */
+    public String getDataCompleta() {
+        return getDataCompleta(LocalDate.now());
+    }// end of method
+
+
+    /**
+     * Restituisce la data e l'ora attuali nella forma del pattern completo
+     * <p>
+     * Returns a string representation of the date <br>
+     * Not using leading zeroes in day <br>
+     * Two numbers for year <b>
+     *
+     * @return la data sotto forma di stringa
+     */
+    public String getDataOraComplete() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(EATime.completaOrario.getPattern(), LOCALE));
     }// end of method
 
 
@@ -1134,7 +1165,7 @@ public class ADateService extends AbstractService {
         EAMese mese = EAMese.getMese(numMese);
         nomeMese = EAMese.getLong(numMese);
         giorniDelMese = EAMese.getGiorni(numMese, 2016);
-        final int taglioBisestile = 60;
+        final int taglioBisestile = 59;
         String tag;
         String tagUno;
 

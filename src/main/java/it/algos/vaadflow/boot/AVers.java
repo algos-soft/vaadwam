@@ -1,6 +1,5 @@
 package it.algos.vaadflow.boot;
 
-import it.algos.vaadflow.modules.preferenza.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.Preferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.versione.VersioneService;
@@ -73,26 +72,26 @@ public abstract class AVers {
             crea("Setup", "Installazione iniziale di " + projectName);
         }// fine del blocco if
 
-        //--crea le preferenze standard
-        //--queste vengono aggiunte indipendentemente dall'ordine della enumeration
-        //--vengono create se non esistono
-        //--se esistono, viene aggiornata la descrizione prevista dalla enumeration
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            preferenzaCreata = preferenzaService.creaIfNotExist(eaPref);
-            if (preferenzaCreata) {
-                versioneService.creaIfNotExist(codeProject, "Preferenze", eaPref.getDesc() + ", di default " + eaPref.getValue());
-            } else {
-                prefNew = (Preferenza) preferenzaService.findById(eaPref.getCode());
-                descOld = eaPref.getDesc();
-                descNew = prefNew.getDescrizione();
-                if (!descOld.equals(descNew)) {
-                    versioneService.creaIfNotExist("Z", "#" + prefNew.code, "#desc: " + descOld + " -> " + descNew);
-                    prefNew.setDescrizione(descNew);
-                    preferenzaService.save(prefNew);
-                }// end of if cycle
-            }// end of if/else cycle
-            k++;
-        }// end of for cycle
+//        //--crea le preferenze standard
+//        //--queste vengono aggiunte indipendentemente dall'ordine della enumeration
+//        //--vengono create se non esistono
+//        //--se esistono, viene aggiornata la descrizione prevista dalla enumeration
+//        for (EAPreferenza eaPref : EAPreferenza.values()) {
+//            preferenzaCreata = preferenzaService.creaIfNotExist(eaPref);
+//            if (preferenzaCreata) {
+//                versioneService.creaIfNotExist(codeProject, "Preferenze", eaPref.getDesc() + ", di default " + eaPref.getValue());
+//            } else {
+//                prefNew = (Preferenza) preferenzaService.findById(eaPref.getCode());
+//                descOld = eaPref.getDesc();
+//                descNew = prefNew.getDescrizione();
+//                if (!descOld.equals(descNew)) {
+//                    versioneService.creaIfNotExist("Z", "#" + prefNew.code, "#desc: " + descOld + " -> " + descNew);
+//                    prefNew.setDescrizione(descNew);
+//                    preferenzaService.save(prefNew);
+//                }// end of if cycle
+//            }// end of if/else cycle
+//            k++;
+//        }// end of for cycle
 
         return k;
     }// end of method

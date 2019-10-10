@@ -6,24 +6,25 @@ import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.CompanyService;
-import it.algos.vaadflow.modules.preferenza.EAPreferenza;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.croce.CroceViewList;
+import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.modules.funzione.FunzioneViewList;
-import it.algos.vaadwam.modules.iscrizione.IscrizioneViewList;
+import it.algos.vaadwam.modules.funzione.FunzioneList;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneList;
 import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.milite.MiliteViewList;
-import it.algos.vaadwam.modules.riga.RigaViewList;
+import it.algos.vaadwam.modules.milite.MiliteList;
+import it.algos.vaadwam.modules.riga.RigaList;
 import it.algos.vaadwam.modules.servizio.ServizioService;
-import it.algos.vaadwam.modules.servizio.ServizioViewList;
-import it.algos.vaadwam.modules.turno.TurnoViewList;
+import it.algos.vaadwam.modules.servizio.ServizioList;
+import it.algos.vaadwam.modules.turno.TurnoList;
 import it.algos.vaadwam.tabellone.Tabellone;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
@@ -172,26 +173,60 @@ public class WamBoot extends ABoot {
     }// end of method
 
 
-    /**
-     * Regola alcune preferenze iniziali
-     * Se non esistono, le crea
-     * Se esistono, sostituisce i valori esistenti con quelli indicati qui
-     */
-    protected void regolaPreferenze() {
-        super.regolaPreferenze();
-        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
 
+    /**
+     * Crea le preferenze standard <br>
+     * Se non esistono, le crea <br>
+     * Se esistono, NON modifica i valori esistenti <br>
+     * Per un reset ai valori di default, c'è il metodo reset() chiamato da preferenzaService <br>
+     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+  @Override
+    public int creaPreferenze() {
+        int numPref = super.creaPreferenze();
+
+        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
+            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+        }// end of for cycle
+
+        return numPref;
+    }// end of method
+
+    /**
+     * Eventuali regolazione delle preferenze standard effettuata nella sottoclasse specifica <br>
+     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
+     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
+     * Metodo che DEVE essere sovrascritto <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
         pref.saveValue(FlowCost.USA_COMPANY, true);
         pref.saveValue(FlowCost.SHOW_COMPANY, false);
         usaSecurity = true;
+    }// end of method
 
-//        pref.setBool(FlowCost.USA_COMPANY, true);
-//        pref.setBool(FlowCost.SHOW_VERSION, true);
-//        pref.setBool(AppCost.USA_DAEMON_CROCI, false);
-//        pref.setBool(AppCost.USA_DAEMON_FUNZIONI, false);
-//        pref.setBool(AppCost.USA_DAEMON_SERVIZI, false);
-//        pref.setBool(AppCost.USA_DAEMON_MILITI, false);
-//        pref.setBool(AppCost.USA_DAEMON_TURNI, false);
+    /**
+     * Cancella e ricrea le preferenze standard <br>
+     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
+     * nella sottoclasse specifica dell'applicazione <br>
+     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
+     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
+     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @return numero di preferenze creato
+     */
+    @Override
+    public int resetPreferenze() {
+        int numPref = super.resetPreferenze();
+
+        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
+            numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
+        }// end of for cycle
+
+        return numPref;
     }// end of method
 
 
@@ -329,18 +364,18 @@ public class WamBoot extends ABoot {
         //--developer
         FlowVar.menuClazzList.add(WamDeveloperView.class);
         FlowVar.menuClazzList.add(ImportView.class);
-        FlowVar.menuClazzList.add(IscrizioneViewList.class);
-        FlowVar.menuClazzList.add(RigaViewList.class);
+        FlowVar.menuClazzList.add(IscrizioneList.class);
+        FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
-        FlowVar.menuClazzList.add(CroceViewList.class);
-        FlowVar.menuClazzList.add(TurnoViewList.class);
+        FlowVar.menuClazzList.add(CroceList.class);
+        FlowVar.menuClazzList.add(TurnoList.class);
 
         //--utente
         FlowVar.menuClazzList.add(Tabellone.class);
-        FlowVar.menuClazzList.add(FunzioneViewList.class);
-        FlowVar.menuClazzList.add(ServizioViewList.class);
-        FlowVar.menuClazzList.add(MiliteViewList.class);
+        FlowVar.menuClazzList.add(FunzioneList.class);
+        FlowVar.menuClazzList.add(ServizioList.class);
+        FlowVar.menuClazzList.add(MiliteList.class);
     }// end of method
 
 

@@ -1,0 +1,3 @@
+**Separatore**
+// Components can be added to submenus as well:
+profile.getSubMenu().add(new Hr());

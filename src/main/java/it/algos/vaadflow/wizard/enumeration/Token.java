@@ -43,6 +43,8 @@ public enum Token {
     toString("TOSTRING"),
     usaCompany("USACOMPANY"),
     readCompany("READCOMPANY"),
+    grid("GRID"),
+    creaGrid("CREAGRID"),
     ;
 
     private String tokenTag;

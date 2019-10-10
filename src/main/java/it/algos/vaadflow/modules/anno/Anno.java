@@ -22,13 +22,14 @@ import javax.validation.constraints.Size;
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 26-ott-2018 9.59.58 <br>
+ * Fix date: 20-set-2019 18.19.24 <br>
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  * <p>
  * Not annotated with @SpringComponent (inutile).  <br>
  * Not annotated with @Scope (inutile). Le istanze 'prototype' vengono generate da xxxService.newEntity() <br>
  * Not annotated with @Qualifier (inutile) <br>
+ * Annotated with @Entity (facoltativo) per specificare che si tratta di una collection (DB Mongo) <br>
  * Annotated with @Document (facoltativo) per avere un nome della collection (DB Mongo) diverso dal nome della Entity <br>
  * Annotated with @TypeAlias (facoltativo) to replace the fully qualified class name with a different value. <br>
  * Annotated with @Data (Lombok) for automatic use of Getter and Setter <br>
@@ -45,12 +46,16 @@ import javax.validation.constraints.Size;
  * <p>
  * Inserisce SEMPRE la versione di serializzazione <br>
  * Le singole property sono pubbliche in modo da poterne leggere il valore tramite 'reflection' <br>
- * Le singole property sono annotate con @AIColumn (facoltativo Algos) per il tipo di Column nella Grid <br>
  * Le singole property sono annotate con @AIField (obbligatorio Algos) per il tipo di fields nel dialogo del Form <br>
+ * Le singole property sono annotate con @AIColumn (facoltativo Algos) per il tipo di Column nella Grid <br>
  * Le singole property sono annotate con @Field("xxx") (facoltativo)
  * -which gives a name to the key to be used to store the field inside the document.
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
+ * Le property non primitive, di default sono EMBEDDED con un riferimento statico
+ *      (EAFieldType.link e XxxPresenter.class)
+ * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
+ *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -61,7 +66,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderAnno")
 @EqualsAndHashCode(callSuper = false)
-@AIEntity(company = EACompanyRequired.nonUsata)
+@AIEntity(recordName = "anno", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"ordine", "secolo", "titolo"})
 @AIForm(fields = {"ordine", "secolo", "titolo"})
 @AIScript(sovrascrivibile = false)
@@ -80,7 +85,7 @@ public class Anno extends AEntity {
     @NotNull
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     @Field("ord")
-    @AIField(type = EAFieldType.integer, widthEM = 3)
+    @AIField(type = EAFieldType.integer, widthEM = 5)
     @AIColumn(name = "#", widthEM = 5)
     public int ordine;
 
@@ -105,7 +110,7 @@ public class Anno extends AEntity {
     @Size(min = 3)
     @Field("tit")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(flexGrow = true)
+    @AIColumn(widthEM = 10)
     public String titolo;
 
 

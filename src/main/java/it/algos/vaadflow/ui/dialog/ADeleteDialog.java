@@ -1,7 +1,6 @@
 package it.algos.vaadflow.ui.dialog;
 
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -12,6 +11,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
+
+import static it.algos.vaadflow.application.FlowCost.USA_BUTTON_SHORTCUT;
 
 /**
  * Project vaadflow
@@ -23,10 +25,14 @@ import javax.annotation.PostConstruct;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
-public class ADeleteDialog extends ADialog {
+public class ADeleteDialog<T extends Serializable> extends ADialog {
 
     //--Titolo standard, eventualmente modificabile nelle sottoclassi
     private static String TITOLO = "Delete";
+
+    private static String message = "Vuoi veramente cancellare questo elemento ?";
+
+    private static String additionalMessage = "L'operazione non è reversibile";
 
     protected Button deleteButton = new Button(TITOLO);
 
@@ -37,6 +43,15 @@ public class ADeleteDialog extends ADialog {
     public ADeleteDialog() {
         super(TITOLO);
     }// end of constructor
+
+
+    /**
+     * Costruttore <br>
+     */
+    public ADeleteDialog(String entityName) {
+        super(TITOLO + " "+entityName);
+    }// end of constructor
+
 
     /**
      * Metodo invocato subito DOPO il costruttore.
@@ -52,6 +67,7 @@ public class ADeleteDialog extends ADialog {
     protected void inizializzazione() {
         super.inizia();
     }// end of method
+
 
     /**
      * Barra dei bottoni
@@ -70,6 +86,9 @@ public class ADeleteDialog extends ADialog {
         cancelButton.getElement().setAttribute("theme", "primary");
         cancelButton.addClickListener(e -> cancellaHandler());
         cancelButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
+        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+            cancelButton.addClickShortcut(Key.ARROW_LEFT);
+        }// end of if cycle
         bottomLayout.add(cancelButton);
 
         deleteButton.getElement().setAttribute("theme", "error");
@@ -77,5 +96,25 @@ public class ADeleteDialog extends ADialog {
         deleteButton.setIcon(new Icon(VaadinIcon.CLOSE_CIRCLE));
         bottomLayout.add(deleteButton);
     }// end of method
+
+
+    /**
+     * Apre il dialogo <br>
+     *
+     * @param deleteHandler The confirmation handler function for deleting entities
+     */
+    public void open(Runnable deleteHandler) {
+        this.usaCancelButton = true;
+        this.confirmHandler = deleteHandler;
+
+        //--Body placeholder
+        this.fixBodyLayout(message, additionalMessage);
+
+        //--Barra placeholder dei bottoni, creati e regolati
+        this.fixBottomLayout();
+
+        super.open();
+    }// end of method
+
 
 }// end of class

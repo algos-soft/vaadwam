@@ -1,8 +1,10 @@
 package it.algos.vaadwam.wam;
 
 import com.vaadin.flow.component.AbstractField;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATextField;
@@ -31,9 +33,7 @@ import static it.algos.vaadwam.application.WamCost.USA_FIELDS_ENABLED_IN_SHOW;
  * Time: 15:51
  * Layer intermedio per implementare la sostituzione tra Company e Croce, valida per le classi el progetto Wam
  */
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Slf4j
-public class WamViewDialog<T extends Serializable> extends AViewDialog {
+public abstract class WamViewDialog<T extends Serializable> extends AViewDialog {
 
 
     /**
@@ -58,35 +58,49 @@ public class WamViewDialog<T extends Serializable> extends AViewDialog {
      */
     protected WamLogin wamLogin;
 
+
     /**
-     * Constructs a new instance.
-     *
-     * @param presenter per gestire la business logic del package
+     * Costruttore senza parametri <br>
+     * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
+     * Se manca, manda in rosso i parametri del costruttore usato <br>
      */
-    public WamViewDialog(IAPresenter presenter) {
-        super(presenter);
+    public WamViewDialog() {
     }// end of constructor
 
 
-    public void fixFunzioniWam(BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {
-        super.fixFunzioni(itemSaver, itemDeleter, null);
-    }// end of method
-
-
     /**
-     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Costruttore con parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
+     * L'istanza DEVE essere creata con appContext.getBean(xxxDialog.class, service, entityClazz); <br>
+     *
+     * @param service     business class e layer di collegamento per la Repository
+     * @param binderClass di tipo AEntity usata dal Binder dei Fields
      */
-    @Override
-    protected void fixPreferenzeSpecifiche() {
-        super.fixPreferenzeSpecifiche();
+    public WamViewDialog(IAService service, Class<? extends AEntity> binderClass) {
+        super(service, binderClass);
+    }// end of constructor
 
-        //--Crea il wam-login della sessione
-        wamLogin = wamService.fixWamLogin();
 
-    }// end of method
 
+//    public void fixFunzioniWam(BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {
+//        super.fixFunzioni(itemSaver, itemDeleter, null);
+//    }// end of method
+
+
+//    /**
+//     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
+//     * Può essere sovrascritto, per aggiungere informazioni
+//     * Invocare PRIMA il metodo della superclasse
+//     */
+//    @Override
+//    protected void fixPreferenzeSpecifiche() {
+//        super.fixPreferenzeSpecifiche();
+//
+//        //--Crea il wam-login della sessione
+//        wamLogin = wamService.fixWamLogin();
+//
+//    }// end of method
+//
 
     /**
      * Controlla l'esistenza del field company e ne regola i valori

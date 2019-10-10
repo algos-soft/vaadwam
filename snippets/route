@@ -12,3 +12,10 @@
     final QueryParameters query = new QueryParameters(mappa);
     getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
     8080/turnoedit?servizio=crfAmb-pom&giorno=4
+
+
+	@Override
+	public void afterNavigation(AfterNavigationEvent event) {
+		boolean error = event.getLocation().getQueryParameters().getParameters().containsKey("error");
+
+	}

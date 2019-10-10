@@ -16,12 +16,16 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Project vaadflow
@@ -90,6 +94,15 @@ public class ADialog extends Dialog implements IADialog {
      */
     @Autowired
     public ATextService text = ATextService.getInstance();
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    public PreferenzaService pref ;
 
     public Runnable cancelHandler;
 
@@ -235,13 +248,19 @@ public class ADialog extends Dialog implements IADialog {
     }// end of method
 
 
+//    /**
+//     * Apre un dialogo di 'avviso' <br>
+//     * Il title è già stato regolato dal costruttore <br>
+//     */
+//    public void open() {
+////        this.usaCancelButton = false;
+//        this.open("", "", (Runnable) null, (Runnable) null);
+//    }// end of method
     /**
-     * Apre un dialogo di 'avviso' <br>
-     * Il title è già stato regolato dal costruttore <br>
+     * Rimanda alla superclasse <br>
      */
     public void open() {
-//        this.usaCancelButton = false;
-        this.open("", "", (Runnable) null, (Runnable) null);
+        super.open();
     }// end of method
 
 
@@ -268,6 +287,8 @@ public class ADialog extends Dialog implements IADialog {
         this.usaCancelButton = false;
         this.open(message, additionalMessage, (Runnable) null, (Runnable) null);
     }// end of method
+
+
 
 
     /**
@@ -353,6 +374,22 @@ public class ADialog extends Dialog implements IADialog {
 
         super.open();
     }// end of method
+
+
+    /**
+     * Opens the given item for editing in the dialog.
+     * Crea i fields e visualizza il dialogo <br>
+     *
+     * @param entityBean  The item to edit; it may be an existing or a newly created instance
+     * @param operation   The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
+     * @param itemSaver   funzione associata al bottone 'accetta' ('registra', 'conferma')
+     * @param itemDeleter funzione associata al bottone 'delete'
+     */
+    public void open(AEntity entityBean, EAOperation operation, BiConsumer itemSaver, Consumer itemDeleter) {
+
+    }
+    public void open(String message, Consumer itemSaver) {
+    }
 
 
     /**
@@ -448,29 +485,29 @@ public class ADialog extends Dialog implements IADialog {
     }// end of method
 
 
-    /**
-     * Opens the given item for editing in the dialog.
-     *
-     * @param item      The item to edit; it may be an existing or a newly created instance
-     * @param operation The operation being performed on the item
-     * @param context   legato alla sessione
-     */
-    @Override
-    public void open(AEntity item, EAOperation operation, AContext context) {
-    }
-
-
-    /**
-     * Opens the given item for editing in the dialog.
-     *
-     * @param item      The item to edit; it may be an existing or a newly created instance
-     * @param operation The operation being performed on the item
-     * @param context   legato alla sessione
-     * @param title     of the window dialog
-     */
-    @Override
-    public void open(AEntity item, EAOperation operation, AContext context, String title) {
-    }
+//    /**
+//     * Opens the given item for editing in the dialog.
+//     *
+//     * @param item      The item to edit; it may be an existing or a newly created instance
+//     * @param operation The operation being performed on the item
+//     * @param context   legato alla sessione
+//     */
+//    @Override
+//    public void open(AEntity item, EAOperation operation, AContext context) {
+//    }
+//
+//
+//    /**
+//     * Opens the given item for editing in the dialog.
+//     *
+//     * @param item      The item to edit; it may be an existing or a newly created instance
+//     * @param operation The operation being performed on the item
+//     * @param context   legato alla sessione
+//     * @param title     of the window dialog
+//     */
+//    @Override
+//    public void open(AEntity item, EAOperation operation, AContext context, String title) {
+//    }
 
 
 //    /**

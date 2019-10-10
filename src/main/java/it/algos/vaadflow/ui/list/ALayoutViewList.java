@@ -11,13 +11,19 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EAMenu;
 import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
-import it.algos.vaadflow.ui.menu.*;
+import it.algos.vaadflow.ui.menu.AButtonMenu;
+import it.algos.vaadflow.ui.menu.APopupMenu;
+import it.algos.vaadflow.ui.menu.IAMenu;
 import lombok.extern.slf4j.Slf4j;
 
 import static it.algos.vaadflow.application.FlowCost.*;
@@ -40,15 +46,20 @@ import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 @Slf4j
 public abstract class ALayoutViewList extends APrefViewList {
 
+
     /**
-     * Costruttore <br>
+     * Costruttore @Autowired <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param presenter per gestire la business logic del package
-     * @param dialog    per visualizzare i fields
+     * @param service business class e layer di collegamento per la Repository
+     * @param entityClazz modello-dati specifico di questo modulo
      */
-    public ALayoutViewList(IAPresenter presenter, IADialog dialog) {
-        super(presenter, dialog);
-    }// end of Spring constructor
+    public ALayoutViewList(IAService service, Class<? extends AEntity> entityClazz) {
+        super(service, entityClazz);
+    }// end of Vaadin/@Route constructor
 
 
     /**
@@ -103,13 +114,13 @@ public abstract class ALayoutViewList extends APrefViewList {
                     this.add(menu.getComp());
                     break;
                 case flowing:
-                    menu = StaticContextAccessor.getBean(AFlowingcodeAppLayoutMenu.class);
-                    this.add(menu.getComp());
+//                    menu = StaticContextAccessor.getBean(AFlowingcodeAppLayoutMenu.class);
+//                    this.add(menu.getComp());
                     break;
                 case vaadin:
-                    menu = StaticContextAccessor.getBean(AAppLayoutMenu.class);
-                    this.add(new Label("."));
-                    this.add(((AFlowingcodeAppLayoutMenu) menu).getAppLayoutFlowing());
+//                    menu = StaticContextAccessor.getBean(AAppLayoutMenu.class);
+//                    this.add(new Label("."));
+//                    this.add(((AFlowingcodeAppLayoutMenu) menu).getAppLayoutFlowing());
                     break;
                 default:
                     log.warn("Switch - caso non definito");
@@ -176,6 +187,7 @@ public abstract class ALayoutViewList extends APrefViewList {
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
+    @Override
     protected void creaTopLayout() {
         topPlaceholder.removeAll();
         topPlaceholder.addClassName("view-toolbar");
@@ -183,23 +195,21 @@ public abstract class ALayoutViewList extends APrefViewList {
         boolean isDeveloper = login.isDeveloper();
         boolean isAdmin = login.isAdmin();
 
-        if (usaBottoneDeleteAll && isDeveloper) {
+        //--il bottone associa un evento standard -> AViewList.openConfirmDelete(), che può essere sovrascritto
+        if ((!FlowVar.usaSecurity && usaBottoneDeleteAll) || (isDeveloper && usaBottoneDeleteAll)) {
             deleteAllButton = new Button("Delete all", new Icon(VaadinIcon.CLOSE_CIRCLE));
             deleteAllButton.getElement().setAttribute("theme", "error");
             deleteAllButton.addClassName("view-toolbar__button");
-            deleteAllButton.addClickListener(e -> openConfirmDialogDelete());
+            deleteAllButton.addClickListener(event -> openConfirmDelete());
             topPlaceholder.add(deleteAllButton);
         }// end of if cycle
 
-        if (usaBottoneReset && isDeveloper) {
+        //--il bottone associa un evento standard -> AViewList.openConfirmReset(), che rinvia al service specifico
+        if ((!FlowVar.usaSecurity && usaBottoneReset) || (isDeveloper && usaBottoneReset)) {
             resetButton = new Button("Reset", new Icon(VaadinIcon.CLOSE_CIRCLE));
             resetButton.getElement().setAttribute("theme", "error");
             resetButton.addClassName("view-toolbar__button");
-            resetButton.addClickListener(e -> {
-                service.reset();
-                updateItems();
-                updateView();
-            });
+            resetButton.addClickListener(e -> openConfirmReset());
             topPlaceholder.add(resetButton);
         }// end of if cycle
 
@@ -207,6 +217,7 @@ public abstract class ALayoutViewList extends APrefViewList {
         if (usaSearch) {
             //--bottone per aprire un DialogSearch con diverse property selezionabili
             if (usaSearchDialog) {
+                //--il bottone associa un evento standard -> openConfirmDialogDelete(), che deve essere sovrascritto
                 buttonTitle = text.primaMaiuscola(pref.getStr(FlowCost.FLAG_TEXT_SEARCH));
                 searchButton = new Button(buttonTitle, new Icon("lumo", "search"));
                 searchButton.getElement().setAttribute("theme", "secondary");
@@ -245,13 +256,14 @@ public abstract class ALayoutViewList extends APrefViewList {
             topPlaceholder.add(filtroComboBox);
         }// end of if cycle
 
-
+        //--il bottone associa un evento standard -> AViewList.openNew()
+        //--il bottone associa, se previsto da pref, un tasto shortcut
         if (usaBottoneNew) {
             buttonTitle = text.primaMaiuscola(pref.getStr(FlowCost.FLAG_TEXT_NEW));
             newButton = new Button(buttonTitle, new Icon("lumo", "plus"));
             newButton.getElement().setAttribute("theme", "primary");
             newButton.addClassName("view-toolbar__button");
-            newButton.addClickListener(e -> openNew());
+            newButton.addClickListener(event -> openNew());
             if (pref.isBool(USA_BUTTON_SHORTCUT)) {
                 newButton.addClickShortcut(Key.KEY_N, KeyModifier.ALT);
             }// end of if cycle

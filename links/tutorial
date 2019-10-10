@@ -1,3 +1,75 @@
 https://vaadin.com/blog/become-a-web-app-development-expert-with-free-training-videos?utm_campaign=Generic%20Newsletter&utm_source=hs_email&utm_medium=email&utm_content=70071378&_hsenc=p2ANqtz-_L8B1-ls1T9NAEeu_FEfu0QRySxrxpNaS4qYZjwfBsxylLdgDDS146i7qveaRjEDwoqb_ldVKNXKCgpRcLfPH6esE-Sg&_hsmi=70087781
 https://vaadin.com/training/courses?type=onDemand
 https://dzone.com/refcardz/getting-started-vaadin?chapter=1
+
+
+
+**vaadin 14** (25-8-19)
+000) https://vaadin.com/start/latest
+000) https://vaadin.com/start/latest#starter-templates
+000) https://vaadin.com/training/courses?type=all
+00) https://vaadin.com/tutorials
+0) https://vaadin.com/tutorials/getting-started-with-flow/setting-up-the-project (CRUD app tutorial, dopo)
+1) https://vaadin.com/tutorials/vaadin-key-concepts (ok -> tutorial1)
+ -> https://vaadin.com/docs/flow/migration/5-components.html
+ -> https://vaadin.com/components/vaadin-ordered-layout/java-examples
+ -> https://vaadin.com/components/vaadin-split-layout/java-examples
+ -> https://vaadin.com/components/vaadin-app-layout/java-examples
+ -> https://vaadin.com/components/vaadin-form-layout/java-examples
+ -> https://vaadin.com/docs/flow/polymer-templates/tutorial-template-basic.html
+ -> https://vaadin.com/docs/flow/creating-components/tutorial-component-basic.html
+ -> https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder.html
+ -> https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-validation.html
+ -> https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
+ -> https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-load.html
+ -> https://vaadin.com/components/vaadin-grid/java-examples
+ -> https://vaadin.com/components/vaadin-combo-box/java-examples
+ -> https://vaadin.com/docs/flow/spring/tutorial-spring-basic.html
+ -> https://vaadin.com/docs/flow/binding-data/tutorial-flow-data-provider.html
+ -> https://vaadin.com/docs/flow/routing/tutorial-router-layout.html
+ -> https://vaadin.com/docs/flow/routing/tutorial-router-url-parameters.html
+ -> https://demo.vaadin.com/lumo-editor/
+ -> https://vaadin.com/docs/v13/flow/theme/theming-overview.html
+ -> https://vaadin.com/docs/flow/production/tutorial-production-mode-basic.html
+
+
+2) https://vaadin.com/tutorials/vaadin-quick-start (todo)
+
+3) https://vaadin.com/tutorials/app-layout/vaadin (layout, no good)
+  -> https://github.com/vaadin-learning-center/flow-layout-app_layout-vaadin
+3) https://vaadin.com/tutorials/vertical-and-horizontal-layouts (vertical, version 10))
+
+4) https://vaadin.com/tutorials/getting-started-with-flow (crud)
+
+5) https://vaadin.com/tutorials/nested-layouts-in-flow (nested, non funge)
+6) https://vaadin.com/tutorials/learning-maven-concepts (ok)
+7) https://vaadin.com/tutorials/navigation-in-a-vaadin-app (navigation, 13)
+8) https://vaadin.com/tutorials/responsive-apps/toolbar (responsive, 12)
+9) https://vaadin.com/tutorials/securing-your-app-with-spring-security
+10) https://vaadin.com/tutorials/using-web-components
+11) https://vaadin.com/tutorials/web-component-for-vaadin-flow
+12) https://vaadin.com/tutorials/using-web-components-in-java
+13) https://vaadin.com/tutorials/simple-field-validation
+14) https://vaadin.com/tutorials/junit5
+15) https://vaadin.com/tutorials/grid-tutorial/basics
+16) https://vaadin.com/tutorials/dynamic-web-forms-with-validation-in-java
+17) https://vaadin.com/tutorials/css-variables
+18) https://vaadin.com/tutorials/create-components-for-vaadin-flow
+19) https://vaadin.com/tutorials/confirmation-dialog
+20) https://vaadin.com/tutorials/calling-java-from-javascript
+21) https://vaadin.com/docs/flow/polymer-templates/tutorial-template-basic.html
+22) https://vaadin.com/docs/flow/creating-components/tutorial-component-events.html
+23) https://vaadin.com/docs/flow/creating-components/tutorial-component-basic.html
+24) https://vaadin.com/docs/flow/importing-dependencies/tutorial-importing.html
+25) https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder.html
+26) https://vaadin.com/components/vaadin-grid/java-examples
+27) https://vaadin.com/components/vaadin-combo-box/java-examples
+28) https://vaadin.com/docs/flow/spring/tutorial-spring-basic.html
+29) https://vaadin.com/docs/flow/binding-data/tutorial-flow-data-provider.html
+30) https://vaadin.com/docs/flow/routing/tutorial-router-url-parameters.html
+31) https://vaadin.com/docs/flow/routing/tutorial-routing-exception-handling.html
+32) https://vaadin.com/docs/flow/production/tutorial-production-mode-basic.html
+33) https://vaadin.com/docs/v14/flow/v14-migration/v14-migration-guide.html
+34) https://vaadin.com/docs/v10/flow/importing-dependencies/tutorial-include-css.html
+35) https://vaadin.com/docs/flow/binding-data/tutorial-flow-data-provider.html
+36) https://material.io/design/layout/responsive-layout-grid.html#ui-regions

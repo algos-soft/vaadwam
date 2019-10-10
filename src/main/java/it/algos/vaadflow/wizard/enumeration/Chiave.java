@@ -18,6 +18,7 @@ public enum Chiave {
     flagDescrizione,
     flagKeyCode,
     flagCompany,
+    flagGrid,
     flagSovrascrive,
     flagUsaAllPackages
 

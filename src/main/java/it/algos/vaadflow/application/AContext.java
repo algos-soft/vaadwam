@@ -1,7 +1,7 @@
 package it.algos.vaadflow.application;
 
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.AppLayoutMenu;
+//import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import it.algos.vaadflow.backend.login.ALogin;
@@ -66,7 +66,7 @@ public class AContext {
 
     private AppLayout appLayout;
 
-    private AppLayoutMenu appMenu;
+//    private AppLayoutMenu appMenu;
 
 
     /**
@@ -234,14 +234,14 @@ public class AContext {
     }// end of method
 
 
-    public AppLayoutMenu getAppMenu() {
-        return appMenu;
-    }// end of method
-
-
-    public void setAppMenu(AppLayoutMenu appMenu) {
-        this.appMenu = appMenu;
-    }// end of method
+//    public AppLayoutMenu getAppMenu() {
+//        return appMenu;
+//    }// end of method
+//
+//
+//    public void setAppMenu(AppLayoutMenu appMenu) {
+//        this.appMenu = appMenu;
+//    }// end of method
 
 
     /**

@@ -531,7 +531,7 @@ public abstract class WamService extends AService {
             vaadSession.setAttribute(KEY_WAM_CONTEXT, wamLogin);
         }// end of if cycle
 
-        if (login.getUtente() == null) {
+        if (login!=null&&login.getUtente() == null) {
             utente = new Utente();
             utente.username = uniqueUserName;
             login.setUtente(utente);

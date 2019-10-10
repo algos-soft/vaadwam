@@ -27,10 +27,10 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 26-ott-2018 9.59.58 <br>
- * <p>
+ * Fix date: 20-set-2019 18.19.24 <br>
+ * <br>
  * Business class. Layer di collegamento per la Repository. <br>
- * <p>
+ * <br>
  * Annotated with @Service (obbligatorio, se si usa la catena @Autowired di SpringBoot) <br>
  * NOT annotated with @SpringComponent (inutile, esiste già @Service) <br>
  * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>

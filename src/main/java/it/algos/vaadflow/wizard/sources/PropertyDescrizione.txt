@@ -5,6 +5,6 @@
     @NotNull(message = "La descrizione è obbligatoria")
     @Size(min = 2, max = 50)
     @Field("desc")
-    @AIField(type = EAFieldType.text, firstCapital = true, widthEM = 24)
-    @AIColumn(width = 370)
+    @AIField(type = EAFieldType.text, required = true, firstCapital = true, widthEM = 24)
+    @AIColumn(widthEM = 14)
     public String descrizione;

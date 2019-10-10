@@ -14,9 +14,8 @@ public enum Task {
 
 
     entity("Entity", "Entity", ""),
-    list("ViewList", "ViewList", "ViewList"),
-    form("ViewDialog", "ViewDialog", "ViewDialog"),
-    presenter("Presenter", "Presenter", "Presenter"),
+    list("List", "List", "List"),
+    form("Dialog", "Dialog", "Dialog"),
     repository("Repository", "Repository", "Repository"),
     service("Service", "Service", "Service");
 

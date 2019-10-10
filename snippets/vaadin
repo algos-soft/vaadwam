@@ -1,0 +1,7 @@
+Migration steps
+
+To use the new toolset, any existing Vaadin projects with client-side Polymer 2 based web components
+must migrate these from Polymer 2 syntax to Polymer 3 (see next section) before they can run on V14.
+There is a migration tool available as a part of Maven plugin.
+The goal 'Plugins.vaadin.vaadin:migrate-to-p3' converts P2 templates to P3 templates and replaces @HtmlImport annotations
+with @JsModule annotations, see Migration Tool tutorial.

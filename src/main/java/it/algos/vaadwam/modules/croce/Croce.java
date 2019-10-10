@@ -6,7 +6,6 @@ import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.person.Person;
-import it.algos.vaadflow.modules.person.PersonPresenter;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -95,7 +94,7 @@ public class Croce extends Company {
      * riferimento statico SENZA @DBRef
      */
     @Field("presidente")
-    @AIField(type = EAFieldType.link, linkClazz = PersonPresenter.class)
+    @AIField(type = EAFieldType.link)
     @AIColumn(widthEM = 14)
     public Person presidente;
 

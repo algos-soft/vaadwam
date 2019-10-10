@@ -1,0 +1,13 @@
+* Icona del menu di partenza
+* Logout del menu di partenza
+* Controllare differenze tra
+    <Class<? extends IAView> e qualcosa di simile
+    Class<?>
+    Class<? extends AViewList>
+* IAView o AViewList
+* Controller FATTO
+* Scelta tra un componente 'allargabile': BubbleDialog, label-more, tooltips4vaadin, paged-tab, PaperMenuButton,Iron Collapse
+
+*Dialoghi: confirm-dialog
+*Exporter
+* Master/Detail View, Crud UI Add-on

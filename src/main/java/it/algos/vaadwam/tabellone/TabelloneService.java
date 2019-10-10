@@ -99,7 +99,7 @@ public class TabelloneService extends AService {
      */
     public TabelloneService(@Qualifier(TAG_TUR) MongoRepository repository) {
         super(repository);
-//        super.entityClass = Riga.class;
+        super.entityClass = Turno.class;
         this.repository = (TurnoRepository) repository;
     }// end of Spring constructor
 

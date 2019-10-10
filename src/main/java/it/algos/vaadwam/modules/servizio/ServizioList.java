@@ -1,0 +1,182 @@
+package it.algos.vaadwam.modules.servizio;
+
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.annotation.UIScope;
+import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.annotation.AIView;
+import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.giorno.GiornoDialog;
+import it.algos.vaadflow.modules.role.EARoleType;
+import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.MainLayout;
+import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadwam.schedule.ATask;
+import it.algos.vaadwam.wam.WamViewList;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.time.LocalDateTime;
+
+import static it.algos.vaadwam.application.WamCost.*;
+
+/**
+ * Project vaadwam <br>
+ * Created by Algos <br>
+ * User: Gac <br>
+ * Fix date: 30-set-2018 16.22.05 <br>
+ * <br>
+ * Estende la classe astratta AViewList per visualizzare la Grid <br>
+ * <p>
+ * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+ * Le istanze @Autowired usate da questa classe vengono iniettate automaticamente da SpringBoot se: <br>
+ * 1) vengono dichiarate nel costruttore @Autowired di questa classe, oppure <br>
+ * 2) la property è di una classe con @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON), oppure <br>
+ * 3) vengono usate in un un metodo @PostConstruct di questa classe, perché SpringBoot le inietta DOPO init() <br>
+ * <p>
+ * Not annotated with @SpringView (sbagliato) perché usa la @Route di VaadinFlow <br>
+ * Not annotated with @SpringComponent (sbagliato) perché usa la @Route di VaadinFlow <br>
+ * Annotated with @UIScope (obbligatorio) <br>
+ * Annotated with @Route (obbligatorio) per la selezione della vista. @Route(value = "") per la vista iniziale <br>
+ * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la sottoclasse specifica <br>
+ * Annotated with @Slf4j (facoltativo) per i logs automatici <br>
+ * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ */
+@UIScope
+@Route(value = TAG_SER, layout = MainLayout14.class)
+@Qualifier(TAG_SER)
+@AIView(menuName = "servizi", roleTypeVisibility = EARoleType.user)
+@Slf4j
+@AIScript(sovrascrivibile = false)
+public class ServizioList extends WamViewList {
+
+
+    /**
+     * Icona visibile nel menu (facoltativa)
+     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
+     * Se manca il MENU_NAME, di default usa il 'name' della view
+     */
+    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
+
+    public static final String IRON_ICON = "gavel";
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_SER)
+    private ATask task;
+
+
+
+    /**
+     * Costruttore @Autowired <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
+     *
+     * @param service business class e layer di collegamento per la Repository
+     */
+    @Autowired
+    public ServizioList(@Qualifier(TAG_SER) IAService service) {
+        super(service, Servizio.class);
+    }// end of Vaadin/@Route constructor
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
+     * Normalmente ad uso esclusivo del developer
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     */
+    @Override
+    protected void creaAlertLayout() {
+        super.creaAlertLayout();
+        boolean isDeveloper = login.isDeveloper();
+        boolean isAdmin = login.isAdmin();
+
+        alertPlacehorder.add(new Label("Servizi specifici dell'associazione.  Caratterizzano ogni singolo turno."));
+        if (isDeveloper) {
+            alertPlacehorder.add(new Label("Come developer si possono importare i servizi dal vecchio programma"));
+            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_SERVIZI, LAST_IMPORT_SERVIZI));
+        } else {
+            if (isAdmin) {
+                alertPlacehorder.add(new Label("Come admin si possono aggiungere, modificare e cancellare i servizi . Gli utenti normali possono solo vederli"));
+            } else {
+                alertPlacehorder.add(new Label("Solo in visione. Le modifiche vengono effettuate da un admin."));
+            }// end of if/else cycle
+        }// end of if/else cycle
+    }// end of method
+
+
+    /**
+     * Eventuali colonne calcolate aggiunte DOPO quelle automatiche
+     * Sovrascritto
+     */
+    protected void addSpecificColumnsAfterOld() {
+        Grid.Column colonna = grid.addComponentColumn(servizio -> {
+            Button button = new Button();
+//            button.getElement().getStyle().set("background-color", ((Servizio) servizio).color);
+            button.setWidth("10px");
+            return button;
+        });//end of lambda expressions
+
+        colonna.setId("idColor");
+        colonna.setHeader("Gruppo");
+        colonna.setWidth("6em");
+        colonna.setFlexGrow(0);
+    }// end of method
+
+
+//    /**
+//     * Eventuali aggiustamenti finali al layout
+//     * Regolazioni finali sulla grid e sulle colonne
+//     * Sovrascritto
+//     */
+//    @Override
+//    protected void fixGridLayout() {
+//        super.fixLayout();
+//        Grid.Column<AEntity> colonna;
+//        int keyPos = 1;
+//        int codePos = 3;
+//
+//        if (login.isDeveloper()) {
+//            List<Grid.Column<AEntity>> colonne = grid.getColumns();
+//            colonna = colonne != null ? colonne.get(keyPos) : null;
+//            if (colonna != null) {
+//                colonna.setWidth("11em");
+//            }// end of if cycle
+//            colonna = colonne != null ? colonne.get(codePos) : null;
+//            if (colonna != null) {
+//                colonna.setWidth("10em");
+//            }// end of if cycle
+//        }// end of if cycle
+//    }// end of method
+
+    /**
+     * Sovrascritto <br>
+     */
+    protected void fixInfoImport() {
+        pref.saveValue(LAST_IMPORT_SERVIZI, LocalDateTime.now());
+    }// end of method
+
+    /**
+     * Apertura del dialogo per una entity esistente oppure nuova <br>
+     * Sovrascritto <br>
+     */
+    protected void openDialog(AEntity entityBean) {
+        ServizioDialog dialog = appContext.getBean(ServizioDialog.class, service, entityClazz);
+//        dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
+    }// end of method
+
+}// end of class

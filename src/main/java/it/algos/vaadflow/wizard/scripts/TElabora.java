@@ -34,60 +34,119 @@ public class TElabora {
 
 
     public static final String PROPERTY_ORDINE_NAME = "Ordine";
+
     private static final String A_CAPO = "\n";
+
     private static final String TAB = "\t";
+
     private static final String SEP = "/";
+
     private static final String JAVA_SUFFIX = ".java";
+
     private static final String SOURCE_SUFFIX = ".txt";
+
     private static final String COST_SUFFIX = "Cost";
+
     private static final String BOOT_SUFFIX = "Boot";
+
     private static final String VERS_SUFFIX = "Vers";
+
     private static final String TAG = "TAG_";
+
     private static final String IMPORT = "import it.algos.";
+
     private static final String DIR_MAIN = "/src/main";
+
     private static final String DIR_JAVA = DIR_MAIN + "/java/it/algos";
+
     private static final String PREFIX_NAME = "vaad";
+
     private static final String PROJECT_BASE_NAME = "vaadflow";
+
     private static final String DIR_PROJECT_BASE = DIR_JAVA + "/" + PROJECT_BASE_NAME;
+
     private static final String SOURCES_NAME = "wizard/sources";
+
     private static final String APP_NAME = "application";
+
     private static final String SECURITY_NAME = "security";
+
     private static final String RESOURCES_NAME = "/resources";
+
     private static final String META_NAME = "/META-INF";
+
     private static final String UI_NAME = "ui";
+
     private static final String ENTITIES_NAME = "modules";
+
     private static final String LAYOUT_NAME = "MainLayout";
+
     private static final String LIB_NAME = "lib";
+
     private static final String DIR_FLOW_BOOT = "service";
+
     private static final String FLOW_BOOT_NAME = "ABootService";
+
     private static final String DIR_SOURCES = DIR_PROJECT_BASE + SEP + SOURCES_NAME;
+
     private static final String SUPERCLASS_ENTITY = "AEntity";
+
     private static final String SUPERCLASS_ENTITY_COMPANY = "ACEntity";
+
+    private static final String SUPERCLASS_GRID = "AGridViewList";
+
+    private static final String SUPERCLASS_PAGINATED_GRID = "APaginatedGridViewList";
+
     private static final String PROPERTY = "Property";
+
     private static final String METHOD = "Method";
+
     private static final String READ = "README";
+
     private static final String PROPERTY_COMPANY_NAME = "Company";
+
     private static final String PROPERTY_CODE_NAME = "Code";
+
     private static final String PROPERTY_DESCRIZIONE_NAME = "Descrizione";
+
     private static final String PROPERTY_ORDINE_SOURCE_NAME = PROPERTY + PROPERTY_ORDINE_NAME + SOURCE_SUFFIX;
+
     private static final String PROPERTY_CODE_SOURCE_NAME = PROPERTY + PROPERTY_CODE_NAME + SOURCE_SUFFIX;
+
     private static final String PROPERTY_DESCRIZIONE_SOURCE_NAME = PROPERTY + PROPERTY_DESCRIZIONE_NAME + SOURCE_SUFFIX;
+
     private static final String METHOD_FIND = METHOD + "Find" + SOURCE_SUFFIX;
+
     private static final String METHOD_NEW_ORDINE = METHOD + "NewOrdine" + SOURCE_SUFFIX;
+
     private static final String METHOD_NEW_ORDINE_COMPANY = METHOD + "NewOrdineCompany" + SOURCE_SUFFIX;
+
     private static final String METHOD_ID_KEY_SPECIFICA = METHOD + "IdKeySpecifica" + SOURCE_SUFFIX;
+
     private static final String METHOD_READ_COMPANY = METHOD + "ReadCompany" + SOURCE_SUFFIX;
-    private static final String VIEW_SUFFIX = "ViewList";
+    private static final String METHOD_CREA_GRID = METHOD + "CreaGrid" + SOURCE_SUFFIX;
+
+    private static final String VIEW_SUFFIX = "List";
+
     private static final String POM = "pom";
+
     //    private static final String COST_NAME = "ProjectCost";
     private static final String HOME_NAME = "HomeView";
+
     private static final String DETAILS_NAME = "AUserDetailsService";
+
     private static final String CONFIGURATION_NAME = "SecurityConfiguration";
+
     private static final String DIR_DOC = "documentation";
+
     private static final String DIR_LINKS = "links";
+
     private static final String DIR_SNIPPETS = "snippets";
+
     private static final String GIT = ".gitignore";
+
     private static final String END = "}// end of method";
+
     /**
      * Libreria di servizio. Inietta da Spring come 'singleton'
      */
@@ -99,69 +158,129 @@ public class TElabora {
      */
     @Autowired
     public ATextService text;
+
     public String newEntityName;           //--dal dialogo di input
+
     public boolean flagOrdine;             //--dal dialogo di input
+
     public boolean flagCode;               //--dal dialogo di input
+
     public boolean flagDescrizione;        //--dal dialogo di input
+
     public boolean flagKeyCode;            //--dal dialogo di input
+
     public boolean flagCompany;            //--dal dialogo di input
+
+    public boolean flagGrid;            //--dal dialogo di input
+
     //--regolate indipendentemente dai risultati del dialogo
     private String userDir;                 //--di sistema
+
     private String ideaProjectRootPath;     //--userDir meno PROJECT_BASE_NAME
+
     private String projectBasePath;         //--ideaProjectRootPath più PROJECT_BASE_NAME
+
     private String sourcePath;              //--projectBasePath più DIR_SOURCES
+
     //--risultati del dialogo
     private String targetProjectName;       //--dal dialogo di input
+
     private String targetModuleName;        //--dal dialogo di input
+
     private String targetLayoutName;        //--dal dialogo di input
+
     private String newProjectName;          //--dal dialogo di input
+
     private String newPackageName;          //--dal dialogo di input
+
     private String newEntityTag;            //--dal dialogo di input
+
     private boolean flagSovrascrive;        //--dal dialogo di input
+
     private boolean flagAllPackages;        //--dal dialogo di input
 
 
     //--regolate elaborando i risultati del dialogo
     private String projectPath;         //--ideaProjectRootPath più targetProjectName (usato come radice per pom.xml e README.text)
+
     private String targetModuleCapitalName;   //--targetModuleName con la prima maiuscola
+
     private String projectJavaPath;     //--projectPath più DIR_JAVA più targetProjectName
+
     private String applicationPath;     //--projectJavaPath più APP_NAME
+
     private String costPath;          //--applicationPath più LAYOUT_SUFFIX più JAVA_SUFFIX
+
     private String bootPath;          //--applicationPath più LAYOUT_SUFFIX più JAVA_SUFFIX
+
     private String versPath;          //--applicationPath più LAYOUT_SUFFIX più JAVA_SUFFIX
+
     private String flowBootPath;          //--applicationPath più LAYOUT_SUFFIX più JAVA_SUFFIX
+
     private String uiPath;              //--projectJavaPath più UI_NAME
+
     private String entityPath;          //--projectJavaPath più newPackageName
+
     private String nameShort;
+
     private String nameClassCost;
+
     private String nameClassBoot;
+
     private String nameClassVers;
+
     private String firstCharProject;
 
     private String packagePath;         //--entityPath più newPackageName
+
     private String nameCost;        //--NAME_COST (springvaadin) o NAME_APP_COST (altri progetti)
+
     private String dirCost;         //--DIR_LIB (springvaadin) o DIR_APP (altri progetti)
+
     private String pathFileCost;    //--pathModulo più lib (springvaadin) o application (altri progetti)
+
     private String qualifier;       //--NAME_COST (springvaadin) o NAME_APP_COST (altri progetti) più TAG più tagBreveTreChar
+
     private String qualifierView;   //--NAME_COST (springvaadin) o NAME_APP_COST (altri progetti) più VIEW più tagBreveTreChar
+
     private String queryText;
+
     private String layoutPath;
+
     private String propertiesText;
+
     private String parametersEntityText;
+
     private String parametersDocText;
+
     private String parametersText;
+
     private String methodFindText;
+
     private String methodNewEntityText;
+
     private String methodNewOrdineText;
+
     private String methodIdKeySpecificaText;
+
     private String methodKeyUnicaText;
+
     private String methodEstendeText;
+
     private String methodUsaCompanyText;
+
     private String methodAddCompanyText;
+
     private String methodBuilderText;
+
     private String methodReadCompanyText;
+    private String methodGridPaginatedText;
+
     private String superClassEntity;
+
     private String importCost;
+
+    private String gridSuperclass;
 
 
     public TElabora() {
@@ -419,6 +538,15 @@ public class TElabora {
             }// end of if/else cycle
         }// end of if cycle
 
+        if (mappaInput.containsKey(Chiave.flagGrid)) {
+            this.flagGrid = (boolean) mappaInput.get(Chiave.flagGrid);
+            if (flagGrid) {
+                gridSuperclass = SUPERCLASS_PAGINATED_GRID;
+            } else {
+                gridSuperclass = SUPERCLASS_GRID;
+            }// end of if/else cycle
+        }// end of if cycle
+
         if (mappaInput.containsKey(Chiave.flagSovrascrive)) {
             this.flagSovrascrive = (boolean) mappaInput.get(Chiave.flagSovrascrive);
         }// end of if cycle
@@ -465,6 +593,7 @@ public class TElabora {
         this.checkAndWriteFileTask(task, newTaskText);
     }// end of method
 
+
     private String leggeFile(String nomeFileTextSorgente) {
         String suffix = ".txt";
 
@@ -474,6 +603,7 @@ public class TElabora {
 
         return file.leggeFile(sourcePath + SEP + nomeFileTextSorgente);
     }// end of method
+
 
     private void checkAndWriteFileTask(Task task, String newTaskText) {
         String fileNameJava = "";
@@ -506,20 +636,25 @@ public class TElabora {
 
     /**
      * Sostituisce SOLO la documentazione in testa al file
+     * Sostituisce fino al tag @AIScript. Se manca il tag, sovrascrive tutto.
      */
     private void writeDocOnly(String pathFileJava, String oldFileText, String newTaskText) {
         String tagIni = "/**";
-        String tagEnd = "*/";
+        String tagEndPre = "*/";
+        String tagEnd = "@AIScript";
         int oldPosIni = oldFileText.indexOf(tagIni);
-        int oldPosEnd = oldFileText.indexOf(tagEnd, oldPosIni);
+        int oldPosEnd = oldFileText.indexOf(tagEndPre, oldPosIni);
+        oldPosEnd = oldFileText.indexOf(tagEnd, oldPosEnd);
         int newPosIni = newTaskText.indexOf(tagIni);
-        int newPosEnd = newTaskText.indexOf(tagEnd, newPosIni);
+        int newPosEnd = newTaskText.indexOf(tagEndPre, newPosIni);
+        newPosEnd = newTaskText.indexOf(tagEnd, newPosEnd);
         String oldDoc = oldFileText.substring(oldPosIni, oldPosEnd);
         String newDoc = newTaskText.substring(newPosIni, newPosEnd);
         String newFileText = oldFileText.replace(oldDoc, newDoc);
 
         file.sovraScriveFile(pathFileJava, newFileText);
     }// end of method
+
 
     private void checkAndWriteFile(String pathNewFile, String sourceText) {
         String fileNameJava = "";
@@ -574,6 +709,8 @@ public class TElabora {
         mappa.put(Token.superClassEntity, superClassEntity);
         mappa.put(Token.usaCompany, creaUsaCompany());
         mappa.put(Token.readCompany, creaReadCompany());
+        mappa.put(Token.grid, gridSuperclass);
+        mappa.put(Token.creaGrid, creaGrid());
         mappa.put(Token.methodFind, creaFind());
         mappa.put(Token.parametersDoc, creaParametersDoc());
         mappa.put(Token.keyUnica, creaKeyUnica());
@@ -642,6 +779,18 @@ public class TElabora {
         }// end of if cycle
 
         return methodReadCompanyText;
+    }// end of method
+
+
+    private String creaGrid() {
+        methodGridPaginatedText = "";
+
+        if (flagGrid) {
+            methodGridPaginatedText += leggeFile(METHOD_CREA_GRID);
+            methodGridPaginatedText = Token.replace(Token.entity, methodGridPaginatedText, newEntityName);
+        }// end of if cycle
+
+        return methodGridPaginatedText;
     }// end of method
 
 
@@ -857,6 +1006,7 @@ public class TElabora {
         return methodEstendeText;
     }// end of method
 
+
     private String creaUsaCompany() {
         methodUsaCompanyText = "";
 
@@ -953,7 +1103,7 @@ public class TElabora {
         String aCapoImport = "\n";
         String aCapoPre = "\t";
         String aCapoPost = "\n\t";
-        String tagRoute = "FlowCost.MENU_CLAZZ_LIST.add(" + max + VIEW_SUFFIX + ".class);" + aCapoPost;
+        String tagRoute = "FlowVar.menuClazzList.add(" + max + VIEW_SUFFIX + ".class);" + aCapoPost;
         String tagImport = "import it.algos." + targetModuleName + ".modules." + newPackageName + "." + max + VIEW_SUFFIX + ";";
 
         if (targetModuleName.equals(PROJECT_BASE_NAME)) {
@@ -1091,6 +1241,7 @@ public class TElabora {
         }// end of if cycle
     }// end of method
 
+
     /**
      * File MAVEN di script
      */
@@ -1101,6 +1252,7 @@ public class TElabora {
         sourceText = Token.replace(Token.moduleNameMinuscolo, sourceText, newProjectName);
         checkAndWriteFile(destPath, sourceText);
     }// end of method
+
 
     /**
      * File README di text
@@ -1213,6 +1365,7 @@ public class TElabora {
         file.creaDirectory(projectJavaPath);
     }// end of method
 
+
     private void creaApplicationMain() {
         String mainApp = nameShort + text.primaMaiuscola(APP_NAME);
         mainApp = text.levaTesta(mainApp, PREFIX_NAME);
@@ -1226,17 +1379,21 @@ public class TElabora {
         checkAndWrite(destPath, testoApp);
     }// end of method
 
+
     private void creaApplicationDirectory() {
         file.creaDirectory(projectJavaPath + "/" + APP_NAME);
     }// end of method
+
 
     private void creaSecurityDirectory() {
         file.creaDirectory(projectJavaPath + "/" + SECURITY_NAME);
     }// end of method
 
+
     private void creaModulesDirectory() {
         file.creaDirectory(projectJavaPath + "/" + ENTITIES_NAME);
     }// end of method
+
 
     private void creaApplicationFolderContent() {
         creaHome();
@@ -1282,10 +1439,12 @@ public class TElabora {
         checkAndWrite(versPath, testoVers);
     }// end of method
 
+
     private void creaSecurityFolderContent() {
         creaConfiguration();
         creaDetails();
     }// end of method
+
 
     private void creaConfiguration() {
         String destPath = projectJavaPath + "/" + SECURITY_NAME + "/" + CONFIGURATION_NAME + JAVA_SUFFIX;
@@ -1294,6 +1453,7 @@ public class TElabora {
         testoHome = Token.replace(Token.moduleNameMinuscolo, testoHome, newProjectName);
         checkAndWrite(destPath, testoHome);
     }// end of method
+
 
     private void creaDetails() {
         String destPath = projectJavaPath + "/" + SECURITY_NAME + "/" + DETAILS_NAME + JAVA_SUFFIX;
@@ -1310,6 +1470,7 @@ public class TElabora {
             file.scriveFile(destPath, newText, true);
         }// end of if cycle
     }// end of method
+
 
     private List<String> recuperaPackagesEsistenti() {
         return file.getSubdirectories(entityPath);

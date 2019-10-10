@@ -2,25 +2,25 @@ package it.algos.vaadflow.ui.list;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayoutMenu;
-import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.data.selection.SingleSelectionEvent;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.ui.LoadMode;
+import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.footer.AFooter;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AMongoService;
+import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.IAView;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.dialog.ADeleteDialog;
+import it.algos.vaadflow.ui.dialog.AResetDialog;
 import it.algos.vaadflow.ui.dialog.ASearchDialog;
-import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AIntegerField;
 import it.algos.vaadflow.ui.fields.ATextArea;
 import it.algos.vaadflow.ui.fields.ATextField;
@@ -28,12 +28,16 @@ import it.algos.vaadflow.ui.fields.IAField;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.security.RolesAllowed;
 import java.util.*;
+
+import static it.algos.vaadflow.application.FlowCost.FLAG_TEXT_EDIT;
+import static it.algos.vaadflow.application.FlowCost.FLAG_TEXT_SHOW;
+
+//import com.vaadin.flow.component.applayout.AppLayoutMenu;
+//import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+
 
 /**
  * Project it.algos.vaadflow
@@ -94,38 +98,20 @@ import java.util.*;
 @Slf4j
 public abstract class AViewList extends APropertyViewList implements IAView, BeforeEnterObserver, BeforeLeaveObserver {
 
-
     /**
-     * Costruttore @Autowired (nella sottoclasse concreta) <br>
-     * La sottoclasse usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     * La sottoclasse usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Costruttore @Autowired <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
+     *
+     * @param service     business class e layer di collegamento per la Repository
+     * @param entityClazz modello-dati specifico di questo modulo
      */
-    public AViewList(IAPresenter presenter, IADialog dialog) {
-        this.presenter = presenter;
-        this.dialog = dialog;
-        if (presenter != null) {
-            this.presenter.setView(this);
-            this.service = presenter.getService();
-            this.entityClazz = presenter.getEntityClazz();
-        }// end of if cycle
-    }// end of Spring constructor
-
-
-    /**
-     * Costruttore @Autowired (nella sottoclasse concreta) <br>
-     * La sottoclasse usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     * La sottoclasse usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     */
-    public AViewList(IAPresenter presenter, IADialog dialog, String routeNameFormEdit) {
-        this.presenter = presenter;
-        this.dialog = dialog;
-        if (presenter != null) {
-            this.presenter.setView(this);
-            this.service = presenter.getService();
-            this.entityClazz = presenter.getEntityClazz();
-        }// end of if cycle
-        this.routeNameFormEdit = routeNameFormEdit;
-    }// end of Spring constructor
+    public AViewList(IAService service, Class<? extends AEntity> entityClazz) {
+        this.service = service;
+        this.entityClazz = entityClazz;
+    }// end of Vaadin/@Route constructor
 
 
     /**
@@ -179,7 +165,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
         //--body con la Grid
         //--seleziona quale grid usare e la aggiunge al layout
-        this.creaGrid();
+        this.creaBody();
         this.add(gridPlaceholder);
 
         //--aggiunge il footer standard
@@ -194,9 +180,6 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
      */
     @Override
-//    @Secured("developer")
-//    @RolesAllowed("developer")
-//    @PreAuthorize("hasRole('developer')")
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         //--se il login è obbligatorio e manca, la View non funziona
         if (vaadinService.mancaLoginSeObbligatorio()) {
@@ -275,7 +258,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * Seleziona quale grid usare e la aggiunge al layout <br>
      * Eventuale barra di bottoni sotto la grid <br>
      */
-    protected void creaGrid() {
+    protected void creaBody() {
     }// end of method
 
 
@@ -320,15 +303,15 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected void addRoute(Class<? extends AViewList> viewClazz) {
         MainLayout mainLayout = context.getMainLayout();
-        if (specificMenuItems != null && specificMenuItems.size() > 0) {
-            specificMenuItems.add(mainLayout.addMenu(viewClazz));
-        }// end of if cycle
+//        if (specificMenuItems != null && specificMenuItems.size() > 0) {
+//            specificMenuItems.add(mainLayout.addMenu(viewClazz));
+//        }// end of if cycle
     }// end of method
 
 
     @Override
     public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
-        AppLayoutMenu appMenu = context.getAppMenu();
+//        AppLayoutMenu appMenu = context.getAppMenu();
 
         if (dialog != null) {
             dialog.close();
@@ -336,11 +319,11 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         if (deleteDialog != null) {
             deleteDialog.close();
         }// end of if cycle
-        if (specificMenuItems != null && specificMenuItems.size() > 0) {
-            for (AppLayoutMenuItem menuItem : specificMenuItems) {
-                appMenu.removeMenuItem(menuItem);
-            }// end of for cycle
-        }// end of if cycle
+//        if (specificMenuItems != null && specificMenuItems.size() > 0) {
+//            for (AppLayoutMenuItem menuItem : specificMenuItems) {
+//                appMenu.removeMenuItem(menuItem);
+//            }// end of for cycle
+//        }// end of if cycle
     }// end of method
 
 
@@ -353,7 +336,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     protected Button createEditButton(AEntity entityBean) {
-        Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.edit, context));
+        Button edit = new Button(isEntityModificabile ? pref.getStr(FLAG_TEXT_EDIT) : pref.getStr(FLAG_TEXT_SHOW), event -> openDialog(entityBean));
         edit.setIcon(new Icon("lumo", "edit"));
         edit.addClassName("review__edit");
         edit.getElement().setAttribute("theme", "tertiary");
@@ -361,32 +344,59 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
     }// end of method
 
 
-    protected void apreDialogo(SingleSelectionEvent evento, EAOperation operation) {
-        if (evento != null && evento.getOldValue() != evento.getValue()) {
-            if (evento.getValue().getClass().getName().equals(entityClazz.getName())) {
+    protected void apreDialogo(ItemDoubleClickEvent evento) {
+        AEntity entity;
+        if (evento != null) {
+            if (evento.getItem().getClass().getName().equals(entityClazz.getName())) {
+                entity = (AEntity) evento.getItem();
                 if (usaRouteFormView && text.isValid(routeNameFormEdit)) {
-                    AEntity entity = (AEntity) evento.getValue();
                     routeVerso(routeNameFormEdit, entity);
                 } else {
-                    dialog.open((AEntity) evento.getValue(), operation, context);
+                    openDialog(entity);
                 }// end of if/else cycle
             }// end of if cycle
         }// end of if cycle
     }// end of method
 
 
+    /**
+     * Creazione ed apertura del dialogo per una nuova entity <br>
+     * Rimanda al metodo openDialog passandolgi un parametro nullo <br>
+     */
     protected void openNew() {
-        dialog.open(service.newEntity(), EAOperation.addNew, context);
+        openDialog((AEntity) null);
     }// end of method
 
 
+    /**
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    protected void openDialog(AEntity entityBean) {
+    }// end of method
+
+
+    public void updateDopoDialog(AEntity entityBean) {
+        this.updateItems();
+        this.updateView();
+    }// end of method
+
+    //@todo da rendere getBean il dialogo
     protected void openSearch() {
         searchDialog = appContext.getBean(ASearchDialog.class, service);
-        searchDialog.open("", "", this::updateViewDopoSearch, null);
+        searchDialog.open("", "", this::updateDopoSearch, null);
     }// end of method
 
 
-    public void updateViewDopoSearch() {
+    public void updateDopoSearch() {
         LinkedHashMap<String, AbstractField> fieldMap = searchDialog.fieldMap;
         List<AEntity> lista;
         IAField field;
@@ -420,20 +430,48 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Opens the confirmation dialog before deleting all items.
+     * Opens the confirmation dialog before deleting all items. <br>
      * <p>
-     * The dialog will display the given title and message(s), then call
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
      */
-    protected final void openConfirmDialogDelete() {
-        String message = "Vuoi veramente cancellare TUTTE le entities di questa collezione ?";
-        String additionalMessage = "L'operazione non è reversibile";
-        deleteDialog = appContext.getBean(ADeleteDialog.class);
-        deleteDialog.open(message, additionalMessage, this::deleteCollection, null);
+    protected final void openConfirmDelete() {
+        appContext.getBean(ADeleteDialog.class).open(this::deleteCollection);
     }// end of method
 
 
-    protected void deleteCollection() {
+    /**
+     * Opens the confirmation dialog before reset all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascrtitto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected final void openConfirmReset() {
+        appContext.getBean(AResetDialog.class).open(this::reset);
+    }// end of method
+
+
+    /**
+     * Cancellazione effettiva (dopo dialogo di conferma) di tutte le entities della collezione. <br>
+     * Rimanda al service specifico <br>
+     * Azzera gli items <br>
+     * Ridisegna la GUI <br>
+     */
+    public void deleteCollection() {
         service.deleteAll();
+        updateItems();
+        updateView();
+    }// end of method
+
+
+    /**
+     * Reset effettivo (dopo dialogo di conferma) di tutte le entities della collezione. <br>
+     * Rimanda al service specifico <br>
+     * Azzera gli items <br>
+     * Ridisegna la GUI <br>
+     */
+    protected void reset() {
+        service.reset();
         updateItems();
         updateView();
     }// end of method

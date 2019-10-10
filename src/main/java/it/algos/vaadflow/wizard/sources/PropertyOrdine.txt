@@ -4,7 +4,7 @@
      */
     @NotNull
     @Indexed()
-    @Field("ind")
+    @Field("ord")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "#", width = 55)
+    @AIColumn(name = "#", widthEM = 3)
     public int ordine;

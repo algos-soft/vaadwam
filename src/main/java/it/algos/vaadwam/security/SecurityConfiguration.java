@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,15 +33,11 @@ import javax.annotation.PostConstruct;
 @EnableWebSecurity
 @Configuration
 @AIScript(sovrascrivibile = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_PROCESSING_URL = "/login";
-
     private static final String LOGIN_FAILURE_URL = "/login?error";
-
     private static final String LOGIN_URL = "/login";
-
     private static final String LOGOUT_SUCCESS_URL = "/";
 
     private final UserDetailsService userDetailsService;
@@ -56,18 +51,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     public SecurityConfiguration(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-
     @PostConstruct
     protected void inizia() {
         ((AUserDetailsService) userDetailsService).passwordEncoder = passwordEncoder();
     }// end of method
-
 
     /**
      * The password encoder to use when encrypting passwords.
@@ -77,13 +69,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }// end of method
 
-
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Utente currentUser(UtenteService userRepository) {
         return userRepository.findByKeyUnica(SecurityUtils.getUsername());
     }// end of method
-
 
     /**
      * Registers our UserDetailsService and the password encoder to be used on login attempts.
@@ -93,7 +83,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         super.configure(auth);
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }// end of method
-
 
     /**
      * Require login to access internal pages and configure login form.
@@ -128,7 +117,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }// end of method
 
-
     /**
      * Allows access to static resources, bypassing Spring security.
      */
@@ -141,11 +129,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // the standard favicon URI
                 "/favicon.ico",
 
-                // the robots exclusion standard
-                "/robots.txt",
-
                 // web application manifest
-                "/manifest.webmanifest",
                 "/manifest.json",
                 "/sw.js",
                 "/offline-page.html",

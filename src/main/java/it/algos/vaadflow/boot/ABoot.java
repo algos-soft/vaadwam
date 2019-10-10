@@ -1,6 +1,7 @@
 package it.algos.vaadflow.boot;
 
 import it.algos.vaadflow.backend.data.FlowData;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.service.AMongoService;
@@ -100,13 +101,13 @@ public abstract class ABoot implements ServletContextListener {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private FlowData flowData;
+    protected PreferenzaService preferenzaService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private PreferenzaService preferenzaService;
+    private FlowData flowData;
 
 
     /**
@@ -134,7 +135,9 @@ public abstract class ABoot implements ServletContextListener {
     protected void inizia() {
         this.iniziaDBMongo();
         this.iniziaVersioni();
-        this.regolaPreferenze();
+        this.regolaRiferimenti();
+        this.creaPreferenze();
+        fixPreferenze();
         this.iniziaDataStandard();
         this.iniziaDataProgettoSpecifico();
         this.regolaInfo();
@@ -162,12 +165,63 @@ public abstract class ABoot implements ServletContextListener {
 
 
     /**
-     * Regola alcune preferenze iniziali
-     * Se non esistono, le crea
-     * Se esistono, sostituisce i valori esistenti con quelli indicati qui
+     * Riferimento alla sottoclasse specifica di ABoot per utilizzare il metodo sovrascritto resetPreferenze() <br>
+     * Il metodo DEVE essere sovrascritto nella sottoclasse specifica <br>
      */
-    protected void regolaPreferenze() {
-//        preferenzaService.loadData();
+    protected void regolaRiferimenti() {
+    }// end of method
+
+
+    /**
+     * Crea le preferenze standard <br>
+     * Se non esistono, le crea <br>
+     * Se esistono, NON modifica i valori esistenti <br>
+     * Per un reset ai valori di default, c'è il metodo reset() chiamato da preferenzaService <br>
+     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    public int creaPreferenze() {
+        int numPref = 0;
+
+        for (EAPreferenza eaPref : EAPreferenza.values()) {
+            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+        }// end of for cycle
+
+        return numPref;
+    }// end of method
+
+    /**
+     * Eventuali regolazioni delle preferenze standard effettuata nella sottoclasse specifica <br>
+     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
+     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
+     * Metodo che DEVE essere sovrascritto <br>
+     */
+    protected void fixPreferenze() {
+    }// end of method
+
+    /**
+     * Cancella e ricrea le preferenze standard <br>
+     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
+     * nella sottoclasse specifica dell'applicazione <br>
+     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
+     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
+     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @return numero di preferenze creato
+     */
+    public int resetPreferenze() {
+        int numPref = 0;
+
+        //--cancella tutte le preferenze
+        preferenzaService.deleteAll();
+
+        //--ricrea tutte le preferenze standard coi valori di default iniziali
+        for (EAPreferenza eaPref : EAPreferenza.values()) {
+            numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
+        }// end of for cycle
+
+        return numPref;
     }// end of method
 
 

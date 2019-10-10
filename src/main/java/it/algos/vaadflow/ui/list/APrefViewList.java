@@ -1,9 +1,14 @@
 package it.algos.vaadflow.ui.list;
 
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.IAView;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.dialog.IADialog;
+
+import static it.algos.vaadflow.application.FlowCost.USA_EDIT_BUTTON;
 
 /**
  * Project vaadflow
@@ -20,25 +25,30 @@ import it.algos.vaadflow.ui.dialog.IADialog;
  */
 public abstract class APrefViewList extends AViewList {
 
+
     /**
-     * Costruttore <br>
+     * Costruttore @Autowired <br>
+     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
+     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param presenter per gestire la business logic del package
-     * @param dialog    per visualizzare i fields
+     * @param service business class e layer di collegamento per la Repository
+     * @param entityClazz modello-dati specifico di questo modulo
      */
-    public APrefViewList(IAPresenter presenter, IADialog dialog) {
-        super(presenter, dialog);
-    }// end of Spring constructor
+    public APrefViewList(IAService service, Class<? extends AEntity> entityClazz) {
+        super(service, entityClazz);
+    }// end of Vaadin/@Route constructor
+
 
 
     /**
-     * Le preferenze standard
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     * Preferenze standard <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
      */
     protected void fixPreferenze() {
-
 
         /**
          * Flag di preferenza per usare la ricerca e selezione nella barra dei menu. <br>
@@ -77,7 +87,9 @@ public abstract class APrefViewList extends AViewList {
         isEntityModificabile = true;
 
         //--Flag di preferenza per aprire il dialog di detail con un bottone Edit. Normalmente true.
-        usaBottoneEdit = true;
+        //--Di norma fissato nelle preferenze per avere omogeneità di funzionamento del programma
+        //--Può comunque essere modificato nella sottoclasse specifica
+        usaBottoneEdit = pref.isBool(USA_EDIT_BUTTON);
 
         //--Flag di preferenza per usare il placeholder di botoni ggiuntivi sotto la Grid. Normalmente false.
         usaBottomLayout = false;
@@ -106,7 +118,13 @@ public abstract class APrefViewList extends AViewList {
         //--Flag di preferenza per la soglia di elementi che fanno scattare la pagination della Grid.
         //--Normalmente limit = pref.getInt(FlowCost.MAX_RIGHE_GRID) .
         //--Specifico di ogni ViewList. Se non specificato è uguale alla preferenza. Default 15
-        limit = pref.getInt(FlowCost.MAX_RIGHE_GRID);
+        //--Se non usa il bottone Edit: limit = pref.getInt(FlowCost.maxRigheGridClick) .
+        //--Specifico di ogni ViewList. Se non specificato è uguale alla preferenza. Default 20
+        if (pref.isBool(USA_EDIT_BUTTON)) {
+            limit = pref.getInt(FlowCost.MAX_RIGHE_GRID);
+        } else {
+            limit = pref.getInt(FlowCost.MAX_RIGHE_GRID_CLICK);
+        }// end of if/else cycle
 
         //--Flag di preferenza per usare una route view come detail della singola istanza. Normalmente true.
         //--In alternativa si può usare un Dialog.

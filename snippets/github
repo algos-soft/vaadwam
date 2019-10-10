@@ -1,0 +1,9 @@
+Per il merge di una branch:
+1) Aprire Git:xxx in basso a destra nella finestra di IntelljIdea
+2) posizionarsi su Local Branches
+3) selezionare Master
+4) premere Checkout per switchare sul master
+5) posizionarsi su Remote Branches
+6) selezionare quella che si vuole 'consolidare'
+7) premere Rebase current onto selected
+8) eseguire SUBITO un commit (forzando con una modifica farlocca)

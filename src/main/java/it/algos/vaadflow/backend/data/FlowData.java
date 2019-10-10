@@ -8,7 +8,7 @@ import it.algos.vaadflow.modules.giorno.GiornoService;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.mese.MeseService;
 import it.algos.vaadflow.modules.person.PersonService;
-import it.algos.vaadflow.modules.preferenza.EAPreferenza;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.secolo.SecoloService;

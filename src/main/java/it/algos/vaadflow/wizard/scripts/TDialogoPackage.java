@@ -43,6 +43,7 @@ public class TDialogoPackage extends TDialogo {
     public final static boolean DEFAULT_USA_DESCRIZIONE = false;
     public final static boolean DEFAULT_USA_KEY_CODE_SPECIFICA = false;
     public final static boolean DEFAULT_USA_COMPANY = false;
+    public final static boolean DEFAULT_USA_PAGINATED_GRID = true;
     public final static boolean DEFAULT_USA_SOVRASCRIVE = false;
     public final static boolean DEFAULT_USA_ALL_PACKAGE = false;
     private static final String CAPTION = WizardView.VAADFLOW + WizardView.PACKAGE;
@@ -71,6 +72,7 @@ public class TDialogoPackage extends TDialogo {
     private Checkbox fieldCheckBoxPropertyDescrizione;
     private Checkbox fieldCheckBoxUsaKeyIdCode;
     private Checkbox fieldCheckBoxCompany;
+    private Checkbox fieldCheckBoPaginatedGrid;
     private Checkbox fieldCheckBoxSovrascrive;
     private Checkbox fieldCheckBoxAllPackage;
 
@@ -173,6 +175,7 @@ public class TDialogoPackage extends TDialogo {
         layout.add(creaDescrizione());
         layout.add(creaKeyIdCode());
         layout.add(creaCompany());
+        layout.add(creaGrid());
         layout.add(creaSovrascrive());
         layout.add(creaAllPackage());
 
@@ -279,6 +282,13 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoxCompany.setLabel("Utilizza MultiCompany");
 
         return fieldCheckBoxCompany;
+    }// end of method
+
+    private Component creaGrid() {
+        fieldCheckBoPaginatedGrid = new Checkbox();
+        fieldCheckBoPaginatedGrid.setLabel("Utilizza PaginatedGrid");
+
+        return fieldCheckBoPaginatedGrid;
     }// end of method
 
 
@@ -476,6 +486,8 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoxUsaKeyIdCode.setEnabled(false);
         fieldCheckBoxCompany.setValue(false);
         fieldCheckBoxCompany.setEnabled(false);
+        fieldCheckBoPaginatedGrid.setValue(true);
+        fieldCheckBoPaginatedGrid.setEnabled(false);
         fieldCheckBoxSovrascrive.setValue(false);
         fieldCheckBoxSovrascrive.setEnabled(false);
 
@@ -497,6 +509,8 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoxUsaKeyIdCode.setEnabled(true);
         fieldCheckBoxCompany.setValue(DEFAULT_USA_COMPANY);
         fieldCheckBoxCompany.setEnabled(true);
+        fieldCheckBoPaginatedGrid.setValue(DEFAULT_USA_PAGINATED_GRID);
+        fieldCheckBoPaginatedGrid.setEnabled(true);
         fieldCheckBoxSovrascrive.setValue(DEFAULT_USA_SOVRASCRIVE);
         fieldCheckBoxSovrascrive.setEnabled(true);
     }// end of method
@@ -666,6 +680,7 @@ public class TDialogoPackage extends TDialogo {
             mappaInput.put(Chiave.flagKeyCode, fieldCheckBoxUsaKeyIdCode.getValue());
             mappaInput.put(Chiave.flagDescrizione, fieldCheckBoxPropertyDescrizione.getValue());
             mappaInput.put(Chiave.flagCompany, fieldCheckBoxCompany.getValue());
+            mappaInput.put(Chiave.flagGrid, fieldCheckBoPaginatedGrid.getValue());
             mappaInput.put(Chiave.flagSovrascrive, fieldCheckBoxSovrascrive.getValue());
             mappaInput.put(Chiave.flagUsaAllPackages, fieldCheckBoxAllPackage.getValue());
         }// end of if cycle

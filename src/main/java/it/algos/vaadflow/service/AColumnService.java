@@ -445,6 +445,7 @@ public class AColumnService extends AbstractService {
                     Object value = null;
                     Field field = reflection.getField(entityClazz, propertyName);
                     Label label = null;
+                    String message = "";
 
                     try { // prova ad eseguire il codice
                         bytes = (byte[]) field.get(entity);
@@ -453,37 +454,39 @@ public class AColumnService extends AbstractService {
                         log.error(unErrore.toString());
                     }// fine del blocco try-catch
 
+                    label = new Label();
                     switch (typePref) {
                         case string:
+                            message = (String) value;
                             break;
                         case bool:
                             boolean status = (boolean) value;
-                            label = new Label(status ? "si" : "no");
-                            label.getStyle().set("font-weight", "bold");
+                            message = status ? "si" : "no";
                             if (status) {
                                 label.getStyle().set("color", "green");
                             } else {
                                 label.getStyle().set("color", "red");
                             }// end of if/else cycle
-                            return label;
+                            break;
                         case integer:
-                            return new Label(text.format(value));
+                            message = text.format(value);
+                            break;
                         case date:
                             break;
                         case email:
                             break;
                         case enumeration:
-                            label = new Label();
                             label.getStyle().set("color", "green");
-                            label.setText(enumService.convertToPresentation((String) value));
-
-                            return label;
+                            message = enumService.convertToPresentation((String) value);
+                            break;
                         default:
                             log.warn("Switch - caso non definito");
                             break;
                     } // end of switch statement
+                    label.setText(message);
+                    label.getStyle().set("font-weight", "bold");
+                    return label;
 
-                    return new Label(value != null ? value.toString() : "");
                 }));//end of lambda expressions and anonymous inner class
                 break;
             case calculated:
@@ -597,6 +600,8 @@ public class AColumnService extends AbstractService {
             case link:
                 break;
             case pref:
+                break;
+            case calculated:
                 break;
             default:
                 log.warn("Switch - caso non definito");

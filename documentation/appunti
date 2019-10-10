@@ -1,0 +1,9 @@
+1) Dopo aver installato un nuovo progetto, controllare che application.properties.vaadin.compatibilityMode = false
+2) Per Vaadin 14 lanciare npm install nel terminale del prgetto
+3) La classe di partenza (col metodo main) deve essere al di sopra di tutte le altre. In alternativa aggiungere i paths:
+    @SpringBootApplication(scanBasePackages = {"it.algos"}, exclude = {SecurityAutoConfiguration.class})
+    @EnableVaadin({"it.algos"})
+    @EntityScan({"it.algos.vaadflow.modules", "it.algos.vaadtest.modules"})
+    @EnableMongoRepositories({"it.algos"})
+    @Configuration
+

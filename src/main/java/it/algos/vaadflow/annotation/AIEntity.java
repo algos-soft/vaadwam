@@ -21,6 +21,13 @@ import java.lang.annotation.Target;
 public @interface AIEntity {
 
     /**
+     * (Optional) Label del record
+     * Usato nel dialog come Edit...recordName oppure Modifica...recordName
+     * Di default usa il 'name' della collection mongoDB @Document
+     */
+    String recordName() default "";
+
+    /**
      * (Optional) Visibilità a secondo del ruolo dell'User collegato
      * Defaults to guest.
      */

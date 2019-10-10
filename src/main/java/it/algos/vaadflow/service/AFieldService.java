@@ -1,10 +1,12 @@
 package it.algos.vaadflow.service;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.converter.StringToLongConverter;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
@@ -232,9 +234,16 @@ public class AFieldService extends AbstractService {
                 }// end of if cycle
                 break;
             case email:
-                field = new ATextField(caption);
+                message = "L'indirizzo eMail non è valido";
+                EmailValidator eMailValidator = new EmailValidator(message);
+                field = new EmailField(caption);
+                ((EmailField) field).setClearButtonVisible(true);
                 if (binder != null) {
-                    binder.forField(field).bind(fieldName);
+                    if (required) {
+                        binder.forField(field).withValidator(nullValidator).withValidator(eMailValidator).bind(fieldName);
+                    } else {
+                        binder.forField(field).withNullRepresentation("").withValidator(eMailValidator).bind(fieldName);
+                    }// end of if/else cycle
                 }// end of if cycle
                 break;
             case textarea:
@@ -345,6 +354,7 @@ public class AFieldService extends AbstractService {
                 }// end of if cycle
                 break;
             case checkbox:
+            case yesno:
                 field = new ACheckBox(caption);
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);
@@ -357,14 +367,14 @@ public class AFieldService extends AbstractService {
                 }// end of if cycle
                 break;
             case localdatetime:
-                //@todo andrà inserito quando ci sarà un DatePicker che accetti i LocalDateTime
-//                field = new ADatePicker(caption);
+                //@todo andrà modificato quando ci sarà un DatePicker che accetti i LocalDateTime
+                field = new ADatePicker(caption);
 //                field = new ATextField(caption);
 //                binder.forField(field).bind(fieldName);
                 break;
             case localtime:
                 field = new TimePicker(caption);
-                ((TimePicker)field).setStep(Duration.ofHours(1)); //standard
+                ((TimePicker) field).setStep(Duration.ofHours(1)); //standard
                 binder.forField(field).bind(fieldName);
                 break;
             case vaadinIcon:
@@ -375,6 +385,10 @@ public class AFieldService extends AbstractService {
             case pref:
 //                field = new ATextField(caption);
 //                binder.forField(field).withConverter(prefConverter).bind(fieldName);
+                break;
+            case custom:
+                field = appContext.getBean(AIndirizzo.class);
+                binder.forField(field).bind(fieldName);
                 break;
             case noBinder:
                 field = new ATextField(caption);
