@@ -49,7 +49,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(menuName = "funzioni", roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName =  "funzioni", menuIcon = VaadinIcon.ASTERISK, searchProperty = "code",roleTypeVisibility = EARoleType.user)
 public class FunzioneList extends WamViewList {
 
 

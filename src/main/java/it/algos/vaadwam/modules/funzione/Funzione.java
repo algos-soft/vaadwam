@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static it.algos.vaadwam.application.WamCost.TAG_FUN;
+
 /**
  * Project vaadwam <br>
  * Created by Algos <br>
@@ -60,9 +62,9 @@ import java.util.List;
 @Builder(builderMethodName = "builderFunzione")
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
+@AIScript(sovrascrivibile = false)
 @AIList(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti"})
 @AIForm(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti", "note"})
-@AIScript(sovrascrivibile = false)
 public class Funzione extends WamEntity {
 
 

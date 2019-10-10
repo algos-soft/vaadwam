@@ -26,9 +26,11 @@ import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_SER;
 @Qualifier(TAG_SER)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class ServizioDialog extends WamViewDialog<Servizio> {
+public class ServizioDialog extends AViewDialog<Servizio> {
 
     private final static String FUNZIONI = "funzioni";
 
@@ -94,6 +96,10 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
 
     private ComboBox<String> comboColorField = null;
 
+    /**
+     * Wam-Login della sessione con i dati del Milite loggato <br>
+     */
+    protected WamLogin wamLogin;
 
     /**
      * Costruttore base senza parametri <br>
@@ -106,6 +112,7 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
 
     /**
      * Costruttore base con parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
      * L'istanza DEVE essere creata con appContext.getBean(ServizioDialog.class, service, entityClazz); <br>
      *
      * @param service     business class e layer di collegamento per la Repository
@@ -115,32 +122,41 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
         super(service, binderClass);
     }// end of constructor
 
-
     /**
-     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Regola login and context della sessione <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
-    protected void fixPreferenzeSpecifiche() {
-//        super.fixPreferenzeSpecifiche();
-        ALogin login = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+    @Override
+    protected void fixLoginContext() {
+        super.fixLoginContext();
+
         AContext context = null;
+        VaadinSession vaadSession = UI.getCurrent().getSession();
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
         }// end of if cycle
 
-        if (context != null) {
-            login = context.getLogin();
+        if (context != null && context.getLogin() != null) {
+            wamLogin = (WamLogin) context.getLogin();
         }// end of if cycle
+    }// end of method
 
-        if (login != null && login.isDeveloper() || login != null && login.isAdmin()) {
+    /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (wamLogin.isAdminOrDev()) {
             super.usaDeleteButton = true;
         } else {
             super.usaDeleteButton = false;
         }// end of if/else cycle
-
     }// end of method
 
 

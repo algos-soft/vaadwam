@@ -84,6 +84,7 @@ public class PreferenzaDialog extends AViewDialog<Preferenza> {
 
     /**
      * Costruttore base con parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
      * L'istanza DEVE essere creata con appContext.getBean(PreferenzaDialog.class, service, entityClazz); <br>
      *
      * @param service     business class e layer di collegamento per la Repository

@@ -84,11 +84,6 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      */
     protected final HorizontalLayout bottomLayout = new HorizontalLayout();
 
-//    /**
-//     * Corpo centrale del Dialog, alternativo al Form <br>
-//     * Placeholder (eventuale, presente di default) <br>
-//     */
-//    protected final VerticalLayout bodyLayout = new VerticalLayout();
 
     private final String confirmText = "Conferma";
 
@@ -249,13 +244,13 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
      */
     @PostConstruct
     protected void initView() {
 
         //--Login and context della sessione
-        context = vaadinService.getSessionContext();
+        fixLoginContext();
 
         //--Le preferenze standard
         //--Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
@@ -273,13 +268,8 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         //--Barra placeholder dei bottoni, creati adesso ma regolabili dopo open()
         this.add(creaBottomLayout());
 
-        setCloseOnEsc(true);
-        setCloseOnOutsideClick(false);
-        addOpenedChangeListener(event -> {
-            if (!isOpened()) {
-                getElement().removeFromParent();
-            }// end of if cycle
-        });//end of lambda expressions and anonymous inner class
+        //--Modalità di chiusura della finestra
+        fixClosing();
     }// end of method
 
 
@@ -291,6 +281,14 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         this.saveButton.setText(confirmText);
     }// end of method
 
+    /**
+     * eRgola login and context della sessione <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void fixLoginContext() {
+        context = vaadinService.getSessionContext();
+    }// end of method
 
     /**
      * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
@@ -388,6 +386,18 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         return bottomLayout;
     }// end of method
 
+    /**
+     * Modalità di chiusura della finestra <br>
+     */
+    private void fixClosing() {
+        setCloseOnEsc(true);
+        setCloseOnOutsideClick(false);
+        addOpenedChangeListener(event -> {
+            if (!isOpened()) {
+                getElement().removeFromParent();
+            }// end of if cycle
+        });//end of lambda expressions and anonymous inner class
+    }// end of method
 
 //    @Deprecated
 //    public void open(AEntity entityBean, EAOperation operation, AContext context) {

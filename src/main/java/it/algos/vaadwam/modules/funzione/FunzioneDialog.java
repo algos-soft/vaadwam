@@ -73,6 +73,7 @@ public class FunzioneDialog extends AViewDialog<Funzione> {
 
     /**
      * Costruttore base con parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
      * L'istanza DEVE essere creata con appContext.getBean(FunzioneDialog.class, service, entityClazz); <br>
      *
      * @param service     business class e layer di collegamento per la Repository
@@ -84,30 +85,41 @@ public class FunzioneDialog extends AViewDialog<Funzione> {
 
 
     /**
-     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Regola login and context della sessione <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
-    protected void fixPreferenzeSpecifiche() {
-//        super.fixPreferenzeSpecifiche();
+    @Override
+    protected void fixLoginContext() {
+        super.fixLoginContext();
+
         AContext context = null;
         VaadinSession vaadSession = UI.getCurrent().getSession();
-        ALogin login = null;
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
         }// end of if cycle
 
         if (context != null && context.getLogin() != null) {
-            login = context.getLogin();
+            wamLogin = (WamLogin) context.getLogin();
         }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
 
         if (wamLogin.isAdminOrDev()) {
             super.usaDeleteButton = true;
         } else {
             super.usaDeleteButton = false;
         }// end of if/else cycle
-
     }// end of method
 
 
@@ -119,7 +131,7 @@ public class FunzioneDialog extends AViewDialog<Funzione> {
     @Override
     protected void fixLayout() {
         super.fixLayout();
-//        getFormLayout().add(addButtonIcona());
+        getFormLayout().add(addButtonIcona());
     }// end of method
 
 

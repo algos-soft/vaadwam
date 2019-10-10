@@ -73,7 +73,8 @@ public class CompanyDialog extends AViewDialog<Company> {
 
     /**
      * Costruttore base con parametri <br>
-     * L'istanza DEVE essere creata con appContext.getBean(BetaDialog.class, service, entityClazz); <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
+     * L'istanza DEVE essere creata con appContext.getBean(CompanyDialog.class, service, entityClazz); <br>
      *
      * @param service     business class e layer di collegamento per la Repository
      * @param binderClass di tipo AEntity usata dal Binder dei Fields
