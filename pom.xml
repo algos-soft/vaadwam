@@ -101,6 +101,7 @@
         </dependencies>
     </dependencyManagement>
 
+
     <dependencies>
         <!-- Vaadin -->
         <dependency>
