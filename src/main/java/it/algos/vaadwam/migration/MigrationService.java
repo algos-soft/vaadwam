@@ -289,7 +289,7 @@ public class MigrationService {
     private boolean importFunzioni(CroceAmb croceOld, Croce croceNew) {
         boolean status = true;
         if (croceOld == null && croceNew != null) {
-            System.out.println("Non posso importare le funzioni di: " + getCroce(croceNew).getSigla() + " perché manca la vecchia croce");
+            System.out.println("Non posso importare le funzioni di: " + croceNew.getCode() + " perché manca la vecchia croce");
             return false;
         }// end of if cycle
 
@@ -704,7 +704,7 @@ public class MigrationService {
     private CroceAmb getCroce(Croce croceNew) {
         CroceAmb croceOld = null;
 
-        if (crociOld == null) {
+        if (array.isEmpty(crociOld)) {
             setup();
         }// end of if cycle
 

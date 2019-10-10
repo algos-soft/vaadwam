@@ -225,7 +225,7 @@ public abstract class AGridViewList extends ALayoutViewList {
             if (pref.isBool(FlowCost.USA_TEXT_EDIT_BUTTON)) {
                 int lar = pref.getStr(FlowCost.FLAG_TEXT_EDIT).length();
                 lar += 1;
-                colonna.setWidth(lar + "em");
+                colonna.setWidth(lar + ".5em");
             } else {
                 colonna.setWidth("3em");
             }// end of if/else cycle

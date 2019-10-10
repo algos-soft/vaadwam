@@ -12,6 +12,8 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class FunzioneDialog extends WamViewDialog<Funzione> {
+public class FunzioneDialog extends AViewDialog<Funzione> {
 
 
     @Autowired
@@ -55,6 +57,10 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
     private Button iconButton;
 
+    /**
+     * Wam-Login della sessione con i dati del Milite loggato <br>
+     */
+    protected WamLogin wamLogin;
 
     /**
      * Costruttore base senza parametri <br>

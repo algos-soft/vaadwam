@@ -8,13 +8,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.giorno.Giorno;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.annotation.security.RolesAllowed;
 import java.time.LocalDateTime;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -65,13 +60,6 @@ public class FunzioneList extends WamViewList {
      */
     public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
 
-//    /**
-//     * Label del menu (facoltativa)
-//     * Vaadin usa il 'name' della Annotation @Route per identificare (internamente) e recuperare la view
-//     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-//     * Se manca il MENU_NAME, di default usa il 'name' della view
-//     */
-//    public static final String MENU_NAME = "funzioni";
 
     public static final String IRON_ICON = "dashboard";
 
@@ -98,6 +86,25 @@ public class FunzioneList extends WamViewList {
     public FunzioneList(@Qualifier(TAG_FUN) IAService service) {
         super(service, Funzione.class);
     }// end of Vaadin/@Route constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (wamLogin.isAdminOrDev()) {
+            super.isEntityModificabile = true;
+        } else {
+            super.isEntityModificabile = false;
+        }// end of if/else cycle
+
+    }// end of method
 
 
     /**
@@ -167,17 +174,27 @@ public class FunzioneList extends WamViewList {
     /**
      * Sovrascritto <br>
      */
+    @Override
     protected void fixInfoImport() {
         pref.saveValue(LAST_IMPORT_FUNZIONI, LocalDateTime.now());
     }// end of method
 
+
     /**
-     * Apertura del dialogo per una entity esistente oppure nuova <br>
-     * Sovrascritto <br>
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
      */
+    @Override
     protected void openDialog(AEntity entityBean) {
-        FunzioneDialog dialog = appContext.getBean(FunzioneDialog.class, service, entityClazz);
-//        dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(FunzioneDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 }// end of class

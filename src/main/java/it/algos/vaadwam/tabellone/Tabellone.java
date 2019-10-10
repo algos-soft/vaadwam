@@ -183,7 +183,7 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
         super.initView();
 
         //--Crea il wam-login della sessione
-//        wamLogin = wamService.fixWamLogin();
+        wamLogin = wamService.fixWamLogin();
         ALogin login = vaadinService.getLogin();
         if (login != null) {
             wamLogin = (WamLogin) login;

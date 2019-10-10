@@ -209,4 +209,5 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
         }// end of if cycle
     }// end of method
 
+
 }// end of class

@@ -28,7 +28,12 @@ public class AmbEntity {
 
     protected final static String MY_URL_BASE = "jdbc:mysql://localhost:3306/amb";
 
-    protected final static String MY_URL = MY_URL_BASE + "?useSSL=false";
+    protected final static String MY_SSL = "?useSSL=false";
+
+    protected final static String MY_TIME = "&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+    protected final static String MY_URL = MY_URL_BASE + MY_SSL + MY_TIME;
+
 
     protected String myDriver = "com.mysql.jdbc.Driver";
 
