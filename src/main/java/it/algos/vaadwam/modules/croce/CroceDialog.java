@@ -1,9 +1,12 @@
 package it.algos.vaadwam.modules.croce;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
@@ -25,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
@@ -47,7 +51,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 @Qualifier(TAG_CRO)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class CroceDialog extends WamViewDialog<Croce> {
+public class CroceDialog extends AViewDialog<Croce> {
 
 
     private final static int DURATION = 4000;
@@ -83,6 +87,10 @@ public class CroceDialog extends WamViewDialog<Croce> {
 
     private ATextField indirizzoField;
 
+    /**
+     * Wam-Login della sessione con i dati del Milite loggato <br>
+     */
+    protected WamLogin wamLogin;
 
     /**
      * Costruttore base senza parametri <br>
@@ -104,21 +112,28 @@ public class CroceDialog extends WamViewDialog<Croce> {
         super(service, binderClass);
     }// end of constructor
 
-
-
     /**
-     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Regola login and context della sessione <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
-    protected void fixPreferenzeSpecifiche() {
-//        super.fixPreferenzeSpecifiche();
+    @Override
+    protected void fixLoginContext() {
+        super.fixLoginContext();
 
-//        if (!context.getLogin().isDeveloper()) {
-//            super.usaDeleteButton = false;
-//        }// end of if cycle
+        AContext context = null;
+        VaadinSession vaadSession = UI.getCurrent().getSession();
 
+        if (vaadSession != null) {
+            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+        }// end of if cycle
+
+        if (context != null && context.getLogin() != null) {
+            wamLogin = (WamLogin) context.getLogin();
+        }// end of if cycle
     }// end of method
+
+
 
 
     /**
@@ -184,13 +199,13 @@ public class CroceDialog extends WamViewDialog<Croce> {
      * Sovrascritto
      */
     protected void readSpecificFields() {
-        presidenteTemporaneo = getPresidenteCorrente();
-        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : "");
-        contattoTemporaneo = getContattoCorrente();
-        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : "");
-
-        indirizzoTemporaneo = getIndirizzoCorrente();
-        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : "");
+//        presidenteTemporaneo = getPresidenteCorrente();
+//        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : "");
+//        contattoTemporaneo = getContattoCorrente();
+//        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : "");
+//
+//        indirizzoTemporaneo = getIndirizzoCorrente();
+//        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : "");
     }// end of method
 
 

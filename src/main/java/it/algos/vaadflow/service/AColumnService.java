@@ -418,8 +418,7 @@ public class AColumnService extends AbstractService {
                     Label label = new Label();
                     String htmlCode = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     label.getElement().setProperty("innerHTML", htmlCode);
-                    label.getElement().getStyle().set("background-color", colorColumnName);
-                    label.getElement().getStyle().set("color", colorColumnName);
+                    label.getElement().getStyle().set("background-color", (String)reflection.getPropertyValue(entity,propertyName));
 
                     return label;
                 }));//end of lambda expressions and anonymous inner class

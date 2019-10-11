@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.ATextService;
@@ -53,21 +54,22 @@ import static it.algos.vaadflow.application.FlowCost.TAG_WIZ;
 @UIScope
 @Route(value = TAG_WIZ, layout = MainLayout.class)
 @Qualifier(TAG_WIZ)
-@AIView(vaadflow = true, roleTypeVisibility = EARoleType.developer)
 @Slf4j
+@AIScript(sovrascrivibile = false)
+@AIView(vaadflow = true, menuName = TAG_WIZ, menuIcon = VaadinIcon.MAGIC, roleTypeVisibility = EARoleType.developer)
 public class WizardView extends VerticalLayout {
 
     public static final String VAADFLOW = "Progetto base vaadflow. ";
     public static final String PACKAGE = "Creazione di un nuovo package o modifica di un package esistente";
     public final static String NORMAL_WIDTH = "9em";
     public final static String NORMAL_HEIGHT = "3em";
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.MAGIC;
-    public static final String IRON_ICON = "build";
+//    /**
+//     * Icona visibile nel menu (facoltativa)
+//     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
+//     * Se manca il MENU_NAME, di default usa il 'name' della view
+//     */
+//    public static final VaadinIcon VIEW_ICON = VaadinIcon.MAGIC;
+//    public static final String IRON_ICON = "build";
 
     private static final String PROJECT_BASE_NAME = "vaadflow";
     private static Progetto PROGETTO_STANDARD_SUGGERITO_NUOVO = Progetto.vaadin;

@@ -69,7 +69,7 @@ public class ALogin {
 
 
     public void setUtente(Utente utente) {
-        this.setUtenteAndCompany(utente, (Company) null);
+        this.utente = utente;
     }// end of method
 
 

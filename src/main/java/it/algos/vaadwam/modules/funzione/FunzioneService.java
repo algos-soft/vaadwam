@@ -25,16 +25,19 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
  * Project vaadwam <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 30-set-2018 16.22.05 <br>
+ * Fix date: 10-ott-2019 21.14.36 <br>
  * <br>
- * Estende la classe astratta AService. Layer di collegamento per la Repository. <br>
+ * Business class. Layer di collegamento per la Repository. <br>
  * <br>
- * Annotated with @SpringComponent (obbligatorio) <br>
- * Annotated with @Service (ridondante) <br>
+ * Annotated with @Service (obbligatorio, se si usa la catena @Autowired di SpringBoot) <br>
+ * NOT annotated with @SpringComponent (inutile, esiste già @Service) <br>
  * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
+ * NOT annotated with @VaadinSessionScope (sbagliato, perché SpringBoot va in loop iniziale) <br>
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
+ * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)

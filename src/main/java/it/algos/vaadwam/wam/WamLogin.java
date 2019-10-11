@@ -43,7 +43,7 @@ public class WamLogin extends ALogin {
         this.roleType = roleType;
 
         super.utente = (Utente) utente;
-        super.company = company;
+//        super.company = company;
     }// end of constructor
 
 

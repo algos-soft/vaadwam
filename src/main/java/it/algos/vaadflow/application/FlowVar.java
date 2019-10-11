@@ -38,10 +38,19 @@ public class FlowVar {
 
     /**
      * Nome identificativo dell'applicazione <br>
+     * Usato (eventualmente) nella barra di menu in testa pagina <br>
      * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
      * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
      */
     public static String projectName;
+
+
+    /**
+     * Descrizione completa dell'applicazione <br>
+     * Usato (eventualmente) nella barra di menu in testa pagina <br>
+     * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static String projectBanner;
 
     /**
      * Versione dell'applicazione <br>

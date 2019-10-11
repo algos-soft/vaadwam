@@ -4,6 +4,7 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
+import it.algos.vaadflow.modules.role.EARole;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -52,9 +53,9 @@ import javax.validation.constraints.Size;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- *      (EAFieldType.link e XxxPresenter.class)
+ * (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -67,8 +68,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.facoltativa)
-@AIList(fields = { "ordine", "code", "type", "value", "descrizione"})
-@AIForm(fields = {"company", "ordine", "code", "descrizione", "type"})
+@AIList(fields = {"ordine", "code", "type", "value", "descrizione", "show"})
+@AIForm(fields = {"company", "ordine", "code", "descrizione", "type", "show"})
 public class Preferenza extends ACEntity {
 
 
@@ -117,7 +118,7 @@ public class Preferenza extends ACEntity {
     @NotNull
     @Field("type")
     @AIField(type = EAFieldType.enumeration, enumClazz = EAPrefType.class, required = true, focus = true, widthEM = 12)
-    @AIColumn(widthEM = 6,sortable = true)
+    @AIColumn(widthEM = 6, sortable = true)
     public EAPrefType type;
 
 
@@ -127,6 +128,15 @@ public class Preferenza extends ACEntity {
     @AIField(type = EAFieldType.pref, required = true, name = "Valore", widthEM = 12)
     @AIColumn(widthEM = 10)
     public byte[] value;
+
+    /**
+     * visibile agli utenti normali (facoltativo, di default developer)
+     * i developer e gli admin
+     */
+    @Field("show")
+    @AIField(type = EAFieldType.enumeration, enumClazz = EARole.class, required = true, widthEM = 12)
+    @AIColumn(name = "show", widthEM = 7)
+    public EARole show;
 
 
     /**

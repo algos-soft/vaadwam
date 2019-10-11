@@ -44,7 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ADD;
 @Qualifier(TAG_ADD)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "indirizzi", searchProperty = "localita", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "indirizzi", menuIcon = VaadinIcon.ROAD, searchProperty = "localita", roleTypeVisibility = EARoleType.developer)
 public class AddressList extends AGridViewList {
 
 

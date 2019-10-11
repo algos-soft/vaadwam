@@ -1,6 +1,7 @@
 package it.algos.vaadflow.modules.preferenza;
 
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -48,7 +49,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
 @Qualifier(TAG_PRE)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "preferenze", searchProperty = "code", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "preferenze", menuIcon = VaadinIcon.SCREWDRIVER, searchProperty = "code", roleTypeVisibility = EARoleType.developer)
 public class PreferenzaList extends AGridViewList {
 
 
@@ -107,6 +108,7 @@ public class PreferenzaList extends AGridViewList {
         super.creaAlertLayout();
         alertPlacehorder.add(new Label("Preferenze per regolare alcune funzionalità del programma"));
     }// end of method
+
 
     /**
      * Apertura del dialogo per una entity esistente oppure nuova <br>

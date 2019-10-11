@@ -10,8 +10,8 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,9 +46,8 @@ import static it.algos.vaadflow.application.FlowCost.TAG_UTE;
 @Qualifier(TAG_UTE)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "utenti", searchProperty = "username", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = TAG_UTE, searchProperty = "username", menuIcon = VaadinIcon.USERS, roleTypeVisibility = EARoleType.developer)
 public class UtenteList extends AGridViewList {
-
 
     public static final String IRON_ICON = "account-circle";
 

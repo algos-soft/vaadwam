@@ -44,8 +44,8 @@
 
 
     /**
-     * Service (@Scope = 'singleton') iniettato dal costruttore @Autowired di Spring <br>
-     * Unico per tutta l'applicazione. Usato come libreria.
+     * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
+     * Unico per tutta l'applicazione. Usato come libreria. Disponibile subito.
      */
     private RoleService service;
 

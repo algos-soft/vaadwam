@@ -4,20 +4,22 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AMenuService;
+import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,7 +48,7 @@ import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 @HtmlImport(value = "styles/shared-styles.html", loadMode = LoadMode.INLINE)
 @HtmlImport(value = "styles/algos-styles.html", loadMode = LoadMode.INLINE)
 @Theme(Lumo.class)
-public class MainLayout14 extends AppLayout implements RouterLayout {
+public class MainLayout14 extends AppLayout {
 
     /**
      * Recuperato dalla sessione, quando la @route fa partire la UI. <br>
@@ -61,7 +63,7 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
 
     /**
      * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
-     * Unico per tutta l'applicazione. Usato come libreria.
+     * Unico per tutta l'applicazione. Usato come libreria. Disponibile subito.
      */
     private AVaadinService vaadinService = StaticContextAccessor.getBean(AVaadinService.class);
 
@@ -79,16 +81,27 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
+    private ATextService text;
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
+     */
+    @Autowired
     private PreferenzaService pref;
 
 
     public MainLayout14() {
-        //@todo DA FARE cambiare immagine
-        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-        img.setHeight("44px");
-
-        addToNavbar(new DrawerToggle(), img);
-        this.setDrawerOpened(false);
+//        //@todo DA FARE cambiare immagine
+//        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
+//        img.setHeight("44px");
+//        HorizontalLayout oriz = new HorizontalLayout();
+//        oriz.setSpacing(true);
+//        oriz.add(new Label("Pippoz"));
+//        oriz.setAlignItems(FlexComponent.Alignment.END);
+//        addToNavbar(new DrawerToggle(), img, oriz);
+//        this.setDrawerOpened(false);
     }// end of constructor
 
 
@@ -105,6 +118,7 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
     @PostConstruct
     protected void inizia() {
         fixSessione();
+        fixView();
         fixType();
     }// end of method
 
@@ -115,6 +129,26 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
     protected void fixSessione() {
         context = vaadinService.getSessionContext();
         login = context != null ? context.getLogin() : null;
+    }// end of method
+
+
+    /**
+     * Layout base della pagina
+     */
+    protected void fixView() {
+        //@todo DA FARE cambiare immagine
+        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
+        img.setHeight("44px");
+
+        String desc = login.getCompany() != null ? login.getCompany().descrizione : text.primaMaiuscola(FlowVar.projectBanner);
+
+        Label label = new Label(desc);
+        label.getStyle().set("font-size", "xx-large");
+        label.getStyle().set("font-weight", "bold");
+        label.getElement().getStyle().set("color", "blue");
+
+        addToNavbar(new DrawerToggle(), img, label);
+        this.setDrawerOpened(false);
     }// end of method
 
 
@@ -176,8 +210,8 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
      * Regola i tabs
      * Può essere sovrascritto
      */
-    protected Tab[] getTabMenu() {
-        Tab[] tabs = null;
+    protected Tabs getTabMenu() {
+        Tabs tabs = null;
         Map<String, ArrayList<Class<? extends IAView>>> mappa = menuService.creaMappa();
 
         if (usaSecurity) {
@@ -188,11 +222,11 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
 
             //--crea menu dell'admin (se loggato)
             if (context.isDev() || context.isAdmin()) {
-                tabs = menuService.creaTabsAdmin(mappa);
+//                tabs = menuService.creaTabsAdmin(mappa);
             }// end of if cycle
 
             //--crea menu utente normale (sempre)
-            tabs = menuService.creaTabsUser(mappa);
+//            tabs = menuService.creaTabsUser(mappa);
 
             //--crea menu logout (sempre)
 //            menuLayout.add(menuService.creaMenuLogout());
@@ -200,6 +234,10 @@ public class MainLayout14 extends AppLayout implements RouterLayout {
             //--crea menu indifferenziato
             tabs = menuService.creaTabsNoSecurity(mappa);
         }// end of if/else cycle
+
+        if (tabs != null) {
+            tabs.setOrientation(Tabs.Orientation.VERTICAL);
+        }// end of if cycle
 
         return tabs;
     }// end of method

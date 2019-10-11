@@ -4,6 +4,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.AService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,11 +88,11 @@ public class PreferenzaService extends AService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(String code, String descrizione, EAPrefType type, Object value) {
+    public boolean creaIfNotExist(String code, String descrizione, EAPrefType type, EARole show, Object value) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(code)) {
-            AEntity entity = save(newEntity(0, code, descrizione, type, value));
+            AEntity entity = save(newEntity(0, code, descrizione, type, show, value));
             creata = entity != null;
         }// end of if cycle
 
@@ -128,13 +129,14 @@ public class PreferenzaService extends AService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean crea(String code, String descrizione, EAPrefType type, Object value) {
+    public boolean crea(String code, String descrizione, EAPrefType type, EARole show, Object value) {
         boolean creata;
-        AEntity entity = save(newEntity(0, code, descrizione, type, value));
+        AEntity entity = save(newEntity(0, code, descrizione, type, show, value));
         creata = entity != null;
 
         return creata;
     }// end of method
+
 
     /**
      * Crea una entity <br>
@@ -160,7 +162,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public AEntity newEntity() {
-        return newEntity(0, "", "", null, null);
+        return newEntity(0, "", "", null, null, null);
     }// end of method
 
 
@@ -174,7 +176,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Preferenza newEntity(IAPreferenza eaPref) {
-        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getValue());
+        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getShow(), eaPref.getValue());
     }// end of method
 
 
@@ -191,12 +193,13 @@ public class PreferenzaService extends AService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, Object value) {
+    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, Object value) {
         Preferenza entity = Preferenza.builderPreferenza()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine())
                 .code(text.isValid(code) ? code : null)
                 .descrizione(text.isValid(descrizione) ? descrizione : null)
                 .type(type != null ? type : EAPrefType.string)
+                .show(show != null ? show : EARole.developer)
                 .value(type != null ? type.objectToBytes(value) : (byte[]) null)
                 .build();
 

@@ -1,6 +1,7 @@
 package it.algos.vaadflow.modules.role;
 
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -41,7 +42,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 @Qualifier(TAG_ROL)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "ruoli", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "ruoli", menuIcon = VaadinIcon.USER, roleTypeVisibility = EARoleType.developer)
 public class RoleList extends AGridViewList {
 
 

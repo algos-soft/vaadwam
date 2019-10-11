@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.person;
 
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -43,7 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PER;
 @Qualifier(TAG_PER)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "persone", searchProperty = "cognome", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "persone", menuIcon = VaadinIcon.USERS, searchProperty = "cognome", roleTypeVisibility = EARoleType.developer)
 public class PersonList extends AGridViewList {
 
 

@@ -26,11 +26,11 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Project vaadwam <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 30-set-2018 16.22.05 <br>
+ * Fix date: 10-ott-2019 21.14.36 <br>
  * <br>
  * Estende la classe astratta AViewList per visualizzare la Grid <br>
- * <p>
  * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
+ * <p>
  * Le istanze @Autowired usate da questa classe vengono iniettate automaticamente da SpringBoot se: <br>
  * 1) vengono dichiarate nel costruttore @Autowired di questa classe, oppure <br>
  * 2) la property è di una classe con @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON), oppure <br>
@@ -43,6 +43,12 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la sottoclasse specifica <br>
  * Annotated with @Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
+ * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
+ * Annotated with @AIView (facoltativo Algos) per regolare alcune property associate a questa classe <br>
+ * Se serve una Grid paginata estende APaginatedGridViewList altrimenti AGridViewList <br>
+ * Se si usa APaginatedGridViewList è obbligatorio creare la PaginatedGrid
+ * 'tipizzata' con la entityClazz (Collection) specifica nel metodo creaGridPaginata <br>
  */
 @UIScope
 @Route(value = TAG_FUN, layout = MainLayout14.class)

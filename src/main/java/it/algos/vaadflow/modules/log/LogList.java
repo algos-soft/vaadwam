@@ -47,7 +47,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_LOG;
 @Qualifier(TAG_LOG)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "logs", searchProperty = "descrizione", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "logs", menuIcon = VaadinIcon.ARCHIVE, searchProperty = "descrizione", roleTypeVisibility = EARoleType.developer)
 public class LogList extends AGridViewList {
 
 

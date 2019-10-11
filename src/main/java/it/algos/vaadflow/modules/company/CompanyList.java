@@ -44,7 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 @Qualifier(TAG_COM)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "companies", searchProperty = "code", roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = true, menuName = "companies", menuIcon = VaadinIcon.FACTORY, searchProperty = "code", roleTypeVisibility = EARoleType.admin)
 public class CompanyList extends AGridViewList {
 
 

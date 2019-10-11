@@ -282,7 +282,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     }// end of method
 
     /**
-     * eRgola login and context della sessione <br>
+     * Regola login and context della sessione <br>
      * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */

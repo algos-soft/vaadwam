@@ -6,6 +6,8 @@ import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadwam.modules.servizio.ServizioList;
+import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
@@ -172,6 +174,13 @@ public class WamBoot extends ABoot {
         wamVers.inizia();
     }// end of method
 
+    /**
+     * Riferimento alla sottoclasse specifica di ABoot per utilizzare il metodo sovrascritto resetPreferenze() <br>
+     * Il metodo DEVE essere sovrascritto nella sottoclasse specifica <br>
+     */
+    protected void regolaRiferimenti() {
+        preferenzaService.applicationBoot = this;
+    }// end of method
 
 
     /**
@@ -201,9 +210,9 @@ public class WamBoot extends ABoot {
      */
     @Override
     protected void fixPreferenze() {
-        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
-        pref.saveValue(FlowCost.USA_COMPANY, true);
-        pref.saveValue(FlowCost.SHOW_COMPANY, false);
+//        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
+//        pref.saveValue(FlowCost.USA_COMPANY, true);
+//        pref.saveValue(FlowCost.SHOW_COMPANY, false);
         usaSecurity = true;
     }// end of method
 
@@ -376,7 +385,9 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
         FlowVar.menuClazzList.add(MiliteList.class);
-    }// end of method
+    	FlowVar.menuClazzList.add(FunzioneList.class);
+		FlowVar.menuClazzList.add(ServizioList.class);
+	}// end of method
 
 
     /**

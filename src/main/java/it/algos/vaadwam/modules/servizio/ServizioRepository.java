@@ -17,7 +17,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_SER;
  * Project vaadwam <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 30-set-2018 16.22.05 <br>
+ * Fix date: 10-ott-2019 21.14.46 <br>
  * <br>
  * Estende la l'interaccia MongoRepository col casting alla Entity relativa di questa repository <br>
  * <br>
@@ -25,6 +25,8 @@ import static it.algos.vaadwam.application.WamCost.TAG_SER;
  * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
+ * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
+ * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
