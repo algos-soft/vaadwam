@@ -70,6 +70,7 @@ public abstract class AGridViewList extends ALayoutViewList {
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
      */
     protected void creaBody() {
+        this.add(gridPlaceholder);
         gridPlaceholder.setMargin(false);
         gridPlaceholder.setSpacing(false);
         gridPlaceholder.setPadding(false);

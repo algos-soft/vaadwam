@@ -6,7 +6,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -143,26 +142,6 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     }// end of Vaadin/@Route constructor
 
 
-    /**
-     * Le preferenze standard <br>
-     * Le preferenze specifiche della sottoclasse <br>
-     * Può essere sovrascritto, per modificare le preferenze standard <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        this.setMargin(false);
-        this.setSpacing(false);
-        this.setPadding(false);
-
-        super.usaSearch = false;
-        super.usaBottoneNew = false;
-        super.usaBottomLayout = true;
-
-        currentPeriodValue = EAPeriodo.oggi;
-    }// end of method
 
 
     /**
@@ -200,6 +179,27 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     }// end of method
 
 
+    /**
+     * Le preferenze standard <br>
+     * Le preferenze specifiche della sottoclasse <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        this.setMargin(false);
+        this.setSpacing(false);
+        this.setPadding(false);
+
+        super.usaSearch = false;
+        super.usaBottoneNew = false;
+        super.usaBottomLayout = true;
+
+        currentPeriodValue = EAPeriodo.oggi;
+    }// end of method
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Location location = event.getLocation();
@@ -228,33 +228,33 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     }// end of method
 
 
-    @Override
-    public void updateView() {
-        refreshGrid();
-    }// end of method
+//    @Override
+//    public void updateView() {
+//        refreshGrid();
+//    }// end of method
 
 
-    /**
-     * Crea una nuova grid in base allo stato attuale
-     * e la sostituisce nella vista
-     */
-    private void refreshGrid() {
-
-        if (grid != null) {
-//            gridPlaceholder.remove(grid);
-            gridPlaceholder.removeAll();
-        }
-
-        if (gridPlaceholder != null) {
-            grid = buildGrid();
-            gridPlaceholder.add(grid);
-//            gridPlaceholder.add(bottomPlacehorder);
-
-            FlexLayout layout = new FlexLayout();
-            layout.setFlexGrow(1, grid);
-            this.setFlexGrow(1, layout);
-        }// end of if cycle
-    }// end of method
+//    /**
+//     * Crea una nuova grid in base allo stato attuale
+//     * e la sostituisce nella vista
+//     */
+//    private void refreshGrid() {
+//
+//        if (grid != null) {
+////            gridPlaceholder.remove(grid);
+//            gridPlaceholder.removeAll();
+//        }
+//
+//        if (gridPlaceholder != null) {
+//            grid = buildGrid();
+//            gridPlaceholder.add(grid);
+////            gridPlaceholder.add(bottomPlacehorder);
+//
+//            FlexLayout layout = new FlexLayout();
+//            layout.setFlexGrow(1, grid);
+//            this.setFlexGrow(1, layout);
+//        }// end of if cycle
+//    }// end of method
 
 
     /**
@@ -264,22 +264,9 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
      */
-    protected void creaGrid() {
-        //@todo info: bypassa quanto previsto nella lista standard. La grid viene creata e regolata in updateView()
-    }// end of method
-
-
-    /**
-     * Crea una nuova grid.
-     * <p>
-     *
-     * @return la grid creata
-     */
-    private Grid buildGrid() {
-
+    protected Grid creaGrid(List<String> gridPropertyNamesList) {
         Grid grid = new Grid(Riga.class, false);
 
-//        grid.setWidth("50em");
         grid.setHeightByRows(true);
         grid.addClassName("pippoz");
         grid.getElement().setAttribute("theme", "row-dividers");
@@ -294,8 +281,15 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
         //--eventuale barra di bottoni sotto la grid
         creaGridBottomLayout();
 
+        //--legenda dei colori
+        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
+            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
+        }// end of if cycle
+
         return grid;
     }// end of method
+
+
 
 
     /**
@@ -453,7 +447,7 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
         } // end of switch statement
 
         numDays = GIORNI_STANDARD;
-        refreshGrid();
+//        refreshGrid();//@todo waad14
     }// end of method
 
 
@@ -467,22 +461,22 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     }// end of method
 
 
-    /**
-     * Costruisce un (eventuale) layout con bottoni aggiuntivi
-     * Facoltativo (assente di default)
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     */
-    @Override
-    protected void creaGridBottomLayout() {
-        super.creaGridBottomLayout();
-
-        //--legenda dei colori
-        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
-            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
-        }// end of if cycle
-
-    }// end of method
+//    /**
+//     * Costruisce un (eventuale) layout con bottoni aggiuntivi
+//     * Facoltativo (assente di default)
+//     * Può essere sovrascritto, per aggiungere informazioni
+//     * Invocare PRIMA il metodo della superclasse
+//     */
+//    @Override
+//    protected void creaGridBottomLayout() {
+//        super.creaGridBottomLayout();
+//
+//        //--legenda dei colori
+//        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
+//            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
+//        }// end of if cycle
+//
+//    }// end of method
 
 
     /**

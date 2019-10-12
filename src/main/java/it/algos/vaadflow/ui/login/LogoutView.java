@@ -9,7 +9,6 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.ui.list.ALayoutViewList;
-import org.springframework.web.context.annotation.SessionScope;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_LOGOUT;
 
@@ -20,9 +19,9 @@ import static it.algos.vaadflow.application.FlowCost.TAG_LOGOUT;
  * Date: sab, 12-ott-2019
  * Time: 06:45
  */
-@SessionScope
+@UIScope
 @Route(value = TAG_LOGOUT)
-@AIView(vaadflow = true, menuName = "logout", menuIcon = VaadinIcon.LEVEL_DOWN_BOLD)
+@AIView(vaadflow = true, menuName = "logout", menuIcon = VaadinIcon.ESC)
 public class LogoutView extends ALayoutViewList implements BeforeEnterObserver {
 
     public LogoutView() {
