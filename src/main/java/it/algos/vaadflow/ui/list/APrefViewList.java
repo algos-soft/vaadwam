@@ -2,11 +2,7 @@ package it.algos.vaadflow.ui.list;
 
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.IAView;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
-import it.algos.vaadflow.ui.dialog.IADialog;
 
 import static it.algos.vaadflow.application.FlowCost.USA_EDIT_BUTTON;
 
@@ -33,13 +29,12 @@ public abstract class APrefViewList extends AViewList {
      * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
      * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param service business class e layer di collegamento per la Repository
+     * @param service     business class e layer di collegamento per la Repository
      * @param entityClazz modello-dati specifico di questo modulo
      */
     public APrefViewList(IAService service, Class<? extends AEntity> entityClazz) {
         super(service, entityClazz);
     }// end of Vaadin/@Route constructor
-
 
 
     /**
@@ -134,7 +129,11 @@ public abstract class APrefViewList extends AViewList {
         usaPagination = true;
 
         //--controllo della paginazione
-        isPaginata = usaPagination && service.count() > limit;
+        if (service != null) {
+            isPaginata = usaPagination && service.count() > limit;
+        } else {
+            isPaginata = false;
+        }// end of if/else cycle
 
         //--Flag per la larghezza della Grid. Default a 80.
         //--Espressa come numero per comodità; poi viene convertita in "em".

@@ -226,10 +226,10 @@ public class MainLayout14 extends AppLayout {
             }// end of if cycle
 
             //--crea menu utente normale (sempre)
-//            tabs = menuService.creaTabsUser(mappa);
+            tabs = menuService.creaTabsUser(mappa);
 
-            //--crea menu logout (sempre)
-//            menuLayout.add(menuService.creaMenuLogout());
+            //--aggiunge il menu logout (sempre se usa la security)
+            tabs = menuService.addMenuLogout(tabs);
         } else {
             //--crea menu indifferenziato
             tabs = menuService.creaTabsNoSecurity(mappa);

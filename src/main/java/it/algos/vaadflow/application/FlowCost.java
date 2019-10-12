@@ -29,6 +29,8 @@ public abstract class FlowCost {
 
     public static final String TAG_LOGIN = "alogin";
 
+    public static final String TAG_LOGOUT = "logout";
+
     public static final String TAG_TYP = "logtype";
 
     public static final String TAG_UTE = "utente";
@@ -140,7 +142,9 @@ public abstract class FlowCost {
     public static final String FLAG_TEXT_SEARCH = "textSearch";
 
     public static final String FLAG_TEXT_NEW = "textNew";
+
     public static final String FLAG_TEXT_SHOW = "textShow";
+
     public static final String FLAG_TEXT_EDIT = "textEdit";
 
     public static final String BOT_ACCETTA = "Accetta";
@@ -245,6 +249,7 @@ public abstract class FlowCost {
     public static final String MAIL_TO = "mailTo";
 
     public static final String MAX_RIGHE_GRID = "maxRigheGrid";
+
     public static final String MAX_RIGHE_GRID_CLICK = "maxRigheGridClick";
 
     public static final String MONGO_PAGE_LIMIT = "mongoPageLimit";
@@ -256,7 +261,9 @@ public abstract class FlowCost {
     public static final String USA_BUTTON_SHORTCUT = "usaButtonShortcut";
 
     public static final String USA_GRID_HEADER_PRIMA_MAIUSCOLA = "usaGridHeaderPrimaMaiuscola";
+
     public static final String USA_TEXT_EDIT_BUTTON = "usaTextEditButton";
+
     public static final String USA_EDIT_BUTTON = "usaEditButton";
 
     // moduli visibili
@@ -291,6 +298,8 @@ public abstract class FlowCost {
     public static final String SHOW_GIORNO = "showGiorno";
 
     public static final String SHOW_ACCOUNT_ON_MENU = "showAccount";
+
+    public static final String SHOW_ICONS_MENU = "showIconsMenu";
 
     public static final String LOAD_UTENTI = "loadUtenti";
 

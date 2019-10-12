@@ -8,6 +8,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.ui.MainLayout14;
@@ -43,7 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_TYP;
 @Route(value = TAG_TYP, layout = MainLayout14.class)
 @Qualifier(TAG_TYP)
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "logTypes", menuIcon = VaadinIcon.PAINTBRUSH, searchProperty = "code")
+@AIView(vaadflow = true, menuName = "logTypes", menuIcon = VaadinIcon.PAINTBRUSH, searchProperty = "code", roleTypeVisibility = EARoleType.developer)
 public class LogtypeList extends AGridViewList {
 
 
