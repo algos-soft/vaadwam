@@ -122,7 +122,10 @@ public class WamCost {
     public final static String USA_CHECK_FUNZIONI_MILITE = "usaCheckFunzioniMilite";
 
     public final static String TIPO_CANCELLAZIONE = "tipoCancellazione";
+
     public final static String MOSTRA_ORARIO_SERVIZIO = "mostraOrarioServizio";
+
+    public final static String MOSTRA_LEGENDA_TABELLONE = "mostraLegendaTabellone";
 
     //--mappa @Route
     public final static String KEY_MAP_GIORNO = "giorno";

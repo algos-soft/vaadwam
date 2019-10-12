@@ -55,19 +55,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName =  "funzioni", menuIcon = VaadinIcon.ASTERISK, searchProperty = "code",roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "funzioni", menuIcon = VaadinIcon.LIST_OL, searchProperty = "code", roleTypeVisibility = EARoleType.user)
 public class FunzioneList extends WamViewList {
 
-
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
-
-
-    public static final String IRON_ICON = "dashboard";
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -146,37 +136,6 @@ public class FunzioneList extends WamViewList {
     }// end of method
 
 
-//    /**
-//     * Crea la colonna (di tipo Component) per visualizzare le funzioni dipendenti
-//     */
-//    protected void addSpecificColumnsAfter() {
-//        Grid.Column colonna = grid.addComponentColumn(funzione -> {
-//            String valueLabel = "";
-//            String tag = " - ";
-//            List<Funzione> dipendenti=((Funzione)funzione).dipendenti;
-//
-//            if (array.isValid(dipendenti)) {
-//                for (Funzione funz : dipendenti) {
-//                    if (funz != null) {
-//                        valueLabel += funz.getCode();
-//                        valueLabel +=   tag;
-//                    }// end of if cycle
-//                }// end of for cycle
-//                valueLabel = text.levaCoda(valueLabel, tag);
-//                return new Label(valueLabel);
-//            } else {
-//                return new Label("");
-//            }// end of if/else cycle
-//        });//end of lambda expressions
-//
-//        colonna.setId("funzioni");
-//        colonna.setHeader("Funzioni dipendenti");
-//        colonna.setWidth("20em");
-//        colonna.setFlexGrow(0);
-//
-//    }// end of method
-
-
     /**
      * Sovrascritto <br>
      */
@@ -200,7 +159,7 @@ public class FunzioneList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(FunzioneDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(FunzioneDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 }// end of class

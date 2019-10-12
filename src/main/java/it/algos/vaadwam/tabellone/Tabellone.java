@@ -11,12 +11,12 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATime;
-import it.algos.vaadflow.modules.giorno.Giorno;
-import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
@@ -39,7 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -55,14 +54,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
 @AIScript(sovrascrivibile = false)
+@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.TABLE, roleTypeVisibility = EARoleType.user)
 public class Tabellone extends AGridViewList implements HasUrlParameter<String> {
 
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.GRID;
 
     //--property
     public final static int GIORNI_STANDARD = 7;
@@ -147,7 +141,6 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     public Tabellone(@Qualifier(TAG_TAB) IAService service) {
         super(service, Turno.class);
     }// end of Vaadin/@Route constructor
-
 
 
     /**
@@ -255,7 +248,7 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
         if (gridPlaceholder != null) {
             grid = buildGrid();
             gridPlaceholder.add(grid);
-            gridPlaceholder.add(bottomPlacehorder);
+//            gridPlaceholder.add(bottomPlacehorder);
 
             FlexLayout layout = new FlexLayout();
             layout.setFlexGrow(1, grid);
@@ -265,10 +258,11 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
 
 
     /**
-     * Crea il corpo centrale della view
-     * Componente grafico obbligatorio
-     * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-     * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto)
+     * Crea la grid <br>
+     * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
+     * Costruisce la Grid con le colonne. Gli items vengono caricati in updateItems() <br>
+     * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
      */
     protected void creaGrid() {
         //@todo info: bypassa quanto previsto nella lista standard. La grid viene creata e regolata in updateView()
@@ -482,8 +476,12 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     @Override
     protected void creaGridBottomLayout() {
         super.creaGridBottomLayout();
+
         //--legenda dei colori
-        bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
+        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
+            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
+        }// end of if cycle
+
     }// end of method
 
 

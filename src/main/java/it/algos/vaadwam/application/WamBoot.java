@@ -385,8 +385,6 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
         FlowVar.menuClazzList.add(MiliteList.class);
-    	FlowVar.menuClazzList.add(FunzioneList.class);
-		FlowVar.menuClazzList.add(ServizioList.class);
 	}// end of method
 
 

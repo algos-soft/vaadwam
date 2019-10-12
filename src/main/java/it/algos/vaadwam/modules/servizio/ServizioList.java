@@ -1,7 +1,5 @@
 package it.algos.vaadwam.modules.servizio;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -10,13 +8,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.giorno.GiornoDialog;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -60,18 +54,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_SER)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName =  "servizi", menuIcon = VaadinIcon.ASTERISK, searchProperty = "code",roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "servizi", menuIcon = VaadinIcon.DASHBOARD, searchProperty = "code", roleTypeVisibility = EARoleType.user)
 public class ServizioList extends WamViewList {
 
-
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
-
-    public static final String IRON_ICON = "gavel";
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -81,6 +66,7 @@ public class ServizioList extends WamViewList {
     @Autowired
     @Qualifier(TASK_SER)
     private ATask task;
+
 
     /**
      * Costruttore @Autowired <br>
@@ -95,6 +81,26 @@ public class ServizioList extends WamViewList {
     public ServizioList(@Qualifier(TAG_SER) IAService service) {
         super(service, Servizio.class);
     }// end of Vaadin/@Route constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (wamLogin.isAdminOrDev()) {
+            super.isEntityModificabile = true;
+        } else {
+            super.isEntityModificabile = false;
+        }// end of if/else cycle
+
+    }// end of method
+
 
     /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
@@ -122,38 +128,13 @@ public class ServizioList extends WamViewList {
     }// end of method
 
 
-
-//    /**
-//     * Eventuali aggiustamenti finali al layout
-//     * Regolazioni finali sulla grid e sulle colonne
-//     * Sovrascritto
-//     */
-//    @Override
-//    protected void fixGridLayout() {
-//        super.fixLayout();
-//        Grid.Column<AEntity> colonna;
-//        int keyPos = 1;
-//        int codePos = 3;
-//
-//        if (login.isDeveloper()) {
-//            List<Grid.Column<AEntity>> colonne = grid.getColumns();
-//            colonna = colonne != null ? colonne.get(keyPos) : null;
-//            if (colonna != null) {
-//                colonna.setWidth("11em");
-//            }// end of if cycle
-//            colonna = colonne != null ? colonne.get(codePos) : null;
-//            if (colonna != null) {
-//                colonna.setWidth("10em");
-//            }// end of if cycle
-//        }// end of if cycle
-//    }// end of method
-
     /**
      * Sovrascritto <br>
      */
     protected void fixInfoImport() {
         pref.saveValue(LAST_IMPORT_SERVIZI, LocalDateTime.now());
     }// end of method
+
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
@@ -169,7 +150,7 @@ public class ServizioList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(ServizioDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(ServizioDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 }// end of class

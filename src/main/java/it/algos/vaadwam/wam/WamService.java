@@ -527,7 +527,7 @@ public abstract class WamService extends AService {
             //--costruiosco una SECONDA istanza di croce per moidificare la descrizione ed inserirla come company
             //--verrà letta da MainLayout14
             company = croceService.findByKeyUnica(croce.code);
-            company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " " + croce.getDescrizione());
+            company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione());
             wamLogin.setCompany(company);
             //--backdoor
             if (utente != null && utente.isDev()) {

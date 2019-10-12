@@ -1,6 +1,9 @@
 package it.algos.vaadwam.wam;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinSession;
+import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.presenter.IAPresenter;
@@ -22,6 +25,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.application.WamCost.USA_FIELDS_ENABLED_IN_SHOW;
 
@@ -82,25 +86,44 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
 
 
 
-//    public void fixFunzioniWam(BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {
-//        super.fixFunzioni(itemSaver, itemDeleter, null);
-//    }// end of method
+    /**
+     * Regola login and context della sessione <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixLoginContext() {
+        super.fixLoginContext();
+
+        AContext context = null;
+        VaadinSession vaadSession = UI.getCurrent().getSession();
+
+        if (vaadSession != null) {
+            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+        }// end of if cycle
+
+        if (context != null && context.getLogin() != null) {
+            wamLogin = (WamLogin) context.getLogin();
+        }// end of if cycle
+    }// end of method
 
 
-//    /**
-//     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-//     * Può essere sovrascritto, per aggiungere informazioni
-//     * Invocare PRIMA il metodo della superclasse
-//     */
-//    @Override
-//    protected void fixPreferenzeSpecifiche() {
-//        super.fixPreferenzeSpecifiche();
-//
-//        //--Crea il wam-login della sessione
-//        wamLogin = wamService.fixWamLogin();
-//
-//    }// end of method
-//
+    /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (wamLogin.isAdminOrDev()) {
+            super.usaDeleteButton = true;
+        } else {
+            super.usaDeleteButton = false;
+        }// end of if/else cycle
+    }// end of method
+
 
     /**
      * Controlla l'esistenza del field company e ne regola i valori
@@ -177,6 +200,18 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
 
     }// end of method
 
+    /**
+     * Opens the given item for editing in the dialog.
+     * Crea i fields e visualizza il dialogo <br>
+     *
+     * @param entityBean        The item to edit; it may be an existing or a newly created instance
+     * @param operationProposed The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
+     * @param itemSaver         funzione associata al bottone 'accetta' ('registra', 'conferma')
+     * @param itemDeleter       funzione associata al bottone 'delete' (eventuale)
+     */
+    public void openWam(final AEntity entityBean, EAOperation operationProposed, BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {
+        open(entityBean, operationProposed, itemSaver, itemDeleter, null);
+    }// end of method
 
     /**
      * Regola in lettura l'eeventuale field company (un combo)

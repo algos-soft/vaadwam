@@ -69,7 +69,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_SER;
 @Qualifier(TAG_SER)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class ServizioDialog extends AViewDialog<Servizio> {
+public class ServizioDialog extends WamViewDialog<Servizio> {
 
     private final static String FUNZIONI = "funzioni";
 
@@ -100,10 +100,6 @@ public class ServizioDialog extends AViewDialog<Servizio> {
 
     private ComboBox<String> comboColorField = null;
 
-    /**
-     * Wam-Login della sessione con i dati del Milite loggato <br>
-     */
-    protected WamLogin wamLogin;
 
     /**
      * Costruttore base senza parametri <br>
@@ -125,43 +121,6 @@ public class ServizioDialog extends AViewDialog<Servizio> {
     public ServizioDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
-
-    /**
-     * Regola login and context della sessione <br>
-     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixLoginContext() {
-        super.fixLoginContext();
-
-        AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
-
-        if (vaadSession != null) {
-            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-        }// end of if cycle
-
-        if (context != null && context.getLogin() != null) {
-            wamLogin = (WamLogin) context.getLogin();
-        }// end of if cycle
-    }// end of method
-
-    /**
-     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
-     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        if (wamLogin.isAdminOrDev()) {
-            super.usaDeleteButton = true;
-        } else {
-            super.usaDeleteButton = false;
-        }// end of if/else cycle
-    }// end of method
 
 
     /**

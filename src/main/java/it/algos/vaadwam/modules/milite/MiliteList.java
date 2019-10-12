@@ -61,9 +61,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 @UIScope
 @Route(value = TAG_MIL, layout = MainLayout14.class)
 @Qualifier(TAG_MIL)
-@AIView(menuName = "militi", roleTypeVisibility = EARoleType.user)
 @Slf4j
 @AIScript(sovrascrivibile = false)
+@AIView(vaadflow = false, menuName =  "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "code",roleTypeVisibility = EARoleType.user)
 public class MiliteList extends WamViewList {
 
 
@@ -405,13 +405,22 @@ public class MiliteList extends WamViewList {
         pref.saveValue(LAST_IMPORT_MILITI, LocalDateTime.now());
     }// end of method
 
+
     /**
-     * Apertura del dialogo per una entity esistente oppure nuova <br>
-     * Sovrascritto <br>
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
      */
+    @Override
     protected void openDialog(AEntity entityBean) {
-        MiliteDialog dialog = appContext.getBean(MiliteDialog.class, service, entityClazz);
-//        dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 }// end of class

@@ -4,6 +4,7 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.IAService;
@@ -273,6 +274,15 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         }// end of if cycle
 
         return listaFunzioniAbilitateMilite;
+    }// end of method
+    /**
+     * Primo ingresso dopo il click sul bottone <br>
+     */
+    protected void save(AEntity entityBean, EAOperation operation) {
+        if (service.save(entityBean, operation) != null) {
+//            updateItems();
+//            updateView();
+        }// end of if cycle
     }// end of method
 
 }// end of class

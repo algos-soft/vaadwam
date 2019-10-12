@@ -53,7 +53,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class FunzioneDialog extends AViewDialog<Funzione> {
+public class FunzioneDialog extends WamViewDialog<Funzione> {
 
 
     @Autowired
@@ -61,10 +61,6 @@ public class FunzioneDialog extends AViewDialog<Funzione> {
 
     private Button iconButton;
 
-    /**
-     * Wam-Login della sessione con i dati del Milite loggato <br>
-     */
-    protected WamLogin wamLogin;
 
     /**
      * Costruttore base senza parametri <br>
@@ -86,45 +82,6 @@ public class FunzioneDialog extends AViewDialog<Funzione> {
     public FunzioneDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
-
-
-    /**
-     * Regola login and context della sessione <br>
-     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixLoginContext() {
-        super.fixLoginContext();
-
-        AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
-
-        if (vaadSession != null) {
-            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-        }// end of if cycle
-
-        if (context != null && context.getLogin() != null) {
-            wamLogin = (WamLogin) context.getLogin();
-        }// end of if cycle
-    }// end of method
-
-
-    /**
-     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
-     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        if (wamLogin.isAdminOrDev()) {
-            super.usaDeleteButton = true;
-        } else {
-            super.usaDeleteButton = false;
-        }// end of if/else cycle
-    }// end of method
 
 
     /**
