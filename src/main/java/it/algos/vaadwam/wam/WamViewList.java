@@ -76,7 +76,10 @@ public abstract class WamViewList extends AGridViewList {
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
      * <p>
-     * Questo metodo viene chiamato per primo subito dopo il costruttore <br>
+     * Prima viene chiamato il costruttore <br>
+     * Prima viene chiamato init(); <br>
+     * Viene chiamato @PostConstruct (con qualsiasi firma) <br>
+     * Dopo viene chiamato setParameter(); <br>
      * Dopo viene chiamato beforeEnter(); <br>
      * <p>
      * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
@@ -84,12 +87,30 @@ public abstract class WamViewList extends AGridViewList {
      * Possono essere sovrascritti nelle sottoclassi <br>
      */
     @PostConstruct
-    protected void initView() {
+    protected void postConstruct() {
         //--Crea il wam-login della sessione
         wamLogin = wamService.fixWamLogin();
-
-        super.initView();
     }// end of method
+
+
+//    /**
+//     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+//     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
+//     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+//     * <p>
+//     * Questo metodo viene chiamato per primo subito dopo il costruttore <br>
+//     * Dopo viene chiamato beforeEnter(); <br>
+//     * <p>
+//     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+//     * Creazione e posizionamento dei componenti UI <br>
+//     * Possono essere sovrascritti nelle sottoclassi <br>
+//     */
+//    @PostConstruct
+//    protected void initView() {
+//        //--Crea il wam-login della sessione
+//        wamLogin = wamService.fixWamLogin();
+//        super.initView();
+//    }// end of method
 
 
     /**

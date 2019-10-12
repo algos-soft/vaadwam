@@ -10,7 +10,7 @@
       * ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
       */
      @PostConstruct
-     protected void inizia() {
+     protected void postConstruct() {
          ...
      }// end of method
 
@@ -26,7 +26,7 @@
      * ma l'ordine con cui vengono chiamati NON è garantito
      */
     @PostConstruct
-    protected void inizia() {
+    protected void postConstruct() {
     }// end of method
 
 
@@ -55,7 +55,7 @@
      * Se hanno firme diverse, chiama prima @PostConstruct della superclasse <br>
      */
     @PostConstruct
-    protected void inizia() {
+    protected void postConstruct() {
         ...
     }// end of method
 

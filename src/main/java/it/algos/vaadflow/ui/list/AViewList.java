@@ -9,7 +9,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.ui.LoadMode;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.footer.AFooter;
@@ -20,7 +19,6 @@ import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.dialog.ADeleteDialog;
 import it.algos.vaadflow.ui.dialog.AResetDialog;
 import it.algos.vaadflow.ui.dialog.ASearchDialog;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AIntegerField;
 import it.algos.vaadflow.ui.fields.ATextArea;
 import it.algos.vaadflow.ui.fields.ATextField;
@@ -47,16 +45,26 @@ import static it.algos.vaadflow.application.FlowCost.FLAG_TEXT_SHOW;
  * Time: 18:49
  * <p>
  * Classe astratta per visualizzare la Grid <br>
- * La classe viene divisa verticalmente in alcune classi, per 'leggerla' meglio (era troppo grossa) <br>
- * - 1 superclasse (APropertyViewList) <br>
- * - 3 sottoclassi (AGridViewList, ALayoutViewList e APrefViewList) <br>
+ * La classe viene divisa verticalmente in alcune classi astratte, per 'leggerla' meglio (era troppo grossa) <br>
+ * Nell'ordine (dall'alto):
+ * - 1 APropertyViewList (che estende la classe Vaadin VerticalLayout) per elencare tutte le property usate <br>
+ * - 2 AViewList con la business logic principale <br>
+ * - 3 APrefViewList per regolare le preferenze ed i flags <br>
+ * - 4 ALayoutViewList per regolare il layout <br>
+ * - 5 AGridViewList per gestire la Grid <br>
+ * - 6 APaginatedGridViewList (opzionale) per gestire una Grid specializzata (add-on) che usa le Pagine <br>
  * L'utilizzo pratico per il programmatore è come se fosse una classe sola <br>
  * <p>
  * La sottoclasse concreta viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
  * Le property di questa classe/sottoclasse vengono iniettate (@Autowired) automaticamente se: <br>
  * 1) vengono dichiarate nel costruttore @Autowired della sottoclasse concreta <br>
  * 2) sono istanze di una classe SINGLETON, richiamate con AxxService.getInstance() <br>
- * 3) sono annotate @Autowired; sono disponibile SOLO DOPO @PostConstruct <br>
+ * 3) sono annotate @Autowired; sono disponibili SOLO DOPO @PostConstruct <br>
+ * <p>
+ * Considerato che le sottoclassi concrete NON sono singleton e vengo ri-create ogni volta che dal menu (via @Router)
+ * si invocano, è inutile (anche se possibile) usare un metodo @PostConstruct che è sempre un'0appendici di init() del
+ * costruttore.
+ * Meglio spostare tutta la logica iniziale nel metodo beforeEnter() <br>
  * <p>
  * Le sottoclassi concrete NON hanno le annotation @SpringComponent, @SpringView e @Scope
  * NON annotated with @SpringComponent - Sbagliato perché va in conflitto con la @Route
@@ -80,23 +88,23 @@ import static it.algos.vaadflow.application.FlowCost.FLAG_TEXT_SHOW;
  * Le injections vengono fatta da SpringBoot nel metodo @PostConstruct DOPO init() automatico
  * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
  * <p>
- * Annotation @Route(value = "") per la vista iniziale - Ce ne pouò essere solo una per applicazione
+ * Annotation @Route(value = "") per la vista iniziale - Ce ne può essere solo una per applicazione
  * ATTENZIONE: se rimangono due (o più) classi con @Route(value = ""), in fase di compilazione appare l'errore:
  * -'org.springframework.context.ApplicationContextException:
  * -Unable to start web server;
  * -nested exception is org.springframework.boot.web.server.WebServerException:
  * -Unable to start embedded Tomcat'
  * <p>
- * Non usa l'interfaccia HasUrlParameter col metodo setParameter(BeforeEvent event, ...)
- * che serve per chiamate che NON usano @Route
+ * Usa l'interfaccia HasUrlParameter col metodo setParameter(BeforeEvent event, ...) per ricevere parametri opzionali
+ * anche per chiamate che usano @Route <br>
  * Usa l'interfaccia BeforeEnterObserver col metodo beforeEnter()
- * invocato da @Route al termine dell'init() di questa classe e DOPO il metodo @PostConstruct
+ * invocato da @Route al termine dell'init() di questa classe e DOPO il metodo @PostConstruct <br>
  * <p>
  * Annotated with @Slf4j (facoltativo) per i logs automatici <br>
  */
 @HtmlImport(value = "styles/algos-styles.html", loadMode = LoadMode.INLINE)
 @Slf4j
-public abstract class AViewList extends APropertyViewList implements IAView, BeforeEnterObserver, BeforeLeaveObserver {
+public abstract class AViewList extends APropertyViewList implements IAView, BeforeEnterObserver, BeforeLeaveObserver, HasUrlParameter<String> {
 
     /**
      * Costruttore @Autowired <br>
@@ -119,7 +127,10 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
      * <p>
-     * Questo metodo viene chiamato per primo subito dopo il costruttore <br>
+     * Prima viene chiamato il costruttore <br>
+     * Prima viene chiamato init(); <br>
+     * Viene chiamato @PostConstruct (con qualsiasi firma) <br>
+     * Dopo viene chiamato setParameter(); <br>
      * Dopo viene chiamato beforeEnter(); <br>
      * <p>
      * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
@@ -127,6 +138,38 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * Possono essere sovrascritti nelle sottoclassi <br>
      */
     @PostConstruct
+    protected void postConstruct() {
+    }// end of method
+
+
+    /**
+     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
+     * Chiamato DOPO @PostConstruct ma PRIMA di beforeEnter() <br>
+     *
+     * @param event     con la location, ui, navigationTarget, source, ecc
+     * @param parameter opzionali nella chiamata del browser
+     */
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    }// end of method
+
+
+    /**
+     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
+     * Chiamato DOPO @PostConstruct e DOPO setParameter() <br>
+     * Qui va tutta la logica inizale della view <br>
+     *
+     * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        initView();
+    }// end of method
+
+
+    /**
+     * Qui va tutta la logica inizale della view <br>
+     */
     protected void initView() {
         this.setMargin(false);
         this.setSpacing(false);
@@ -169,26 +212,11 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
         //--aggiunge il footer standard
         this.add(appContext.getBean(AFooter.class));
-    }// end of method
 
-
-    /**
-     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
-     * Chiamato DOPO @PostConstruct <br>
-     *
-     * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
-     */
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        //--se il login è obbligatorio e manca, la View non funziona
-        if (vaadinService.mancaLoginSeObbligatorio()) {
-            return;
-        }// end of if cycle
         this.addSpecificRoutes();
         this.updateItems();
         this.updateView();
     }// end of method
-
 
     /**
      * Le preferenze standard <br>
@@ -387,6 +415,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         this.updateItems();
         this.updateView();
     }// end of method
+
 
     //@todo da rendere getBean il dialogo
     protected void openSearch() {
