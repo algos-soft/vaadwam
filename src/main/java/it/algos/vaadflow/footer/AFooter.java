@@ -11,6 +11,7 @@ import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EATime;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
@@ -41,7 +42,7 @@ import static it.algos.vaadflow.application.FlowVar.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AFooter extends VerticalLayout implements BeforeEnterObserver {
+public class AFooter extends VerticalLayout  {
 
 
     /**
@@ -72,9 +73,23 @@ public class AFooter extends VerticalLayout implements BeforeEnterObserver {
     @Autowired
     private PreferenzaService pref;
 
-
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+    /**
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Prima viene chiamato il costruttore <br>
+     * Prima viene chiamato init(); <br>
+     * Viene chiamato @PostConstruct (con qualsiasi firma) <br>
+     * Dopo viene chiamato setParameter(); <br>
+     * Dopo viene chiamato beforeEnter(); <br>
+     * <p>
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     * Creazione e posizionamento dei componenti UI <br>
+     * Possono essere sovrascritti nelle sottoclassi <br>
+     */
+    @PostConstruct
+    protected void postConstruct() {
         this.setMargin(false);
         this.setSpacing(false);
         this.setPadding(false);
