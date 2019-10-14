@@ -7,7 +7,10 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.QueryParameters;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -33,10 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
@@ -53,8 +53,8 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.TABLE, roleTypeVisibility = EARoleType.user)
-public class Tabellone extends AGridViewList implements HasUrlParameter<String> {
+@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
+public class Tabellone extends AGridViewList {
 
 
     //--property
@@ -121,10 +121,12 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     /**
      * Devo mantenere un valore perché il comboBox viene ricostruito ad ogni modifica della Grid <br>
      */
-    private EAPeriodo currentPeriodValue;
+    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;;
 
     @Autowired
     private MiliteService militeService;
+
+    private AComboBox comboPeriodi;
 
 
     /**
@@ -142,6 +144,28 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
     }// end of Vaadin/@Route constructor
 
 
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        super.setParameter(event, parameter);
+        String isoValue;
+        LocalDate endDay = null;
+
+        if (array.isValid(parametersMap)) {
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_INIZIO)) {
+                isoValue = parametersMap.get(KEY_MAP_GIORNO_INIZIO);
+                startDay = date.localDateFromISO(isoValue);
+            }// end of if cycle
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_FINE)) {
+                isoValue = parametersMap.get(KEY_MAP_GIORNO_FINE);
+                endDay = date.localDateFromISO(isoValue);
+                numDays = date.differenza(endDay, startDay);
+                numDays++; //--gli estremi sono compresi
+            }// end of if cycle
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNI_DURATA)) {
+                numDays = Integer.decode(parametersMap.get(KEY_MAP_GIORNI_DURATA));
+            }// end of if cycle
+        }// end of if cycle
+    }// end of method
 
 
     /**
@@ -197,34 +221,6 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
         super.usaBottoneNew = false;
         super.usaBottomLayout = true;
 
-        currentPeriodValue = EAPeriodo.oggi;
-    }// end of method
-
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        Location location = event.getLocation();
-        QueryParameters queryParameters = location.getQueryParameters();
-        Map<String, List<String>> multiParametersMap = queryParameters.getParameters();
-        Map<String, String> mappa = null;
-        String isoValue;
-        LocalDate endDay = null;
-
-        if (text.isValid(parameter)) {
-        }// end of if cycle
-
-        if (array.isValid(multiParametersMap) && array.isMappaSemplificabile(multiParametersMap)) {
-            mappa = array.semplificaMappa(multiParametersMap);
-            if (mappa != null && mappa.containsKey(KEY_MAP_GIORNO_INIZIO)) {
-                isoValue = mappa.get(KEY_MAP_GIORNO_INIZIO);
-                startDay = date.localDateFromISO(isoValue);
-            }// end of if cycle
-            if (mappa != null && mappa.containsKey(KEY_MAP_GIORNO_FINE)) {
-                isoValue = mappa.get(KEY_MAP_GIORNO_FINE);
-                endDay = date.localDateFromISO(isoValue);
-                numDays = date.differenza(endDay, startDay);
-                numDays++; //--gli estremi sono compresi
-            }// end of if cycle
-        }// end of if cycle
     }// end of method
 
 
@@ -288,8 +284,6 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
 
         return grid;
     }// end of method
-
-
 
 
     /**
@@ -394,8 +388,8 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
      * Contiene un listener per modificare i giorni visualizzati nel tabellonesuperato <br>
      */
     private Component periodoHeader() {
-        AComboBox comboPeriodi = new AComboBox();
-        comboPeriodi.setWidth("11em");
+        comboPeriodi = new AComboBox();
+        comboPeriodi.setWidth("12em");
         comboPeriodi.setItems(EAPeriodo.values());
         comboPeriodi.setValue(currentPeriodValue);
         comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));
@@ -446,18 +440,47 @@ public class Tabellone extends AGridViewList implements HasUrlParameter<String> 
                 break;
         } // end of switch statement
 
+//        currentPeriodValue = EAPeriodo.vuoto;
+//        comboPeriodi.setValue(currentPeriodValue);
         numDays = GIORNI_STANDARD;
-//        refreshGrid();//@todo waad14
+
+        routeToTabellone(startDay, numDays);
     }// end of method
 
 
     private void apreSelezione() {
-        Map<String, String> mappa = new LinkedHashMap<>();
+        Map<String, String> mappa = new HashMap<>();
         mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
         mappa.put(KEY_MAP_GIORNO_FINE, date.getISO(startDay.plusDays(numDays - 1)));
         final QueryParameters query = QueryParameters.simple(mappa);
 
         getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
+    }// end of method
+
+
+    /**
+     * Ritorno al tabellone coi parametri selezionati
+     */
+    private void routeToTabellone(LocalDate startDay, int numDays) {
+        Map<String, String> mappa = new HashMap<>();
+        mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
+        mappa.put(KEY_MAP_GIORNI_DURATA, numDays + "");
+        final QueryParameters query = QueryParameters.simple(mappa);
+
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
+    }// end of method
+
+
+    /**
+     * Ritorno al tabellone coi parametri selezionati
+     */
+    private void routeToTabellone(LocalDate startDay, LocalDate endDay) {
+        Map<String, String> mappa = new LinkedHashMap<>();
+        mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
+        mappa.put(KEY_MAP_GIORNO_FINE, date.getISO(endDay));
+        final QueryParameters query = QueryParameters.simple(mappa);
+
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
     }// end of method
 
 

@@ -6,9 +6,14 @@ import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
+import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import javax.annotation.PostConstruct;
 
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOGIN;
 
@@ -30,21 +35,47 @@ public class WamLogin extends ALogin {
 
     private EARoleType roleType;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected CroceService croceService;
 
     public WamLogin() {
     }
 
 
-    public WamLogin(Object utente, Company company, EARoleType roleType) {
+    public WamLogin(Object utente, Croce croce, EARoleType roleType) {
         if (utente instanceof Milite) {
             this.milite = (Milite) utente;
         }// end of if cycle
-        this.croce = (Croce) company;
+        this.croce = croce;
         this.roleType = roleType;
 
         super.utente = (Utente) utente;
-//        super.company = company;
     }// end of constructor
+
+    /**
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Prima viene chiamato il costruttore <br>
+     * Prima viene chiamato init(); <br>
+     * Viene chiamato @PostConstruct (con qualsiasi firma) <br>
+     * Dopo viene chiamato setParameter(); <br>
+     * Dopo viene chiamato beforeEnter(); <br>
+     * <p>
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     * Creazione e posizionamento dei componenti UI <br>
+     * Possono essere sovrascritti nelle sottoclassi <br>
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        Company company = croceService.findByKeyUnica(croce.code);
+        company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione());
+        super.company = company;
+    }// end of method
 
 
     public Milite getMilite() {

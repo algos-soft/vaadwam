@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.preferenza;
 
+import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
@@ -68,8 +69,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.facoltativa)
-@AIList(fields = {"ordine", "code", "type", "value", "descrizione", "show"})
-@AIForm(fields = {"company", "ordine", "code", "descrizione", "type", "show"})
+@AIList(fields = {"ordine", "code", "type", "value", "descrizione", "show", "companySpecifica"})
+@AIForm(fields = {"company", "ordine", "code", "descrizione", "type", "show", "companySpecifica"})
 public class Preferenza extends ACEntity {
 
 
@@ -137,6 +138,14 @@ public class Preferenza extends ACEntity {
     @AIField(type = EAFieldType.enumeration, enumClazz = EARole.class, required = true, widthEM = 12)
     @AIColumn(name = "show", widthEM = 7)
     public EARole show;
+
+    /**
+     * companySpecifica (facoltativo) usa un prefisso col codice della company
+     */
+    @Field("spec")
+    @AIField(type = EAFieldType.yesno)
+    @AIColumn(headerIcon = VaadinIcon.FACTORY, widthEM = 3)
+    public boolean companySpecifica;
 
 
     /**

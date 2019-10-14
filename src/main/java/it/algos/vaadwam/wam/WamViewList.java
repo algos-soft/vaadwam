@@ -88,8 +88,6 @@ public abstract class WamViewList extends AGridViewList {
      */
     @PostConstruct
     protected void postConstruct() {
-        //--Crea il wam-login della sessione
-        wamLogin = wamService.fixWamLogin();
     }// end of method
 
 
@@ -123,6 +121,9 @@ public abstract class WamViewList extends AGridViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        //--Crea il wam-login della sessione
+        wamLogin = (WamLogin) login;
+
         super.usaSearch = false;
 
         super.usaBottoneEdit = true;
@@ -136,6 +137,12 @@ public abstract class WamViewList extends AGridViewList {
             super.usaBottoneNew = true;
         } else {
             super.usaBottoneNew = false;
+        }// end of if/else cycle
+
+        if (wamLogin.isAdminOrDev()) {
+            super.isEntityModificabile = true;
+        } else {
+            super.isEntityModificabile = false;
         }// end of if/else cycle
 
         super.usaPagination = false;

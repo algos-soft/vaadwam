@@ -11,6 +11,7 @@ import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -66,11 +67,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderTurno")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"giorno", "servizio", "inizio", "fine"})
 @AIForm(fields = {"giorno", "servizio", "titoloExtra", "localitaExtra"})
-@AIScript(sovrascrivibile = false)
-public class Turno extends AEntity {
+public class Turno extends WamEntity {
 
 
     /**
@@ -78,15 +79,15 @@ public class Turno extends AEntity {
      */
     private final static long serialVersionUID = 1L;
 
-    /**
-     * Riferimento alla croce (obbligatorio)
-     * riferimento dinamico CON @DBRef
-     */
-    @DBRef
-    @Field("croce")
-    @AIField(type = EAFieldType.combo, serviceClazz = CroceService.class, dev = EAFieldAccessibility.newOnly, admin = EAFieldAccessibility.showOnly)
-    @AIColumn(name = "Croce", widthEM = 20)
-    public Croce croce;
+//    /**
+//     * Riferimento alla croce (obbligatorio)
+//     * riferimento dinamico CON @DBRef
+//     */
+//    @DBRef
+//    @Field("croce")
+//    @AIField(type = EAFieldType.combo, serviceClazz = CroceService.class, dev = EAFieldAccessibility.newOnly, admin = EAFieldAccessibility.showOnly)
+//    @AIColumn(name = "Croce", widthEM = 20)
+//    public Croce croce;
 
     /**
      * giorno di inizio turno (obbligatorio, calcolato da inizio - serve per le query)

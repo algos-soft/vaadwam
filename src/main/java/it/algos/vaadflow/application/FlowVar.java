@@ -84,7 +84,7 @@ public class FlowVar {
      * Eventuale casting a carico del chiamante <br>
      * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
      */
-    public static Class logServiceClazz = UtenteService.class;
+    public static Class loginServiceClazz = UtenteService.class;
 
     /**
      * Classe da usare per gestire le informazioni dell'utenza loggata <br>

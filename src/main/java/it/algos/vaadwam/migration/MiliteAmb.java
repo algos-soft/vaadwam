@@ -91,11 +91,11 @@ public class MiliteAmb extends AmbEntity {
 
             entity.id = (rs.getLong("id"));
             entity.version = rs.getLong("version");
-            entity.attivo = rs.getBoolean("attivo");
+//                entity.attivo = rs.getBoolean("attivo");
             entity.cognome = rs.getString("cognome");
             entity.croce_id = rs.getLong("croce_id");
             entity.data_nascita = rs.getDate("data_nascita");
-            entity.dipendente = rs.getBoolean("dipendente");
+//            entity.dipendente = rs.getBoolean("dipendente");
             entity.email = rs.getString("email");
             entity.nome = rs.getString("nome");
             entity.note = rs.getString("note");

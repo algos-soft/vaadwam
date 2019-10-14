@@ -83,13 +83,11 @@ public class PreferenzaList extends AGridViewList {
         if (!FlowVar.usaSecurity || login.isDeveloper()) {
             super.usaBottoneDeleteAll = true;
             super.usaBottoneReset = true;
-            super.usaBottoneNew = true;
-        } else {
-            super.usaBottoneNew = false;
-        }// end of if/else cycle
+        }// end of if cycle
 
         super.usaSearch = true;
         super.usaSearchDialog = false;
+        super.usaBottoneNew = false;
         super.isEntityDeveloper = true;
         super.usaPagination = true;
 

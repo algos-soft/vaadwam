@@ -2,13 +2,12 @@ package it.algos.vaadwam.application;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadflow.modules.company.CompanyList;
 import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
-import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
@@ -19,13 +18,11 @@ import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneList;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.milite.MiliteList;
 import it.algos.vaadwam.modules.riga.RigaList;
 import it.algos.vaadwam.modules.servizio.ServizioService;
-import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.turno.TurnoList;
 import it.algos.vaadwam.tabellone.Tabellone;
 import it.algos.vaadwam.wam.WamLogin;
@@ -284,7 +281,7 @@ public class WamBoot extends ABoot {
          * Eventuale casting a carico del chiamante <br>
          * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
          */
-        FlowVar.logServiceClazz = MiliteService.class;
+        FlowVar.loginServiceClazz = MiliteService.class;
 
         /**
          * Classe da usare per gestire le informazioni dell'utenza loggata <br>
@@ -373,12 +370,12 @@ public class WamBoot extends ABoot {
         //--developer
         FlowVar.menuClazzList.add(WamDeveloperView.class);
         FlowVar.menuClazzList.add(ImportView.class);
+        FlowVar.menuClazzList.add(TurnoList.class);
         FlowVar.menuClazzList.add(IscrizioneList.class);
         FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
         FlowVar.menuClazzList.add(CroceList.class);
-        FlowVar.menuClazzList.add(TurnoList.class);
 
         //--utente
         FlowVar.menuClazzList.add(Tabellone.class);

@@ -1,10 +1,6 @@
 package it.algos.vaadflow.modules.preferenza;
 
 import it.algos.vaadflow.modules.role.EARole;
-import lombok.extern.slf4j.Slf4j;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 /**
  * Project vaadflow
@@ -14,9 +10,17 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 23:18
  */
 public interface IAPreferenza {
-    public String getCode() ;
-    public String getDesc() ;
-    public EAPrefType getType() ;
-    public EARole getShow() ;
-    public Object getValue() ;
+
+    public String getCode();
+
+    public String getDesc();
+
+    public EAPrefType getType();
+
+    public EARole getShow();
+
+    public boolean isCompanySpecifica();
+
+    public Object getValue();
+
 }// end of interface

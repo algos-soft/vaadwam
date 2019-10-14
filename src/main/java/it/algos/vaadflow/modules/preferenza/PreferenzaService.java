@@ -92,7 +92,7 @@ public class PreferenzaService extends AService {
         boolean creata = false;
 
         if (isMancaByKeyUnica(code)) {
-            AEntity entity = save(newEntity(0, code, descrizione, type, show, value));
+            AEntity entity = save(newEntity(0, code, descrizione, type, show, false, value));
             creata = entity != null;
         }// end of if cycle
 
@@ -131,7 +131,7 @@ public class PreferenzaService extends AService {
      */
     public boolean crea(String code, String descrizione, EAPrefType type, EARole show, Object value) {
         boolean creata;
-        AEntity entity = save(newEntity(0, code, descrizione, type, show, value));
+        AEntity entity = save(newEntity(0, code, descrizione, type, show, false, value));
         creata = entity != null;
 
         return creata;
@@ -162,7 +162,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public AEntity newEntity() {
-        return newEntity(0, "", "", null, null, null);
+        return newEntity(0, "", "", null, null, false, null);
     }// end of method
 
 
@@ -176,7 +176,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Preferenza newEntity(IAPreferenza eaPref) {
-        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getShow(), eaPref.getValue());
+        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getShow(), eaPref.isCompanySpecifica(), eaPref.getValue());
     }// end of method
 
 
@@ -185,15 +185,16 @@ public class PreferenzaService extends AService {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param ordine      di presentazione (obbligatorio con inserimento automatico se è zero)
-     * @param code        codice di riferimento (obbligatorio)
-     * @param descrizione (facoltativa)
-     * @param type        (obbligatorio) per convertire in byte[] i valori
-     * @param value       (obbligatorio) memorizza tutto in byte[]
+     * @param ordine           di presentazione (obbligatorio con inserimento automatico se è zero)
+     * @param code             codice di riferimento (obbligatorio)
+     * @param descrizione      (facoltativa)
+     * @param type             (obbligatorio) per convertire in byte[] i valori
+     * @param value            (obbligatorio) memorizza tutto in byte[]
+     * @param companySpecifica (facoltativo) usa un prefisso col codice della company
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, Object value) {
+    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, boolean companySpecifica, Object value) {
         Preferenza entity = Preferenza.builderPreferenza()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine())
                 .code(text.isValid(code) ? code : null)
@@ -201,6 +202,7 @@ public class PreferenzaService extends AService {
                 .type(type != null ? type : EAPrefType.string)
                 .show(show != null ? show : EARole.developer)
                 .value(type != null ? type.objectToBytes(value) : (byte[]) null)
+                .companySpecifica(companySpecifica)
                 .build();
 
         return (Preferenza) super.addCompanySeManca(entity);

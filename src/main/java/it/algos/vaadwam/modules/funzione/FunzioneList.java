@@ -85,25 +85,6 @@ public class FunzioneList extends WamViewList {
 
 
     /**
-     * Le preferenze standard
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        if (wamLogin.isAdminOrDev()) {
-            super.isEntityModificabile = true;
-        } else {
-            super.isEntityModificabile = false;
-        }// end of if/else cycle
-
-    }// end of method
-
-
-    /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
      * Normalmente ad uso esclusivo del developer
      * Può essere sovrascritto, per aggiungere informazioni

@@ -10,6 +10,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
+import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
@@ -57,9 +59,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 @UIScope
 @Route(value = TAG_TUR, layout = MainLayout14.class)
 @Qualifier(TAG_TUR)
-@AIView(menuName = "turni", roleTypeVisibility = EARoleType.admin)
 @Slf4j
 @AIScript(sovrascrivibile = false)
+@AIView(vaadflow = false, menuName = "turni", menuIcon = VaadinIcon.SITEMAP,  roleTypeVisibility = EARoleType.developer)
 public class TurnoList extends WamViewList {
 
 
@@ -266,6 +268,23 @@ public class TurnoList extends WamViewList {
             }// end of if/else cycle
         }// end of if cycle
 
+    }// end of method
+
+    /**
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    @Override
+    protected void openDialog(AEntity entityBean) {
+        appContext.getBean(TurnoDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 }// end of class

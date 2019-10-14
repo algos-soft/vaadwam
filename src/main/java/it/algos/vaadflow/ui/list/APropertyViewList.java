@@ -7,6 +7,8 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.OptionalParameter;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
@@ -26,6 +28,8 @@ import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_LOGIN;
 
@@ -386,5 +390,26 @@ public abstract class APropertyViewList extends VerticalLayout {
      * Nome della route per la location della pagina di modifica (standard) del Form <br>
      */
     protected String routeNameFormEdit;
+
+
+    /**
+     * Singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
+     * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
+     */
+    protected String singleParameter;
+
+
+    /**
+     * Mappa chiave-valore di un singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
+     * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
+     */
+    protected Map<String, String> parametersMap = null;
+
+
+    /**
+     * Mappa chiave-valore di alcuni parametri (opzionali) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
+     * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
+     */
+    protected Map<String, List<String>> multiParametersMap = null;
 
 }// end of class

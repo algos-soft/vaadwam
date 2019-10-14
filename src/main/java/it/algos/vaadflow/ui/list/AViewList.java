@@ -143,14 +143,30 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
+     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia HasUrlParameter <br>
      * Chiamato DOPO @PostConstruct ma PRIMA di beforeEnter() <br>
+     * Può essere sovrascritto. Invocare PRIMA il metodo della superclasse <br>
      *
      * @param event     con la location, ui, navigationTarget, source, ecc
      * @param parameter opzionali nella chiamata del browser
      */
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        Location location = event.getLocation();
+        QueryParameters queryParameters = location.getQueryParameters();
+        Map<String, List<String>> multiParametersMap = queryParameters.getParameters();
+
+        if (text.isValid(parameter)) {
+            this.singleParameter = parameter;
+        }// end of if cycle
+
+        if (array.isValid(multiParametersMap)) {
+            if (array.isMappaSemplificabile(multiParametersMap)) {
+                this.parametersMap = array.semplificaMappa(multiParametersMap);
+            } else {
+                this.multiParametersMap = multiParametersMap;
+            }// end of if/else cycle
+        }// end of if cycle
     }// end of method
 
 

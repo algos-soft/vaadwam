@@ -131,11 +131,15 @@ public class AMenuService extends AService {
      *
      * @param clazzList di classi raggiungibili da @Route
      */
-    public Tab[] creaTabsBase(List<Class<? extends IAView>> clazzList) {
+    public Tab[] creaTabsBase(List<Class<? extends IAView>> clazzList, String titoloGruppo) {
         List<Tab> tabs = null;
 
         if (array.isValid(clazzList)) {
             tabs = new ArrayList<>();
+            if (text.isValid(titoloGruppo)) {
+                tabs.add(new Tab("==" + titoloGruppo + "=="));
+            }// end of if cycle
+
             for (Class viewClazz : clazzList) {
                 tabs.add(creaAlgosTab(viewClazz));
             }// end of for cycle
@@ -148,10 +152,8 @@ public class AMenuService extends AService {
     /**
      * Eventuali item di menu, se collegato come sviluppatore
      */
-    public Tabs creaTabsDeveloper(Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
-        Tabs tabs = new Tabs();
-
-        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.developer.toString()))) {
+    public Tabs addTabsDeveloper(Tabs tabs, Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.developer.toString()), EARole.developer.toString())) {
             tabs.add(tab);
         }// end of for cycle
 
@@ -162,8 +164,24 @@ public class AMenuService extends AService {
     /**
      * Eventuali item di menu, se collegato come admin
      */
-    public Tab[] creaTabsAdmin(Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
-        return creaTabsBase(mappaClassi.get(EARole.admin.toString()));
+    public Tabs addTabsAdmin(Tabs tabs, Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.admin.toString()), EARole.admin.toString())) {
+            tabs.add(tab);
+        }// end of for cycle
+
+        return tabs;
+    }// end of method
+
+
+    /**
+     * Eventuali item di menu, se collegato come utente
+     */
+    public Tabs addTabsUser(Tabs tabs, Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.user.toString()), EARole.user.toString())) {
+            tabs.add(tab);
+        }// end of for cycle
+
+        return tabs;
     }// end of method
 
 
@@ -173,7 +191,7 @@ public class AMenuService extends AService {
     public Tabs creaTabsUser(Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
         Tabs tabs = new Tabs();
 
-        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.user.toString()))) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(EARole.user.toString()), "")) {
             tabs.add(tab);
         }// end of for cycle
 
@@ -187,10 +205,10 @@ public class AMenuService extends AService {
     public Tabs creaTabsNoSecurity(Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
         Tabs tabs = new Tabs();
 
-        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE))) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE), "")) {
             tabs.add(tab);
         }// end of for cycle
-        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO))) {
+        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO), "")) {
             tabs.add(tab);
         }// end of for cycle
 

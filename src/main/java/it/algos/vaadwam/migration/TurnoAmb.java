@@ -149,7 +149,7 @@ public class TurnoAmb extends AmbEntity {
 
             entity.id = (rs.getLong("id"));
             entity.version = rs.getLong("version");
-            entity.assegnato = rs.getBoolean("assegnato");
+//            entity.assegnato = rs.getBoolean("assegnato");
             entity.croce_id = rs.getLong("croce_id");
             entity.fine = rs.getTimestamp("fine");
             entity.funzione1_id = rs.getLong("funzione1_id");
@@ -172,10 +172,10 @@ public class TurnoAmb extends AmbEntity {
             entity.ore_milite2 = rs.getInt("ore_milite2");
             entity.ore_milite3 = rs.getInt("ore_milite3");
             entity.ore_milite4 = rs.getInt("ore_milite4");
-            entity.problemi_funzione1 = rs.getBoolean("problemi_funzione1");
-            entity.problemi_funzione2 = rs.getBoolean("problemi_funzione2");
-            entity.problemi_funzione3 = rs.getBoolean("problemi_funzione3");
-            entity.problemi_funzione4 = rs.getBoolean("problemi_funzione4");
+//            entity.problemi_funzione1 = rs.getBoolean("problemi_funzione1");
+//            entity.problemi_funzione2 = rs.getBoolean("problemi_funzione2");
+//            entity.problemi_funzione3 = rs.getBoolean("problemi_funzione3");
+//            entity.problemi_funzione4 = rs.getBoolean("problemi_funzione4");
             entity.tipo_turno_id = rs.getLong("tipo_turno_id");
             entity.titolo_extra = rs.getString("titolo_extra");
 

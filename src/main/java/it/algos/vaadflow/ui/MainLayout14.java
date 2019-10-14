@@ -147,7 +147,8 @@ public class MainLayout14 extends AppLayout {
         label.getStyle().set("font-weight", "bold");
         label.getElement().getStyle().set("color", "blue");
 
-        addToNavbar(new DrawerToggle(), img, label);
+//        addToNavbar(new DrawerToggle(), img, label);
+        addToNavbar(new DrawerToggle(), label);
         this.setDrawerOpened(false);
     }// end of method
 
@@ -211,22 +212,26 @@ public class MainLayout14 extends AppLayout {
      * Può essere sovrascritto
      */
     protected Tabs getTabMenu() {
-        Tabs tabs = null;
+        Tabs tabs = new Tabs();
         Map<String, ArrayList<Class<? extends IAView>>> mappa = menuService.creaMappa();
 
         if (usaSecurity) {
             //--crea menu dello sviluppatore (se loggato)
             if (context.isDev()) {
-                tabs = menuService.creaTabsDeveloper(mappa);
+                tabs = menuService.addTabsDeveloper(tabs, mappa);
             }// end of if cycle
 
             //--crea menu dell'admin (se loggato)
             if (context.isDev() || context.isAdmin()) {
-//                tabs = menuService.creaTabsAdmin(mappa);
+                tabs = menuService.addTabsAdmin(tabs, mappa);
             }// end of if cycle
 
             //--crea menu utente normale (sempre)
-            tabs = menuService.creaTabsUser(mappa);
+            if (context.isDev() || context.isAdmin()) {
+                tabs = menuService.addTabsUser(tabs, mappa);
+            } else {
+                tabs = menuService.creaTabsUser( mappa);
+            }// end of if/else cycle
 
             //--aggiunge il menu logout (sempre se usa la security)
             tabs = menuService.addMenuLogout(tabs);

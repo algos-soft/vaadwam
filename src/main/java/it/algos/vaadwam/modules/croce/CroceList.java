@@ -51,7 +51,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_CRO)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "croci", menuIcon = VaadinIcon.ASTERISK, roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = false, menuName = "croci", menuIcon = VaadinIcon.HOSPITAL, roleTypeVisibility = EARoleType.admin)
 public class CroceList extends WamViewList {
 
 

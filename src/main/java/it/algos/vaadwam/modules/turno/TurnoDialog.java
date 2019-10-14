@@ -24,6 +24,7 @@ import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,7 +57,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 @Qualifier(TAG_TUR)
 @Slf4j
 @AIScript(sovrascrivibile = true)
-public class TurnoDialog extends AViewDialog<Turno> {
+public class TurnoDialog extends WamViewDialog<Turno> {
 
     /**
      * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
@@ -138,8 +139,8 @@ public class TurnoDialog extends AViewDialog<Turno> {
         String widthB = "6em";
         String widthC = "12em";
         grid = new Grid(Funzione.class);
-        Servizio servizio = currentItem.servizio;
-        iscrizioniDelTurno = currentItem.iscrizioni;
+        Servizio servizio = ((Turno)currentItem).servizio;
+        iscrizioniDelTurno = ((Turno)currentItem).iscrizioni;
         if (servizio != null) {
             items = servizio.funzioni;
             grid.setItems(items);
@@ -182,7 +183,7 @@ public class TurnoDialog extends AViewDialog<Turno> {
 
         //--aggiunge una colonna calcolata
         Grid.Column colonnaMilite = grid.addComponentColumn(funzione -> {
-            Milite milite = iscrizioneService.getByTurnoAndFunzione(currentItem, funzione).getMilite();
+            Milite milite = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getMilite();
             if (milite != null) {
                 return new Label(milite.toString());
             } else {
@@ -196,7 +197,7 @@ public class TurnoDialog extends AViewDialog<Turno> {
 
         //--aggiunge una colonna calcolata
         Grid.Column colonnaLastModifica = grid.addComponentColumn(funzione -> {
-            LocalDateTime time = iscrizioneService.getByTurnoAndFunzione(currentItem, funzione).getLastModifica();
+            LocalDateTime time = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getLastModifica();
             if (time != null) {
                 return new Label(time.toString());
             } else {
@@ -210,7 +211,7 @@ public class TurnoDialog extends AViewDialog<Turno> {
 
         //--aggiunge una colonna calcolata
         Grid.Column colonnaDurata = grid.addComponentColumn(funzione -> {
-            int durata = iscrizioneService.getByTurnoAndFunzione(currentItem, funzione).getDurataEffettiva();
+            int durata = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getDurataEffettiva();
             if (durata > 0) {
                 return new Label(durata + "");
             } else {
@@ -224,7 +225,7 @@ public class TurnoDialog extends AViewDialog<Turno> {
 
         //--aggiunge una colonna calcolata
         Grid.Column colonnaEsisteProblema = grid.addComponentColumn(funzione -> {
-            boolean status = iscrizioneService.getByTurnoAndFunzione(currentItem, funzione).isEsisteProblema();
+            boolean status = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).isEsisteProblema();
             return new ACheckBox("", status);
         });//end of lambda expressions
         colonnaEsisteProblema.setHeader("Prob");

@@ -70,6 +70,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 @Builder(builderMethodName = "builderFunzione")
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
+@AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti"})
 @AIForm(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti", "note"})
 public class Funzione extends WamEntity {
