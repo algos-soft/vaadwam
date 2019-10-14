@@ -113,6 +113,8 @@ public class WamCost {
     public final static String PROPERTY_CROCE = "croce";
 
     //--preferenze
+    public static final String SECURED_VIEW_REDIRECT_TABELLONE = "redirectTabellone";
+
     public final static String USA_MAIL_IMPORT = "usaMailImport";
 
     public final static String USA_COLORAZIONE_DIFFERENZIATA = "usaColorazioneDifferenziata";

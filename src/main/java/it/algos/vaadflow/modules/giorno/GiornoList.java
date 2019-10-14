@@ -16,6 +16,7 @@ import it.algos.vaadflow.ui.MainLayout14;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
@@ -46,6 +47,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 @Route(value = TAG_GIO, layout = MainLayout14.class)
 @Qualifier(TAG_GIO)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "giorni", searchProperty = "mese", roleTypeVisibility = EARoleType.developer)
 public class GiornoList extends ACronoViewList {

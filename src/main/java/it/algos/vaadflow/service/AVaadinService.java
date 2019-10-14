@@ -109,13 +109,13 @@ public class AVaadinService {
         vaadSession = UI.getCurrent() != null ? UI.getCurrent().getSession() : null;
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+            uniqueUsername = getLoggedUsername();
         } else {
             return null;
         }// end of if/else cycle
 
         if (context == null) {
             if (usaSecurity) {
-                uniqueUsername = getLoggedUsername();
                 try { // prova ad eseguire il codice
                     service = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
                     utente = service.findByKeyUnica(uniqueUsername);

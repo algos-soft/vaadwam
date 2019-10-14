@@ -8,6 +8,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EATime;
@@ -111,7 +112,7 @@ public class AFooter extends VerticalLayout  {
         String userName = login.getUtente() != null ? login.getUtente().getUsername() : "";
         this.removeAll();
 
-        if (pref.isBool(USA_COMPANY)) {
+        if (usaCompany) {
             if (text.isValid(companyCode)) {
                 message += " - " + companyCode;
             } else {

@@ -16,6 +16,7 @@ import it.algos.vaadflow.ui.MainLayout14;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
@@ -46,6 +47,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
 @Route(value = TAG_ANN, layout = MainLayout14.class)
 @Qualifier(TAG_ANN)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "anni", searchProperty = "secolo", roleTypeVisibility = EARoleType.developer)
 public class AnnoList extends ACronoViewList {

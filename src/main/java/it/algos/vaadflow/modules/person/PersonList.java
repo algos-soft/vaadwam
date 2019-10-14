@@ -14,6 +14,7 @@ import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_PER;
 
@@ -43,6 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PER;
 @Route(value = TAG_PER, layout = MainLayout14.class)
 @Qualifier(TAG_PER)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "persone", menuIcon = VaadinIcon.USERS, searchProperty = "cognome", roleTypeVisibility = EARoleType.developer)
 public class PersonList extends AGridViewList {

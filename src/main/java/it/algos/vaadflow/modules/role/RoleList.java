@@ -13,6 +13,7 @@ import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 
@@ -41,6 +42,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 @Route(value = TAG_ROL, layout = MainLayout14.class)
 @Qualifier(TAG_ROL)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "ruoli", menuIcon = VaadinIcon.USER, roleTypeVisibility = EARoleType.developer)
 public class RoleList extends AGridViewList {

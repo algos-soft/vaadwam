@@ -14,6 +14,8 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
+
 import static it.algos.vaadflow.application.FlowCost.TAG_SEC;
 
 /**
@@ -42,6 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_SEC;
 @Route(value = TAG_SEC, layout = MainLayout14.class)
 @Qualifier(TAG_SEC)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "secoli", roleTypeVisibility = EARoleType.developer)
 public class SecoloList extends ACronoViewList {

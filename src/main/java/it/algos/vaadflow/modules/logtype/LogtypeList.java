@@ -14,6 +14,7 @@ import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.ui.MainLayout14;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_TYP;
 
@@ -43,6 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_TYP;
 @UIScope
 @Route(value = TAG_TYP, layout = MainLayout14.class)
 @Qualifier(TAG_TYP)
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "logTypes", menuIcon = VaadinIcon.PAINTBRUSH, searchProperty = "code", roleTypeVisibility = EARoleType.developer)
 public class LogtypeList extends AGridViewList {

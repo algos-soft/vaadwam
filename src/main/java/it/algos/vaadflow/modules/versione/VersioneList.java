@@ -12,10 +12,10 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
-import it.algos.vaadflow.ui.list.APaginatedGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_VER;
@@ -46,8 +46,9 @@ import static it.algos.vaadflow.application.FlowCost.TAG_VER;
 @Route(value = TAG_VER, layout = MainLayout14.class)
 @Qualifier(TAG_VER)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "versioni", menuIcon = VaadinIcon.DROP,searchProperty = "titolo", roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = true, menuName = "versioni", menuIcon = VaadinIcon.DROP, searchProperty = "titolo", roleTypeVisibility = EARoleType.developer)
 public class VersioneList extends AGridViewList {
 
 
