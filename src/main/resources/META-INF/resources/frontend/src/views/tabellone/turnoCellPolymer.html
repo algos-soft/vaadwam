@@ -10,8 +10,6 @@
         <style>
             #container {
                 width: 100%;
-                padding-top: 100px;
-                /*font-size: small;*/
                 display: flex;
                 flex-direction: column;
                 /*border-style: solid;*/
@@ -41,14 +39,15 @@
 
     <script>
         class TurnoCellPolymer extends Polymer.Element {
+
             static get is() {
                 return 'turno-cell'
-            }// end of static script method
-            // Eventuale JavaScript event handler, run immediately
+            }
+
             handleClick() {
-                // window.alert('Button was clicked');
-            }// end of script method
-        }// end of script class
+                window.alert('Button was clicked');
+            }
+        }
         customElements.define(TurnoCellPolymer.is, TurnoCellPolymer);
     </script>
 

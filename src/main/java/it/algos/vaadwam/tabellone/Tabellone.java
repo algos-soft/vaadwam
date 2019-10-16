@@ -389,6 +389,7 @@ public class Tabellone extends AGridViewList {
         column.setWidth("50mm");
         column.setSortable(false);
         column.setResizable(false);
+
     }// end of method
 
 
