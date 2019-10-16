@@ -78,7 +78,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
         if (servizio != null) {
             if (servizioService != null) {
                 colore = servizio.colore;
-//                orario = servizioService.getOrario(servizio);
+                orario = servizioService.getOrario(servizio);
                 funzioni = servizio.funzioni;
             }// end of if cycle
         }// end of if cycle

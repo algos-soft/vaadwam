@@ -117,6 +117,7 @@ public class MiliteList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        super.isEntityModificabile = true;
         if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
             super.usaSearch = true;
             super.usaPopupFiltro = true;

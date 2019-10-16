@@ -131,6 +131,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             comboField.setEnabled(false);
 
             //--disabilita i campi admin, dipendente e infermiere
+            disabilita(FIELD_ATTIVO);
             disabilita(FIELD_ADMIN);
             disabilita(FIELD_DIPENDENTE);
             disabilita(FIELD_INFERMIERE);
