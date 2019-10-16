@@ -642,6 +642,7 @@ public class AColumnService extends AbstractService {
 
             if (isFlexGrow) {
                 colonna.setFlexGrow(1);
+                colonna.setWidth(width);
             } else {
                 if (text.isValid(width)) {
                     colonna.setWidth(width);

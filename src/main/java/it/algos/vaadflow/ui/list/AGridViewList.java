@@ -134,7 +134,7 @@ public abstract class AGridViewList extends ALayoutViewList {
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setPageSize(limit);
         grid.setHeightByRows(true);
-        grid.setWidth(gridWith + "em");
+//        grid.setWidth(gridWith + "em");
         grid.getElement().getStyle().set("background-color", "#aabbcc");
 
         fixGridHeader();

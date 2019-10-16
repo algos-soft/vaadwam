@@ -136,8 +136,8 @@ public class Funzione extends WamEntity {
     @NotNull(message = "La descrizione è obbligatoria")
     @Size(min = 2, max = 50)
     @Field("desc")
-    @AIField(type = EAFieldType.text, firstCapital = true, widthEM = 24)
-    @AIColumn(flexGrow = true)
+    @AIField(type = EAFieldType.text, firstCapital = true)
+    @AIColumn(flexGrow = true,widthEM = 10)
     public String descrizione;
 
 
@@ -159,8 +159,8 @@ public class Funzione extends WamEntity {
      * riferimento statico SENZA @DBRef (embedded)
      */
     @Field("dip")
-    @AIField(type = EAFieldType.multicombo, widthEM = 20, name = "funzioni dipendenti")
-    @AIColumn(name = "funzioni dipendenti", flexGrow = true)
+    @AIField(type = EAFieldType.multicombo, name = "funzioni dipendenti")
+    @AIColumn(name = "funzioni dipendenti",widthEM = 5)
     public List<Funzione> dipendenti;
 
 
