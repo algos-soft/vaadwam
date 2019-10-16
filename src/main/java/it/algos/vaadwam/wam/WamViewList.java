@@ -150,27 +150,34 @@ public abstract class WamViewList extends AGridViewList {
 
 
     /**
-     * Placeholder (eventuale, presente di default) SOPRA la Grid
-     * - con o senza campo edit search, regolato da preferenza o da parametro
-     * - con o senza bottone New, regolato da preferenza o da parametro
-     * - con eventuali altri bottoni specifici
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Placeholder SOPRA la Grid <br>
+     * Contenuto eventuale, presente di default <br>
+     * - con o senza un bottone per cancellare tutta la collezione
+     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
+     * - con o senza gruppo di ricerca:
+     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
+     * -    bottone per aprire un DialogSearch con diverse property selezionabili
+     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
+     * - con eventuale Popup di selezione, filtro e ordinamento
+     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
+     * - con eventuali altri bottoni specifici <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
     @Override
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        if (wamLogin.isDeveloper()) {
-            deleteButton = new Button("Delete " + wamLogin.getCroce().code, new Icon(VaadinIcon.CLOSE_CIRCLE));
-            deleteButton.getElement().setAttribute("theme", "error");
-            deleteButton.addClassName("view-toolbar__button");
-            deleteButton.addClickListener(e -> delete());
-            topPlaceholder.add(deleteButton);
-        }// end of if cycle
+//        if (wamLogin.isDeveloper()) {
+//            deleteButton = new Button("Delete " + wamLogin.getCroce().code, new Icon(VaadinIcon.CLOSE_CIRCLE));
+//            deleteButton.getElement().setAttribute("theme", "error");
+//            deleteButton.addClassName("view-toolbar__button");
+//            deleteButton.addClickListener(e -> delete());
+//            topPlaceholder.add(deleteButton);
+//        }// end of if cycle
 
         if (wamLogin.isDeveloper()) {
-            importButton = new Button("Import " + wamLogin.getCroce().code, new Icon(VaadinIcon.ARROW_DOWN));
+            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
             importButton.addClickListener(e -> importa());
@@ -215,7 +222,7 @@ public abstract class WamViewList extends AGridViewList {
         Label label = null;
         String testo = "";
         String tag = "Import automatico: ";
-        String nota = task.getSchedule().getNota();
+        String nota = task.getSchedule().getNota()+".";
 
         if (login.isDeveloper()) {
             LocalDateTime lastDownload = pref.getDate(flagLastDownload);
@@ -228,7 +235,7 @@ public abstract class WamViewList extends AGridViewList {
             }// end of if/else cycle
 
             if (lastDownload != null) {
-                label = new Label(testo + " Ultimo import (potrebbe essere solo di una croce) il " + date.getTime(lastDownload));
+                label = new Label(testo + " Ultimo import il " + date.getTime(lastDownload));
             } else {
                 if (pref.isBool(flagDaemon)) {
                     label = new Label(tag + nota + " Non ancora effettuato.");

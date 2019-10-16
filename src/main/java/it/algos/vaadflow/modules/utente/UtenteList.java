@@ -15,6 +15,7 @@ import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_UTE;
@@ -45,6 +46,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_UTE;
 @Route(value = TAG_UTE, layout = MainLayout14.class)
 @Qualifier(TAG_UTE)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = TAG_UTE, searchProperty = "username", menuIcon = VaadinIcon.USERS, roleTypeVisibility = EARoleType.developer)
 public class UtenteList extends AGridViewList {

@@ -23,6 +23,7 @@ import it.algos.vaadflow.wizard.scripts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_WIZ;
 @Route(value = TAG_WIZ, layout = MainLayout.class)
 @Qualifier(TAG_WIZ)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = TAG_WIZ, menuIcon = VaadinIcon.MAGIC, roleTypeVisibility = EARoleType.developer)
 public class WizardView extends VerticalLayout {

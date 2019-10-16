@@ -286,7 +286,7 @@ public class FunzioneService extends WamService {
      */
     @Override
     public boolean importa() {
-        return migration.importFunzioni(getCroce());
+        return migration.importFunzioni();
     }// end of method
 
 

@@ -66,6 +66,8 @@ public class MiliteService extends WamService implements IUtenteService {
 
     public final static String FIELD_INFERMIERE = "infermiere";
 
+    public final static String FIELD_ATTIVO = "enabled";
+
     public final static List<String> PROPERTIES_USER =
             Arrays.asList("croce", "ordine", "userName", "passwordInChiaro", "locked", "nome", "cognome", "telefono", "mail", "indirizzo", "dipendente", "infermiere", "funzioni");
 

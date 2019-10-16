@@ -379,6 +379,8 @@ public class MigrationService {
             if (listaServiziOld != null && listaServiziOld.size() > 0) {
                 for (ServizioAmb servizioOld : listaServiziOld) {
                     if (!creaSingoloServizio(servizioOld, croceNew)) {
+                        log.error("Pippoz");
+                        System.out.println("Siamo in importServizi di: " + getCroce(croceNew).getSigla() + " e non trovo il servizio " + servizioOld.getSigla());
                         status = false;
                     }// end of if cycle
                 }// end of for cycle
@@ -849,6 +851,11 @@ public class MigrationService {
         int minutiInizio = servizioOld.getMinuti_inizio();
         int oraFine = servizioOld.getOra_fine();
         int minutiFine = servizioOld.getMinuti_fine();
+
+        if (oraFine == 24 && minutiFine == 0) {
+            oraFine = 23;
+        }// end of if cycle
+
         int durata = servizioOld.getDurata();
 //        int funzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
         boolean visibile = servizioOld.isVisibile();

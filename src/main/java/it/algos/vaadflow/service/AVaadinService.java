@@ -106,14 +106,13 @@ public class AVaadinService {
         Utente utente;
         EARoleType roleType = null;
 
-        try { // prova ad eseguire il codice
-            vaadSession = UI.getCurrent().getSession();
+        vaadSession = UI.getCurrent() != null ? UI.getCurrent().getSession() : null;
+        if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
             uniqueUsername = getLoggedUsername();
-        } catch (Exception unErrore) { // intercetta l'errore
-            log.error(unErrore.toString());
+        } else {
             return null;
-        }// fine del blocco try-catch
+        }// end of if/else cycle
 
         if (context == null) {
             if (usaSecurity) {
@@ -165,14 +164,18 @@ public class AVaadinService {
         String uniqueUsername = "";
         User springUser;
 
-        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        HttpSession httpSession = attr.getRequest().getSession(true);
-        SecurityContext securityContext = (SecurityContext) httpSession.getAttribute(KEY_SECURITY_CONTEXT);
+        try { // prova ad eseguire il codice
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpSession httpSession = attr.getRequest().getSession(true);
+            SecurityContext securityContext = (SecurityContext) httpSession.getAttribute(KEY_SECURITY_CONTEXT);
 
-        if (securityContext != null) {
-            springUser = (User) securityContext.getAuthentication().getPrincipal();
-            uniqueUsername = springUser.getUsername();
-        }// end of if cycle
+            if (securityContext != null) {
+                springUser = (User) securityContext.getAuthentication().getPrincipal();
+                uniqueUsername = springUser.getUsername();
+            }// end of if cycle
+        } catch (Exception unErrore) { // intercetta l'errore
+            log.error(unErrore.toString());
+        }// fine del blocco try-catch
 
         return uniqueUsername;
     }// end of  method

@@ -16,6 +16,7 @@ import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
@@ -48,6 +49,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
 @Route(value = TAG_PRE, layout = MainLayout14.class)
 @Qualifier(TAG_PRE)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "preferenze", menuIcon = VaadinIcon.SCREWDRIVER, searchProperty = "code", roleTypeVisibility = EARoleType.developer)
 public class PreferenzaList extends AGridViewList {

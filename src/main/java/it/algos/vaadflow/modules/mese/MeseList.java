@@ -13,6 +13,7 @@ import it.algos.vaadflow.ui.MainLayout14;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_MES;
 
@@ -41,6 +42,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_MES;
 @Route(value = TAG_MES, layout = MainLayout14.class)
 @Qualifier(TAG_MES)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "mesi", roleTypeVisibility = EARoleType.developer)
 public class MeseList extends ACronoViewList {
