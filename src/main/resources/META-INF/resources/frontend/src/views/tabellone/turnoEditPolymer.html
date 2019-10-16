@@ -1,0 +1,150 @@
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html">
+
+<dom-module id="turno-edit">
+
+
+    <template>
+
+        <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+        <div style="display: flex; flex-direction:column; align-items: center;margin-top: 1em;">
+
+            <div style="font-size: 120%; display: flex; flex-direction:row; align-items: initial">
+                [[data]], [[orario]]
+            </div>
+
+            <div style="font-size: 120%; font-weight: bold">[[servizio]]</div>
+
+            <dom-repeat items="{{iscrizioni}}">
+
+                <template>
+
+                    <div style="display: flex; flex-direction:column; align-items: center">
+
+
+                        <!--prima riga-->
+                        <!--Client-initiated events:-->
+                        <!--Client side template code:-->
+                        <!--Un click nel button lancia un evento sincrono (di nome handleClickMilite) in questo Client-->
+                        <!--Un click nel button lancia un evento asincrono (di nome handleClickMilite) nel Server-->
+                        <!--Doppia quadra è 'One way binding' mentre doppia graffa è 'Two way binding'-->
+
+                        <!--                        <vaadin-button disabled="[[!item.abilitato]]" on-click="handleClickMilite" style="width: 19em; margin-top:2em; background-color:lightslategray" theme="primary">-->
+
+                        <!--                                                                        <vaadin-button on-click="handleClickMilite" disabled="[[item.nomeDisabilitato]]"-->
+                        <!--                                                                                       style="width: 19em; margin-top:1.5em;  background-color:{{item.colore}}">-->
+                        <!--                                                                            <iron-icon icon={{item.icona}} slot="prefix"></iron-icon>-->
+                        <!--                                                                            <div>[[item.funzione]]:[[item.nome]]</div>-->
+                        <!--                                                                        </vaadin-button>-->
+
+                        <!--prima riga-->
+                        <div style="display: flex; flex-direction:row; align-items: center; margin-top:1.5em;  background-color:[[item.colore]]">
+                            <!--                            <vaadin-button on-click="handleClickMilite" disabled="[[item.nomeDisabilitato]]"-->
+                            <!--                                           style="width: 6em;">[[item.funzione]]-->
+                            <!--                            </vaadin-button>-->
+                            <vaadin-button on-click="handleClickMilite" disabled="[[item.nomeDisabilitato]]"
+                                           style="width: 8em;">[[item.funzione]]
+                                <iron-icon icon=[[item.icona]] slot="suffix"></iron-icon>
+                            </vaadin-button>
+                            <vaadin-button on-click="handleClickMilite" disabled="[[item.nomeDisabilitato]]"
+                                           style="width: 11em;">
+                                {{item.nome}}
+                            </vaadin-button>
+                        </div>
+
+
+                        <!--seconda riga-->
+                        <div style="display: flex; flex-direction:row; align-items: center;">
+                            <vaadin-time-picker on-value-changed="handleClickInizio"
+                                                disabled="[[item.noteOrariDisabilitati]]"
+                                                style="width: 6em" value="{{item.inizio}}"
+                                                step="900"></vaadin-time-picker>
+                            <vaadin-text-field style="width: 7em" placeholder="Note"
+                                               disabled="[[item.noteOrariDisabilitati]]">{{item.note}}
+                            </vaadin-text-field>
+                            <vaadin-time-picker on-click="handleClickFine" disabled="[[item.noteOrariDisabilitati]]"
+                                                style="width: 6em" value="{{item.fine}}"
+                                                step="900">{{item.fine}}
+                            </vaadin-time-picker>
+
+
+                            <!--                            <vaadin-text-field style="width: 3em; margin-left:1em" placeholder="hh"-->
+                            <!--                                               value=[[item.ore]]></vaadin-text-field>-->
+
+                            <!--                            <div style="display: flex; justify-content: center; width: 2em">:</div>-->
+
+                            <!--                            <vaadin-text-field style="width: 3em" placeholder="mm"-->
+                            <!--                                               value=[[item.minuti]]></vaadin-text-field>-->
+
+                        </div>
+
+                    </div>
+
+
+                </template>
+
+            </dom-repeat>
+
+            <!--area dei bottoni-->
+            <div style="display: flex; flex-direction:row; align-items: center;  justify-content: center; margin-top:2em">
+
+                <!--Client-initiated events:-->
+                <!--Client side template code:-->
+                <!--Un click nel button lancia un evento sincrono (di nome handleClickBack) in questo Client-->
+                <!--Un click nel button lancia un evento asincrono (di nome handleClickBack) nel Server-->
+                <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
+                <vaadin-button style="width: 8.5em" theme="secondary" on-click="handleClickBack">
+                    <iron-icon icon="icons:arrow-back" slot="prefix"></iron-icon>
+                    <div>Annulla</div>
+                </vaadin-button>
+
+                <!--Client-initiated events:-->
+                <!--Client side template code:-->
+                <!--Un click nel button lancia un evento sincrono (di nome handleClickRegistra) in questo Client-->
+                <!--Un click nel button lancia un evento asincrono (di nome handleClickRegistra) nel Server-->
+                <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
+                <vaadin-button disabled="[[!registraAbilitato]]" on-click="handleClickRegistra"
+                               style="width: 8.5em; margin-left:2em" theme="primary">
+                    <iron-icon icon="icons:check" slot="prefix"></iron-icon>
+                    <div>Conferma</div>
+                </vaadin-button>
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        class MyTemplate extends Polymer.Element {
+            static get is() {
+                return 'turno-edit'
+            }
+
+            // Eventuale JavaScript event handler, run immediately
+            handleClickInizio() {
+                alert('cliccato su inizio!');
+            }
+
+            // Eventuale JavaScript event handler, run immediately
+            handleClickMilite() {
+                alert('cliccao sul milite!');
+            }
+
+            // Eventuale JavaScript event handler, run immediately
+            handleClickBack() {
+            }
+
+            // Eventuale JavaScript event handler, run immediately
+            handleClickRegistra() {
+            }
+
+        }
+
+        customElements.define(MyTemplate.is, MyTemplate);
+    </script>
+
+
+</dom-module>
