@@ -338,8 +338,11 @@ public class WamBoot extends ABoot {
         //--patch di accesso
         utenteService.creaIfNotExist(croceService.getCRF(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRF(), "admin", "admin", roleService.getRoles(EARole.admin), "");
+        utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
         utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");
+        utenteService.creaIfNotExist(croceService.getCRF(), "Porcari Stefano", "7777", roleService.getRoles(EARole.admin), "");
+        utenteService.creaIfNotExist(croceService.getPAP(), "Piana Silvano", "piana987", roleService.getRoles(EARole.admin), "");
+        utenteService.creaIfNotExist(croceService.getCRPT(), "Michelini Mauro", "ginevracrpt", roleService.getRoles(EARole.admin), "");
 
 //        Utente utente = (Utente) utenteService.findById("Addabbo Andrea");
 //        utente.company = croceService.getCRF();
