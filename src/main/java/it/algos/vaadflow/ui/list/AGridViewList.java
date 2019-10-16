@@ -74,17 +74,17 @@ public abstract class AGridViewList extends ALayoutViewList {
         gridPlaceholder.setMargin(false);
         gridPlaceholder.setSpacing(false);
         gridPlaceholder.setPadding(false);
-        FlexLayout layout = new FlexLayout();
 
         //--Costruisce una lista di nomi delle properties della Grid
         List<String> gridPropertyNamesList = getGridPropertyNamesList();
 
         gridPlaceholder.add(creaGrid(gridPropertyNamesList));
+        gridPlaceholder.setFlexGrow(0);
 
         //--Regolazioni di larghezza
-        gridPlaceholder.setWidth(gridWith + "em");
-        gridPlaceholder.setFlexGrow(0);
-        gridPlaceholder.getElement().getStyle().set("background-color", "#ffaabb");//rosa
+        //gridPlaceholder.setWidth(gridWith + "em");
+        //gridPlaceholder.setFlexGrow(0);
+        //gridPlaceholder.getElement().getStyle().set("background-color", "#ffaabb");//rosa
 
         //--eventuale barra di bottoni sotto la grid
         creaGridBottomLayout();

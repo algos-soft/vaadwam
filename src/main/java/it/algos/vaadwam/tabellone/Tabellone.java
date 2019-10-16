@@ -16,6 +16,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.role.EARoleType;
@@ -148,7 +149,7 @@ public class Tabellone extends AGridViewList {
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         super.setParameter(event, parameter);
         String isoValue;
-        LocalDate endDay = null;
+        LocalDate endDay;
 
         if (array.isValid(parametersMap)) {
             if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_INIZIO)) {
@@ -264,8 +265,12 @@ public class Tabellone extends AGridViewList {
         Grid grid = new Grid(Riga.class, false);
 
         grid.setHeightByRows(true);
-        grid.addClassName("pippoz");
-        grid.getElement().setAttribute("theme", "row-dividers");
+        //grid.addClassName("pippoz");
+        //grid.getElement().setAttribute("theme", "row-dividers");
+        //grid.addThemeNames("no-border", "no-row-borders", "row-stripes");
+        grid.addThemeNames("no-border");
+        grid.addThemeNames("no-row-borders");
+        grid.addThemeNames("row-stripes");
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // costruisce le colonne
@@ -281,6 +286,9 @@ public class Tabellone extends AGridViewList {
         if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
             bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
         }// end of if cycle
+
+        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
+
 
         return grid;
     }// end of method
@@ -352,12 +360,13 @@ public class Tabellone extends AGridViewList {
         Grid.Column column = grid.addComponentColumn(componentProvider);
 
         column.setHeader(periodoHeader());
-        column.setWidth("180px");
         column.setFlexGrow(0);
+        column.setWidth("12em");
         column.setSortable(false);
         column.setResizable(false);
         column.setFrozen(true);
-    }// end of method
+
+    }
 
 
     /**
@@ -377,7 +386,7 @@ public class Tabellone extends AGridViewList {
 
         column.setHeader(date.get(day, EATime.weekShortMese));
         column.setFlexGrow(0);
-        column.setWidth("150px");
+        column.setWidth("50mm");
         column.setSortable(false);
         column.setResizable(false);
     }// end of method

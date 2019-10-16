@@ -9,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -148,7 +149,8 @@ public class MainLayout14 extends AppLayout {
         label.getElement().getStyle().set("color", "blue");
 
 //        addToNavbar(new DrawerToggle(), img, label);
-        addToNavbar(new DrawerToggle(), label);
+        DrawerToggle drawer = new DrawerToggle();
+        addToNavbar(drawer, label);
         this.setDrawerOpened(false);
     }// end of method
 

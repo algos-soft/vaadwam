@@ -9,7 +9,8 @@
     <template>
         <style>
             #container {
-                padding-top: 1px;
+                width: 100%
+                padding-top: 100px;
                 /*font-size: small;*/
                 display: flex;
                 flex-direction: column;
@@ -19,21 +20,6 @@
                 /*border-color: rgb(101, 101, 104);*/
             }
 
-            #iscrizione {
-                margin-bottom: 1px;
-                font-size: large;
-                font-weight: bold;
-                display: flex;
-                flex-direction: column;
-                /*border-style: solid;*/
-                /*border-width: 0.1em;*/
-                /*border-radius: 0.4em;*/
-                /*border-color: rgb(40, 40, 0);*/
-            }
-
-            #bottone {
-                text-align: left;
-            }
         </style>
 
         <!--Client-initiated events:-->
@@ -42,27 +28,11 @@
         <!--Un click nel container lancia un evento asincrono (di nome handleClick) nel Server-->
         <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
         <div id="container" on-click="handleClick">
-            <!--<template is="dom-repeat" items="[[iscrizioni]]">-->
-            <!--<div>{{item.milite.ordine}}</div>-->
-            <!--</template>-->
-            <!--<template is="dom-repeat" items="[[militi]]">-->
-            <!--<div>{{item.sigla}}</div>-->
-            <!--</template>-->
-            <!--            <template is="dom-repeat" items="[[funzioni]]">-->
-            <!--                <div id="iscrizione" style="background-color:[[colore]]">{{item}}</div>-->
-            <!--            </template>-->
             <template is="dom-repeat" items="[[righecella]]">
-                <button
-                        style="width: 10em; text-align: left; font-size:medium; font-weight: bold; background-color:{{item.colore}};">
-                    <iron-icon icon=[[item.icona]] slot="prefix" style="font-size:small; "></iron-icon>
+                <button style="width: 100%; height: 10mm; text-align: left; font-size:3.5mm; font-weight: bold; background-color:{{item.colore}};">
+                    <iron-icon icon=[[item.icona]] slot="prefix" style="height:4.5mm"></iron-icon>
                     {{item.milite}}
                 </button>
-
-                <!--                <div style="display: flex; flex-direction:row; align-items: center;">-->
-                <!--                    <iron-icon  icon="vaadin:[[item.icona]]" style="background-color:[[item.colore]]; margin-top: 0em; margin-bottom: 0em;" slot="suffix"></iron-icon>-->
-                <!--                    <vaadin-button  style="width: 11em; background-color:{{item.colore}}; margin-top: 0em; margin-bottom: 0em; text-align: left;  font-size:medium; font-weight: bold">{{item.milite}}</vaadin-button>-->
-                <!--                </div>-->
-
             </template>
 
         </div>

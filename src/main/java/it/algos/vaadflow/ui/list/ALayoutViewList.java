@@ -70,13 +70,16 @@ public abstract class ALayoutViewList extends APrefViewList {
      */
     protected void fixLayout() {
         super.fixLayout();
-        this.setMargin(true);
+        this.setMargin(false);
         this.setSpacing(false);
         this.setPadding(false);
 
         this.topPlaceholder = new HorizontalLayout();
         this.alertPlacehorder = new VerticalLayout();
         this.gridPlaceholder = new VerticalLayout();
+
+        //this.gridPlaceholder.setSizeFull();
+
         this.bottomPlacehorder = new HorizontalLayout();
 
         if (pref.isBool(USA_DEBUG)) {
