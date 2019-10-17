@@ -115,7 +115,7 @@ public class FunzioneList extends WamViewList {
      * Invocare PRIMA il metodo della superclasse
      */
     @Override
-    @RolesAllowed("developer")
+//    @RolesAllowed("developer")
     protected void creaAlertLayout() {
         super.creaAlertLayout();
         boolean isDeveloper = login.isDeveloper();
@@ -200,7 +200,7 @@ public class FunzioneList extends WamViewList {
             if (croce != null) {
                 items = ((FunzioneService)service).findAllByCroce(croce);
             } else {
-                items = ((FunzioneService)service).findAll();
+                items = ((FunzioneService)service).findAllCroci();
             }// end of if/else cycle
         }// end of if cycle
     }// end of method

@@ -9,7 +9,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -140,17 +139,23 @@ public class MainLayout14 extends AppLayout {
         //@todo DA FARE cambiare immagine
         Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
         img.setHeight("44px");
+        Image immagine = new Image("frontend/images/ambulanza.jpg", "Algos");
+        immagine.setHeight("44px");
 
-        String desc = login.getCompany() != null ? login.getCompany().descrizione : text.primaMaiuscola(FlowVar.projectBanner);
+        String desc = login.getCompany() != null ? login.getCompany().code.toUpperCase() : text.primaMaiuscola(FlowVar.projectBanner);
 
         Label label = new Label(desc);
-        label.getStyle().set("font-size", "xx-large");
+        label.getStyle().set("font-size", "x-large");
         label.getStyle().set("font-weight", "bold");
         label.getElement().getStyle().set("color", "blue");
 
+        Label spazio = new Label();
+        spazio.getElement().setProperty("innerHTML", "&nbsp;&nbsp;&nbsp;&nbsp;");
+
 //        addToNavbar(new DrawerToggle(), img, label);
         DrawerToggle drawer = new DrawerToggle();
-        addToNavbar(drawer, label);
+//        addToNavbar(drawer, label);
+        addToNavbar(drawer, immagine, spazio,label);
         this.setDrawerOpened(false);
     }// end of method
 
@@ -232,7 +237,7 @@ public class MainLayout14 extends AppLayout {
             if (context.isDev() || context.isAdmin()) {
                 tabs = menuService.addTabsUser(tabs, mappa);
             } else {
-                tabs = menuService.creaTabsUser( mappa);
+                tabs = menuService.creaTabsUser(mappa);
             }// end of if/else cycle
 
             //--aggiunge il menu logout (sempre se usa la security)

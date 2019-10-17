@@ -8,7 +8,6 @@ import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,8 +15,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
-
-import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 
 /**
  * Project vaadwam <br>
@@ -56,9 +53,9 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- *      (EAFieldType.link e XxxPresenter.class)
+ * (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -137,7 +134,7 @@ public class Funzione extends WamEntity {
     @Size(min = 2, max = 50)
     @Field("desc")
     @AIField(type = EAFieldType.text, firstCapital = true)
-    @AIColumn(flexGrow = true,widthEM = 10)
+    @AIColumn(flexGrow = true, widthEM = 15)
     public String descrizione;
 
 
@@ -160,7 +157,7 @@ public class Funzione extends WamEntity {
      */
     @Field("dip")
     @AIField(type = EAFieldType.multicombo, name = "funzioni dipendenti")
-    @AIColumn(name = "funzioni dipendenti",widthEM = 5)
+    @AIColumn(name = "funzioni dipendenti", flexGrow = true, widthEM = 20)
     public List<Funzione> dipendenti;
 
 

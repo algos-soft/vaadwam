@@ -383,6 +383,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         edit.setIcon(new Icon("lumo", "edit"));
         edit.addClassName("review__edit");
         edit.getElement().setAttribute("theme", "tertiary");
+        edit.setHeight("1em");
+
         return edit;
     }// end of method
 

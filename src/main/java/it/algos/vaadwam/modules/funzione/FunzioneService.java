@@ -300,6 +300,15 @@ public class FunzioneService extends WamService {
         Croce croce = getCroce();
         return findAllByCroce(croce);
     }// end of method
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Funzione> findAllCroci() {
+        return repository.findAll();
+    }// end of method
 
 
     /**
