@@ -33,7 +33,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ADD;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Qualifier(TAG_ADD)
 @Slf4j
-@AIScript(sovrascrivibile = true)
+@AIScript(sovrascrivibile = false)
 public class AddressDialog extends AViewDialog<Address> {
 
 

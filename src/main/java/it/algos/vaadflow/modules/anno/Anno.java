@@ -66,10 +66,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderAnno")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "anno", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"ordine", "secolo", "titolo"})
 @AIForm(fields = {"ordine", "secolo", "titolo"})
-@AIScript(sovrascrivibile = false)
 public class Anno extends AEntity {
 
 

@@ -1,11 +1,16 @@
 package it.algos.vaadflow.service;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.converter.StringToLongConverter;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import it.algos.vaadflow.annotation.AIField;
@@ -17,6 +22,7 @@ import it.algos.vaadflow.validator.AIntegerZeroValidator;
 import it.algos.vaadflow.validator.ALongZeroValidator;
 import it.algos.vaadflow.validator.AStringNullValidator;
 import it.algos.vaadflow.validator.AUniqueValidator;
+import it.algos.vaadflow.ui.fields.IAIcon;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -378,6 +384,26 @@ public class AFieldService extends AbstractService {
                 binder.forField(field).bind(fieldName);
                 break;
             case vaadinIcon:
+                if (serviceClazz != null) {
+                    field = new Select<>();
+                    IAIcon service = (IAIcon) StaticContextAccessor.getBean(serviceClazz);
+                    List items = ((IAIcon) service).findIcons();
+                    if (items != null) {
+                        ((Select) field).setItems(items);
+                    }// end of if cycle
+
+                    ((Select) field).setRenderer(new ComponentRenderer<>(icon -> {
+                        Div text = new Div();
+                        text.setText(icon.toString().toLowerCase());
+
+                        FlexLayout wrapper = new FlexLayout();
+                        text.getStyle().set("margin-left", "0.5em");
+                        wrapper.add(((VaadinIcon)icon).create(), text);
+                        return wrapper;
+                    }));
+                } else {
+                }// end of if/else cycle
+                binder.forField(field).bind(fieldName);
                 break;
             case link:
                 field = new ATextField(caption);

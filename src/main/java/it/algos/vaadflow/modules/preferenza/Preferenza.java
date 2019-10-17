@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 21-set-2019 8.28.35 <br>
+ * Fix date: 14-ott-2019 18.44.27 <br>
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  * <p>
@@ -54,9 +54,9 @@ import javax.validation.constraints.Size;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- * (EAFieldType.link e XxxPresenter.class)
+ *      (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity

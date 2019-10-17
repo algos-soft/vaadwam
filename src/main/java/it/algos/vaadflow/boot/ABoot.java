@@ -1,5 +1,6 @@
 package it.algos.vaadflow.boot;
 
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.data.FlowData;
 import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
@@ -135,12 +136,12 @@ public abstract class ABoot implements ServletContextListener {
     protected void inizia() {
         this.iniziaDBMongo();
         this.iniziaVersioni();
+        this.regolaInfo();
         this.regolaRiferimenti();
         this.creaPreferenze();
         this.fixPreferenze();
         this.iniziaDataStandard();
         this.iniziaDataProgettoSpecifico();
-        this.regolaInfo();
         this.addRouteStandard();
         this.addRouteSpecifiche();
     }// end of method
@@ -183,9 +184,15 @@ public abstract class ABoot implements ServletContextListener {
     protected int creaPreferenze() {
         int numPref = 0;
 
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
-        }// end of for cycle
+        if (FlowVar.usaCompany) {
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+            }// end of for cycle
+        } else {
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+            }// end of for cycle
+        }// end of if/else cycle
 
         return numPref;
     }// end of method
@@ -218,9 +225,15 @@ public abstract class ABoot implements ServletContextListener {
         preferenzaService.deleteAll();
 
         //--ricrea tutte le preferenze standard coi valori di default iniziali
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
-        }// end of for cycle
+        if (FlowVar.usaCompany) {
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
+            }// end of for cycle
+        } else {
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
+            }// end of for cycle
+        }// end of if/else cycle
 
         return numPref;
     }// end of method

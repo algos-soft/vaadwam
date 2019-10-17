@@ -61,10 +61,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderAddress")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "indirizzo", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"indirizzo", "localita", "cap"})
 @AIForm(fields = {"indirizzo", "localita", "cap"})
-@AIScript(sovrascrivibile = false)
 public class Address extends AEntity {
 
 

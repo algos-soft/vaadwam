@@ -118,6 +118,9 @@ public class AMenuService extends AService {
         for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE))) {
             routers.add(router);
         }// end of for cycle
+        for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_CRONO))) {
+            routers.add(router);
+        }// end of for cycle
         for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO))) {
             routers.add(router);
         }// end of for cycle
@@ -132,10 +135,9 @@ public class AMenuService extends AService {
      * @param clazzList di classi raggiungibili da @Route
      */
     public Tab[] creaTabsBase(List<Class<? extends IAView>> clazzList, String titoloGruppo) {
-        List<Tab> tabs = null;
+        List<Tab> tabs = new ArrayList<>();
 
         if (array.isValid(clazzList)) {
-            tabs = new ArrayList<>();
             if (text.isValid(titoloGruppo)) {
                 tabs.add(new Tab("==" + titoloGruppo + "=="));
             }// end of if cycle
@@ -206,6 +208,9 @@ public class AMenuService extends AService {
         Tabs tabs = new Tabs();
 
         for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE), "")) {
+            tabs.add(tab);
+        }// end of for cycle
+        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_CRONO), "")) {
             tabs.add(tab);
         }// end of for cycle
         for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO), "")) {

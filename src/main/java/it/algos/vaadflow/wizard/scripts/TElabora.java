@@ -1282,17 +1282,17 @@ public class TElabora {
      * Cartella di resources META-INF
      */
     private void copiaMetaInf() {
-        String srcPath = projectBasePath + DIR_MAIN + RESOURCES_NAME + META_NAME;
-        String destPath = projectPath + DIR_MAIN + RESOURCES_NAME + META_NAME;
-        boolean dirCancellata = false;
-
-        if (text.isValid(newProjectName)) {
-            dirCancellata = file.deleteDirectory(destPath);
-        }// end of if cycle
-
-        if (dirCancellata || !file.isEsisteDirectory(destPath)) {
-            file.copyDirectory(srcPath, destPath);
-        }// end of if cycle
+//        String srcPath = projectBasePath + DIR_MAIN + RESOURCES_NAME + META_NAME;
+//        String destPath = projectPath + DIR_MAIN + RESOURCES_NAME + META_NAME;
+//        boolean dirCancellata = false;
+//
+//        if (text.isValid(newProjectName)) {
+//            dirCancellata = file.deleteDirectory(destPath);
+//        }// end of if cycle
+//
+//        if (dirCancellata || !file.isEsisteDirectory(destPath)) {
+//            file.copyDirectory(srcPath, destPath);
+//        }// end of if cycle
     }// end of method
 
 
