@@ -21,7 +21,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
     redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false,true),
 
     //--scheduled task
-    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download croci", EAPrefType.bool, EARole.developer, false,true),
+    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download croci", EAPrefType.bool, EARole.developer, false,false),
     usaDaemonFunzioni(USA_DAEMON_FUNZIONI, "Crono per download funzioni", EAPrefType.bool, EARole.developer, false,true),
     usaDaemonServizi(USA_DAEMON_SERVIZI, "Crono per download servizi", EAPrefType.bool, EARole.developer, false,true),
     usaDaemonMiliti(USA_DAEMON_MILITI, "Crono per download militi", EAPrefType.bool, EARole.developer, false,false),
