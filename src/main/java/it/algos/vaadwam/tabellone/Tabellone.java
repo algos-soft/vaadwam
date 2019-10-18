@@ -25,6 +25,8 @@ import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -87,6 +89,15 @@ public class Tabellone extends AGridViewList {
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
+    private CroceService croceService;
+
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
     @Qualifier(TAG_CRO)
     private WamService wamService;
 
@@ -122,7 +133,9 @@ public class Tabellone extends AGridViewList {
     /**
      * Devo mantenere un valore perché il comboBox viene ricostruito ad ogni modifica della Grid <br>
      */
-    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;;
+    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;
+
+    ;
 
     @Autowired
     private MiliteService militeService;
@@ -221,7 +234,6 @@ public class Tabellone extends AGridViewList {
         super.usaSearch = false;
         super.usaBottoneNew = false;
         super.usaBottomLayout = true;
-
     }// end of method
 
 
@@ -308,6 +320,23 @@ public class Tabellone extends AGridViewList {
             addColumnsTurni(grid, startDay.plusDays(i));
         }
 
+    }// end of method
+
+
+    /**
+     * Crea un Popup di selezione della company <br>
+     * Creato solo se devleper=true e usaCompany=true <br>
+     */
+    protected void creaCompanyFiltro() {
+        super.creaCompanyFiltro();
+
+        filtroCompany.setItems(croceService.findAll());
+        filtroCompany.addValueChangeListener(event -> {
+            Croce croce = (Croce) event.getValue();
+            wamLogin.setCroce(croce);
+            wamLogin.setCompany(croce);
+            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+        });
     }// end of method
 
 
