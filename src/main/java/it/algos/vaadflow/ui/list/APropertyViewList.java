@@ -147,7 +147,6 @@ public abstract class APropertyViewList extends VerticalLayout {
      * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
-    @Autowired
     protected CompanyService companyService;
 
 

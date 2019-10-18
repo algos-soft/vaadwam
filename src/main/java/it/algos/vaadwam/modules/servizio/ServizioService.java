@@ -327,6 +327,16 @@ public class ServizioService extends WamService {
      * Returns instances of the company <br>
      * Lista ordinata <br>
      *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Servizio> findAllCroci() {
+        return repository.findAll();
+    }// end of method
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
      * @param croce di appartenenza (obbligatoria)
      *
      * @return lista ordinata di tutte le entities

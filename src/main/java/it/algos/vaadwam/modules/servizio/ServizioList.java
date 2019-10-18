@@ -83,8 +83,6 @@ public class ServizioList extends WamViewList {
     }// end of Vaadin/@Route constructor
 
 
-
-
     /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
      * Normalmente ad uso esclusivo del developer

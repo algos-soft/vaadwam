@@ -8,25 +8,19 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.giorno.Giorno;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.vaadin.klaudeta.PaginatedGrid;
 
-import javax.annotation.security.RolesAllowed;
 import java.time.LocalDateTime;
 
 import static it.algos.vaadwam.application.WamCost.*;
-import static it.algos.vaadwam.modules.croce.CroceService.*;
 
 /**
  * Project vaadwam <br>
@@ -73,13 +67,14 @@ public class FunzioneList extends WamViewList {
     @Autowired
     @Qualifier(TASK_FUN)
     private ATask task;
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    private CroceService croceService;
+
+//    /**
+//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+//     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+//     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+//     */
+//    @Autowired
+//    private CroceService croceService;
 
 
     /**
@@ -97,16 +92,6 @@ public class FunzioneList extends WamViewList {
     }// end of Vaadin/@Route constructor
 
 
-    /**
-     * Preferenze standard <br>
-     * Può essere sovrascritto, per aggiungere informazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
-     */
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-//        super.usaPopupFiltro = true;
-    }// end of method
 
     /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
@@ -115,7 +100,6 @@ public class FunzioneList extends WamViewList {
      * Invocare PRIMA il metodo della superclasse
      */
     @Override
-//    @RolesAllowed("developer")
     protected void creaAlertLayout() {
         super.creaAlertLayout();
         boolean isDeveloper = login.isDeveloper();
@@ -141,47 +125,6 @@ public class FunzioneList extends WamViewList {
     }// end of method
 
 
-//    /**
-//     * Placeholder SOPRA la Grid <br>
-//     * Contenuto eventuale, presente di default <br>
-//     * - con o senza un bottone per cancellare tutta la collezione
-//     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
-//     * - con o senza gruppo di ricerca:
-//     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
-//     * -    bottone per aprire un DialogSearch con diverse property selezionabili
-//     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
-//     * - con eventuale Popup di selezione, filtro e ordinamento
-//     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
-//     * - con eventuali altri bottoni specifici <br>
-//     * Può essere sovrascritto, per aggiungere informazioni <br>
-//     * Invocare PRIMA il metodo della superclasse <br>
-//     */
-//    @Override
-//    protected void creaTopLayout() {
-//        super.creaTopLayout();
-//    }// end of method
-
-
-//    /**
-//     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
-//     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
-//     * Invocare PRIMA il metodo della superclasse <br>
-//     */
-//    protected void creaPopupFiltro() {
-//        if (login.isDeveloper()) {
-//            super.creaPopupFiltro();
-//            filtroComboBox.setWidth("8em");
-//            filtroComboBox.setHeightFull();
-//
-//            filtroComboBox.setItems(croceService.findAll());
-//            filtroComboBox.addValueChangeListener(e -> {
-//                updateItems();
-//                updateView();
-//            });
-//        }// end of if cycle
-//    }// end of method
-
-
     /**
      * Sovrascritto <br>
      */
@@ -190,20 +133,6 @@ public class FunzioneList extends WamViewList {
         pref.saveValue(LAST_IMPORT_FUNZIONI, LocalDateTime.now());
     }// end of method
 
-
-//    public void updateItems() {
-//        Croce croce;
-//
-//        if (filtroComboBox != null) {
-//            croce =  (Croce)filtroComboBox.getValue();
-//
-//            if (croce != null) {
-//                items = ((FunzioneService)service).findAllByCroce(croce);
-//            } else {
-//                items = ((FunzioneService)service).findAllCroci();
-//            }// end of if/else cycle
-//        }// end of if cycle
-//    }// end of method
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>

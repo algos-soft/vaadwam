@@ -3,12 +3,15 @@ package it.algos.vaadwam.application;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.FlowVar;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.CroceList;
@@ -31,6 +34,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.servlet.ServletContextEvent;
 import java.time.LocalDate;
+import java.util.List;
 
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 
@@ -117,8 +121,8 @@ public class WamBoot extends ABoot {
     //    @Autowired
     private ALogin login;
 
-    @Autowired
-    private CompanyService companyService;
+//    @Autowired
+//    private CompanyService companyService;
 
 //    @Autowired
 //    private SecurityConfiguration security;
@@ -197,11 +201,20 @@ public class WamBoot extends ABoot {
     @Override
     public int creaPreferenze() {
         int numPref = super.creaPreferenze();
-//        super.resetPreferenze();
+        List<? extends AEntity> listaCompany = companyService.findAll();
 
-//        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
-//            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
-//        }// end of for cycle
+        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
+            //--se è companySpecifica=true, crea una preferenza per ogni company
+            if (eaPref.isCompanySpecifica()) {
+                for (AEntity company : listaCompany) {
+                    if (company instanceof Company) {
+                        numPref = preferenzaService.creaIfNotExist(eaPref, (Company) company) ? numPref + 1 : numPref;
+                    }// end of if cycle
+                }// end of for cycle
+            } else {
+                numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+            }// end of if/else cycle
+        }// end of for cycle
 
         return numPref;
     }// end of method
@@ -222,23 +235,23 @@ public class WamBoot extends ABoot {
     }// end of method
 
 
-    /**
-     * Cancella e ricrea le preferenze standard <br>
-     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
-     * nella sottoclasse specifica dell'applicazione <br>
-     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
-     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
-     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     *
-     * @return numero di preferenze creato
-     */
-    @Override
-    public int resetPreferenze() {
-        int numPref = super.resetPreferenze();
-
-        return numPref;
-    }// end of method
+//    /**
+//     * Cancella e ricrea le preferenze standard <br>
+//     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
+//     * nella sottoclasse specifica dell'applicazione <br>
+//     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
+//     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
+//     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
+//     * Invocare PRIMA il metodo della superclasse <br>
+//     *
+//     * @return numero di preferenze creato
+//     */
+//    @Override
+//    public int resetPreferenze() {
+//        int numPref = super.resetPreferenze();
+//
+//        return numPref;
+//    }// end of method
 
 
     /**

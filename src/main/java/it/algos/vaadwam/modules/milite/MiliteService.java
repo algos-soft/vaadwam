@@ -437,6 +437,15 @@ public class MiliteService extends WamService implements IUtenteService {
         return repository.findAllByCroceOrderByOrdineAsc(croce);
     }// end of method
 
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Milite> findAllCroci() {
+        return repository.findAll();
+    }// end of method
 
     /**
      * Returns all enabled <br>

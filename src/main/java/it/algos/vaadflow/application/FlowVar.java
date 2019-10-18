@@ -103,6 +103,7 @@ public class FlowVar {
      */
     public static Class companyServiceClazz = CompanyService.class;
 
+
     public static List<Class> menuClazzList = new ArrayList<>();
 
 }// end of class

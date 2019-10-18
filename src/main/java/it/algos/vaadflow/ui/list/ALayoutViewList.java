@@ -293,8 +293,6 @@ public abstract class ALayoutViewList extends APrefViewList {
     /**
      * Crea un Popup di selezione della company <br>
      * Creato solo se devleper=true e usaCompany=true <br>
-     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
-     * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void creaCompanyFiltro() {
         filtroCompany = new AComboBox();
