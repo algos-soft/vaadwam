@@ -16,10 +16,7 @@ import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EAMenu;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
-import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.menu.AButtonMenu;
 import it.algos.vaadflow.ui.menu.APopupMenu;
@@ -27,6 +24,7 @@ import it.algos.vaadflow.ui.menu.IAMenu;
 import lombok.extern.slf4j.Slf4j;
 
 import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 
 /**
@@ -54,7 +52,7 @@ public abstract class ALayoutViewList extends APrefViewList {
      * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
      * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param service business class e layer di collegamento per la Repository
+     * @param service     business class e layer di collegamento per la Repository
      * @param entityClazz modello-dati specifico di questo modulo
      */
     public ALayoutViewList(IAService service, Class<? extends AEntity> entityClazz) {
@@ -257,7 +255,13 @@ public abstract class ALayoutViewList extends APrefViewList {
         if (usaPopupFiltro) {
             creaPopupFiltro();
             topPlaceholder.add(filtroComboBox);
-        }// end of if cycle
+        } else {
+            if (usaCompany && login.isDeveloper()) {
+                creaCompanyFiltro();
+                topPlaceholder.add(filtroCompany);
+            }// end of if cycle
+        }// end of if/else cycle
+
 
         //--il bottone associa un evento standard -> AViewList.openNew()
         //--il bottone associa, se previsto da pref, un tasto shortcut
@@ -283,6 +287,25 @@ public abstract class ALayoutViewList extends APrefViewList {
     protected void creaPopupFiltro() {
         filtroComboBox = new AComboBox();
         filtroComboBox.setWidth("8em");
+    }// end of method
+
+
+    /**
+     * Crea un Popup di selezione della company <br>
+     * Creato solo se devleper=true e usaCompany=true <br>
+     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaCompanyFiltro() {
+        filtroCompany = new AComboBox();
+        filtroCompany.setWidth("8em");
+        filtroCompany = new AComboBox();
+        filtroCompany.setWidth("8em");
+        filtroCompany.setItems(companyService.findAll());
+        filtroCompany.addValueChangeListener(e -> {
+            updateItems();
+            updateView();
+        });
     }// end of method
 
 }// end of class

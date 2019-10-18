@@ -393,6 +393,15 @@ public abstract class WamService extends AService {
 
 
     /**
+     * Returns all instances <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<? extends AEntity> findAllCroci() {
+        return null;
+    }// end of method
+
+    /**
      * Ordine di presentazione (obbligatorio, unico all'interno della croce), <br>
      * Viene calcolato in automatico alla creazione della entity <br>
      * Recupera dal DB il valore massimo pre-esistente della property <br>

@@ -1,17 +1,17 @@
 package it.algos.vaadflow.ui.list;
 
 //import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.OptionalParameter;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.utente.UtenteService;
@@ -24,9 +24,7 @@ import it.algos.vaadflow.ui.fields.AComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.vaadin.klaudeta.PaginatedGrid;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +139,15 @@ public abstract class APropertyViewList extends VerticalLayout {
      */
     @Autowired
     protected PreferenzaService pref;
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected CompanyService companyService;
 
 
     /**
@@ -277,6 +284,8 @@ public abstract class APropertyViewList extends VerticalLayout {
     protected boolean usaBottoneNew;
 
     protected AComboBox filtroComboBox;
+
+    protected AComboBox filtroCompany;
 
     protected Button newButton;
 

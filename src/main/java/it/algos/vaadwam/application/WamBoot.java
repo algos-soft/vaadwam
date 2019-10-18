@@ -190,15 +190,14 @@ public class WamBoot extends ABoot {
      */
     @Override
     public int creaPreferenze() {
-//        int numPref = super.creaPreferenze();
-int numPref=0;
-        super.resetPreferenze();
+        int numPref = super.creaPreferenze();
+//        super.resetPreferenze();
 
 //        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
 //            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
 //        }// end of for cycle
 
-        return 0;
+        return numPref;
     }// end of method
 
 

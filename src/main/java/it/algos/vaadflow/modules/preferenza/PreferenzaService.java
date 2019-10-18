@@ -137,8 +137,14 @@ public class PreferenzaService extends AService {
      */
     public boolean creaIfNotExist(IAPreferenza eaPref, Company company) {
         boolean creata = false;
+        String keyUnica;
+        if (company != null) {
+            keyUnica = company.code + text.primaMaiuscola(eaPref.getCode());
+        } else {
+            keyUnica = eaPref.getCode();
+        }// end of if/else cycle
 
-        if (isMancaByKeyUnica(eaPref.getCode())) {
+        if (findById(keyUnica) == null) {
             AEntity entity = save(newEntity(eaPref, company));
             creata = entity != null;
         }// end of if cycle
@@ -321,22 +327,6 @@ public class PreferenzaService extends AService {
         }// end of if/else cycle
 
         return keyUnica;
-    }// end of method
-
-
-    /**
-     * Operazioni eseguite PRIMA del save <br>
-     * Regolazioni automatiche di property <br>
-     * Controllo della validità delle properties obbligatorie <br>
-     *
-     * @param entityBean da regolare prima del save
-     * @param operation  del dialogo (NEW, Edit)
-     *
-     * @return the modified entity
-     */
-    @Override
-    public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
-        return super.beforeSave(entityBean, operation);
     }// end of method
 
 
@@ -612,6 +602,7 @@ public class PreferenzaService extends AService {
         } else {
             log.warn("Algos - Preferenze. Non esiste la preferenza: " + keyCode);
         }// end of if/else cycle
+
         return valoreTesto;
     } // end of method
 
@@ -667,8 +658,23 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
+    public String getEnumStr(EAPreferenza eaPref) {
+        return getEnumStr(eaPref.getCode(), (String) eaPref.getValue());
+    } // end of method
+
+
+    public String getEnumStr(EAPreferenza eaPref, String defaultValue) {
+        return getEnumStr(eaPref.getCode(), defaultValue);
+    } // end of method
+
+
     public String getEnumStr(String keyCode) {
-        String valoreTesto = "";
+        return getEnumStr(keyCode, "");
+    } // end of method
+
+
+    public String getEnumStr(String keyCode, String defaultValue) {
+        String valoreTesto = defaultValue;
         String rawValue = (String) getValue(keyCode);
 
         if (text.isValid(rawValue)) {

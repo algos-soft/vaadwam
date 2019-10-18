@@ -9,10 +9,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.schedule.ATask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +53,15 @@ public abstract class WamViewList extends AGridViewList {
     @Autowired
     @Qualifier(TAG_CRO)
     protected WamService wamService;
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected CroceService croceService;
 
     /**
      * Wam-Login della sessione con i dati del Milite loggato <br>
@@ -281,5 +294,37 @@ public abstract class WamViewList extends AGridViewList {
 //            }// end of if cycle
 //        }// end of if cycle
 //    }// end of method
+
+    /**
+     * Crea un Popup di selezione della company <br>
+     * Creato solo se devleper=true e usaCompany=true <br>
+     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaCompanyFiltro() {
+        super.creaCompanyFiltro();
+        filtroCompany.setItems(croceService.findAll());
+        filtroCompany.addValueChangeListener(e -> {
+            updateItems();
+            updateView();
+        });
+    }// end of method
+
+
+    public void updateItems() {
+        Croce croce;
+        if (filtroCompany != null) {
+            croce =  (Croce)filtroCompany.getValue();
+
+            if (croce != null) {
+                items = ((WamService)service).findAllByCroce(croce);
+            } else {
+                items = ((WamService)service).findAllCroci();
+            }// end of if/else cycle
+        } else {
+            items = ((WamService)service).findAll();
+        }// end of if/else cycle
+
+    }// end of method
 
 }// end of class

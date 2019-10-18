@@ -22,6 +22,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -48,6 +49,7 @@ import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 @BodySize
 @HtmlImport(value = "styles/shared-styles.html", loadMode = LoadMode.INLINE)
 @HtmlImport(value = "styles/algos-styles.html", loadMode = LoadMode.INLINE)
+@Slf4j
 @Theme(Lumo.class)
 public class MainLayout14 extends AppLayout {
 
@@ -165,11 +167,7 @@ public class MainLayout14 extends AppLayout {
      * Regola il tipo di presentazione del menu
      */
     protected void fixType() {
-        String type = pref.getStr(EAPreferenza.usaMenu);
-
-        if (text.isEmpty(type)) {
-            type="tabs";
-        }// end of if cycle
+        String type = pref.getEnumStr(EAPreferenza.usaMenu,"tabs");
 
         switch (type) {
             case "routers":
@@ -179,6 +177,7 @@ public class MainLayout14 extends AppLayout {
                 addToDrawer(getTabMenu());
                 break;
             default:
+                log.warn("MainLayout14 - Manca la preferenza 'usaMenu'");
                 break;
         } // end of switch statement
 

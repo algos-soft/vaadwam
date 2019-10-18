@@ -22,6 +22,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.lang.reflect.Field;
@@ -215,6 +217,46 @@ public abstract class AService extends AbstractService implements IAService {
     }// end of method
 
 
+    @Override
+    public List<? extends AEntity> findAllByCompany(Company company) {
+        List<? extends AEntity> lista = null;
+        String sortName = "";
+        Sort sort;
+
+        if (entityClass == null) {
+            return null;
+        }// end of if cycle
+        if (!ACEntity.class.isAssignableFrom(entityClass)) {
+            return null;
+        }// end of if cycle
+
+        if (reflection.isEsiste(entityClass, FIELD_NAME_ORDINE)) {
+            sortName = FIELD_NAME_ORDINE;
+        } else {
+            if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
+                sortName = FIELD_NAME_CODE;
+            } else {
+                if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
+                    sortName = FIELD_NAME_DESCRIZIONE;
+                }// end of if cycle
+            }// end of if/else cycle
+        }// end of if/else cycle
+
+//        if (text.isValid(sortName)) {
+//            sort = new Sort(Sort.Direction.ASC, sortName);
+//            lista = new ArrayList<>(repository.findAll(sort));
+//        } else {
+//            lista = new ArrayList<>(repository.findAll());
+//        }// end of if/else cycle
+
+        lista = mongo.findAllByProperty(entityClass, "company",company);
+
+
+
+        return lista;
+    }// end of method
+
+
     /**
      * Returns only entities of the requested page.
      * <p>
@@ -230,6 +272,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @return all entities
      */
+    @Override
     public List<? extends AEntity> findAll(int offset, int size) {
         return findAll(offset, size, (Sort) null);
     }// end of method
@@ -247,6 +290,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @return all entities
      */
+    @Override
     public ArrayList<? extends AEntity> findAll(int offset, int size, Sort sort) {
         Pageable page;
 

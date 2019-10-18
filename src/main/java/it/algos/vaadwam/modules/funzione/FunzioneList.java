@@ -105,7 +105,7 @@ public class FunzioneList extends WamViewList {
      */
     protected void fixPreferenze() {
         super.fixPreferenze();
-        super.usaPopupFiltro = true;
+//        super.usaPopupFiltro = true;
     }// end of method
 
     /**
@@ -141,45 +141,45 @@ public class FunzioneList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Placeholder SOPRA la Grid <br>
-     * Contenuto eventuale, presente di default <br>
-     * - con o senza un bottone per cancellare tutta la collezione
-     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
-     * - con o senza gruppo di ricerca:
-     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
-     * -    bottone per aprire un DialogSearch con diverse property selezionabili
-     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
-     * - con eventuale Popup di selezione, filtro e ordinamento
-     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
-     * - con eventuali altri bottoni specifici <br>
-     * Può essere sovrascritto, per aggiungere informazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void creaTopLayout() {
-        super.creaTopLayout();
-    }// end of method
+//    /**
+//     * Placeholder SOPRA la Grid <br>
+//     * Contenuto eventuale, presente di default <br>
+//     * - con o senza un bottone per cancellare tutta la collezione
+//     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
+//     * - con o senza gruppo di ricerca:
+//     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
+//     * -    bottone per aprire un DialogSearch con diverse property selezionabili
+//     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
+//     * - con eventuale Popup di selezione, filtro e ordinamento
+//     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
+//     * - con eventuali altri bottoni specifici <br>
+//     * Può essere sovrascritto, per aggiungere informazioni <br>
+//     * Invocare PRIMA il metodo della superclasse <br>
+//     */
+//    @Override
+//    protected void creaTopLayout() {
+//        super.creaTopLayout();
+//    }// end of method
 
 
-    /**
-     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
-     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    protected void creaPopupFiltro() {
-        if (login.isDeveloper()) {
-            super.creaPopupFiltro();
-            filtroComboBox.setWidth("8em");
-            filtroComboBox.setHeightFull();
-
-            filtroComboBox.setItems(croceService.findAll());
-            filtroComboBox.addValueChangeListener(e -> {
-                updateItems();
-                updateView();
-            });
-        }// end of if cycle
-    }// end of method
+//    /**
+//     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
+//     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
+//     * Invocare PRIMA il metodo della superclasse <br>
+//     */
+//    protected void creaPopupFiltro() {
+//        if (login.isDeveloper()) {
+//            super.creaPopupFiltro();
+//            filtroComboBox.setWidth("8em");
+//            filtroComboBox.setHeightFull();
+//
+//            filtroComboBox.setItems(croceService.findAll());
+//            filtroComboBox.addValueChangeListener(e -> {
+//                updateItems();
+//                updateView();
+//            });
+//        }// end of if cycle
+//    }// end of method
 
 
     /**
@@ -191,19 +191,19 @@ public class FunzioneList extends WamViewList {
     }// end of method
 
 
-    public void updateItems() {
-        Croce croce;
-
-        if (filtroComboBox != null) {
-            croce =  (Croce)filtroComboBox.getValue();
-
-            if (croce != null) {
-                items = ((FunzioneService)service).findAllByCroce(croce);
-            } else {
-                items = ((FunzioneService)service).findAllCroci();
-            }// end of if/else cycle
-        }// end of if cycle
-    }// end of method
+//    public void updateItems() {
+//        Croce croce;
+//
+//        if (filtroComboBox != null) {
+//            croce =  (Croce)filtroComboBox.getValue();
+//
+//            if (croce != null) {
+//                items = ((FunzioneService)service).findAllByCroce(croce);
+//            } else {
+//                items = ((FunzioneService)service).findAllCroci();
+//            }// end of if/else cycle
+//        }// end of if cycle
+//    }// end of method
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>

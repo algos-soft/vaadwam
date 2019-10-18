@@ -1,8 +1,10 @@
 package it.algos.vaadflow.service;
 
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.Company;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
@@ -80,6 +82,7 @@ public interface IAService {
      */
     public List<? extends AEntity> findAll();
 
+    public List<? extends AEntity> findAllByCompany(Company company);
 
     /**
      * Returns only entities of the requested page.

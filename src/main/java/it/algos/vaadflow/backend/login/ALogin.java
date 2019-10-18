@@ -111,7 +111,7 @@ public class ALogin {
 
 
     public boolean isDeveloper() {
-        return roleType == EARoleType.developer;
+        return roleType == null || roleType == EARoleType.developer;
     }// end of method
 
 

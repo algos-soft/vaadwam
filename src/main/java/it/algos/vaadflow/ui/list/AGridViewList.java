@@ -4,17 +4,14 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.data.selection.SelectionListener;
-import com.vaadin.flow.data.selection.SingleSelectionEvent;
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -23,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.USA_SEARCH_CASE_SENSITIVE;
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
 /**
  * Project vaadflow
@@ -312,7 +310,24 @@ public abstract class AGridViewList extends ALayoutViewList {
                 }// end of if cycle
             }// end of if/else cycle
         } else {
-            items = service != null ? service.findAll() : null;
+            if (usaCompany) {
+                if (login.isDeveloper()) {
+                    if (filtroCompany != null) {
+                        Company company = (Company) filtroCompany.getValue();
+                        if (company != null) {
+                            items = service.findAllByCompany(company);
+                        } else {
+                            items = service != null ? service.findAll() : null;
+                        }// end of if/else cycle
+                    } else {
+                        //
+                    }// end of if/else cycle
+                } else {
+                    //
+                }// end of if/else cycle
+            } else {
+                items = service != null ? service.findAll() : null;
+            }// end of if/else cycle
         }// end of if/else cycle
     }// end of method
 

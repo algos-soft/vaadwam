@@ -401,9 +401,11 @@ public class AFieldService extends AbstractService {
                         wrapper.add(((VaadinIcon)icon).create(), text);
                         return wrapper;
                     }));
+                    if (binder != null) {
+                        binder.forField(field).bind(fieldName);
+                    }// end of if cycle
                 } else {
                 }// end of if/else cycle
-                binder.forField(field).bind(fieldName);
                 break;
             case link:
                 field = new ATextField(caption);
