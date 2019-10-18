@@ -1,18 +1,14 @@
 package it.algos.vaadwam.modules.croce;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.person.Person;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
-import it.algos.vaadwam.migration.ImportResult;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadflow.application.FlowCost.TAG_LOGIN;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
  * Project vaadwam <br>
@@ -229,24 +224,33 @@ public class CroceService extends WamService {
     @Override
     public List<? extends AEntity> findAll() {
         List<Croce> lista = null;
+        VaadinSession vaadSession = null;
         Croce croce;
         AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            vaadSession = UI.getCurrent().getSession();
+        }// end of if cycle
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
         }// end of if cycle
 
-        if (context != null && context.getLogin().isDeveloper()) {
-            lista = repository.findAllByOrderByCodeAsc();
-        } else {
-            if (context.getLogin().isAdmin()) {
-                croce = (Croce) context.getCompany();
-                if (croce != null) {
-                    lista = new ArrayList<>();
-                    lista.add(croce);
+        if (context != null) {
+            if (context.getLogin().isDeveloper()) {
+                lista = repository.findAllByOrderByCodeAsc();
+            } else {
+                if (context.getLogin().isAdmin()) {
+                    croce = (Croce) context.getCompany();
+                    if (croce != null) {
+                        lista = new ArrayList<>();
+                        lista.add(croce);
+                    }// end of if cycle
                 }// end of if cycle
-            }// end of if cycle
+            }// end of if/else cycle
+        } else {
+            lista = repository.findAllByOrderByCodeAsc();
         }// end of if/else cycle
 
         return lista;
@@ -314,6 +318,7 @@ public class CroceService extends WamService {
 //
 //        return lista;
 //    }// end of method
+
 
     /**
      * Importazione di dati <br>

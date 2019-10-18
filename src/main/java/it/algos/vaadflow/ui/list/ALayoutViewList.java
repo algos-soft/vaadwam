@@ -299,8 +299,6 @@ public abstract class ALayoutViewList extends APrefViewList {
     protected void creaCompanyFiltro() {
         filtroCompany = new AComboBox();
         filtroCompany.setWidth("8em");
-        filtroCompany = new AComboBox();
-        filtroCompany.setWidth("8em");
         filtroCompany.setItems(companyService.findAll());
         filtroCompany.addValueChangeListener(e -> {
             updateItems();

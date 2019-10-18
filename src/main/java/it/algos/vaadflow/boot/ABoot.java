@@ -2,6 +2,7 @@ package it.algos.vaadflow.boot;
 
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.data.FlowData;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.company.CompanyService;
@@ -9,13 +10,16 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.service.AMongoService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadflow.service.IAService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.List;
 
+import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
 /**
@@ -119,7 +123,8 @@ public abstract class ABoot implements ServletContextListener {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected CompanyService companyService;
+    @Qualifier(TAG_COM)
+    protected IAService companyService;
 
     /**
      * Executed on container startup
@@ -193,15 +198,17 @@ public abstract class ABoot implements ServletContextListener {
      */
     protected int creaPreferenze() {
         int numPref = 0;
-        List<Company> listaCompany = null;
+        List<? extends AEntity> listaCompany = null;
 
         if (usaCompany) {
             listaCompany = companyService.findAll();
             for (EAPreferenza eaPref : EAPreferenza.values()) {
                 //--se usa company ed è companySpecifica=true, crea una preferenza per ogni company
                 if (eaPref.isCompanySpecifica()) {
-                    for (Company company : listaCompany) {
-                        numPref = preferenzaService.creaIfNotExist(eaPref, company) ? numPref + 1 : numPref;
+                    for (AEntity company : listaCompany) {
+                        if (company instanceof Company) {
+                            numPref = preferenzaService.creaIfNotExist(eaPref, (Company)company) ? numPref + 1 : numPref;
+                        }// end of if cycle
                     }// end of for cycle
                 } else {
                     numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;

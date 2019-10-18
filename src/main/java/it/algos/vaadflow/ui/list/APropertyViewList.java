@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 import static it.algos.vaadflow.application.FlowCost.TAG_LOGIN;
 
 /**

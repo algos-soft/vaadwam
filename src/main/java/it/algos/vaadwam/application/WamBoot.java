@@ -9,7 +9,6 @@ import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.CroceList;
@@ -106,6 +105,12 @@ public class WamBoot extends ABoot {
     @Autowired
     public MiliteService militeService;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected CroceService companyServiceSovrascritta;
+
     @Autowired
     private UtenteService utenteService;
 
@@ -115,14 +120,14 @@ public class WamBoot extends ABoot {
     @Autowired
     private CompanyService companyService;
 
-    @Autowired
-    private RoleService roleService;
-
 //    @Autowired
 //    private SecurityConfiguration security;
 //
 //    @Autowired
 //    private UserRepository userRepository;
+
+    @Autowired
+    private RoleService roleService;
 
     /**
      * Iniettata dal costruttore <br>
@@ -177,6 +182,7 @@ public class WamBoot extends ABoot {
      */
     protected void regolaRiferimenti() {
         preferenzaService.applicationBoot = this;
+        super.companyService = companyServiceSovrascritta;
     }// end of method
 
 
@@ -229,13 +235,9 @@ public class WamBoot extends ABoot {
      */
     @Override
     public int resetPreferenze() {
-//        int numPref = super.resetPreferenze();
+        int numPref = super.resetPreferenze();
 
-//        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
-//            numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
-//        }// end of for cycle
-
-        return 0;
+        return numPref;
     }// end of method
 
 
@@ -293,6 +295,15 @@ public class WamBoot extends ABoot {
          * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
          */
         FlowVar.loginClazz = WamLogin.class;
+
+        /**
+         * Service da usare per recuperare la lista delle Company (o sottoclassi) <br>
+         * Di default CompanyService oppure eventuale sottoclasse specializzata per Company particolari <br>
+         * Eventuale casting a carico del chiamante <br>
+         * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.companyServiceClazz = CroceService.class;
+
     }// end of method
 
 

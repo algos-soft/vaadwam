@@ -226,7 +226,7 @@ public abstract class AService extends AbstractService implements IAService {
         if (entityClass == null) {
             return null;
         }// end of if cycle
-        if (!ACEntity.class.isAssignableFrom(entityClass)) {
+        if (!AEntity.class.isAssignableFrom(entityClass)) {
             return null;
         }// end of if cycle
 

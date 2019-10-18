@@ -12,6 +12,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +162,23 @@ public class PreferenzaList extends AGridViewList {
         alertPlacehorder.add(new Label("Se l'applicazione è multiCompany, le preferenze con companySpecifica=true vengono ricrete, col valore di default, per TUTTE le company esistenti."));
     }// end of method
 
+    /**
+     * Crea un Popup di selezione della company <br>
+     * Creato solo se devleper=true e usaCompany=true <br>
+     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaCompanyFiltro() {
+        super.creaCompanyFiltro();
+
+        IAService  serviceCompany = (IAService) appContext.getBean(FlowVar.companyServiceClazz);
+
+        filtroCompany.setItems(serviceCompany.findAll());
+        filtroCompany.addValueChangeListener(e -> {
+            updateItems();
+            updateView();
+        });
+    }// end of method
 
     /**
      * Apertura del dialogo per una entity esistente oppure nuova <br>
