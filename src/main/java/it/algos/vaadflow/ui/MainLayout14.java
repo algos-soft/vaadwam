@@ -17,6 +17,7 @@ import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
@@ -164,7 +165,11 @@ public class MainLayout14 extends AppLayout {
      * Regola il tipo di presentazione del menu
      */
     protected void fixType() {
-        String type = pref.getStr(FlowCost.USA_MENU);
+        String type = pref.getStr(EAPreferenza.usaMenu);
+
+        if (text.isEmpty(type)) {
+            type="tabs";
+        }// end of if cycle
 
         switch (type) {
             case "routers":

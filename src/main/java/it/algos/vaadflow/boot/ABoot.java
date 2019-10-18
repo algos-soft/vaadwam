@@ -3,6 +3,8 @@ package it.algos.vaadflow.boot;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.data.FlowData;
 import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.service.AMongoService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.List;
 
 /**
  * Project it.algos.vaadflow
@@ -108,6 +111,12 @@ public abstract class ABoot implements ServletContextListener {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
+    protected CompanyService companyService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
     private FlowData flowData;
 
 
@@ -138,7 +147,7 @@ public abstract class ABoot implements ServletContextListener {
         this.iniziaVersioni();
         this.regolaInfo();
         this.regolaRiferimenti();
-        this.creaPreferenze();
+//        this.creaPreferenze();
         this.fixPreferenze();
         this.iniziaDataStandard();
         this.iniziaDataProgettoSpecifico();
@@ -205,7 +214,8 @@ public abstract class ABoot implements ServletContextListener {
      * Metodo che DEVE essere sovrascritto <br>
      */
     protected void fixPreferenze() {
-    }// end of method
+    }// end of method else
+
 
     /**
      * Cancella e ricrea le preferenze standard <br>
@@ -220,20 +230,25 @@ public abstract class ABoot implements ServletContextListener {
      */
     public int resetPreferenze() {
         int numPref = 0;
+        List<Company> listaCompany = null;
 
         //--cancella tutte le preferenze
         preferenzaService.deleteAll();
 
         //--ricrea tutte le preferenze standard coi valori di default iniziali
-        if (FlowVar.usaCompany) {
-            for (EAPreferenza eaPref : EAPreferenza.values()) {
+        if (FlowVar.usaCompany)
+            listaCompany = companyService.findAll();
+
+        for (EAPreferenza eaPref : EAPreferenza.values()) {
+            //--se usa company ed è companySpecifica=true, crea una preferenza per ogni company
+            if (eaPref.isCompanySpecifica()) {
+                for (Company company : listaCompany) {
+                    numPref = preferenzaService.crea(eaPref, company) ? numPref + 1 : numPref;
+                }// end of for cycle
+            } else {
                 numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
-            }// end of for cycle
-        } else {
-            for (EAPreferenza eaPref : EAPreferenza.values()) {
-                numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
-            }// end of for cycle
-        }// end of if/else cycle
+            }// end of if/else cycle
+        }// end of for cycle
 
         return numPref;
     }// end of method

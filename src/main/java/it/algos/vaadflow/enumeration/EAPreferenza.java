@@ -4,7 +4,9 @@ package it.algos.vaadflow.enumeration;
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.modules.preferenza.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.IAPreferenza;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.EARole;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Project it.algos.vaadflow
@@ -61,8 +63,8 @@ public enum EAPreferenza implements IAPreferenza {
     textButtonEdit(FlowCost.FLAG_TEXT_EDIT, "Testo del bottone Edit (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, "open,edit,modifica,apre,apri;edit"),
     usaTextEditButton(FlowCost.USA_TEXT_EDIT_BUTTON, "Usa un testo (oltre all'icona) per il bottone di Edit che apre il dialog", EAPrefType.bool, EARole.developer, true, true),
     usaEditButton(FlowCost.USA_EDIT_BUTTON, "Usa una colonna di bottoni Edit per aprire il dialogo. Se falso, usa un doppio clik nella riga", EAPrefType.bool, EARole.developer, false, true),
-
     ;
+
 
     //--codice di riferimento. Se è true il flag companySpecifica, contiene anche il code della company come prefisso.
     private String code;

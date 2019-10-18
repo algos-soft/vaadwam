@@ -6,7 +6,6 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -300,6 +299,8 @@ public class FunzioneService extends WamService {
         Croce croce = getCroce();
         return findAllByCroce(croce);
     }// end of method
+
+
     /**
      * Returns instances of the company <br>
      * Lista ordinata <br>
@@ -337,8 +338,6 @@ public class FunzioneService extends WamService {
 
         return lista;
     }// end of method
-
-
 
 
     /**

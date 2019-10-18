@@ -287,8 +287,9 @@ public class Tabellone extends AGridViewList {
             bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
         }// end of if cycle
 
-        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
-
+        if (pref.isBool(USA_DEBUG)) {
+            grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
+        }// end of if cycle
 
         return grid;
     }// end of method

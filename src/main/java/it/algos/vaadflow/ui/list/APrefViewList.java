@@ -1,7 +1,7 @@
 package it.algos.vaadflow.ui.list;
 
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.service.IAService;
 
 import static it.algos.vaadflow.application.FlowCost.USA_EDIT_BUTTON;
@@ -116,9 +116,9 @@ public abstract class APrefViewList extends AViewList {
         //--Se non usa il bottone Edit: limit = pref.getInt(FlowCost.maxRigheGridClick) .
         //--Specifico di ogni ViewList. Se non specificato è uguale alla preferenza. Default 20
         if (pref.isBool(USA_EDIT_BUTTON)) {
-            limit = pref.getInt(FlowCost.MAX_RIGHE_GRID);
+            limit = pref.getInt(EAPreferenza.maxRigheGrid);
         } else {
-            limit = pref.getInt(FlowCost.MAX_RIGHE_GRID_CLICK);
+            limit = pref.getInt(EAPreferenza.maxRigheGridClick);
         }// end of if/else cycle
 
         //--Flag di preferenza per usare una route view come detail della singola istanza. Normalmente true.
