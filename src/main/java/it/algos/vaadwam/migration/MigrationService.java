@@ -853,7 +853,7 @@ public class MigrationService {
         int minutiFine = servizioOld.getMinuti_fine();
 
         if (oraFine == 24 && minutiFine == 0) {
-            oraFine = 23;
+            oraFine = 0;
         }// end of if cycle
 
         int durata = servizioOld.getDurata();
