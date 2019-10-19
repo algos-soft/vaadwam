@@ -632,7 +632,6 @@ public class MigrationService {
 
             if (array.isValid(turniOld)) {
                 turnoService.deleteAllCroce(croceNew);
-
                 for (TurnoAmb turnoOld : turniOld) {
                     status = status && creaSingoloTurno(croceNew, turnoOld);
                 }// end of for cycle
@@ -1339,11 +1338,9 @@ public class MigrationService {
         boolean status = true;
         Turno turnoNew = null;
         Servizio servizio = recuperaServizio(croceNew, turnoOld);
-        Date inizioOld = turnoOld.getInizio();
-        Date fineOld = turnoOld.getFine();
-        LocalDate giornoNew = date.dateToLocalDate(inizioOld);
-        LocalTime inizioNew = date.dateToLocalTime(inizioOld);
-        LocalTime fineNew = date.dateToLocalTime(fineOld);
+        LocalDate giornoNew = date.dateToLocalDate(turnoOld.getInizio());
+        LocalTime inizioNew = getTime(turnoOld.getInizio());
+        LocalTime fineNew = getTime(turnoOld.getFine());
         List<Iscrizione> iscrizioni = recuperaIscrizioni(turnoOld, servizio);
         String titoloExtra = turnoOld.getTitolo_extra();
         String localitaExtra = turnoOld.getLocalità_extra();
@@ -1370,6 +1367,12 @@ public class MigrationService {
 
         turnoService.save(turnoNew);
         return status;
+    }// end of method
+
+
+    private LocalTime getTime(Date inizioFine) {
+        LocalDateTime localDateTime = date.dateToLocalDateTimeUTC(inizioFine);
+        return localDateTime.toLocalTime();
     }// end of method
 
 

@@ -149,6 +149,21 @@ public class ADateService extends AbstractService {
 
 
     /**
+     * Convert java.util.Date to java.time.LocalDateTime
+     * Date HA ore, minuti e secondi
+     * LocalDateTime HA ore, minuti e secondi
+     * Non si perde nulla
+     *
+     * @param data da convertire
+     *
+     * @return data e ora locale
+     */
+    public LocalDateTime dateToLocalDateTimeUTC(Date data) {
+        Instant instant = Instant.ofEpochMilli(data.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
+    }// end of method
+
+    /**
      * Convert java.time.LocalDateTime to java.util.Date
      * LocalDateTime HA ore, minuti e secondi
      * Date HA ore, minuti e secondi
