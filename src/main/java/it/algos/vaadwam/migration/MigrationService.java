@@ -214,7 +214,7 @@ public class MigrationService {
             importFunzioni(croceOld);
             importServizi(croceOld);
             importMiliti(croceOld);
-            importTurni(croceOld);
+//            importTurni(croceOld);
         }// end of for cycle
     }// end of method
 
@@ -514,16 +514,128 @@ public class MigrationService {
     }// end of method
 
 
-    /**
-     * Importa da webambulanze i turni di tutte le croci esistenti <br>
-     */
-    public boolean importTurni() {
-        boolean status = true;
-        setup();
+//    /**
+//     * Importa da webambulanze i turni di tutte le croci esistenti <br>
+//     */
+//    public boolean importTurni() {
+//        boolean status = true;
+//        setup();
+//
+//        for (CroceAmb croceOld : crociOld) {
+//            if (!importTurni(croceOld)) {
+//                status = false;
+//            }// end of if cycle
+//        }// end of for cycle
+//
+//        if (status) {
+//            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
+//        }// end of if cycle
+//
+//        return status;
+//    }// end of method
 
+
+//    /**
+//     * Importa da webambulanze i turni di tutte le croci esistenti <br>
+//     */
+//    public boolean importTurniDebug() {
+//        boolean status = true;
+//        setup();
+//
+//        for (CroceAmb croceOld : crociOld) {
+//            if (!importTurniDebug(croceOld)) {
+//                status = false;
+//            }// end of if cycle
+//        }// end of for cycle
+//
+//        if (status) {
+//            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
+//        }// end of if cycle
+//
+//        return status;
+//    }// end of method
+
+
+//    /**
+//     * Importa da webambulanze i turni di una sola croce <br>
+//     *
+//     * @param croceOld esistente su webambulanze
+//     */
+//    private boolean importTurni(CroceAmb croceOld) {
+//        return importTurni(croceOld, getCroce(croceOld));
+//    }// end of method
+
+
+//    /**
+//     * Importa da webambulanze i turni di una sola croce <br>
+//     *
+//     * @param croceNew di waadwam
+//     */
+//    public boolean importTurni(Croce croceNew) {
+//        return importTurni(getCroce(croceNew), croceNew);
+//    }// end of method
+
+
+//    /**
+//     * Importa da webambulanze tutti i turni di una sola croce <br>
+//     *
+//     * @param croceOld esistente su webambulanze
+//     * @param croceNew di waadwam
+//     */
+//    public boolean importTurni(CroceAmb croceOld, Croce croceNew) {
+//        boolean status = true;
+//        List<TurnoAmb> turniOld = null;
+//
+//        turnoService.deleteAllCroce(croceNew);
+//        turniOld = turnoAmb.findAll((int) croceOld.getId());
+//        for (TurnoAmb turnoOld : turniOld) {
+//            status = status && creaSingoloTurno(croceNew, turnoOld);
+//        }// end of for cycle
+//
+//        return status;
+//    }// end of method
+
+
+//    /**
+//     * Importa da webambulanze i turni di una sola croce per l'anno in corso <br>
+//     *
+//     * @param croceNew di waadwam
+//     * @param anno     da importare
+//     */
+//    public boolean importTurniAnno(Croce croceNew, int anno) {
+//        boolean status = true;
+//        CroceAmb croceOld = getCroce(croceNew);
+//        List<TurnoAmb> turniOld = null;
+//
+//        turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
+//        for (TurnoAmb turnoOld : turniOld) {
+//            status = status && creaSingoloTurno(croceNew, turnoOld);
+//        }// end of for cycle
+//
+//        return status;
+//    }// end of method
+
+
+    /**
+     * Importa da webambulanze i turni per l'anno in corso da tutte le croci <br>
+     */
+    public boolean importTurniAnno() {
+        boolean status = true;
+        int anno = date.getAnnoCorrente();
+        List<TurnoAmb> turniOld;
+        Croce croceNew;
+
+        setup();
         for (CroceAmb croceOld : crociOld) {
-            if (!importTurni(croceOld)) {
-                status = false;
+            croceNew = getCroce(croceOld);
+            turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
+
+            if (array.isValid(turniOld)) {
+                turnoService.deleteAllCroce(croceNew);
+
+                for (TurnoAmb turnoOld : turniOld) {
+                    status = status && creaSingoloTurno(croceNew, turnoOld);
+                }// end of for cycle
             }// end of if cycle
         }// end of for cycle
 
@@ -535,86 +647,48 @@ public class MigrationService {
     }// end of method
 
 
-    /**
-     * Importa da webambulanze i turni di una sola croce <br>
-     *
-     * @param croceOld esistente su webambulanze
-     */
-    private boolean importTurni(CroceAmb croceOld) {
-        return importTurni(croceOld, getCroce(croceOld));
-    }// end of method
+//    /**
+//     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
+//     *
+//     * @param croceNew di waadwam
+//     */
+//    public boolean importTurniDebug(Croce croceNew) {
+//        boolean status = true;
+//        CroceAmb croceOld = getCroce(croceNew);
+//        List<TurnoAmb> turniOld = null;
+//        LocalDate giorno = LocalDate.now();
+//        int prima = 15;
+//        int dopo = 15;
+//
+//        turniOld = turnoAmb.findAll((int) croceOld.getId(), giorno.minusDays(prima), giorno.plusDays(dopo));
+//        for (TurnoAmb turnoOld : turniOld) {
+//            status = status && creaSingoloTurno(croceNew, turnoOld);
+//        }// end of for cycle
+//
+//        return status;
+//    }// end of method
 
 
-    /**
-     * Importa da webambulanze i turni di una sola croce <br>
-     *
-     * @param croceNew di waadwam
-     */
-    public boolean importTurni(Croce croceNew) {
-        return importTurni(getCroce(croceNew), croceNew);
-    }// end of method
-
-
-    /**
-     * Importa da webambulanze tutti i turni di una sola croce <br>
-     *
-     * @param croceOld esistente su webambulanze
-     * @param croceNew di waadwam
-     */
-    public boolean importTurni(CroceAmb croceOld, Croce croceNew) {
-        boolean status = true;
-        List<TurnoAmb> turniOld = null;
-
-        turnoService.deleteAllCroce(croceNew);
-        turniOld = turnoAmb.findAll((int) croceOld.getId());
-        for (TurnoAmb turnoOld : turniOld) {
-            status = status && creaSingoloTurno(croceNew, turnoOld);
-        }// end of for cycle
-
-        return status;
-    }// end of method
-
-
-    /**
-     * Importa da webambulanze i turni di una sola croce per l'anno in corso <br>
-     *
-     * @param croceNew di waadwam
-     * @param anno     da importare
-     */
-    public boolean importTurniAnno(Croce croceNew, int anno) {
-        boolean status = true;
-        CroceAmb croceOld = getCroce(croceNew);
-        List<TurnoAmb> turniOld = null;
-
-        turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
-        for (TurnoAmb turnoOld : turniOld) {
-            status = status && creaSingoloTurno(croceNew, turnoOld);
-        }// end of for cycle
-
-        return status;
-    }// end of method
-
-
-    /**
-     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
-     *
-     * @param croceNew di waadwam
-     */
-    public boolean importTurniDebug(Croce croceNew) {
-        boolean status = true;
-        CroceAmb croceOld = getCroce(croceNew);
-        List<TurnoAmb> turniOld = null;
-        LocalDate giorno = LocalDate.now();
-        int prima = 5;
-        int dopo = 10;
-
-        turniOld = turnoAmb.findAll((int) croceOld.getId(), giorno.minusDays(prima), giorno.plusDays(dopo));
-        for (TurnoAmb turnoOld : turniOld) {
-            status = status && creaSingoloTurno(croceNew, turnoOld);
-        }// end of for cycle
-
-        return status;
-    }// end of method
+//    /**
+//     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
+//     *
+//     * @param croceOld esistente su webambulanze
+//     */
+//    public boolean importTurniDebug(CroceAmb croceOld) {
+//        boolean status = true;
+//        Croce croceNew = getCroce(croceOld);
+//        List<TurnoAmb> turniOld = null;
+//        LocalDate giorno = LocalDate.now();
+//        int prima = 30;
+//        int dopo = 30;
+//
+//        turniOld = turnoAmb.findAll((int) croceOld.getId(), giorno.minusDays(prima), giorno.plusDays(dopo));
+//        for (TurnoAmb turnoOld : turniOld) {
+//            status = status && creaSingoloTurno(croceNew, turnoOld);
+//        }// end of for cycle
+//
+//        return status;
+//    }// end of method
 
 
     /**

@@ -162,21 +162,8 @@ public class TurnoList extends WamViewList {
 
         String tagCroce = wamLogin.getCroce().code;
         if (wamLogin.isDeveloper()) {
-            importButton.setText("Import all " + tagCroce);
-
-            importAnnoButton = new Button("Import 2019 " + tagCroce, new Icon(VaadinIcon.ARROW_DOWN));
-            importAnnoButton.getElement().setAttribute("theme", "error");
-            importAnnoButton.addClassName("view-toolbar__button");
-            importAnnoButton.addClickListener(e -> importAnno());
-            topPlaceholder.add(importAnnoButton);
-
-            importDebugButton = new Button("Import debug " + tagCroce, new Icon(VaadinIcon.ARROW_DOWN));
-            importDebugButton.getElement().setAttribute("theme", "error");
-            importDebugButton.addClassName("view-toolbar__button");
-            importDebugButton.addClickListener(e -> importDebug());
-            topPlaceholder.add(importDebugButton);
+            importButton.setText("Import all");
         }// end of if cycle
-
     }// end of method
 
 
@@ -232,26 +219,32 @@ public class TurnoList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
-     */
-    protected void importAnno() {
-        if (migration.importTurniAnno(wamLogin.getCroce(), date.getAnnoCorrente())) {
-            fixInfoImport();
-        }// end of if cycle
-        UI.getCurrent().getPage().reload();
-    }// end of method
+//    /**
+//     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
+//     */
+//    protected void importAnno() {
+//        if (migration.importTurniAnno(wamLogin.getCroce(), date.getAnnoCorrente())) {
+//            fixInfoImport();
+//        }// end of if cycle
+//        UI.getCurrent().getPage().reload();
+//    }// end of method
 
 
-    /**
-     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
-     */
-    protected void importDebug() {
-        if (migration.importTurniDebug(wamLogin.getCroce())) {
-            fixInfoImport();
-        }// end of if cycle
-        UI.getCurrent().getPage().reload();
-    }// end of method
+//    /**
+//     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
+//     */
+//    protected void importDebug() {
+//        long inizio = System.currentTimeMillis();
+//
+//        if (migration.importTurniAnno()) {
+//            fixInfoImport();
+//        }// end of if cycle
+//
+//        log.info("Import turni effettuato in " + date.deltaText(inizio));
+//        UI.getCurrent().getPage().reload();
+//    }// end of method
+
+
 
 
     public void updateItems() {

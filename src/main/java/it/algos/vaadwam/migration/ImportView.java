@@ -182,7 +182,7 @@ public class ImportView extends VerticalLayout {
 
         buttonTurni = new Button("Turni only");
         buttonTurni.addClickListener(e -> {
-            if (migration.importTurni()) {
+            if (migration.importTurniAnno()) {
                 layoutTurni.add(new Checkbox("Fatto", true));
             } else {
                 layoutTurni.add(new Checkbox("Import non riuscito", true));

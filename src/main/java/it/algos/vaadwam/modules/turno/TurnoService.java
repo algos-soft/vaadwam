@@ -274,7 +274,7 @@ public class TurnoService extends WamService {
      */
     @Override
     public boolean importa() {
-        return migration.importTurni();
+        return migration.importTurniAnno();
     }// end of method
 
 

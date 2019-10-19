@@ -92,7 +92,6 @@ public class MiliteList extends WamViewList {
     private ATask task;
 
 
-
     /**
      * Costruttore @Autowired <br>
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
@@ -106,6 +105,7 @@ public class MiliteList extends WamViewList {
     public MiliteList(@Qualifier(TAG_MIL) IAService service) {
         super(service, Milite.class);
     }// end of Vaadin/@Route constructor
+
 
     /**
      * Le preferenze standard <br>
@@ -397,14 +397,6 @@ public class MiliteList extends WamViewList {
 //            log.error(unErrore.toString());
 //        }// fine del blocco try-catch
 //    }// end of method
-
-
-    /**
-     * Sovrascritto <br>
-     */
-    protected void fixInfoImport() {
-        pref.saveValue(LAST_IMPORT_MILITI, LocalDateTime.now());
-    }// end of method
 
 
     /**

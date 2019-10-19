@@ -68,14 +68,6 @@ public class FunzioneList extends WamViewList {
     @Qualifier(TASK_FUN)
     private ATask task;
 
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-//     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-//     */
-//    @Autowired
-//    private CroceService croceService;
-
 
     /**
      * Costruttore @Autowired <br>
@@ -90,7 +82,6 @@ public class FunzioneList extends WamViewList {
     public FunzioneList(@Qualifier(TAG_FUN) IAService service) {
         super(service, Funzione.class);
     }// end of Vaadin/@Route constructor
-
 
 
     /**
@@ -124,14 +115,6 @@ public class FunzioneList extends WamViewList {
         }// end of if/else cycle
     }// end of method
 
-
-    /**
-     * Sovrascritto <br>
-     */
-    @Override
-    protected void fixInfoImport() {
-        pref.saveValue(LAST_IMPORT_FUNZIONI, LocalDateTime.now());
-    }// end of method
 
 
     /**

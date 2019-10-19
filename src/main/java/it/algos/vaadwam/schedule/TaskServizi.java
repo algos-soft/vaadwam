@@ -2,6 +2,7 @@ package it.algos.vaadwam.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.enumeration.EASchedule;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,9 @@ import static it.algos.vaadwam.application.WamCost.USA_DAEMON_SERVIZI;
  * User: gac
  * Date: mer, 18-lug-2018
  * Time: 09:49
+ * <p>
+ * Import dei servizi di tutte le croci <br>
+ * Tempo stimato: pochi secondi <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -39,15 +43,13 @@ public class TaskServizi extends ATask {
 
     @Override
     public void execute(TaskExecutionContext context) throws RuntimeException {
+        long inizio = System.currentTimeMillis();
 
         if (pref.isBool(USA_DAEMON_SERVIZI)) {
             migrationService.importServizi();
 
-            //@TODO Prevedere un flag di preferenze per mostrare o meno la nota
-            //@TODO Prevedere un flag di preferenze per usare il log interno
-            if (true) {
-                System.out.println("Task di import servizi: " + date.getTime(LocalDateTime.now()));
-                mailService.send("Import servizi", "Eseguito alle " + LocalDateTime.now().toString());
+            if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
+                mailService.sendIP("Import servizi", inizio);
             }// end of if cycle
         }// end of if cycle
     }// end of method

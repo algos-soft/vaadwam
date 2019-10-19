@@ -2,6 +2,7 @@ package it.algos.vaadwam.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.enumeration.EASchedule;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
+import java.net.InetAddress;
 import java.time.LocalDateTime;
 
+import static it.algos.vaadflow.application.FlowCost.A_CAPO;
 import static it.algos.vaadwam.application.WamCost.TASK_FUN;
 import static it.algos.vaadwam.application.WamCost.USA_DAEMON_FUNZIONI;
 
@@ -20,6 +23,9 @@ import static it.algos.vaadwam.application.WamCost.USA_DAEMON_FUNZIONI;
  * User: gac
  * Date: mer, 18-lug-2018
  * Time: 09:49
+ * <p>
+ * Import delle funzioni di tutte le croci <br>
+ * Tempo stimato: pochi secondi <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -40,15 +46,13 @@ public class TaskFunzioni extends ATask {
 
     @Override
     public void execute(TaskExecutionContext context) throws RuntimeException {
+        long inizio = System.currentTimeMillis();
 
         if (pref.isBool(USA_DAEMON_FUNZIONI)) {
             migrationService.importFunzioni();
 
-            //@TODO Prevedere un flag di preferenze per mostrare o meno la nota
-            //@TODO Prevedere un flag di preferenze per usare il log interno
-            if (true) {
-                System.out.println("Task di import funzioni: " + date.getTime(LocalDateTime.now()));
-                mailService.send("Import funzioni", "Eseguito alle " + LocalDateTime.now().toString());
+            if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
+                mailService.sendIP("Import funzioni", inizio);
             }// end of if cycle
         }// end of if cycle
     }// end of method

@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.net.InetAddress;
 
-import static it.algos.vaadflow.application.FlowCost.MAIL_FROM;
-import static it.algos.vaadflow.application.FlowCost.MAIL_TO;
+import static it.algos.vaadflow.application.FlowCost.*;
 
 /**
  * Project vaadflow
@@ -58,24 +58,92 @@ public class AMailService extends AbstractService {
 
     /**
      * Spedizione senza mittente e senza destinatario
+     * Aggiunge ID e nome del server <br>
      *
      * @param title soggetto
-     * @param body  testo della mail
      */
-    public void send(String title, String body) {
-        send(pref.getStr(MAIL_TO), title, body);
+    public boolean sendIP(String title) {
+        return sendIP(title, "", 0);
     }// end of method
 
 
     /**
-     * Spedizione col solo destinatario
+     * Spedizione senza mittente e senza destinatario
+     * Aggiunge ID e nome del server <br>
+     *
+     * @param title soggetto
+     * @param body  testo originario della mail
+     */
+    public boolean sendIP(String title, String body) {
+        return sendIP(title, body, 0);
+    }// end of method
+
+
+    /**
+     * Spedizione senza mittente e senza destinatario
+     * Aggiunge ID e nome del server <br>
+     *
+     * @param title  soggetto
+     * @param inizio della operazione
+     */
+    public boolean sendIP(String title, long inizio) {
+        return sendIP(title, "", inizio);
+    }// end of method
+
+
+    /**
+     * Spedizione senza mittente e senza destinatario
+     * Aggiunge ID e nome del server <br>
+     *
+     * @param title  soggetto
+     * @param body   testo originario della mail
+     * @param inizio della operazione
+     */
+    public boolean sendIP(String title, String body, long inizio) {
+        InetAddress inetAddress = null;
+        String message = "";
+        String fullMessage = "";
+
+        try { // prova ad eseguire il codice
+            inetAddress = InetAddress.getLocalHost();
+            message += "IP Address:- " + inetAddress.getHostAddress();
+            message += A_CAPO;
+            message += "Host Name:- " + inetAddress.getHostName();
+            message += A_CAPO;
+        } catch (Exception unErrore) { // intercetta l'errore
+            log.error(unErrore.toString());
+        }// fine del blocco try-catch
+
+        fullMessage = text.isValid(body) ? message + body : message;
+        if (inizio > 0) {
+            fullMessage += A_CAPO;
+            fullMessage += "In " + date.deltaText(inizio);
+        }// end of if cycle
+
+        return send(pref.getStr(MAIL_TO), title, fullMessage);
+    }// end of method
+
+
+    /**
+     * Spedizione standard senza mittente e senza destinatario
+     *
+     * @param title soggetto
+     * @param body  testo della mail
+     */
+    public boolean send(String title, String body) {
+        return send(pref.getStr(MAIL_TO), title, body);
+    }// end of method
+
+
+    /**
+     * Spedizione standard col solo destinatario
      *
      * @param to    destinatario
      * @param title soggetto
      * @param body  testo della mail
      */
-    public void send(String to, String title, String body) {
-        send(pref.getStr(MAIL_FROM), to, title, body);
+    public boolean send(String to, String title, String body) {
+        return send(pref.getStr(MAIL_FROM), to, title, body);
     }// end of method
 
 
@@ -87,7 +155,8 @@ public class AMailService extends AbstractService {
      * @param title soggetto
      * @param body  testo della mail
      */
-    public void send(String from, String to, String title, String body) {
+    public boolean send(String from, String to, String title, String body) {
+        boolean status = false;
         MimeMessage message = this.mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message);
         try {
@@ -98,11 +167,14 @@ public class AMailService extends AbstractService {
             mimeMessageHelper.setText(body);
             mimeMessageHelper.setTo(to);
             this.mailSender.send(message);
+            status = true;
         } catch (MessagingException messageException) {
             // You could also 'throw' this exception. I am not a fan of checked exceptions.
             // If you want to go that route, then just update this method and the interface.
             throw new RuntimeException(messageException);
-        }
+        }// fine del blocco try-catch
+
+        return status;
     }// end of method
 
 

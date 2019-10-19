@@ -2,18 +2,12 @@ package it.algos.vaadwam.wam;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.company.CompanyService;
-import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.AMailService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.IADialog;
-import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
@@ -21,12 +15,9 @@ import it.algos.vaadwam.schedule.ATask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
@@ -37,12 +28,20 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
  * Date: lun, 30-lug-2018
  * Time: 15:48
  */
+@Slf4j
 public abstract class WamViewList extends AGridViewList {
 
     protected Button genericFieldValue;
 
     protected Button deleteButton;
+
     protected Button importButton;
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    protected AMailService mailService;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -76,7 +75,7 @@ public abstract class WamViewList extends AGridViewList {
      * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
      * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
      *
-     * @param service business class e layer di collegamento per la Repository
+     * @param service     business class e layer di collegamento per la Repository
      * @param entityClazz modello-dati specifico di questo modulo
      */
     public WamViewList(IAService service, Class<? extends AEntity> entityClazz) {
@@ -181,16 +180,8 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-//        if (wamLogin.isDeveloper()) {
-//            deleteButton = new Button("Delete " + wamLogin.getCroce().code, new Icon(VaadinIcon.CLOSE_CIRCLE));
-//            deleteButton.getElement().setAttribute("theme", "error");
-//            deleteButton.addClassName("view-toolbar__button");
-//            deleteButton.addClickListener(e -> delete());
-//            topPlaceholder.add(deleteButton);
-//        }// end of if cycle
-
         if (wamLogin.isDeveloper()) {
-            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+            importButton = new Button("Import x", new Icon(VaadinIcon.ARROW_DOWN));
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
             importButton.addClickListener(e -> importa());
@@ -212,21 +203,13 @@ public abstract class WamViewList extends AGridViewList {
      * con il solo metodo update() non venivano aggiornate <br>
      */
     protected void importa() {
+        long inizio = System.currentTimeMillis();
 
-        if (((WamService) service).importa()) {
-            fixInfoImport();
-        }// end of if cycle
+        ((WamService) service).importa();
 
+        log.info("Import effettuato in " + date.deltaText(inizio));
         UI.getCurrent().getPage().reload();
     }// end of method
-
-
-    /**
-     * Sovrascritto <br>
-     */
-    protected void fixInfoImport() {
-    }// end of method
-
 
     /**
      * Eventuale caption sopra la grid
@@ -235,7 +218,7 @@ public abstract class WamViewList extends AGridViewList {
         Label label = null;
         String testo = "";
         String tag = "Import automatico: ";
-        String nota = task.getSchedule().getNota()+".";
+        String nota = task.getSchedule().getNota() + ".";
 
         if (login.isDeveloper()) {
             LocalDateTime lastDownload = pref.getDate(flagLastDownload);
@@ -295,6 +278,7 @@ public abstract class WamViewList extends AGridViewList {
 //        }// end of if cycle
 //    }// end of method
 
+
     /**
      * Crea un Popup di selezione della company <br>
      * Creato solo se devleper=true e usaCompany=true <br>
@@ -314,15 +298,15 @@ public abstract class WamViewList extends AGridViewList {
     public void updateItems() {
         Croce croce;
         if (filtroCompany != null) {
-            croce =  (Croce)filtroCompany.getValue();
+            croce = (Croce) filtroCompany.getValue();
 
             if (croce != null) {
-                items = ((WamService)service).findAllByCroce(croce);
+                items = ((WamService) service).findAllByCroce(croce);
             } else {
-                items = ((WamService)service).findAllCroci();
+                items = ((WamService) service).findAllCroci();
             }// end of if/else cycle
         } else {
-            items = ((WamService)service).findAll();
+            items = ((WamService) service).findAll();
         }// end of if/else cycle
 
     }// end of method

@@ -120,15 +120,18 @@ public class TurnoAmb extends AmbEntity {
     }// end of method
 
 
+    //    public List<TurnoAmb> findAll(int codeCroce, int anno) {
+//        long max = 10000000000L;
+//        long giornoIni = anno * max;
+//        long giornoFine = (anno + 1) * max;
+//        String where = " croce_id=" + codeCroce;
+//        where += " and giorno>" + giornoIni;
+//        where += " and giorno<" + giornoFine;
+//
+//        return (List<TurnoAmb>) super.findAll(DBNAME, codeCroce, where);
+//    }// end of method
     public List<TurnoAmb> findAll(int codeCroce, int anno) {
-        long max = 10000000000L;
-        long giornoIni = anno * max;
-        long giornoFine = (anno + 1) * max;
-        String where = " croce_id=" + codeCroce;
-        where += " and giorno>" + giornoIni;
-        where += " and giorno<" + giornoFine;
-
-        return (List<TurnoAmb>) super.findAll(DBNAME, codeCroce, where);
+        return findAll(codeCroce, date.primoGennaio(anno), date.trentunDicembre(anno));
     }// end of method
 
 

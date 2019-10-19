@@ -573,7 +573,7 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public String getStr(EAPreferenza eaPref) {
+    public String getStr(IAPreferenza eaPref) {
         return getStr(eaPref.getCode(), (String) eaPref.getValue());
     } // end of method
 
@@ -607,7 +607,7 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public Boolean isBool(EAPreferenza eaPref) {
+    public Boolean isBool(IAPreferenza eaPref) {
         return isBool(eaPref.getCode());
     } // end of method
 
@@ -630,7 +630,7 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public int getInt(EAPreferenza eaPref) {
+    public int getInt(IAPreferenza eaPref) {
         return getInt(eaPref.getCode(), (int) eaPref.getValue());
     } // end of method
 
@@ -658,12 +658,12 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public String getEnumStr(EAPreferenza eaPref) {
+    public String getEnumStr(IAPreferenza eaPref) {
         return getEnumStr(eaPref.getCode(), (String) eaPref.getValue());
     } // end of method
 
 
-    public String getEnumStr(EAPreferenza eaPref, String defaultValue) {
+    public String getEnumStr(IAPreferenza eaPref, String defaultValue) {
         return getEnumStr(eaPref.getCode(), defaultValue);
     } // end of method
 

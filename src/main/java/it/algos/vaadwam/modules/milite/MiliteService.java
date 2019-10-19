@@ -409,7 +409,7 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     @Override
     public boolean importa() {
-        return migration.importMiliti(getCroce());
+        return migration.importMiliti();
     }// end of method
 
 

@@ -110,14 +110,6 @@ public class ServizioList extends WamViewList {
 
 
     /**
-     * Sovrascritto <br>
-     */
-    protected void fixInfoImport() {
-        pref.saveValue(LAST_IMPORT_SERVIZI, LocalDateTime.now());
-    }// end of method
-
-
-    /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
      * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
      * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
