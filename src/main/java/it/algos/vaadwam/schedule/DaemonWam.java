@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 
-import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
-
 /**
  * Project vaadbase
  * Created by Algos
@@ -71,16 +69,15 @@ public class DaemonWam extends Scheduler {
         if (!isStarted()) {
             super.start();
 
-            if (pref.isBool(USA_DEBUG)) {
 //                schedule(croci.getSchedule().getPattern(), croci);
-                schedule(funzioni.getSchedule().getPattern(), funzioni);
-                schedule(servizi.getSchedule().getPattern(), servizi);
+            schedule(funzioni.getSchedule().getPattern(), funzioni);
+            schedule(servizi.getSchedule().getPattern(), servizi);
 //                schedule(militi.getSchedule().getPattern(), militi);
-                schedule(turni.getSchedule().getPattern(), turni);
-            }// end of if cycle
+            schedule(turni.getSchedule().getPattern(), turni);
 
         }// fine del blocco if
     }// end of method
+
 
     @Override
     public void stop() throws IllegalStateException {
