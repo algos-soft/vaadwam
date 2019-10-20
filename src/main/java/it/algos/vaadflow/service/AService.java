@@ -716,7 +716,7 @@ public abstract class AService extends AbstractService implements IAService {
                 obj = repository.save(modifiedBean);
             } catch (Exception unErrore) { // intercetta l'errore
                 log.error(unErrore.toString());
-                Notification.show("La scheda non è stata registrata", DURATA, Notification.Position.BOTTOM_START);
+                //Notification.show("La scheda non è stata registrata", DURATA, Notification.Position.BOTTOM_START);
             }// fine del blocco try-catch
         }// end of if cycle
 

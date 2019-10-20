@@ -4,7 +4,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
@@ -18,11 +18,14 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
+import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
 import lombok.extern.slf4j.Slf4j;
+import it.algos.vaadwam.topbar.TopbarComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -139,28 +142,65 @@ public class MainLayout14 extends AppLayout {
      * Layout base della pagina
      */
     protected void fixView() {
-        //@todo DA FARE cambiare immagine
+
+        DrawerToggle drawer = new DrawerToggle();
+
+        TopbarComponent topbar = createTopBar();
+        addToNavbar(drawer, topbar);
+
+        this.setDrawerOpened(false);
+
+    }// end of method
+
+//    private Component createComponent(int num, String color){
+//        Label label = new Label("label"+num);
+//        return label;
+//    }
+
+    private TopbarComponent createTopBar(){
+
+        TopbarComponent topbar = new TopbarComponent();
+
+
         Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
         img.setHeight("44px");
+
         Image immagine = new Image("frontend/images/ambulanza.jpg", "Algos");
         immagine.setHeight("44px");
+        //topbar.setLabel(companyDesc);
 
-        String desc = login.getCompany() != null ? login.getCompany().code.toUpperCase() : text.primaMaiuscola(FlowVar.projectBanner);
 
-        Label label = new Label(desc);
-        label.getStyle().set("font-size", "x-large");
-        label.getStyle().set("font-weight", "bold");
-        label.getElement().getStyle().set("color", "blue");
 
-        Label spazio = new Label();
-        spazio.getElement().setProperty("innerHTML", "&nbsp;&nbsp;&nbsp;&nbsp;");
+        // company label
+        String companyDesc="";
+        Company company = login.getCompany();
+        if(company!=null){
+            companyDesc = company.getCode();
+        }
+        topbar.setLabel(companyDesc);
 
-//        addToNavbar(new DrawerToggle(), img, label);
-        DrawerToggle drawer = new DrawerToggle();
-//        addToNavbar(drawer, label);
-        addToNavbar(drawer, immagine, spazio,label);
-        this.setDrawerOpened(false);
-    }// end of method
+        // username
+        String username="";
+        Utente user=login.getUtente();
+        if (user!=null){
+            username=user.getUsername();
+        }
+        topbar.setUsername(username);
+
+        topbar.setLogoutListener(() -> {
+            Notification notification = new Notification("logout pressed", 3000);
+            notification.setPosition(Notification.Position.MIDDLE);
+            notification.open();
+        });
+
+        topbar.setProfileListener(() -> {
+            Notification notification = new Notification("Profile pressed", 3000);
+            notification.setPosition(Notification.Position.MIDDLE);
+            notification.open();
+        });
+
+        return topbar;
+    }
 
 
     /**

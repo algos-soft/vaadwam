@@ -416,7 +416,7 @@ public class Tabellone extends AGridViewList {
 
         column.setHeader(date.get(day, EATime.weekShortMese));
         column.setFlexGrow(0);
-        column.setWidth("50mm");
+        column.setWidth("45mm");
         column.setSortable(false);
         column.setResizable(false);
 
