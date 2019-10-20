@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
  */
 public class TopbarComponent extends HorizontalLayout {
 
+    Image image;
     private Label label;
     private MenuItem itemUser;
 
@@ -41,7 +42,8 @@ public class TopbarComponent extends HorizontalLayout {
             if(logoutListener!=null){logoutListener.logout();}
         });
 
-        Image image = new Image("frontend/images/wam.png", "wam");
+        // immagine di default
+        image = new Image("frontend/images/wam.png", "wam");
         image.setHeight("9mm");
 
         add(image, label, menuUser);
@@ -50,6 +52,10 @@ public class TopbarComponent extends HorizontalLayout {
         setFlexGrow(1, label);
         setFlexGrow(0, menuUser);
 
+    }
+
+    public void setImage(Image image){
+        this.image=image;
     }
 
     public void setLabel(String text){
