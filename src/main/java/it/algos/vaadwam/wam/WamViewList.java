@@ -9,6 +9,7 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.AMailService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadflow.ui.list.APaginatedGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.schedule.ATask;
@@ -29,7 +30,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
  * Time: 15:48
  */
 @Slf4j
-public abstract class WamViewList extends AGridViewList {
+public abstract class WamViewList extends APaginatedGridViewList {
 
     protected Button genericFieldValue;
 
@@ -181,7 +182,7 @@ public abstract class WamViewList extends AGridViewList {
         super.creaTopLayout();
 
         if (wamLogin.isDeveloper()) {
-            importButton = new Button("Import x", new Icon(VaadinIcon.ARROW_DOWN));
+            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
             importButton.addClickListener(e -> importa());

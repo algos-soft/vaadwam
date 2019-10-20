@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @AIScript(sovrascrivibile = false)
 public class WamCost {
+	public final static String TAG_STA = "statistica";
 
     public final static String TAG_RIG = "riga";
 

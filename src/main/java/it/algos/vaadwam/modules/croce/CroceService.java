@@ -222,7 +222,7 @@ public class CroceService extends WamService {
      * @return all ordered entities
      */
     @Override
-    public List<? extends AEntity> findAll() {
+    public List<Croce> findAll() {
         List<Croce> lista = null;
         VaadinSession vaadSession = null;
         Croce croce;

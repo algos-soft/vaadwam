@@ -6,6 +6,7 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadwam.modules.statistica.StatisticaList;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
@@ -65,9 +66,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_NAME = "webambulanze";
 
-    private final static double PROJECT_VERSION = 1.3;
+    private final static double PROJECT_VERSION = 1.4;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 19);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 20);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -412,7 +413,8 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
         FlowVar.menuClazzList.add(MiliteList.class);
-    }// end of method
+    	FlowVar.menuClazzList.add(StatisticaList.class);
+	}// end of method
 
 
     /**

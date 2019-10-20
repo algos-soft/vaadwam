@@ -198,7 +198,7 @@ public abstract class ALayoutViewList extends APrefViewList {
 
         //--il bottone associa un evento standard -> AViewList.openConfirmDelete(), che può essere sovrascritto
         if ((!FlowVar.usaSecurity && usaBottoneDeleteAll) || (isDeveloper && usaBottoneDeleteAll)) {
-            deleteAllButton = new Button("Delete all", new Icon(VaadinIcon.CLOSE_CIRCLE));
+            deleteAllButton = new Button("Delete", new Icon(VaadinIcon.CLOSE_CIRCLE));
             deleteAllButton.getElement().setAttribute("theme", "error");
             deleteAllButton.addClassName("view-toolbar__button");
             deleteAllButton.addClickListener(event -> openConfirmDelete());

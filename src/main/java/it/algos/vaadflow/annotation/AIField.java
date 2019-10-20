@@ -24,19 +24,19 @@ public @interface AIField {
      * (Optional) Classe della property.
      * Utilizzato nei Link.
      */
-    Class<? extends Object> linkClazz() default Object.class;
+    Class<?> linkClazz() default Object.class;
 
     /**
      * (Optional) Classe della property.
      * Utilizzato nelle Enumeration.
      */
-    Class<? extends Object> enumClazz() default Object.class;
+    Class<?> enumClazz() default Object.class;
 
     /**
      * (Optional) Classe della property.
      * Utilizzato nei Combo.
      */
-    Class<? extends Object> serviceClazz() default Object.class;
+    Class<?> serviceClazz() default Object.class;
 
 
     /**
