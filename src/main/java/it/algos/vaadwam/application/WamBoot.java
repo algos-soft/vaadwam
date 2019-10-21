@@ -66,9 +66,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_NAME = "webambulanze";
 
-    private final static double PROJECT_VERSION = 1.4;
+    private final static double PROJECT_VERSION = 1.6;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 20);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 21);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -323,7 +323,7 @@ public class WamBoot extends ABoot {
          * Ogni applicazione può modificarla <br>
          * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
          */
-        FlowVar.pathLogo="frontend/images/logo_wam.png";
+        FlowVar.pathLogo="frontend/images/wam.png";
     }// end of method
 
 

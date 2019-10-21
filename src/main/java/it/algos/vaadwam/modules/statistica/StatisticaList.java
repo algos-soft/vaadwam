@@ -12,18 +12,13 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.klaudeta.PaginatedGrid;
-
-import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 
@@ -117,6 +112,7 @@ public class StatisticaList extends WamViewList {
      */
     @Autowired
     protected MiliteService militeService;
+
     /**
      * Istanza unica di una classe di servizio: <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
@@ -186,39 +182,8 @@ public class StatisticaList extends WamViewList {
         Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
         elaboraButton.getElement().setAttribute("theme", "primary");
         elaboraButton.addClassName("view-toolbar__button");
-        elaboraButton.addClickListener(e -> elabora());
+        elaboraButton.addClickListener(e -> ((StatisticaService) service).elabora());
         topPlaceholder.add(elaboraButton);
-    }// end of method
-
-
-    protected void elabora() {
-        if (wamLogin.isDeveloper()) {
-            for (Croce croce : croceService.findAll()) {
-                elabora(croce);
-            }// end of for cycle
-        } else {
-            elabora(wamLogin.getCroce());
-        }// end of if/else cycle
-    }// end of method
-
-
-    protected void elabora(Croce croce) {
-        List<Milite> militi;
-        service.deleteAll();
-
-        militi = militeService.findAllByCroce(croce);
-        if (array.isValid(militi)) {
-            for (Milite milite : militi) {
-                elaboraSingoloMilite(milite);
-//                return; //@todo provvisorio
-            }// end of for cycle
-        }// end of if cycle
-    }// end of method
-
-
-    protected void elaboraSingoloMilite(Milite milite) {
-//        List<Turno> listaTurni =turnoService.findAllByYear();
-        ((StatisticaService)service).findOrCrea(milite);
     }// end of method
 
 

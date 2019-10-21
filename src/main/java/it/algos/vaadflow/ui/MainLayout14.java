@@ -1,6 +1,5 @@
 package it.algos.vaadflow.ui;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -9,7 +8,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -98,6 +96,15 @@ public class MainLayout14 extends AppLayout {
 
 
     public MainLayout14() {
+//        //@todo DA FARE cambiare immagine
+//        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
+//        img.setHeight("44px");
+//        HorizontalLayout oriz = new HorizontalLayout();
+//        oriz.setSpacing(true);
+//        oriz.add(new Label("Pippoz"));
+//        oriz.setAlignItems(FlexComponent.Alignment.END);
+//        addToNavbar(new DrawerToggle(), img, oriz);
+//        this.setDrawerOpened(false);
     }// end of constructor
 
 
@@ -152,15 +159,16 @@ public class MainLayout14 extends AppLayout {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }// end of if/else cycle
 
-        topbar.setProfileListener(() -> {
-            Notification notification = new Notification("Profile pressed", 3000);
+        topbar.setLogoutListener(() -> {
+            Notification notification = new Notification("Logout pressed", 3000);
             notification.setPosition(Notification.Position.MIDDLE);
             notification.open();
         });//end of lambda expressions and anonymous inner class
 
-        topbar.setLogoutListener(() -> {
-            VaadinSession.getCurrent().getSession().invalidate();
-            UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
+        topbar.setProfileListener(() -> {
+            Notification notification = new Notification("Profile pressed", 3000);
+            notification.setPosition(Notification.Position.MIDDLE);
+            notification.open();
         });//end of lambda expressions and anonymous inner class
 
         return topbar;

@@ -4,8 +4,12 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import it.algos.vaadflow.application.StaticContextAccessor;
+import it.algos.vaadflow.service.AMenuService;
 
 /**
  * Componente che mostra il nome della company e l'utente loggato <br>
@@ -42,6 +46,8 @@ public class TopbarComponent extends HorizontalLayout {
     //--property
     private String nickName;
 
+    private AMenuService menuService;
+
 
     /**
      * Costruttore base con i parametri obbligatori <br>
@@ -63,6 +69,7 @@ public class TopbarComponent extends HorizontalLayout {
         this(pathImage, descrizione, "");
     }// end of constructor
 
+
     /**
      * Costruttore completo con tutti i parametri <br>
      *
@@ -83,6 +90,8 @@ public class TopbarComponent extends HorizontalLayout {
      * Creazione dei componenti grafici <br>
      */
     protected void initView() {
+        SubMenu projectSubMenu;
+        Tab tab;
         setWidth("100%");
         setDefaultVerticalComponentAlignment(Alignment.CENTER);
 
@@ -109,14 +118,18 @@ public class TopbarComponent extends HorizontalLayout {
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
 
-            SubMenu projectSubMenu = itemUser.getSubMenu();
-            MenuItem profile = projectSubMenu.addItem("Profilo", menuItemClickEvent -> {
+            projectSubMenu = itemUser.getSubMenu();
+            tab = new Tab();
+            tab.add(VaadinIcon.EDIT.create(),new Label("Profilo"));
+            MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (profileListener != null) {
                     profileListener.profile();
                 }// end of if cycle
             });//end of lambda expressions and anonymous inner class
 
-            MenuItem logout = projectSubMenu.addItem("Logout", menuItemClickEvent -> {
+            menuService = StaticContextAccessor.getBean(AMenuService.class);
+            tab = menuService.creaMenuLogout();
+            MenuItem logout = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (logoutListener != null) {
                     logoutListener.logout();
                 }// end of if cycle
@@ -137,8 +150,6 @@ public class TopbarComponent extends HorizontalLayout {
         }// end of if cycle
 
     }// end of method
-
-
 
 
     public void setImage(Image image) {
@@ -166,15 +177,17 @@ public class TopbarComponent extends HorizontalLayout {
     }
 
 
-
-
     public interface LogoutListener {
+
         void logout();
+
     }
 
 
     public interface ProfileListener {
+
         void profile();
+
     }
 
 }// end of class

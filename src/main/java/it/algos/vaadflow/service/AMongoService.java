@@ -3,6 +3,7 @@ package it.algos.vaadflow.service;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import it.algos.vaadflow.backend.entity.AEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -718,11 +719,48 @@ public class AMongoService extends AbstractService {
 
 
     /**
+     * Restituisce una generica collection
+     */
+    public MongoCollection<Document> getCollection(String databaseName, String collectionName) {
+        MongoCollection<Document> collection = null;
+        MongoDatabase mongoDatabase = getDB(databaseName);
+
+        if (mongoDatabase != null) {
+            collection = getCollection(mongoDatabase, collectionName);
+        }// end of if cycle
+
+        return collection;
+    }// end of method
+
+
+    /**
+     * Restituisce una generica collection
+     */
+    public MongoCollection<Document> getCollection(MongoDatabase mongoDatabase, String collectionName) {
+        MongoCollection<Document> collection = null;
+
+        if (mongoDatabase != null) {
+            collection = mongoDatabase.getCollection(collectionName);
+        }// end of if cycle
+
+        return collection;
+    }// end of method
+
+
+    /**
+     * Restituisce un generico database
+     */
+    public MongoDatabase getDB(String databaseName) {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        return mongoClient.getDatabase(databaseName);
+    }// end of method
+
+
+    /**
      * Restituisce il database 'admin' di servizio, sempre presente in MongoDB
      */
     public MongoDatabase getDBAdmin() {
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-        return mongoClient.getDatabase("admin");
+        return getDB("admin");
     }// end of method
 
 
@@ -733,5 +771,21 @@ public class AMongoService extends AbstractService {
         this.setMaxBlockingSortBytes(EXPECTED_ALGOS_MAX_BYTES);
     }// end of method
 
+
+    /**
+     * Restituisce l'elenco delle collections di un database
+     *
+     * @param mongoDatabase da scandagliare
+     */
+    public List<String> listCollectionNames(MongoDatabase mongoDatabase) {
+        List<String> lista = new ArrayList();
+        MongoIterable<String> listaMongo = mongoDatabase.listCollectionNames();
+
+        for (String nome : listaMongo) {
+            lista.add(nome);
+        }// end of for cycle
+
+        return lista;
+    }// end of method
 
 }// end of class

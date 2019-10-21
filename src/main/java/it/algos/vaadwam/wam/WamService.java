@@ -482,7 +482,7 @@ public abstract class WamService extends AService {
      * Inserisce il wam-login come attributo nella vaadSession <br>
      */
     public WamLogin fixWamLogin() {
-        WamLogin wamLogin;
+//        WamLogin wamLogin;
         ALogin login = getLogin();
         VaadinSession vaadSession;
         User springUser;

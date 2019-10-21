@@ -3,9 +3,10 @@ package it.algos.vaadwam.modules.statistica;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 
@@ -50,13 +53,18 @@ public class StatisticaService extends WamService {
      */
     private final static long serialVersionUID = 1L;
 
-
     /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
      * Spring costruisce una implementazione concreta dell'interfaccia MongoRepository (prevista dal @Qualifier) <br>
      * Qui si una una interfaccia locale (col casting nel costruttore) per usare i metodi specifici <br>
      */
     public StatisticaRepository repository;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
 
     /**
@@ -193,6 +201,54 @@ public class StatisticaService extends WamService {
         }// end of if cycle
 
         return property;
+    }// end of method
+
+
+    public void elabora() {
+        super.fixWamLogin();
+        if (wamLogin.isDeveloper()) {
+            for (Croce croce : croceService.findAll()) {
+                elabora(croce);
+            }// end of for cycle
+        } else {
+            elabora(wamLogin.getCroce());
+        }// end of if/else cycle
+    }// end of method
+
+
+    public void elabora(Croce croce) {
+        List<Milite> militi;
+        deleteAll();
+
+        militi = militeService.findAllByCroce(croce);
+        if (array.isValid(militi)) {
+            for (Milite milite : militi) {
+                elaboraSingoloMilite(croce, milite);
+//                return; //@todo provvisorio
+            }// end of for cycle
+        }// end of if cycle
+    }// end of method
+
+
+    public void elaboraSingoloMilite(Croce croce, Milite milite) {
+        List<Turno> listaTurniCroce = turnoService.findAllByYear(2019);
+        Turno turno;
+        List<Turno> listaTurniMilite = new ArrayList<>();
+        int oreTotali = 0;
+        LocalDate last = null;
+
+        for (int j = 0; j < 10; j++) {
+            turno = listaTurniCroce.get(j);
+            for (int k = 0; k < 4; k++) {
+                if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null && turno.iscrizioni.get(k).milite == milite) {
+                    listaTurniMilite.add(turno);
+                    oreTotali += 7;//@todo no buono
+                    last = turno.giorno;
+                }// end of if cycle
+            }// end of for cycle
+        }// end of for cycle
+        Statistica statistica = newEntity(croce, 0, milite, last, 7, true, 15, oreTotali);
+        save(statistica);
     }// end of method
 
 }// end of class
