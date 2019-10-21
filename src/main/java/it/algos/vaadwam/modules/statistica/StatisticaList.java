@@ -15,6 +15,8 @@ import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +117,12 @@ public class StatisticaList extends WamViewList {
      */
     @Autowired
     protected MiliteService militeService;
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
 
     /**
@@ -209,6 +217,7 @@ public class StatisticaList extends WamViewList {
 
 
     protected void elaboraSingoloMilite(Milite milite) {
+//        List<Turno> listaTurni =turnoService.findAllByYear();
         ((StatisticaService)service).findOrCrea(milite);
     }// end of method
 

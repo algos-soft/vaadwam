@@ -318,6 +318,12 @@ public class WamBoot extends ABoot {
          */
         FlowVar.companyServiceClazz = CroceService.class;
 
+        /**
+         * Path per recuperare dalle risorse un'immagine da inserire nella barra di menu di MainLayout14 <br>
+         * Ogni applicazione può modificarla <br>
+         * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.pathLogo="frontend/images/logo_wam.png";
     }// end of method
 
 

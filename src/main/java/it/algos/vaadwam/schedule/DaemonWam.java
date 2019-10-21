@@ -69,10 +69,10 @@ public class DaemonWam extends Scheduler {
         if (!isStarted()) {
             super.start();
 
-//                schedule(croci.getSchedule().getPattern(), croci);
+            // schedule(croci.getSchedule().getPattern(), croci);
             schedule(funzioni.getSchedule().getPattern(), funzioni);
             schedule(servizi.getSchedule().getPattern(), servizi);
-//                schedule(militi.getSchedule().getPattern(), militi);
+            // schedule(militi.getSchedule().getPattern(), militi);
             schedule(turni.getSchedule().getPattern(), turni);
 
         }// fine del blocco if

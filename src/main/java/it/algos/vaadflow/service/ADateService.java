@@ -147,7 +147,6 @@ public class ADateService extends AbstractService {
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }// end of method
 
-
     /**
      * Convert java.util.Date to java.time.LocalDateTime
      * Date HA ore, minuti e secondi

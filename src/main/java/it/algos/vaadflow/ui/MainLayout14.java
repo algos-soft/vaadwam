@@ -1,37 +1,36 @@
 package it.algos.vaadflow.ui;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAPreferenza;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
-import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadflow.ui.topbar.TopbarComponent;
 import lombok.extern.slf4j.Slf4j;
-import it.algos.vaadwam.topbar.TopbarComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 
 /**
@@ -99,15 +98,6 @@ public class MainLayout14 extends AppLayout {
 
 
     public MainLayout14() {
-//        //@todo DA FARE cambiare immagine
-//        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-//        img.setHeight("44px");
-//        HorizontalLayout oriz = new HorizontalLayout();
-//        oriz.setSpacing(true);
-//        oriz.add(new Label("Pippoz"));
-//        oriz.setAlignItems(FlexComponent.Alignment.END);
-//        addToNavbar(new DrawerToggle(), img, oriz);
-//        this.setDrawerOpened(false);
     }// end of constructor
 
 
@@ -142,72 +132,78 @@ public class MainLayout14 extends AppLayout {
      * Layout base della pagina
      */
     protected void fixView() {
-
         DrawerToggle drawer = new DrawerToggle();
-
         TopbarComponent topbar = createTopBar();
         addToNavbar(drawer, topbar);
-
         this.setDrawerOpened(false);
-
     }// end of method
 
-//    private Component createComponent(int num, String color){
-//        Label label = new Label("label"+num);
-//        return label;
-//    }
 
-    private TopbarComponent createTopBar(){
+    /**
+     * Se l'applicazione è multiCompany e multiUtente, li visualizzo <br>
+     * Altrimenti il nome del programma <br>
+     */
+    private TopbarComponent createTopBar() {
+        TopbarComponent topbar;
 
-        TopbarComponent topbar = new TopbarComponent();
-
-
-        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-        img.setHeight("44px");
-
-        Image immagine = new Image("frontend/images/ambulanza.jpg", "Algos");
-        immagine.setHeight("44px");
-        //topbar.setLabel(companyDesc);
-
-
-
-        // company label
-        String companyDesc="";
-        Company company = login.getCompany();
-        if(company!=null){
-            companyDesc = company.getCode();
-        }
-        topbar.setLabel(companyDesc);
-
-        // username
-        String username="";
-        Utente user=login.getUtente();
-        if (user!=null){
-            username=user.getUsername();
-        }
-        topbar.setUsername(username);
-
-        topbar.setLogoutListener(() -> {
-            Notification notification = new Notification("logout pressed", 3000);
-            notification.setPosition(Notification.Position.MIDDLE);
-            notification.open();
-        });
+        if (text.isValid(getUserName())) {
+            topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione(), getUserName());
+        } else {
+            topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
+        }// end of if/else cycle
 
         topbar.setProfileListener(() -> {
             Notification notification = new Notification("Profile pressed", 3000);
             notification.setPosition(Notification.Position.MIDDLE);
             notification.open();
-        });
+        });//end of lambda expressions and anonymous inner class
+
+        topbar.setLogoutListener(() -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
+        });//end of lambda expressions and anonymous inner class
 
         return topbar;
-    }
+    }// end of method
+
+
+    /**
+     * Se l'applicazione è multiCompany visualizzo una sigla/descrizione della company<br>
+     * Altrimenti il nome del programma <br>
+     */
+    private String getDescrizione() {
+        String desc = "";
+
+        if (usaCompany && login != null && login.getCompany() != null) {
+            desc = login.getCompany().code.toUpperCase();
+        } else {
+            desc = text.primaMaiuscola(FlowVar.projectBanner);
+        }// end of if/else cycle
+
+        return desc;
+    }// end of method
+
+
+    /**
+     * Se l'applicazione è multiUtente, visualizzo l'utente loggato <br>
+     * Alrimenti rimane vuoto (non aggiunge il componente frafico) <br>
+     */
+    private String getUserName() {
+        String username = "";
+
+        if (usaCompany && login != null && login.getUtente() != null) {
+            username = login.getUtente().username;
+        }// end of if cycle
+
+        return username;
+    }// end of method
 
 
     /**
      * Regola il tipo di presentazione del menu
      */
     protected void fixType() {
-        String type = pref.getEnumStr(EAPreferenza.usaMenu,"tabs");
+        String type = pref.getEnumStr(EAPreferenza.usaMenu, "tabs");
 
         switch (type) {
             case "routers":

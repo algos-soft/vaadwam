@@ -103,6 +103,13 @@ public class FlowVar {
      */
     public static Class companyServiceClazz = CompanyService.class;
 
+    /**
+     * Path per recuperare dalle risorse un'immagine da inserire nella barra di menu di MainLayout14 <br>
+     * Ogni applicazione può modificarla <br>
+     * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static String pathLogo = "frontend/images/medal.ico";
+
 
     public static List<Class> menuClazzList = new ArrayList<>();
 

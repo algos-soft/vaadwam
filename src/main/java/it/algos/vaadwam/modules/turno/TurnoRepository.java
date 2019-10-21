@@ -42,6 +42,7 @@ public interface TurnoRepository extends MongoRepository<Turno, String> {
 
     public List<Turno> findAllByCroceOrderByGiornoAsc(Croce croce);
 
+
     public List<Turno> findAllByCroceAndGiornoBetweenOrderByGiornoAsc(Croce croce, LocalDate inzio, LocalDate fine);
 
     public List<Turno> findAllByCroceAndServizioAndGiornoBetweenOrderByGiornoAsc(Croce croce, Servizio servizio, LocalDate inzio, LocalDate fine);
