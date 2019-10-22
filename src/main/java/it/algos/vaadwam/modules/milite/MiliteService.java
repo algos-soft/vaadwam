@@ -694,11 +694,13 @@ public class MiliteService extends WamService implements IUtenteService {
 
         if (milite != null && funzione != null) {
             funzioni = milite.getFunzioni();
-            for (Funzione funz : milite.getFunzioni()) {
-                if (funzione.code.equals(funz.code)) {
-                    status = true;
-                }// end of if cycle
-            }// end of for cycle
+            if (array.isValid(funzioni)) {
+                for (Funzione funz : milite.getFunzioni()) {
+                    if (funzione.code.equals(funz.code)) {
+                        status = true;
+                    }// end of if cycle
+                }// end of for cycle
+            }// end of if cycle
         }// end of if cycle
 
         return status;

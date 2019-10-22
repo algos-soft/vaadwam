@@ -393,6 +393,7 @@ public class ADateService extends AbstractService {
         return LocalDate.now().getYear();
     }// end of method
 
+
     /**
      * Restituisce il mese corrente
      * <p>
@@ -403,7 +404,6 @@ public class ADateService extends AbstractService {
     public int getMeseCorrente() {
         return LocalDate.now().getMonthValue();
     }// end of method
-
 
     /**
      * Restituisce il giorno della settimana in forma estesa

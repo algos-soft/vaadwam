@@ -11,6 +11,7 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadwam.WamLayout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +40,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
 @UIScope
-@Route(value = TAG_ISC, layout = MainLayout.class)
+@Route(value = TAG_ISC, layout = WamLayout.class)
 @Qualifier(TAG_ISC)
 @AIView(roleTypeVisibility = EARoleType.developer)
 @Slf4j

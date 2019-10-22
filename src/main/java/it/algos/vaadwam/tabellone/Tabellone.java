@@ -24,6 +24,7 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
@@ -52,7 +53,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Time: 20:31
  */
 @UIScope
-@Route(value = TAG_TAB_LIST, layout = MainLayout14.class)
+@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
 @AIScript(sovrascrivibile = false)

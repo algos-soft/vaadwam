@@ -19,6 +19,7 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
@@ -59,7 +60,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
 @UIScope
-@Route(value = TAG_MIL, layout = MainLayout14.class)
+@Route(value = TAG_MIL, layout = WamLayout.class)
 @Qualifier(TAG_MIL)
 @Slf4j
 @AIScript(sovrascrivibile = false)

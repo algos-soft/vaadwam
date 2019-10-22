@@ -14,6 +14,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
 @UIScope
-@Route(value = TAG_CRO, layout = MainLayout14.class)
+@Route(value = TAG_CRO, layout = WamLayout.class)
 @Qualifier(TAG_CRO)
 @Slf4j
 @AIScript(sovrascrivibile = false)

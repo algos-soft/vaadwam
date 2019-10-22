@@ -83,23 +83,6 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     }// end of constructor
 
 
-//    /**
-//     * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
-//     * Può essere sovrascritto, per aggiungere informazioni
-//     * Invocare PRIMA il metodo della superclasse
-//     */
-//    @Override
-//    protected void fixPreferenzeSpecifiche() {
-//        super.fixPreferenzeSpecifiche();
-//
-//        if (wamLogin.isDeveloper()) {
-//            super.usaDeleteButton = true;
-//        } else {
-//            super.usaDeleteButton = false;
-//        }// end of if/else cycle
-//    }// end of method
-
-
     /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
      * Sovrascritto nella sottoclasse
@@ -276,6 +259,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 
         return listaFunzioniAbilitateMilite;
     }// end of method
+
     /**
      * Primo ingresso dopo il click sul bottone <br>
      */

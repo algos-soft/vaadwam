@@ -1,5 +1,6 @@
 package it.algos.vaadflow.ui;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -8,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -57,12 +59,12 @@ public class MainLayout14 extends AppLayout {
      * Recuperato dalla sessione, quando la @route fa partire la UI. <br>
      * Viene regolato nel service specifico (AVaadinService) <br>
      */
-    private AContext context;
+    protected AContext context;
 
     /**
      * Mantenuto nel 'context' <br>
      */
-    private ALogin login;
+    protected ALogin login;
 
     /**
      * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
@@ -159,19 +161,21 @@ public class MainLayout14 extends AppLayout {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }// end of if/else cycle
 
-        topbar.setLogoutListener(() -> {
-            Notification notification = new Notification("Logout pressed", 3000);
-            notification.setPosition(Notification.Position.MIDDLE);
-            notification.open();
-        });//end of lambda expressions and anonymous inner class
+        topbar.setProfileListener(this::profilePressed);
 
-        topbar.setProfileListener(() -> {
-            Notification notification = new Notification("Profile pressed", 3000);
-            notification.setPosition(Notification.Position.MIDDLE);
-            notification.open();
+        topbar.setLogoutListener(() -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
         });//end of lambda expressions and anonymous inner class
 
         return topbar;
+    }// end of method
+
+
+    protected void profilePressed() {
+        Notification notification = new Notification("Profile pressed", 3000);
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.open();
     }// end of method
 
 

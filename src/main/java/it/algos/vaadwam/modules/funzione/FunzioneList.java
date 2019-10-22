@@ -11,6 +11,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
@@ -51,7 +52,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * 'tipizzata' con la entityClazz (Collection) specifica nel metodo creaGridPaginata <br>
  */
 @UIScope
-@Route(value = TAG_FUN, layout = MainLayout14.class)
+@Route(value = TAG_FUN, layout = WamLayout.class)
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)

@@ -18,6 +18,7 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.schedule.ATask;
@@ -57,7 +58,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
 @UIScope
-@Route(value = TAG_TUR, layout = MainLayout14.class)
+@Route(value = TAG_TUR, layout = WamLayout.class)
 @Qualifier(TAG_TUR)
 @Slf4j
 @AIScript(sovrascrivibile = false)
