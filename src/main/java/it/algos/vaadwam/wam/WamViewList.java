@@ -282,7 +282,7 @@ public abstract class WamViewList extends APaginatedGridViewList {
 
     /**
      * Crea un Popup di selezione della company <br>
-     * Creato solo se devleper=true e usaCompany=true <br>
+     * Creato solo se developer=true e usaCompany=true <br>
      * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */

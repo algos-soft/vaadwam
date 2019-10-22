@@ -325,7 +325,7 @@ public class Tabellone extends AGridViewList {
 
     /**
      * Crea un Popup di selezione della company <br>
-     * Creato solo se devleper=true e usaCompany=true <br>
+     * Creato solo se developer=true e usaCompany=true <br>
      */
     protected void creaCompanyFiltro() {
         super.creaCompanyFiltro();

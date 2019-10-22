@@ -204,6 +204,30 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Statistica> findAllCroci() {
+        return repository.findAll();
+    }// end of method
+
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @param croce di appartenenza (obbligatoria)
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Statistica> findAllByCroce(Croce croce) {
+        return repository.findAllByCroceOrderByOrdineAsc(croce);
+    }// end of method
+
+
     public void elabora() {
         super.fixWamLogin();
         if (wamLogin.isDeveloper()) {
@@ -218,13 +242,12 @@ public class StatisticaService extends WamService {
 
     public void elabora(Croce croce) {
         List<Milite> militi;
-        deleteAll();
+        deleteAllCroce(croce);
 
         militi = militeService.findAllByCroce(croce);
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
                 elaboraSingoloMilite(croce, milite);
-//                return; //@todo provvisorio
             }// end of for cycle
         }// end of if cycle
     }// end of method
@@ -232,23 +255,53 @@ public class StatisticaService extends WamService {
 
     public void elaboraSingoloMilite(Croce croce, Milite milite) {
         List<Turno> listaTurniCroce = turnoService.findAllByYear(2019);
+        Milite militeIscritto;
         Turno turno;
         List<Turno> listaTurniMilite = new ArrayList<>();
+        int turni = 0;
         int oreTotali = 0;
         LocalDate last = null;
+        int delta = 0;
+        boolean valido;
 
-        for (int j = 0; j < 10; j++) {
+        for (int j = 0; j < listaTurniCroce.size(); j++) {
             turno = listaTurniCroce.get(j);
-            for (int k = 0; k < 4; k++) {
-                if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null && turno.iscrizioni.get(k).milite == milite) {
-                    listaTurniMilite.add(turno);
-                    oreTotali += 7;//@todo no buono
-                    last = turno.giorno;
+            for (int k = 0; k < turno.iscrizioni.size(); k++) {
+                if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null) {
+                    militeIscritto = turno.iscrizioni.get(k).milite;
+                    if (militeIscritto.id.equals(milite.id)) {
+                        listaTurniMilite.add(turno);
+                        oreTotali += listaTurniMilite.size() * 7;//@todo no buono
+                        last = turno.giorno;
+                        delta = date.differenza(LocalDate.now(), last);
+                    }// end of if cycle
                 }// end of if cycle
             }// end of for cycle
         }// end of for cycle
-        Statistica statistica = newEntity(croce, 0, milite, last, 7, true, 15, oreTotali);
-        save(statistica);
+
+        turni = listaTurniMilite.size();
+        valido = checkValidita(turni);
+
+        if (turni > 0) {
+            Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turni, oreTotali);
+            save(statistica);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Controlla quanti turni sono stati fatti nell'anno/nel mese <br> <br>
+     *
+     * @param numTurni effettuati nel corrente anno
+     *
+     * @return tru se la frequenza è soddisfacente (per gli standard della singola croce)
+     */
+    public boolean checkValidita(int numTurni) {
+        int numTurniMinimiMese = 2; //@todo da calibrare con preferenza della specifica croce
+        int meseCorrente = date.getMeseCorrente();
+        int turniRichiesti = numTurniMinimiMese * meseCorrente;
+
+        return numTurni > turniRichiesti;
     }// end of method
 
 }// end of class

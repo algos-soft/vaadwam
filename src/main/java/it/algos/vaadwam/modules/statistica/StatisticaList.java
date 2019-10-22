@@ -153,6 +153,8 @@ public class StatisticaList extends WamViewList {
         super.usaBottoneNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
+
+        super.grid = new PaginatedGrid<Statistica>();
     }// end of method
 
 
@@ -182,14 +184,31 @@ public class StatisticaList extends WamViewList {
         Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
         elaboraButton.getElement().setAttribute("theme", "primary");
         elaboraButton.addClassName("view-toolbar__button");
-        elaboraButton.addClickListener(e -> ((StatisticaService) service).elabora());
+        elaboraButton.addClickListener(e -> elabora());
         topPlaceholder.add(elaboraButton);
     }// end of method
 
+    /**
+     * Elabora (nel service) le statistiche <br>
+     * Se developer=true, elabora tutte le croci <br>
+     * Se admin=true, elabora SOLO la proipria croce <br>
+     * Se user=true, non vede questa lista <br>
+     */
+    public void elabora() {
+        ((StatisticaService) service).elabora();
+
+        if (wamLogin.isDeveloper()) {
+            ((StatisticaService) service).elabora();
+        } else {
+            if (wamLogin.isAdmin()) {
+                ((StatisticaService) service).elabora(wamLogin.getCroce());
+            }// end of if cycle
+        }// end of if/else cycle
+    }// end of method
 
     /**
      * Crea un Popup di selezione della company <br>
-     * Creato solo se devleper=true e usaCompany=true <br>
+     * Creato solo se developer=true e usaCompany=true <br>
      */
     @Override
     protected void creaCompanyFiltro() {

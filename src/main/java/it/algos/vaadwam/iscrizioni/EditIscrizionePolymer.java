@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Optional;
 
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
@@ -326,6 +327,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         if (time != null) {
             inizio.setValue(time);
             inizio.setStep(Duration.ofMinutes(15));
+            inizio.setLocale(Locale.ITALIAN);
         }// end of if cycle
     }// end of method
 
@@ -354,6 +356,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         if (time != null) {
             fine.setValue(time);
             fine.setStep(Duration.ofMinutes(15));
+            fine.setLocale(Locale.ITALIAN);
         }// end of if cycle
     }// end of method
 

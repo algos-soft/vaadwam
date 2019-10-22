@@ -71,7 +71,7 @@ import java.time.LocalDate;
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "statistica", company = EACompanyRequired.obbligatoria)
 @AIList(fields = { "ordine", "milite", "last", "delta", "valido", "turni", "ore"})
-@AIForm(fields = {"croce", "ordine", "milite", "last", "delta", "valido", "turni", "ore"})
+@AIForm(fields = {"croce", "ordine", "last", "delta", "valido", "turni", "ore"})
 public class Statistica extends WamEntity {
 
 
@@ -100,7 +100,7 @@ public class Statistica extends WamEntity {
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 12)
+    @AIColumn(widthEM = 11)
     public Milite milite;
 
 
@@ -109,7 +109,7 @@ public class Statistica extends WamEntity {
      */
     @NotNull
     @Field("last")
-    @AIField(type = EAFieldType.localdate)
+    @AIField(type = EAFieldType.monthdate)
     @AIColumn()
     public LocalDate last;
 
@@ -121,14 +121,14 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("dif")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "#", widthEM = 3)
+    @AIColumn(name = "Δ", widthEM = 3)
     public int delta;
 
     /**
      * stato di servizio (numero turni sufficiente oppure no)
      */
     @Field("val")
-    @AIField(type = EAFieldType.checkbox)
+    @AIField(type = EAFieldType.yesnobold)
     @AIColumn(name="OK")
     public boolean valido;
 
@@ -139,7 +139,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("tur")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "#", widthEM = 3)
+    @AIColumn(name = "Σ", widthEM = 3)
     public int turni;
 
     /**
@@ -149,7 +149,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("ore")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "#", widthEM = 3)
+    @AIColumn(name = "Φ", widthEM = 5)
     public int ore;
 
 

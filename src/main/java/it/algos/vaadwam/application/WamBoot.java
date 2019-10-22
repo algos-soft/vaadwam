@@ -66,9 +66,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_NAME = "webambulanze";
 
-    private final static double PROJECT_VERSION = 1.6;
+    private final static double PROJECT_VERSION = 1.7;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 21);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 10, 22);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -370,7 +370,7 @@ public class WamBoot extends ABoot {
 
 
         //--patch di accesso
-        utenteService.creaIfNotExist(croceService.getCRF(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
         utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");

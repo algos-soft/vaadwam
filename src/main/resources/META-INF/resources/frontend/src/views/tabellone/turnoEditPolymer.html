@@ -1,5 +1,4 @@
 <link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html">
@@ -60,13 +59,13 @@
                         <div style="display: flex; flex-direction:row; align-items: center;">
                             <vaadin-time-picker on-value-changed="handleClickInizio"
                                                 disabled="[[item.noteOrariDisabilitati]]"
-                                                style="width: 6em" value="{{item.inizio}}"
+                                                style="width: 7em" value="{{item.inizio}}"
                                                 step="900"></vaadin-time-picker>
                             <vaadin-text-field style="width: 7em" placeholder="Note"
                                                disabled="[[item.noteOrariDisabilitati]]">{{item.note}}
                             </vaadin-text-field>
                             <vaadin-time-picker on-click="handleClickFine" disabled="[[item.noteOrariDisabilitati]]"
-                                                style="width: 6em" value="{{item.fine}}"
+                                                style="width: 7em" value="{{item.fine}}"
                                                 step="900">{{item.fine}}
                             </vaadin-time-picker>
 

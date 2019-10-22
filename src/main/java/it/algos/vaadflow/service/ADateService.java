@@ -393,6 +393,17 @@ public class ADateService extends AbstractService {
         return LocalDate.now().getYear();
     }// end of method
 
+    /**
+     * Restituisce il mese corrente
+     * <p>
+     * 4
+     *
+     * @return anno corrente
+     */
+    public int getMeseCorrente() {
+        return LocalDate.now().getMonthValue();
+    }// end of method
+
 
     /**
      * Restituisce il giorno della settimana in forma estesa
@@ -698,6 +709,19 @@ public class ADateService extends AbstractService {
      */
     public String getWeekShort(LocalDate localDate) {
         return get(localDate, EATime.weekShort);
+    }// end of method
+
+    /**
+     * Ritorna il giorno (numero) del mese ed il mese (testo)  di una data fornita.
+     * <p>
+     * 5-ott
+     *
+     * @param localDate fornita
+     *
+     * @return il giorno della settimana in forma breve
+     */
+    public String getMonthLong(LocalDate localDate) {
+        return get(localDate, EATime.meseLong);
     }// end of method
 
 
