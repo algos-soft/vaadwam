@@ -359,8 +359,10 @@ public class AFieldService extends AbstractService {
                     binder.forField(field).bind(fieldName);
                 }// end of if cycle
                 break;
+            case booleano:
             case checkbox:
             case yesno:
+            case yesnobold:
                 field = new ACheckBox(caption);
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);

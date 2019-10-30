@@ -463,7 +463,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
                 }// end of if cycle
             }// end of if cycle
         }// end of for cycle
-        lista = mongo.findAllByProperty(entityClazz, listaCriteriaDefinitionRegex.stream().toArray(CriteriaDefinition[]::new));
+        lista = mongo.findAllByProperty(entityClazz, listaCriteriaDefinitionRegex);
 
         if (array.isValid(lista)) {
             items = lista;

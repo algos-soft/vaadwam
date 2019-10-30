@@ -259,23 +259,6 @@ public class WamBoot extends ABoot {
      * Regola alcune informazioni dell'applicazione
      */
     protected void regolaInfo() {
-
-        /**
-         * Controlla se l'applicazione usa il login oppure no <br>
-         * Se si usa il login, occorre la classe SecurityConfiguration <br>
-         * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
-         * Di defaul (per sicurezza) uguale a true <br>
-         */
-        FlowVar.usaSecurity = true;
-
-        /**
-         * Controlla se l'applicazione è multi-company oppure no <br>
-         * Di defaul (per sicurezza) uguale a true <br>
-         * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
-         */
-        FlowVar.usaCompany = true;
-
-
         /**
          * Nome identificativo dell'applicazione <br>
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
@@ -293,6 +276,22 @@ public class WamBoot extends ABoot {
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          */
         FlowVar.versionDate = VERSION_DATE;
+
+        /**
+           * Controlla se l'applicazione usa il login oppure no <br>
+           * Se si usa il login, occorre la classe SecurityConfiguration <br>
+           * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
+           * Di defaul (per sicurezza) uguale a true <br>
+           */
+        FlowVar.usaSecurity = true;
+
+        /**
+         * Controlla se l'applicazione è multi-company oppure no <br>
+         * Di defaul (per sicurezza) uguale a true <br>
+         * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.usaCompany = true;
+
 
         /**
          * Service da usare per recuperare dal mongoDB l'utenza loggata tramite 'username' che è unico <br>

@@ -197,7 +197,7 @@ public class AMongoService extends AbstractService {
 
 
     /**
-     * Find single entity
+     * Returns only the property of the type.
      *
      * @param clazz    della collezione
      * @param property da controllare
@@ -221,19 +221,20 @@ public class AMongoService extends AbstractService {
     }// end of method
 
 
+
     /**
-     * Find single entity
+     * Returns only the property of the type.
      *
      * @param clazz                   della collezione
      * @param listaCriteriaDefinition per le selezioni di filtro
      *
      * @return entity
      */
-    public List<AEntity> findAllByProperty(Class<? extends AEntity> clazz, CriteriaDefinition[] listaCriteriaDefinition) {
+    public List<AEntity> findAllByProperty(Class<? extends AEntity> clazz, List<CriteriaDefinition> listaCriteriaDefinition) {
         List<AEntity> lista = null;
         Query query = new Query();
 
-        if (listaCriteriaDefinition != null && listaCriteriaDefinition.length > 0) {
+        if (listaCriteriaDefinition != null && listaCriteriaDefinition.size() > 0) {
             for (CriteriaDefinition criteria : listaCriteriaDefinition) {
                 query.addCriteria(criteria);
             }// end of for cycle
@@ -334,7 +335,7 @@ public class AMongoService extends AbstractService {
      *
      * @return lista
      */
-    public ArrayList findAll(Class<? extends AEntity> clazz) {
+    public List findAll(Class<? extends AEntity> clazz) {
         return new ArrayList(mongoOp.findAll(clazz));
     }// end of method
 

@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 import static it.algos.vaadflow.application.FlowCost.TAG_LOGIN;
 
 /**
@@ -38,6 +37,17 @@ import static it.algos.vaadflow.application.FlowCost.TAG_LOGIN;
  * User: gac
  * Date: Mon, 20-May-2019
  * Time: 07:06
+ * <p>
+ * Classe astratta per visualizzare la Grid <br>
+ * La classe viene divisa verticalmente in alcune classi astratte, per 'leggerla' meglio (era troppo grossa) <br>
+ * Nell'ordine (dall'alto):
+ * - 1 APropertyViewList (che estende la classe Vaadin VerticalLayout) per elencare tutte le property usate <br>
+ * - 2 AViewList con la business logic principale <br>
+ * - 3 APrefViewList per regolare le preferenze ed i flags <br>
+ * - 4 ALayoutViewList per regolare il layout <br>
+ * - 5 AGridViewList per gestire la Grid <br>
+ * - 6 APaginatedGridViewList (opzionale) per gestire una Grid specializzata (add-on) che usa le Pagine <br>
+ * L'utilizzo pratico per il programmatore è come se fosse una classe sola <br>
  * <p>
  * Superclasse di servizio per separare le property di AViewList in una classe 'dedicata' <br>
  * Alleggerisce la 'lettura' della sottoclasse principale <br>
@@ -97,7 +107,7 @@ public abstract class APropertyViewList extends VerticalLayout {
     public AMongoService mongo;
 
     /**
-     * Istanza unica di una classe di servizio: <br>
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
      * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>

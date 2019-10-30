@@ -70,7 +70,7 @@ public class MainLayout14 extends AppLayout {
      * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
      * Unico per tutta l'applicazione. Usato come libreria. Disponibile subito.
      */
-    private AVaadinService vaadinService = StaticContextAccessor.getBean(AVaadinService.class);
+    protected AVaadinService vaadinService = StaticContextAccessor.getBean(AVaadinService.class);
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -78,7 +78,7 @@ public class MainLayout14 extends AppLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
-    private AMenuService menuService;
+    protected AMenuService menuService;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -86,7 +86,7 @@ public class MainLayout14 extends AppLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
-    private ATextService text;
+    protected ATextService text;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -98,15 +98,6 @@ public class MainLayout14 extends AppLayout {
 
 
     public MainLayout14() {
-//        //@todo DA FARE cambiare immagine
-//        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-//        img.setHeight("44px");
-//        HorizontalLayout oriz = new HorizontalLayout();
-//        oriz.setSpacing(true);
-//        oriz.add(new Label("Pippoz"));
-//        oriz.setAlignItems(FlexComponent.Alignment.END);
-//        addToNavbar(new DrawerToggle(), img, oriz);
-//        this.setDrawerOpened(false);
     }// end of constructor
 
 
@@ -161,7 +152,7 @@ public class MainLayout14 extends AppLayout {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }// end of if/else cycle
 
-        topbar.setProfileListener(this::profilePressed);
+        topbar.setProfileListener(() -> profilePressed());
 
         topbar.setLogoutListener(() -> {
             VaadinSession.getCurrent().getSession().invalidate();
@@ -172,6 +163,9 @@ public class MainLayout14 extends AppLayout {
     }// end of method
 
 
+    /**
+     * Ha senso solo se l'applicazione è multiUtente <br>
+     */
     protected void profilePressed() {
         Notification notification = new Notification("Profile pressed", 3000);
         notification.setPosition(Notification.Position.MIDDLE);
