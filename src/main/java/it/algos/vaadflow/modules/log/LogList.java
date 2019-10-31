@@ -83,7 +83,6 @@ public class LogList extends AGridViewList {
         if (!FlowVar.usaSecurity || login.isDeveloper()) {
             super.usaBottoneDeleteAll = true;
         }// end of if cycle
-        super.usaSearch = false;
         super.usaPopupFiltro = true;
         super.isEntityAdmin = true;
         super.usaBottoneNew = false;
@@ -115,13 +114,13 @@ public class LogList extends AGridViewList {
 
         filtroComboBox.setItems(Livello.values());
         filtroComboBox.addValueChangeListener(e -> {
-            updateItems();
-            updateView();
+            updateFiltri();
+            updateGrid();
         });
     }// end of method
 
 
-    public void updateItems() {
+    public void updateFiltri() {
         Livello livello = (Livello) filtroComboBox.getValue();
         items = ((LogService) service).findAllByLivello(livello);
     }// end of method

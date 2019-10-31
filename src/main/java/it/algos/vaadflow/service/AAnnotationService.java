@@ -462,6 +462,7 @@ public class AAnnotationService extends AbstractService {
         return menuName;
     }// end of method
 
+
     /**
      * Valore della VaadinIcon di una view
      *
@@ -482,6 +483,7 @@ public class AAnnotationService extends AbstractService {
         return menuIcon;
     }// end of method
 
+
     /**
      * Restituisce il nome del record (da usare nel Dialog)
      * 1) Cerca in @interface AIEntity della classe AEntity la property recordName
@@ -493,7 +495,7 @@ public class AAnnotationService extends AbstractService {
      */
     public String getRecordName(final Class<? extends AEntity> entityClazz) {
         String recordName = "";
-        AIEntity annotationEntity ;
+        AIEntity annotationEntity;
 
         /**
          * 1) Cerca in @interface AIEntity della classe AEntity la property recordName
@@ -516,7 +518,7 @@ public class AAnnotationService extends AbstractService {
 
 
     /**
-     * Restituisce il nome della property per le ricerche con searchFiueld
+     * Restituisce il nome della property per le ricerche con searchField <br>
      *
      * @param viewClazz the view class
      *
@@ -2081,6 +2083,7 @@ public class AAnnotationService extends AbstractService {
 
         return color;
     }// end of method
+
 
     /**
      * Get the method name for reflection.

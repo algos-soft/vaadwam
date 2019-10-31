@@ -42,3 +42,6 @@ So there is an important thing to keep in mind when working with Mongo DB, and t
     ObjectID class a special class that holds a MongoDB document identifier (the equivalent to a Primary key)
     DbRef class a special class that lets you include a reference in a document pointing to another object
     Symbol class a special class that lets you specify a symbol, not really relevant for javascript but for languages that supports the concept of symbols.
+
+https://stackoverflow.com/questions/34825450/java-mongodb-3-0-find-value-in-internal-array-of-documents
+https://studio3t.com/knowledge-base/articles/filter-elements-from-mongodb-arrays/

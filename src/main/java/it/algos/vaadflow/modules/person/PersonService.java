@@ -358,7 +358,7 @@ public class PersonService extends AService {
         return usaSecurity ? PROPERTIES_SECURED : PROPERTIES_NOT_SECURED;
     }// end of method
 
-//
+
 //    /**
 //     * Costruisce una lista di nomi delle properties del Form nell'ordine:
 //     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
@@ -369,7 +369,7 @@ public class PersonService extends AService {
 //     */
 //    @Override
 //    public List<String> getFormPropertyNamesList( AContext context) {
-//        return usaSuperClasse ? PROPERTIES_SECURED : PROPERTIES_NOT_SECURED;
+//        return usaSecurity ? PROPERTIES_SECURED : PROPERTIES_NOT_SECURED;
 //    }// end of method
-//
+
 }// end of class

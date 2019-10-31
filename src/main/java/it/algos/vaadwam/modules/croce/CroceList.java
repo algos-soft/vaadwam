@@ -198,7 +198,7 @@ public class CroceList extends WamViewList {
 
     public void updateItems() {
         if (wamLogin.isDeveloper()) {
-            super.updateItems();
+            super.updateGrid();
         } else {
             if (login.isAdmin()) {
                 items = Arrays.asList(wamLogin.getCroce());

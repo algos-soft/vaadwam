@@ -175,8 +175,8 @@ public class FunzioneList extends WamViewList {
 
             filtroComboBox.setItems(croceService.findAll());
             filtroComboBox.addValueChangeListener(e -> {
-                updateItems();
-                updateView();
+                updateFiltri();
+                updateGrid();
             });
         }// end of if cycle
     }// end of method

@@ -70,10 +70,10 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderRole")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "ruolo", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"ordine", "code"})
 @AIForm(fields = {"ordine", "code"})
-@AIScript(sovrascrivibile = false)
 public class Role extends AEntity {
 
 

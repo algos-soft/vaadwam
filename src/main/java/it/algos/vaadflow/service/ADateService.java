@@ -147,6 +147,20 @@ public class ADateService extends AbstractService {
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }// end of method
 
+    /**
+     * Convert java.util.Date to java.time.LocalDateTime
+     * Date HA ore, minuti e secondi
+     * LocalDateTime HA ore, minuti e secondi
+     * Non si perde nulla
+     *
+     * @param data da convertire
+     *
+     * @return data e ora locale
+     */
+    public LocalDateTime dateToLocalDateTimeUTC(Date data) {
+        Instant instant = Instant.ofEpochMilli(data.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
+    }// end of method
 
     /**
      * Convert java.time.LocalDateTime to java.util.Date
@@ -379,6 +393,17 @@ public class ADateService extends AbstractService {
         return LocalDate.now().getYear();
     }// end of method
 
+
+    /**
+     * Restituisce il mese corrente
+     * <p>
+     * 4
+     *
+     * @return anno corrente
+     */
+    public int getMeseCorrente() {
+        return LocalDate.now().getMonthValue();
+    }// end of method
 
     /**
      * Restituisce il giorno della settimana in forma estesa
@@ -684,6 +709,19 @@ public class ADateService extends AbstractService {
      */
     public String getWeekShort(LocalDate localDate) {
         return get(localDate, EATime.weekShort);
+    }// end of method
+
+    /**
+     * Ritorna il giorno (numero) del mese ed il mese (testo)  di una data fornita.
+     * <p>
+     * 5-ott
+     *
+     * @param localDate fornita
+     *
+     * @return il giorno della settimana in forma breve
+     */
+    public String getMonthLong(LocalDate localDate) {
+        return get(localDate, EATime.meseLong);
     }// end of method
 
 

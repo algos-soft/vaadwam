@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 21-set-2019 8.28.35 <br>
+ * Fix date: 14-ott-2019 18.44.27 <br>
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  * <p>
@@ -53,10 +53,11 @@ import javax.validation.constraints.Size;
  * -which gives a name to the key to be used to store the field inside the document.
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
+ * -va usato SOLO per 'collection' molto grandi (per evitare confusione sul nome della property da usare).
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- * (EAFieldType.link e XxxPresenter.class)
+ *      (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -86,18 +87,16 @@ public class Preferenza extends ACEntity {
      */
     @NotNull
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @Field("ord")
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "#", widthEM = 3)
     public int ordine;
 
     /**
-     * codice di riferimento (obbligatorio, unico) <br>
+     * codice di riferimento (obbligatorio) <br>
      */
     @NotNull
-    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    @Indexed(direction = IndexDirection.DESCENDING)
     @Size(min = 3)
-    @Field("cod")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
     @AIColumn(widthEM = 14)
     public String code;
@@ -107,7 +106,6 @@ public class Preferenza extends ACEntity {
      */
     @NotNull(message = "La descrizione è obbligatoria")
     @Size(min = 2, max = 50)
-    @Field("desc")
     @AIField(type = EAFieldType.textarea, firstCapital = true, widthEM = 24)
     @AIColumn(flexGrow = true)
     public String descrizione;
@@ -117,7 +115,6 @@ public class Preferenza extends ACEntity {
      * tipo di dato memorizzato (obbligatorio)
      */
     @NotNull
-    @Field("type")
     @AIField(type = EAFieldType.enumeration, enumClazz = EAPrefType.class, required = true, focus = true, widthEM = 12)
     @AIColumn(widthEM = 6, sortable = true)
     public EAPrefType type;
@@ -125,7 +122,6 @@ public class Preferenza extends ACEntity {
 
     //--valore della preferenza (obbligatorio)
     @NotNull
-    @Field("val")
     @AIField(type = EAFieldType.pref, required = true, name = "Valore", widthEM = 12)
     @AIColumn(widthEM = 10)
     public byte[] value;
@@ -134,7 +130,6 @@ public class Preferenza extends ACEntity {
      * visibile agli utenti normali (facoltativo, di default developer)
      * i developer e gli admin
      */
-    @Field("show")
     @AIField(type = EAFieldType.enumeration, enumClazz = EARole.class, required = true, widthEM = 12)
     @AIColumn(name = "show", widthEM = 7)
     public EARole show;
@@ -142,7 +137,6 @@ public class Preferenza extends ACEntity {
     /**
      * companySpecifica (facoltativo) usa un prefisso col codice della company
      */
-    @Field("spec")
     @AIField(type = EAFieldType.yesno)
     @AIColumn(headerIcon = VaadinIcon.FACTORY, widthEM = 3)
     public boolean companySpecifica;

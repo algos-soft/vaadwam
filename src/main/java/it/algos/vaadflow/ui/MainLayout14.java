@@ -1,32 +1,36 @@
 package it.algos.vaadflow.ui;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadflow.ui.topbar.TopbarComponent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 
 /**
@@ -47,6 +51,7 @@ import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 @BodySize
 @HtmlImport(value = "styles/shared-styles.html", loadMode = LoadMode.INLINE)
 @HtmlImport(value = "styles/algos-styles.html", loadMode = LoadMode.INLINE)
+@Slf4j
 @Theme(Lumo.class)
 public class MainLayout14 extends AppLayout {
 
@@ -54,18 +59,18 @@ public class MainLayout14 extends AppLayout {
      * Recuperato dalla sessione, quando la @route fa partire la UI. <br>
      * Viene regolato nel service specifico (AVaadinService) <br>
      */
-    private AContext context;
+    protected AContext context;
 
     /**
      * Mantenuto nel 'context' <br>
      */
-    private ALogin login;
+    protected ALogin login;
 
     /**
      * Service (@Scope = 'singleton') iniettato da StaticContextAccessor e usato come libreria <br>
      * Unico per tutta l'applicazione. Usato come libreria. Disponibile subito.
      */
-    private AVaadinService vaadinService = StaticContextAccessor.getBean(AVaadinService.class);
+    protected AVaadinService vaadinService = StaticContextAccessor.getBean(AVaadinService.class);
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -73,7 +78,7 @@ public class MainLayout14 extends AppLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
-    private AMenuService menuService;
+    protected AMenuService menuService;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -81,7 +86,7 @@ public class MainLayout14 extends AppLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
-    private ATextService text;
+    protected ATextService text;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -93,15 +98,6 @@ public class MainLayout14 extends AppLayout {
 
 
     public MainLayout14() {
-//        //@todo DA FARE cambiare immagine
-//        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-//        img.setHeight("44px");
-//        HorizontalLayout oriz = new HorizontalLayout();
-//        oriz.setSpacing(true);
-//        oriz.add(new Label("Pippoz"));
-//        oriz.setAlignItems(FlexComponent.Alignment.END);
-//        addToNavbar(new DrawerToggle(), img, oriz);
-//        this.setDrawerOpened(false);
     }// end of constructor
 
 
@@ -136,27 +132,76 @@ public class MainLayout14 extends AppLayout {
      * Layout base della pagina
      */
     protected void fixView() {
-        //@todo DA FARE cambiare immagine
-        Image img = new Image("https://i.imgur.com/GPpnszs.png", "Algos");
-        img.setHeight("44px");
-        Image immagine = new Image("frontend/images/ambulanza.jpg", "Algos");
-        immagine.setHeight("44px");
-
-        String desc = login.getCompany() != null ? login.getCompany().code.toUpperCase() : text.primaMaiuscola(FlowVar.projectBanner);
-
-        Label label = new Label(desc);
-        label.getStyle().set("font-size", "x-large");
-        label.getStyle().set("font-weight", "bold");
-        label.getElement().getStyle().set("color", "blue");
-
-        Label spazio = new Label();
-        spazio.getElement().setProperty("innerHTML", "&nbsp;&nbsp;&nbsp;&nbsp;");
-
-//        addToNavbar(new DrawerToggle(), img, label);
         DrawerToggle drawer = new DrawerToggle();
-//        addToNavbar(drawer, label);
-        addToNavbar(drawer, immagine, spazio,label);
+        TopbarComponent topbar = createTopBar();
+        addToNavbar(drawer, topbar);
         this.setDrawerOpened(false);
+    }// end of method
+
+
+    /**
+     * Se l'applicazione è multiCompany e multiUtente, li visualizzo <br>
+     * Altrimenti il nome del programma <br>
+     */
+    private TopbarComponent createTopBar() {
+        TopbarComponent topbar;
+
+        if (text.isValid(getUserName())) {
+            topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione(), getUserName());
+        } else {
+            topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
+        }// end of if/else cycle
+
+        topbar.setProfileListener(() -> profilePressed());
+
+        topbar.setLogoutListener(() -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
+        });//end of lambda expressions and anonymous inner class
+
+        return topbar;
+    }// end of method
+
+
+    /**
+     * Ha senso solo se l'applicazione è multiUtente <br>
+     */
+    protected void profilePressed() {
+        Notification notification = new Notification("Profile pressed", 3000);
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.open();
+    }// end of method
+
+
+    /**
+     * Se l'applicazione è multiCompany visualizzo una sigla/descrizione della company<br>
+     * Altrimenti il nome del programma <br>
+     */
+    private String getDescrizione() {
+        String desc = "";
+
+        if (usaCompany && login != null && login.getCompany() != null) {
+            desc = login.getCompany().code.toUpperCase();
+        } else {
+            desc = text.primaMaiuscola(FlowVar.projectBanner);
+        }// end of if/else cycle
+
+        return desc;
+    }// end of method
+
+
+    /**
+     * Se l'applicazione è multiUtente, visualizzo l'utente loggato <br>
+     * Alrimenti rimane vuoto (non aggiunge il componente frafico) <br>
+     */
+    private String getUserName() {
+        String username = "";
+
+        if (usaCompany && login != null && login.getUtente() != null) {
+            username = login.getUtente().username;
+        }// end of if cycle
+
+        return username;
     }// end of method
 
 
@@ -164,7 +209,7 @@ public class MainLayout14 extends AppLayout {
      * Regola il tipo di presentazione del menu
      */
     protected void fixType() {
-        String type = pref.getStr(FlowCost.USA_MENU);
+        String type = pref.getEnumStr(EAPreferenza.usaMenu, "tabs");
 
         switch (type) {
             case "routers":
@@ -174,6 +219,7 @@ public class MainLayout14 extends AppLayout {
                 addToDrawer(getTabMenu());
                 break;
             default:
+                log.warn("MainLayout14 - Manca la preferenza 'usaMenu'");
                 break;
         } // end of switch statement
 

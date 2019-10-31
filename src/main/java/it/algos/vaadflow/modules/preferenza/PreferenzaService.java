@@ -1,9 +1,12 @@
 package it.algos.vaadflow.modules.preferenza;
 
 import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.AService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,15 +18,18 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
+import static it.algos.vaadflow.application.FlowVar.projectName;
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
 /**
  * Project vaadflow <br>
  * Created by Algos <br>
  * User: Gac <br>
- * Fix date: 21-set-2019 8.28.35 <br>
+ * Fix date: 14-ott-2019 18.44.27 <br>
  * <br>
  * Business class. Layer di collegamento per la Repository. <br>
  * <br>
@@ -43,6 +49,15 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 public class PreferenzaService extends AService {
+
+    public final static List<String> LIST_PROPERTIES_MULTICOMPANY =
+            Arrays.asList("ordine", "id", "company", "code", "type", "value", "show", "companySpecifica");
+
+    public final static List<String> FORM_PROPERTIES_MULTICOMPANY =
+            Arrays.asList("ordine", "id", "company", "code", "type", "value", "descrizione", "show", "companySpecifica");
+
+    public final static List<String> PROPERTIES_NO_COMPANY =
+            Arrays.asList("ordine", "code", "descrizione", "type", "show", "companySpecifica");
 
     /**
      * versione della classe per la serializzazione
@@ -92,7 +107,7 @@ public class PreferenzaService extends AService {
         boolean creata = false;
 
         if (isMancaByKeyUnica(code)) {
-            AEntity entity = save(newEntity(0, code, descrizione, type, show, false, value));
+            AEntity entity = save(newEntity(0, code, descrizione, type, show, false, null, value));
             creata = entity != null;
         }// end of if cycle
 
@@ -108,10 +123,29 @@ public class PreferenzaService extends AService {
      * @return true se la entity è stata creata
      */
     public boolean creaIfNotExist(IAPreferenza eaPref) {
-        boolean creata = false;
+        return creaIfNotExist(eaPref, null);
+    }// end of method
 
-        if (isMancaByKeyUnica(eaPref.getCode())) {
-            AEntity entity = save(newEntity(eaPref));
+
+    /**
+     * Crea una entity solo se non esisteva <br>
+     *
+     * @param eaPref: enumeration di dati iniziali di prova
+     * @param company (facoltativo) usata se companySpecifica=true
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean creaIfNotExist(IAPreferenza eaPref, Company company) {
+        boolean creata = false;
+        String keyUnica;
+        if (company != null) {
+            keyUnica = company.code + text.primaMaiuscola(eaPref.getCode());
+        } else {
+            keyUnica = eaPref.getCode();
+        }// end of if/else cycle
+
+        if (findById(keyUnica) == null) {
+            AEntity entity = save(newEntity(eaPref, company));
             creata = entity != null;
         }// end of if cycle
 
@@ -131,7 +165,7 @@ public class PreferenzaService extends AService {
      */
     public boolean crea(String code, String descrizione, EAPrefType type, EARole show, Object value) {
         boolean creata;
-        AEntity entity = save(newEntity(0, code, descrizione, type, show, false, value));
+        AEntity entity = save(newEntity(0, code, descrizione, type, show, false, null, value));
         creata = entity != null;
 
         return creata;
@@ -146,8 +180,21 @@ public class PreferenzaService extends AService {
      * @return true se la entity è stata creata
      */
     public boolean crea(IAPreferenza eaPref) {
+        return crea(eaPref, null);
+    }// end of method
+
+
+    /**
+     * Crea una entity <br>
+     *
+     * @param eaPref: enumeration di dati iniziali di prova
+     * @param company (facoltativo) usata se companySpecifica=true
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean crea(IAPreferenza eaPref, Company company) {
         boolean creata;
-        AEntity entity = save(newEntity(eaPref));
+        AEntity entity = save(newEntity(eaPref, company));
         creata = entity != null;
 
         return creata;
@@ -162,7 +209,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public AEntity newEntity() {
-        return newEntity(0, "", "", null, null, false, null);
+        return newEntity(0, "", "", null, null, false, null, null);
     }// end of method
 
 
@@ -172,11 +219,12 @@ public class PreferenzaService extends AService {
      * Usa una enumeration di dati iniziali di prova <br>
      *
      * @param eaPref: enumeration di dati iniziali di prova
+     * @param company (facoltativo) usata se companySpecifica=true
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Preferenza newEntity(IAPreferenza eaPref) {
-        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getShow(), eaPref.isCompanySpecifica(), eaPref.getValue());
+    public Preferenza newEntity(IAPreferenza eaPref, Company company) {
+        return newEntity(0, eaPref.getCode(), eaPref.getDesc(), eaPref.getType(), eaPref.getShow(), eaPref.isCompanySpecifica(), company, eaPref.getValue());
     }// end of method
 
 
@@ -191,10 +239,11 @@ public class PreferenzaService extends AService {
      * @param type             (obbligatorio) per convertire in byte[] i valori
      * @param value            (obbligatorio) memorizza tutto in byte[]
      * @param companySpecifica (facoltativo) usa un prefisso col codice della company
+     * @param company          (facoltativo) usata se companySpecifica=true
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, boolean companySpecifica, Object value) {
+    public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, boolean companySpecifica, Company company, Object value) {
         Preferenza entity = Preferenza.builderPreferenza()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine())
                 .code(text.isValid(code) ? code : null)
@@ -205,7 +254,11 @@ public class PreferenzaService extends AService {
                 .companySpecifica(companySpecifica)
                 .build();
 
-        return (Preferenza) super.addCompanySeManca(entity);
+        if (company != null) {
+            entity.company = company;
+        }// end of if cycle
+
+        return (Preferenza) entity;
     }// end of method
 
 
@@ -219,30 +272,156 @@ public class PreferenzaService extends AService {
 
 
     /**
-     * Operazioni eseguite PRIMA del save <br>
-     * Regolazioni automatiche di property <br>
-     * Controllo della validità delle properties obbligatorie <br>
+     * Retrieves an entity by its id.
      *
-     * @param entityBean da regolare prima del save
-     * @param operation  del dialogo (NEW, Edit)
+     * @param id must not be {@literal null}.
      *
-     * @return the modified entity
+     * @return the entity with the given id or {@literal null} if none found
+     *
+     * @throws IllegalArgumentException if {@code id} is {@literal null}
      */
     @Override
-    public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
-        return super.beforeSave(entityBean, operation);
+    public Preferenza findById(String id) {
+        return (Preferenza) super.findById(id);
+    }// end of method
+
+
+    /**
+     * Se è prevista la company obbligatoria, antepone company.code a quanto sopra (se non è vuoto)
+     * Se manca la company obbligatoria, non registra
+     * <p>
+     * Se è prevista la company facoltativa, antepone company.code a quanto sopra (se non è vuoto)
+     * Se manca la company facoltativa, registra con idKey regolata come sopra
+     * <p>
+     * Per codifiche diverse, sovrascrivere il metodo
+     * Regola il code SOLO per le preferenze che prevedono la company specifica <br>
+     * Se l'applicazione NON usaCompany, aggiunge come prefisso il nome breve dell'applicazione <br>
+     * Regola il code aggiungendo come prefisso la company, se selezionata <br>
+     * Se non esiste, aggiunge il nome del programma
+     *
+     * @param entityBean da regolare
+     *
+     * @return chiave univoca da usare come idKey nel DB mongo
+     */
+    public String addKeyCompany(AEntity entityBean, String keyCode) {
+        String keyUnica = "";
+        Company company = null;
+
+        if (((Preferenza) entityBean).companySpecifica) {
+            //--questa preferenza DEVE specificare una company nel keyID
+            if (usaCompany) {
+                //--l'applicazione è multiCompany
+                company = ((Preferenza) entityBean).company;
+                if (company != null) {
+                    //--questa preferenza DOVREBBE avere una company specificata
+                    keyUnica = company.code + text.primaMaiuscola(keyCode);
+                } else {
+                    //--se non ce l'ha, usa la sigla del programma
+                    keyUnica = projectName + text.primaMaiuscola(keyCode);
+                }// end of if/else cycle
+            } else {
+                keyUnica = keyCode;
+            }// end of if/else cycle
+        } else {
+            keyUnica = keyCode;
+        }// end of if/else cycle
+
+        return keyUnica;
     }// end of method
 
 
     /**
      * Recupera una istanza della Entity usando la query della property specifica (obbligatoria ed unica) <br>
+     * <p>
+     * Controlla quante entities ci sono con lo stesso 'code' <br>
+     * Cerca la prima usando il campo 'code' <br>
+     * Se la trova, controlla se è companySpecifica=true <br>
+     * Se il flag è falso, usa la preferenza trovata che dovrebbe essere unica <br>
+     * Controlla che sia unica altrimenti lancia un errore <br>
+     * Se il flag è vero, cerca la company corrente <br>
+     * Se non la trova, utilizza il nome breve dell'applicazione <br>
+     * Costruisce la chiave di ricerca per l'ID <br>
+     * Cerca nel campo keyID <br>
+     * Se non trova una singola entity con prefCode, controlla quante ce ne sono <br>
+     * Se sono zero, c'è un errore <br>
+     * Se sono più di una,
      *
-     * @param code (obbligatorio, unico)
+     * @param prefCode (obbligatorio, unico)
      *
      * @return istanza della Entity, null se non trovata
      */
-    public Preferenza findByKeyUnica(String code) {
-        return repository.findByCode(code);
+    public Preferenza findByKeyUnica(String prefCode) {
+        Preferenza pref = null;
+        String keyId = "";
+        Company company = null;
+        String prefix = "";
+        int numPrefCode = 0;
+
+        //--Controlla quante entities ci sono con lo stesso 'code'
+        numPrefCode = repository.countByCode(prefCode);
+
+        //--Non ne ha trovate e lancia un errore
+        if (numPrefCode == 0) {
+            log.error("Manca la preferenza: " + prefCode);
+            return null;
+        }// end of if cycle
+
+        //--Se ce n'è una sola, usa quella
+        //--Se ne trova più di una, DEVONO essere companySpecifica=true
+        //--Prende la prima e costruisce la chaive di ricerca per la keyID
+        if (numPrefCode == 1) {
+            pref = repository.findByCode(prefCode);
+        } else {
+            pref = repository.findFirstByCode(prefCode);
+            if (pref.companySpecifica) {
+                //--Se il flag è vero, cerca la company corrente
+                company = getCompany();
+
+                //--Se non la trova, utilizza il nome breve dell'applicazione
+                if (company != null) {
+                    prefix = company.code;
+                } else {
+                    prefix = projectName;
+                }// end of if/else cycle
+
+                //--Costruisce la chiave di ricerca per l'ID
+                keyId = prefix + text.primaMaiuscola(prefCode);
+
+                //--Cerca nel campo keyID
+                pref = findById(keyId);
+            } else {
+                log.error("La preferenza: " + prefCode + " non è companySpecifica.");
+                return null;
+            }// end of if/else cycle
+        }// end of if/else cycle
+
+
+//        //--Cerca la prima usando il campo 'code'
+//        pref = repository.findFirstByCode(prefCode);
+
+//        if (pref != null) {
+//            //--Se la trova, controlla se è companySpecifica=true
+//            if (pref.companySpecifica) {
+//            } else {
+//                numPrefCode = repository.countByCode(prefCode);
+//
+//                //--Controlla che sia unica altrimenti lancia un errore
+//                if (true) {
+//                    //--ok
+//                } else {
+//                    //--errore
+//                }// end of if/else cycle
+//
+//
+//            }// end of if/else cycle
+//
+//
+//        } else {
+//            //-- bo?
+//        }// end of if/else cycle
+
+
+        return pref;
     }// end of method
 
 
@@ -286,6 +465,38 @@ public class PreferenzaService extends AService {
         }// end of if cycle
 
         return numPref;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista di nomi delle properties della Grid nell'ordine:
+     * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID)
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+     * 3) Sovrascrive la lista nella sottoclasse specifica
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getGridPropertyNamesList(AContext context) {
+        return usaCompany ? LIST_PROPERTIES_MULTICOMPANY : PROPERTIES_NO_COMPANY;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form nell'ordine:
+     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+     * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
+     * todo ancora da sviluppare
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    @Override
+    public List<String> getFormPropertyNamesList(AContext context) {
+        return usaCompany ? FORM_PROPERTIES_MULTICOMPANY : PROPERTIES_NO_COMPANY;
     }// end of method
 
 //    /**
@@ -362,15 +573,42 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public LocalDateTime getDate(String code) {
-        LocalDateTime value = null;
-        Object genericValue = getValue(code);
+    public String getStr(IAPreferenza eaPref) {
+        return getStr(eaPref.getCode(), (String) eaPref.getValue());
+    } // end of method
 
-        if (genericValue instanceof LocalDateTime) {
-            value = (LocalDateTime) genericValue;
-        }// end of if cycle
 
-        return value;
+    public String getStr(String keyCode) {
+        return getStr(keyCode, "");
+    } // end of method
+
+
+    public String getStr(String keyCode, String defaultValue) {
+        String valoreTesto = defaultValue;
+        Object value = null;
+        Preferenza pref = findByKeyUnica(keyCode);
+
+        if (pref != null) {
+            if (pref.type == EAPrefType.enumeration) {
+                valoreTesto = getEnumStr(keyCode);
+            } else {
+                value = getValue(keyCode);
+                if (value != null && value instanceof String) {
+                    valoreTesto = (String) value;
+                } else {
+                    log.error("Algos - Preferenze. La preferenza: " + keyCode + " è del tipo sbagliato");
+                }// end of if/else cycle
+            }// end of if/else cycle
+        } else {
+            log.warn("Algos - Preferenze. Non esiste la preferenza: " + keyCode);
+        }// end of if/else cycle
+
+        return valoreTesto;
+    } // end of method
+
+
+    public Boolean isBool(IAPreferenza eaPref) {
+        return isBool(eaPref.getCode());
     } // end of method
 
 
@@ -389,6 +627,11 @@ public class PreferenzaService extends AService {
         }// end of if/else cycle
 
         return status;
+    } // end of method
+
+
+    public int getInt(IAPreferenza eaPref) {
+        return getInt(eaPref.getCode(), (int) eaPref.getValue());
     } // end of method
 
 
@@ -415,28 +658,23 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public String getStr(String keyCode) {
-        String valoreTesto = "";
-        Object value = null;
-        Preferenza pref = findByKeyUnica(keyCode);
+    public String getEnumStr(IAPreferenza eaPref) {
+        return getEnumStr(eaPref.getCode(), (String) eaPref.getValue());
+    } // end of method
 
-        if (pref.type == EAPrefType.enumeration) {
-            valoreTesto = getEnumStr(keyCode);
-        } else {
-            value = getValue(keyCode);
-            if (value != null && value instanceof String) {
-                valoreTesto = (String) value;
-            } else {
-                log.error("Algos - Preferenze. La preferenza: " + keyCode + " è del tipo sbagliato");
-            }// end of if/else cycle
-        }// end of if/else cycle
 
-        return valoreTesto;
+    public String getEnumStr(IAPreferenza eaPref, String defaultValue) {
+        return getEnumStr(eaPref.getCode(), defaultValue);
     } // end of method
 
 
     public String getEnumStr(String keyCode) {
-        String valoreTesto = "";
+        return getEnumStr(keyCode, "");
+    } // end of method
+
+
+    public String getEnumStr(String keyCode, String defaultValue) {
+        String valoreTesto = defaultValue;
         String rawValue = (String) getValue(keyCode);
 
         if (text.isValid(rawValue)) {
@@ -446,6 +684,18 @@ public class PreferenzaService extends AService {
         }// end of if/else cycle
 
         return valoreTesto;
+    } // end of method
+
+
+    public LocalDateTime getDate(String code) {
+        LocalDateTime value = null;
+        Object genericValue = getValue(code);
+
+        if (genericValue instanceof LocalDateTime) {
+            value = (LocalDateTime) genericValue;
+        }// end of if cycle
+
+        return value;
     } // end of method
 
 

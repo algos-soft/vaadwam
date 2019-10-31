@@ -119,10 +119,8 @@ public class MiliteList extends WamViewList {
 
         super.isEntityModificabile = true;
         if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
-            super.usaSearch = true;
             super.usaPopupFiltro = true;
         } else {
-            super.usaSearch = false;
             super.usaPopupFiltro = false;
         }// end of if/else cycle
 

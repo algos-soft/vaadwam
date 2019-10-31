@@ -124,8 +124,6 @@ public abstract class WamViewList extends AGridViewList {
         //--Crea il wam-login della sessione
         wamLogin = (WamLogin) login;
 
-        super.usaSearch = false;
-
         super.usaBottoneEdit = true;
         super.usaBottoneReset = false;
 

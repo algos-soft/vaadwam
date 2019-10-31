@@ -6,6 +6,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.data.FlowData;
 import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -21,6 +22,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.lang.reflect.Field;
@@ -214,6 +217,46 @@ public abstract class AService extends AbstractService implements IAService {
     }// end of method
 
 
+    @Override
+    public List<? extends AEntity> findAllByCompany(Company company) {
+        List<? extends AEntity> lista = null;
+        String sortName = "";
+        Sort sort;
+
+        if (entityClass == null) {
+            return null;
+        }// end of if cycle
+        if (!ACEntity.class.isAssignableFrom(entityClass)) {
+            return null;
+        }// end of if cycle
+
+        if (reflection.isEsiste(entityClass, FIELD_NAME_ORDINE)) {
+            sortName = FIELD_NAME_ORDINE;
+        } else {
+            if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
+                sortName = FIELD_NAME_CODE;
+            } else {
+                if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
+                    sortName = FIELD_NAME_DESCRIZIONE;
+                }// end of if cycle
+            }// end of if/else cycle
+        }// end of if/else cycle
+
+//        if (text.isValid(sortName)) {
+//            sort = new Sort(Sort.Direction.ASC, sortName);
+//            lista = new ArrayList<>(repository.findAll(sort));
+//        } else {
+//            lista = new ArrayList<>(repository.findAll());
+//        }// end of if/else cycle
+
+        lista = mongo.findAllByProperty(entityClass, "company",company);
+
+
+
+        return lista;
+    }// end of method
+
+
     /**
      * Returns only entities of the requested page.
      * <p>
@@ -229,6 +272,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @return all entities
      */
+    @Override
     public List<? extends AEntity> findAll(int offset, int size) {
         return findAll(offset, size, (Sort) null);
     }// end of method
@@ -246,6 +290,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @return all entities
      */
+    @Override
     public ArrayList<? extends AEntity> findAll(int offset, int size, Sort sort) {
         Pageable page;
 
@@ -586,9 +631,12 @@ public abstract class AService extends AbstractService implements IAService {
         boolean status = false;
         EACompanyRequired tableCompanyRequired = null;
 
-        //--se la EntityClass non estende ACCompany, non deve fare nulla
-        tableCompanyRequired = annotation.getCompanyRequired(entityClass);
-        status = tableCompanyRequired == EACompanyRequired.obbligatoria || tableCompanyRequired == EACompanyRequired.facoltativa;
+        //--se l'applicazione non è multiCompany, non deve far nulla
+        if (FlowVar.usaCompany) {
+            //--se la EntityClass non estende ACCompany, non deve fare nulla
+            tableCompanyRequired = annotation.getCompanyRequired(entityClass);
+            status = tableCompanyRequired == EACompanyRequired.obbligatoria || tableCompanyRequired == EACompanyRequired.facoltativa;
+        }// end of if cycle
 
         return status;
     }// end of method
@@ -668,7 +716,7 @@ public abstract class AService extends AbstractService implements IAService {
                 obj = repository.save(modifiedBean);
             } catch (Exception unErrore) { // intercetta l'errore
                 log.error(unErrore.toString());
-                Notification.show("La scheda non è stata registrata", DURATA, Notification.Position.BOTTOM_START);
+                //Notification.show("La scheda non è stata registrata", DURATA, Notification.Position.BOTTOM_START);
             }// fine del blocco try-catch
         }// end of if cycle
 
@@ -1063,13 +1111,12 @@ public abstract class AService extends AbstractService implements IAService {
 
 
     /**
-     * Creazione di alcuni dati demo iniziali <br>
+     * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
-     * La collezione viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamemte <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutta la Collection <br>
      *
-     * @return numero di elementi creato
+     * @return numero di elementi creati
      */
     @Override
     public int reset() {

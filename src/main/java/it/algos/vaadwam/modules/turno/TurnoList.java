@@ -120,10 +120,8 @@ public class TurnoList extends WamViewList {
         super.fixPreferenze();
 
         if (wamLogin.isDeveloper() || login.isAdmin()) {
-            super.usaSearch = true;
             super.usaPopupFiltro = true;
         } else {
-            super.usaSearch = false;
             super.usaPopupFiltro = false;
         }// end of if/else cycle
 
@@ -194,8 +192,8 @@ public class TurnoList extends WamViewList {
             filtroComboBox.setItems(EAFiltroTurno.values());
             filtroComboBox.setValue(EAFiltroTurno.corrente);
             filtroComboBox.addValueChangeListener(e -> {
-                updateItems();
-                updateView();
+                updateFiltri();
+                updateGrid();
             });
         }// end of if cycle
     }// end of method

@@ -66,10 +66,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderAnno")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "anno", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"ordine", "secolo", "titolo"})
 @AIForm(fields = {"ordine", "secolo", "titolo"})
-@AIScript(sovrascrivibile = false)
 public class Anno extends AEntity {
 
 
@@ -110,7 +110,7 @@ public class Anno extends AEntity {
     @Size(min = 3)
     @Field("tit")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(widthEM = 10)
+    @AIColumn(flexGrow = true)
     public String titolo;
 
 

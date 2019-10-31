@@ -1,10 +1,5 @@
 package it.algos.vaadflow.enumeration;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-
 /**
  * Project vaadflow
  * Created by Algos

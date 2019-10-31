@@ -19,6 +19,7 @@ public enum Chiave {
     flagKeyCode,
     flagCompany,
     flagGrid,
+    flagList,
     flagSovrascrive,
     flagUsaAllPackages
 

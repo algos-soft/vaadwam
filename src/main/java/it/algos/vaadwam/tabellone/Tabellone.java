@@ -122,7 +122,9 @@ public class Tabellone extends AGridViewList {
     /**
      * Devo mantenere un valore perché il comboBox viene ricostruito ad ogni modifica della Grid <br>
      */
-    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;;
+    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;
+
+    ;
 
     @Autowired
     private MiliteService militeService;
@@ -141,7 +143,7 @@ public class Tabellone extends AGridViewList {
      */
     @Autowired
     public Tabellone(@Qualifier(TAG_TAB) IAService service) {
-        super(service, Turno.class);
+        super(service, Riga.class);
     }// end of Vaadin/@Route constructor
 
 
@@ -218,7 +220,6 @@ public class Tabellone extends AGridViewList {
         this.setSpacing(false);
         this.setPadding(false);
 
-        super.usaSearch = false;
         super.usaBottoneNew = false;
         super.usaBottomLayout = true;
 
@@ -261,34 +262,27 @@ public class Tabellone extends AGridViewList {
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
      */
-    protected Grid creaGrid(List<String> gridPropertyNamesList) {
-        Grid grid = new Grid(Riga.class, false);
+    @Override
+    protected Grid creaGrid() {
+        grid = new Grid(Riga.class, false);
 
         grid.setHeightByRows(true);
-        //grid.addClassName("pippoz");
-        //grid.getElement().setAttribute("theme", "row-dividers");
-        //grid.addThemeNames("no-border", "no-row-borders", "row-stripes");
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
         grid.addThemeNames("row-stripes");
+        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // costruisce le colonne
         this.setColumns(grid);
 
         // costruisce le righe
-        this.setItems(grid);
-
-        //--eventuale barra di bottoni sotto la grid
-        creaGridBottomLayout();
+        this.updateGrid();
 
         //--legenda dei colori
         if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
             bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
         }// end of if cycle
-
-        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
-
 
         return grid;
     }// end of method
@@ -310,20 +304,35 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-    protected void updateItems() {
-    }// end of method
 
 
     /**
-     * Crea e aggiunge le righe
+     * Aggiorna gli items della Grid, utilizzando i filtri. <br>
+     * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Sviluppato nella sottoclasse AGridViewList, oppure APaginatedGridViewList <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
      */
-    public void setItems(Grid grid) {
+    @Override
+    public void updateGrid() {
         Collection items = tabelloneService.getGridRigheList(startDay, numDays);
 
         if (items != null) {
             grid.setItems(items);
         }
     }// end of method
+
+
+//    /**
+//     * Crea e aggiunge le righe
+//     */
+//    public void setItems(Grid grid) {
+//        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
+//
+//        if (items != null) {
+//            grid.setItems(items);
+//        }
+//    }// end of method
 
 
     /**
@@ -527,7 +536,7 @@ public class Tabellone extends AGridViewList {
                     Notification.show(entityBean + " non è stata registrata, perché esisteva già con lo stesso code ", 3000, Notification.Position.BOTTOM_START);
                 } else {
                     service.save(entityBean);
-                    updateView();
+                    updateGrid();
                     Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
                 }// end of if/else cycle
                 break;

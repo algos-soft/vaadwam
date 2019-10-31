@@ -16,6 +16,6 @@ import org.springframework.context.annotation.Scope;
 public interface IAView {
 
     public String getMenuName();
-    public void updateView() ;
+    public void updateGrid() ;
 
 }// end of interface

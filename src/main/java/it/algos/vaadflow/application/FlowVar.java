@@ -1,6 +1,8 @@
 package it.algos.vaadflow.application;
 
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 
 import java.time.LocalDate;
@@ -93,6 +95,30 @@ public class FlowVar {
      * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
      */
     public static Class loginClazz = ALogin.class;
+
+    /**
+     * Service da usare per recuperare la lista delle Company (o sottoclassi) <br>
+     * Di default CompanyService oppure eventuale sottoclasse specializzata per Company particolari <br>
+     * Eventuale casting a carico del chiamante <br>
+     * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static Class companyServiceClazz = CompanyService.class;
+
+    /**
+     * Entity da usare per recuperare la lista delle Company (o sottoclassi) <br>
+     * Di default Company oppure eventuale sottoclasse specializzata per Company particolari <br>
+     * Eventuale casting a carico del chiamante <br>
+     * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static Class companyClazz = Company.class;
+
+    /**
+     * Path per recuperare dalle risorse un'immagine da inserire nella barra di menu di MainLayout14 <br>
+     * Ogni applicazione può modificarla <br>
+     * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static String pathLogo = "frontend/images/medal.ico";
+
 
     public static List<Class> menuClazzList = new ArrayList<>();
 

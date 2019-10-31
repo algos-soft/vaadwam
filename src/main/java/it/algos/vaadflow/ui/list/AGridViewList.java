@@ -4,17 +4,15 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.data.selection.SelectionListener;
-import com.vaadin.flow.data.selection.SingleSelectionEvent;
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EAFieldType;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -30,6 +28,17 @@ import static it.algos.vaadflow.application.FlowCost.USA_SEARCH_CASE_SENSITIVE;
  * User: gac
  * Date: Mon, 20-May-2019
  * Time: 08:24
+ * <p>
+ * Classe astratta per visualizzare la Grid <br>
+ * La classe viene divisa verticalmente in alcune classi astratte, per 'leggerla' meglio (era troppo grossa) <br>
+ * Nell'ordine (dall'alto):
+ * - 1 APropertyViewList (che estende la classe Vaadin VerticalLayout) per elencare tutte le property usate <br>
+ * - 2 AViewList con la business logic principale <br>
+ * - 3 APrefViewList per regolare le preferenze ed i flags <br>
+ * - 4 ALayoutViewList per regolare il layout <br>
+ * - 5 AGridViewList per gestire la Grid <br>
+ * - 6 APaginatedGridViewList (opzionale) per gestire una Grid specializzata (add-on) che usa le Pagine <br>
+ * L'utilizzo pratico per il programmatore è come se fosse una classe sola <br>
  * <p>
  * Sottoclasse di servizio per gestire la Grid di AViewList in una classe 'dedicata' <br>
  * Alleggerisce la 'lettura' della classe principale <br>
@@ -63,59 +72,28 @@ public abstract class AGridViewList extends ALayoutViewList {
 
 
     /**
-     * Crea il corpo centrale della view <br>
-     * Componente grafico obbligatorio <br>
+     * Crea la grid <br>
+     * <p>
+     * Chiamato da ALayoutViewList.creaBody() e sviluppato nella sottoclasse AGridViewList <br>
      * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
-     * Costruisce la Grid con le colonne. Gli items vengono caricati in updateItems() <br>
+     * Costruisce la Grid con le colonne. Gli items vengono calcolati in updateFiltri() e caricati in updateGrid() <br>
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
+     * Se si usa una PaginatedGrid, questa DEVE essere costruita (tipizzata) nella sottoclasse specifica <br>
      */
-    protected void creaBody() {
-        this.add(gridPlaceholder);
-        gridPlaceholder.setMargin(false);
-        gridPlaceholder.setSpacing(false);
-        gridPlaceholder.setPadding(false);
+    protected Grid creaGrid() {
+        if (entityClazz != null && AEntity.class.isAssignableFrom(entityClazz)) {
+            //--Crea effettivamente il Component Grid
+            if (isPaginata) {
+                grid = creaGridComponent();
+            } else {
+                grid = new Grid(entityClazz, false);
+            }// end of if/else cycle
+        } else {
+            return null;
+        }// end of if/else cycle
 
         //--Costruisce una lista di nomi delle properties della Grid
         List<String> gridPropertyNamesList = getGridPropertyNamesList();
-
-        gridPlaceholder.add(creaGrid(gridPropertyNamesList));
-        gridPlaceholder.setFlexGrow(0);
-
-        //--Regolazioni di larghezza
-        //gridPlaceholder.setWidth(gridWith + "em");
-        //gridPlaceholder.setFlexGrow(0);
-        //gridPlaceholder.getElement().getStyle().set("background-color", "#ffaabb");//rosa
-
-        //--eventuale barra di bottoni sotto la grid
-        creaGridBottomLayout();
-    }// end of method
-
-
-    /**
-     * Crea la grid <br>
-     * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
-     * Costruisce la Grid con le colonne. Gli items vengono caricati in updateItems() <br>
-     * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
-     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
-     */
-    protected Grid creaGrid(List<String> gridPropertyNamesList) {
-        if (grid == null) {
-            if (entityClazz != null && AEntity.class.isAssignableFrom(entityClazz)) {
-                try { // prova ad eseguire il codice
-                    //--Costruisce la Grid SENZA creare automaticamente le colonne
-                    //--Si possono così inserire colonne manuali prima e dopo di quelle automatiche
-                    grid = new Grid(entityClazz, false);
-                } catch (Exception unErrore) { // intercetta l'errore
-                    log.error(unErrore.toString());
-                    return null;
-                }// fine del blocco try-catch
-            } else {
-                grid = new Grid();
-            }// end of if/else cycle
-        }// end of if cycle
-
-        //        //--regolazioni eventuali se la Grid è paginata in fixPreferenze() della sottoclasse
-//        fixGridPaginata();
 
         //--Apre il dialog di detail
         //--Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come prima colonna
@@ -152,6 +130,21 @@ public abstract class AGridViewList extends ALayoutViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    protected Grid creaGridComponent() {
+        //--Costruisce la Grid SENZA creare automaticamente le colonne
+        //--Si possono così inserire colonne manuali prima e dopo quelle automatiche
+        return new Grid(entityClazz, false);
+    }// end of method
+
+
+    /**
      * Costruisce una lista di nomi delle properties <br>
      * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID) <br>
      * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse) <br>
@@ -180,7 +173,7 @@ public abstract class AGridViewList extends ALayoutViewList {
         if (grid != null) {
             if (gridPropertyNamesList != null) {
                 for (String propertyName : gridPropertyNamesList) {
-                    columnService.create(appContext, grid, entityClazz, propertyName);
+                    columnService.create(grid, entityClazz, propertyName, searchProperty);
                 }// end of for cycle
             }// end of if cycle
         }// end of if cycle
@@ -288,39 +281,89 @@ public abstract class AGridViewList extends ALayoutViewList {
     }// end of method
 
 
-    protected void updateItems() {
-        List<AEntity> lista = null;
-        ArrayList<CriteriaDefinition> listaCriteriaDefinitionRegex = new ArrayList();
+    /**
+     * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
+     * I filtri normali vanno in updateFiltri() <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto SOLO se ci sono dei filtri che devono essere attivi già alla partenza della Grid <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        filtri = new ArrayList<CriteriaDefinition>();
 
-        if (usaSearch) {
-            if (!usaSearchDialog && searchField != null && text.isEmpty(searchField.getValue())) {
-                items = service != null ? service.findAll() : null;
-            } else {
-                if (searchField != null) {
-                    if (pref.isBool(USA_SEARCH_CASE_SENSITIVE)) {
-                        listaCriteriaDefinitionRegex.add(Criteria.where(searchProperty).regex("^" + searchField.getValue()));
-                    } else {
-                        listaCriteriaDefinitionRegex.add(Criteria.where(searchProperty).regex("^" + searchField.getValue(), "i"));
-                    }// end of if/else cycle
-                    lista = mongo.findAllByProperty(entityClazz, listaCriteriaDefinitionRegex.stream().toArray(CriteriaDefinition[]::new));
-                } else {
-                    items = service != null ? service.findAll() : null;
-                }// end of if/else cycle
-
-                if (array.isValid(lista)) {
-                    items = lista;
-                }// end of if cycle
-            }// end of if/else cycle
-        } else {
-            items = service != null ? service.findAll() : null;
-        }// end of if/else cycle
+        if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
+            if (filtroCompany.getValue() != null) {
+                filtri.add(Criteria.where("company").is(filtroCompany.getValue()));
+            }// end of if cycle
+        }// end of if cycle
     }// end of method
 
 
     /**
+     * Aggiorna la lista dei filtri della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
+     * Normalmente tutti i filtri  vanno qui <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Alla prima visualizzazione della view usa SOLO creaFiltri() e non questo metodo <br>
+     * Può essere sovrascritto, per costruire i filtri specifici dei combobox, popup, ecc. <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void updateFiltri() {
+        this.creaFiltri();
+        EAFieldType type;
+        int intValue;
+
+        //--ricerca iniziale
+        if (searchType == EASearch.editField && searchField != null) {
+            type = annotation.getFormType(entityClazz, searchProperty);
+
+            switch (type) {
+                case text:
+                    if (pref.isBool(USA_SEARCH_CASE_SENSITIVE)) {
+                        filtri.add(Criteria.where(searchProperty).regex("^" + searchField.getValue()));
+                    } else {
+                        filtri.add(Criteria.where(searchProperty).regex("^" + searchField.getValue(), "i"));
+                    }// end of if/else cycle
+
+                    break;
+                case integer:
+                    try { // prova ad eseguire il codice
+                        intValue = Integer.decode(searchField.getValue());
+                        filtri.add(Criteria.where(searchProperty).is(intValue));
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    break;
+                default:
+                    log.warn("Switch - caso non definito");
+                    break;
+            } // end of switch statement
+
+        }// end of if cycle
+
+    }// end of method
+
+
+    /**
+     * Aggiorna gli items della Grid, utilizzando i filtri. <br>
+     * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Sviluppato nella sottoclasse AGridViewList, oppure APaginatedGridViewList <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
      */
-    public void updateView() {
+    @Override
+    public void updateGrid() {
+        if (array.isValid(filtri)) {
+            items = mongo.findAllByProperty(entityClazz, filtri);
+        } else {
+            items = service != null ? service.findAll() : null;
+        }// end of if/else cycle
+
         if (items != null) {
             try { // prova ad eseguire il codice
                 grid.deselectAll();

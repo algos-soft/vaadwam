@@ -258,11 +258,12 @@ public class AnnoService extends AService {
 
 
     /**
-     * Creazione di alcuni dati demo iniziali <br> Viene invocato alla creazione del programma e dal bottone Reset della
-     * lista (solo per il developer) <br> La collezione viene svuotata <br> I dati possono essere presi da una
-     * Enumeration o creati direttamemte <br> Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * I dati possono essere presi da una Enumeration o creati direttamemte <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutta la Collection <br>
      *
-     * @return numero di elementi creato
+     * @return numero di elementi creati
      */
     @Override
     public int reset() {
@@ -273,7 +274,7 @@ public class AnnoService extends AService {
         Secolo secolo;
         String titoloSecolo;
 
-        //costruisce gli anni prima di cristo dal 1000
+        //--costruisce gli anni prima di cristo dal 1000
         for (int k = ANTE_CRISTO; k > 0; k--) {
             ordine = ANNO_INIZIALE - k;
             titolo = k + EASecolo.TAG_AC;
@@ -285,7 +286,7 @@ public class AnnoService extends AService {
             }// end of if cycle
         }// end of for cycle
 
-        //costruisce gli anni dopo cristo fino al 2030
+        //--costruisce gli anni dopo cristo fino al 2030
         for (int k = 1; k <= DOPO_CRISTO; k++) {
             ordine = k + ANNO_INIZIALE;
             titolo = k + VUOTA;

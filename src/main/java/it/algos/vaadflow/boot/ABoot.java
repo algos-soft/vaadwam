@@ -1,16 +1,26 @@
 package it.algos.vaadflow.boot;
 
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.data.FlowData;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.service.AMongoService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadflow.service.IAService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.List;
+
+import static it.algos.vaadflow.application.FlowCost.TAG_COM;
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
 /**
  * Project it.algos.vaadflow
@@ -109,6 +119,12 @@ public abstract class ABoot implements ServletContextListener {
     @Autowired
     private FlowData flowData;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    @Qualifier(TAG_COM)
+    protected IAService companyService;
 
     /**
      * Executed on container startup
@@ -135,12 +151,12 @@ public abstract class ABoot implements ServletContextListener {
     protected void inizia() {
         this.iniziaDBMongo();
         this.iniziaVersioni();
+        this.regolaInfo();
         this.regolaRiferimenti();
         this.creaPreferenze();
         this.fixPreferenze();
         this.iniziaDataStandard();
         this.iniziaDataProgettoSpecifico();
-        this.regolaInfo();
         this.addRouteStandard();
         this.addRouteSpecifiche();
     }// end of method
@@ -182,10 +198,27 @@ public abstract class ABoot implements ServletContextListener {
      */
     protected int creaPreferenze() {
         int numPref = 0;
+        List<? extends AEntity> listaCompany = null;
 
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
-        }// end of for cycle
+        if (usaCompany) {
+            listaCompany = companyService.findAll();
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                //--se usa company ed è companySpecifica=true, crea una preferenza per ogni company
+                if (eaPref.isCompanySpecifica()) {
+                    for (AEntity company : listaCompany) {
+                        if (company instanceof Company) {
+                            numPref = preferenzaService.creaIfNotExist(eaPref, (Company)company) ? numPref + 1 : numPref;
+                        }// end of if cycle
+                    }// end of for cycle
+                } else {
+                    numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+                }// end of if/else cycle
+            }// end of for cycle
+        } else {
+            for (EAPreferenza eaPref : EAPreferenza.values()) {
+                numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
+            }// end of for cycle
+        }// end of if/else cycle
 
         return numPref;
     }// end of method
@@ -212,17 +245,10 @@ public abstract class ABoot implements ServletContextListener {
      * @return numero di preferenze creato
      */
     public int resetPreferenze() {
-        int numPref = 0;
-
         //--cancella tutte le preferenze
         preferenzaService.deleteAll();
 
-        //--ricrea tutte le preferenze standard coi valori di default iniziali
-        for (EAPreferenza eaPref : EAPreferenza.values()) {
-            numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
-        }// end of for cycle
-
-        return numPref;
+        return creaPreferenze();
     }// end of method
 
 

@@ -227,6 +227,14 @@ public class RoleService extends AService {
         return repository.findByCode(EARole.developer.name());
     }// end of method
 
+    /**
+     * Returns all entities of the type <br>
+     *
+     * @return all ordered entities
+     */
+    public ArrayList<Role> findAll() {
+        return (ArrayList) repository.findAllByOrderByOrdineAsc();
+    }// end of method
 
     /**
      * Guest roles

@@ -4,6 +4,7 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
@@ -25,7 +26,6 @@ import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadflow.ui.fields.IAField;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -143,9 +143,12 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia HasUrlParameter <br>
+     * Regola i parametri del browser per una view costruita da @Route <br>
+     * <p>
+     * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia HasUrlParameter implementata in AViewList <br>
      * Chiamato DOPO @PostConstruct ma PRIMA di beforeEnter() <br>
-     * Può essere sovrascritto. Invocare PRIMA il metodo della superclasse <br>
+     * Può essere sovrascritto, per gestire diversamente i parametri in ingresso <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      *
      * @param event     con la location, ui, navigationTarget, source, ecc
      * @param parameter opzionali nella chiamata del browser
@@ -171,9 +174,13 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Metodo chiamato da com.vaadin.flow.router.Router verso questa view tramite l'interfaccia BeforeEnterObserver <br>
+     * Creazione iniziale (business logic) della view DOPO costruttore, init(), postConstruct() e setParameter() <br>
+     * <p>
+     * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia BeforeEnterObserver implementata in AViewList <br>
      * Chiamato DOPO @PostConstruct e DOPO setParameter() <br>
      * Qui va tutta la logica inizale della view <br>
+     * Può essere sovrascritto, per costruire diversamente la view <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      *
      * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
      */
@@ -187,9 +194,9 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * Qui va tutta la logica inizale della view <br>
      */
     protected void initView() {
+        this.removeAll();
         this.setMargin(false);
         this.setSpacing(false);
-        this.removeAll();
 
         //--Login and context della sessione
         this.mongo = appContext.getBean(AMongoService.class);
@@ -201,14 +208,14 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
             return;
         }// end of if cycle
 
-        //--Le preferenze standard e specifiche
+        //--Preferenze specifiche di questa view
         this.fixPreferenze();
 
-        //--Placeholder
-        this.fixLayout();
+        //--Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse
+        this.postPreferenze();
 
-        //--menu generale dell'applicazione
-        this.creaMenuLayout();
+        //--Costruisce gli oggetti base (placeholder) di questa view
+        this.fixLayout();
 
         //--una o più righe di avvisi
         this.creaAlertLayout();
@@ -217,6 +224,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         }// end of if cycle
 
         //--barra/menu dei bottoni specifici del modulo
+        //--crea i bottoni SENZA i listeners che vengono aggiunti dopo aver recuperato gli items
         this.creaTopLayout();
         if (topPlaceholder.getComponentCount() > 0) {
             this.add(topPlaceholder);
@@ -225,19 +233,29 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         //--body con la Grid
         //--seleziona quale grid usare e la aggiunge al layout
         this.creaBody();
+        if (gridPlaceholder.getComponentCount() > 0) {
+            this.add(gridPlaceholder);
+        }// end of if cycle
 
         //--aggiunge il footer standard
         this.add(appContext.getBean(AFooter.class));
 
         this.addSpecificRoutes();
-        this.updateItems();
-        this.updateView();
+
+        //--Crea gli items (righe) della Grid alla prima visualizzazione della view
+        this.creaFiltri();
+
+        //--aggiunge tutti i listeners ai bottoni della barra/menu
+        this.addListeners();
+
+        this.updateGrid();
     }// end of method
 
+
     /**
-     * Le preferenze standard <br>
-     * Le preferenze specifiche della sottoclasse <br>
-     * Gestito nella classe specializzata APrefViewList <br>
+     * Preferenze specifiche di questa view <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse APrefViewList <br>
      * Può essere sovrascritto, per modificare le preferenze standard <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
@@ -246,9 +264,20 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
+     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse <br>
+     * <p>
+     * Chiamato da AViewList.initView() DOPO fixPreferenze() e sviluppato nella sottoclasse APrefViewList <br>
+     * Non può essere sovrascritto <br>
+     */
+    protected void postPreferenze() {
+    }// end of method
+
+
+    /**
      * Costruisce gli oggetti base (placeholder) di questa view <br>
+     * <p>
      * Li aggiunge alla view stessa <br>
-     * Gestito nella classe specializzata ALayoutViewList <br>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
      * Può essere sovrascritto, per modificare il layout standard <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
@@ -257,18 +286,10 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Costruisce la barra di menu e l'aggiunge alla UI <br>
-     * Lo standard è 'Flowingcode'
-     * Può essere sovrascritto
-     * Invocare PRIMA il metodo della superclasse
-     */
-    protected void creaMenuLayout() {
-    }// end of method
-
-
-    /**
-     * Placeholder (eventuale) per informazioni aggiuntive alla grid ed alla lista di elementi <br>
-     * Normalmente ad uso esclusivo del developer <br>
+     * Eventuali messaggi di avviso specifici di questa view ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
@@ -277,17 +298,20 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Placeholder SOPRA la Grid <br>
-     * Contenuto eventuale, presente di default <br>
-     * - con o senza un bottone per cancellare tutta la collezione
-     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
-     * - con o senza gruppo di ricerca:
-     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
-     * -    bottone per aprire un DialogSearch con diverse property selezionabili
-     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
-     * - con eventuale Popup di selezione, filtro e ordinamento
-     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
-     * - con eventuali altri bottoni specifici <br>
+     * Barra dei bottoni SOPRA la Grid inseriti in 'topPlaceholder' <br>
+     * <p>
+     * In fixPreferenze() si regola quali bottoni mostrare. Nell'ordine: <br>
+     * 1) eventuale bottone per cancellare tutta la collezione <br>
+     * 2) eventuale bottone di reset per ripristinare (se previsto in automatico) la collezione <br>
+     * 3) eventuale bottone New, con testo regolato da preferenza o da parametro <br>
+     * 4) eventuale bottone 'Cerca...' per aprire un DialogSearch oppure un campo EditSearch per la ricerca <br>
+     * 5) eventuale bottone per annullare la ricerca e riselezionare tutta la collezione <br>
+     * 6) eventuale combobox di selezione della company (se applicazione multiCompany) <br>
+     * 7) eventuale combobox di selezione specifico <br>
+     * 8) eventuali altri bottoni specifici <br>
+     * <p>
+     * I bottoni vengono creati SENZA listeners che vengono regolati nel metodo addListeners() <br>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
@@ -296,12 +320,28 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     /**
-     * Crea il corpo centrale della view <br>
+     * Crea il corpo centrale della view inserito in 'gridPlaceholder' <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
      * Componente grafico obbligatorio <br>
      * Seleziona quale grid usare e la aggiunge al layout <br>
      * Eventuale barra di bottoni sotto la grid <br>
      */
     protected void creaBody() {
+    }// end of method
+
+
+    /**
+     * Crea la grid <br>
+     * <p>
+     * Chiamato da ALayoutViewList.creaBody() e sviluppato nella sottoclasse AGridViewList <br>
+     * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
+     * Costruisce la Grid con le colonne. Gli items vengono calcolati in updateFiltri() e caricati in updateGrid() <br>
+     * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
+     * Se si usa una PaginatedGrid, questa DEVE essere costruita (tipizzata) nella sottoclasse specifica <br>
+     */
+    protected Grid creaGrid() {
+        return null;
     }// end of method
 
 
@@ -370,11 +410,49 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
     }// end of method
 
 
-    protected void updateItems() {
+    /**
+     * Crea la lista dei filtri della Grid alla prima visualizzazione della view <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto, per modificare la selezione dei filtri <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaFiltri() {
     }// end of method
 
 
-    public void updateView() {
+    /**
+     * Aggiorna la lista dei filtri della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Sviluppato nella sottoclasse AGridViewList <br>
+     * Alla prima visualizzazione della view usa SOLO creaFiltri() e non questo metodo <br>
+     * Può essere sovrascritto, per modificare la selezione dei filtri <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void updateFiltri() {
+    }// end of method
+
+
+    /**
+     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
+    }// end of method
+
+
+    /**
+     * Aggiorna gli items della Grid, utilizzando i filtri. <br>
+     * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Sviluppato nella sottoclasse AGridViewList, oppure APaginatedGridViewList <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
+     */
+    public void updateGrid() {
     }// end of method
 
 
@@ -430,13 +508,16 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
 
     public void updateDopoDialog(AEntity entityBean) {
-        this.updateItems();
-        this.updateView();
+        this.updateFiltri();
+        this.updateGrid();
     }// end of method
 
 
-    //@todo da rendere getBean il dialogo
     protected void openSearch() {
+        if (filtri != null) {
+            filtri.clear();
+        }// end of if cycle
+
         searchDialog = appContext.getBean(ASearchDialog.class, service);
         searchDialog.open("", "", this::updateDopoSearch, null);
     }// end of method
@@ -444,33 +525,30 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
     public void updateDopoSearch() {
         LinkedHashMap<String, AbstractField> fieldMap = searchDialog.fieldMap;
-        List<AEntity> lista;
         IAField field;
         Object fieldValue = null;
-        ArrayList<CriteriaDefinition> listaCriteriaDefinitionRegex = new ArrayList();
 
+        //--ricerca della parola completa
         for (String fieldName : searchDialog.fieldMap.keySet()) {
             field = (IAField) searchDialog.fieldMap.get(fieldName);
             fieldValue = field.getValore();
             if (field instanceof ATextField || field instanceof ATextArea) {
                 if (text.isValid(fieldValue)) {
-                    listaCriteriaDefinitionRegex.add(Criteria.where(fieldName).regex("^" + fieldValue));
+                    filtri.add(Criteria.where(fieldName).is(fieldValue));
                 }// end of if cycle
             }// end of if cycle
             if (field instanceof AIntegerField) {
                 if ((Integer) fieldValue > 0) {
-                    listaCriteriaDefinitionRegex.add(Criteria.where(fieldName).regex("^" + fieldValue));
+                    filtri.add(Criteria.where(fieldName).is(fieldValue));
                 }// end of if cycle
             }// end of if cycle
         }// end of for cycle
-        lista = mongo.findAllByProperty(entityClazz, listaCriteriaDefinitionRegex.stream().toArray(CriteriaDefinition[]::new));
 
-        if (array.isValid(lista)) {
-            items = lista;
+        if (clearFilterButton != null) {
+            clearFilterButton.setEnabled(true);
         }// end of if cycle
 
-        this.updateView();
-
+        this.updateGrid();
         creaAlertLayout();
     }// end of method
 
@@ -505,8 +583,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     public void deleteCollection() {
         service.deleteAll();
-        updateItems();
-        updateView();
+        updateFiltri();
+        updateGrid();
     }// end of method
 
 
@@ -518,8 +596,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected void reset() {
         service.reset();
-        updateItems();
-        updateView();
+        updateFiltri();
+        updateGrid();
     }// end of method
 
 
@@ -528,8 +606,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected void save(AEntity entityBean, EAOperation operation) {
         if (service.save(entityBean, operation) != null) {
-            updateItems();
-            updateView();
+            updateFiltri();
+            updateGrid();
         }// end of if cycle
     }// end of method
 
@@ -539,8 +617,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
 
         if (usaRefresh) {
-            updateItems();
-            updateView();
+            updateFiltri();
+            updateGrid();
         }// end of if cycle
     }// end of method
 

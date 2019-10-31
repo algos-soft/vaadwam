@@ -48,9 +48,9 @@ import javax.validation.constraints.Size;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- *      (EAFieldType.link e XxxPresenter.class)
+ * (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -61,10 +61,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderAddress")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "indirizzo", company = EACompanyRequired.nonUsata)
 @AIList(fields = {"indirizzo", "localita", "cap"})
 @AIForm(fields = {"indirizzo", "localita", "cap"})
-@AIScript(sovrascrivibile = false)
 public class Address extends AEntity {
 
 

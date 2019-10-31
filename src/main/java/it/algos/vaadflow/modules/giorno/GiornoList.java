@@ -1,18 +1,21 @@
 package it.algos.vaadflow.modules.giorno;
 
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.anno.Anno;
 import it.algos.vaadflow.modules.mese.Mese;
 import it.algos.vaadflow.modules.mese.MeseService;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.list.ACronoViewList;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,11 +52,8 @@ import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 @Slf4j
 @Secured("developer")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "giorni", searchProperty = "mese", roleTypeVisibility = EARoleType.developer)
-public class GiornoList extends ACronoViewList {
-
-
-    public static final String IRON_ICON = "today";
+@AIView(vaadflow = true, menuName = "giorni", menuIcon = VaadinIcon.CALENDAR, searchProperty = "mese", roleTypeVisibility = EARoleType.developer)
+public class GiornoList extends AGridViewList {
 
 
     /**
@@ -82,6 +82,19 @@ public class GiornoList extends ACronoViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Giorno>();
+    }// end of method
+
+    /**
      * Preferenze standard <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
@@ -89,8 +102,14 @@ public class GiornoList extends ACronoViewList {
      */
     protected void fixPreferenze() {
         super.fixPreferenze();
+
+        super.limit = 25;
+        super.usaPopupFiltro = true;
+        super.usaBottoneDeleteAll = true;
+        super.usaBottoneReset = true;
+        super.isEntityDeveloper = true;
+        super.usaBottoneNew = false;
         super.usaBottoneEdit = false;
-        super.grid = new PaginatedGrid<Giorno>();
     }// end of method
 
 
@@ -118,25 +137,33 @@ public class GiornoList extends ACronoViewList {
         filtroComboBox.setWidth("10em");
         filtroComboBox.setItems(meseService.findAll());
         filtroComboBox.addValueChangeListener(e -> {
-            updateItems();
-            updateView();
+            updateFiltri();
+            updateGrid();
         });
     }// end of method
 
 
-    public void updateItems() {
+    public void updateFiltri() {
         Mese mese = (Mese) filtroComboBox.getValue();
         items = ((GiornoService) service).findAllByMese(mese);
     }// end of method
 
 
     /**
-     * Apertura del dialogo per una entity esistente oppure nuova <br>
-     * Sovrascritto <br>
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
      */
+    @Override
     protected void openDialog(AEntity entityBean) {
-        GiornoDialog dialog = appContext.getBean(GiornoDialog.class, service, entityClazz);
-        dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(GiornoDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
 

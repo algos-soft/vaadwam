@@ -1,7 +1,9 @@
 package it.algos.vaadflow.service;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
@@ -48,10 +50,9 @@ public class AMenuService extends AService {
      * @param clazzList di classi raggiungibili da @Route
      */
     public RouterLink[] creaRoutersBase(List<Class<? extends IAView>> clazzList) {
-        List<RouterLink> routers = null;
+        List<RouterLink> routers = new ArrayList<>();
 
         if (array.isValid(clazzList)) {
-            routers = new ArrayList<>();
             for (Class viewClazz : clazzList) {
                 routers.add(creaAlgosRouter(viewClazz));
             }// end of for cycle
@@ -99,7 +100,7 @@ public class AMenuService extends AService {
      * Menu logout sempre presente
      */
     public Tabs addMenuLogout(Tabs tabs) {
-        Tab tab = creaAlgosTab(LogoutView.class);
+        Tab tab = creaMenuLogout();
 
         if (tabs != null && tab != null) {
             tabs.add(tab);
@@ -110,12 +111,23 @@ public class AMenuService extends AService {
 
 
     /**
+     * Menu logout sempre presente
+     */
+    public Tab creaMenuLogout() {
+        return creaAlgosTab(LogoutView.class);
+    }// end of method
+
+
+    /**
      * Items di menu, se collegato come sviluppatore
      */
     public RouterLink[] creaRoutersNoSecurity(Map<String, ArrayList<Class<? extends IAView>>> mappaClassi) {
         List<RouterLink> routers = new ArrayList<>();
 
         for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE))) {
+            routers.add(router);
+        }// end of for cycle
+        for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_CRONO))) {
             routers.add(router);
         }// end of for cycle
         for (RouterLink router : creaRoutersBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO))) {
@@ -132,10 +144,9 @@ public class AMenuService extends AService {
      * @param clazzList di classi raggiungibili da @Route
      */
     public Tab[] creaTabsBase(List<Class<? extends IAView>> clazzList, String titoloGruppo) {
-        List<Tab> tabs = null;
+        List<Tab> tabs = new ArrayList<>();
 
         if (array.isValid(clazzList)) {
-            tabs = new ArrayList<>();
             if (text.isValid(titoloGruppo)) {
                 tabs.add(new Tab("==" + titoloGruppo + "=="));
             }// end of if cycle
@@ -208,6 +219,9 @@ public class AMenuService extends AService {
         for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_BASE), "")) {
             tabs.add(tab);
         }// end of for cycle
+        for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_CRONO), "")) {
+            tabs.add(tab);
+        }// end of for cycle
         for (Tab tab : creaTabsBase(mappaClassi.get(KEY_MAPPA_PROGETTO_SPECIFICO), "")) {
             tabs.add(tab);
         }// end of for cycle
@@ -246,14 +260,6 @@ public class AMenuService extends AService {
         String linkRoute;
         VaadinIcon icon;
 
-        if (IAView.class.isAssignableFrom(viewClazz)) {
-            int a = 87;
-//            menuName = annotation.getMenuName((IAView)viewClazz);
-//            menuName = text.primaMaiuscola(menuName);
-//            icon = reflection.getIconView(viewClazz);
-//            linkRoute = annotation.getRouteName(viewClazz);
-        }// end of if cycle
-
         menuName = text.isValid(menuName) ? menuName : viewClazz.getSimpleName();
         router = new RouterLink(menuName, viewClazz);
         return router;
@@ -275,9 +281,7 @@ public class AMenuService extends AService {
 
         menuName = annotation.getMenuName(viewClazz);
         menuName = text.primaMaiuscola(menuName);
-        icon = reflection.getIconView(viewClazz);
         linkRoute = annotation.getRouteName(viewClazz);
-
         menuName = text.isValid(menuName) ? menuName : viewClazz.getSimpleName();
         router = new RouterLink(menuName, viewClazz);
         return router;

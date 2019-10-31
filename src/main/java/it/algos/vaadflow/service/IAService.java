@@ -1,8 +1,10 @@
 package it.algos.vaadflow.service;
 
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.Company;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
@@ -80,6 +82,7 @@ public interface IAService {
      */
     public List<? extends AEntity> findAll();
 
+    public List<? extends AEntity> findAllByCompany(Company company);
 
     /**
      * Returns only entities of the requested page.
@@ -265,13 +268,12 @@ public interface IAService {
     public void loadData();
 
     /**
-     * Creazione di alcuni dati demo iniziali <br>
+     * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
-     * La collezione viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamemte <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutta la Collection <br>
      *
-     * @return numero di elementi creato
+     * @return numero di elementi creati
      */
     public int reset();
 

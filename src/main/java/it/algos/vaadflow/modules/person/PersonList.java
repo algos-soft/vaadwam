@@ -79,8 +79,6 @@ public class PersonList extends AGridViewList {
 
         super.usaBottoneDeleteAll = true;
         super.usaBottoneReset = true;
-        super.usaSearch = true;
-        super.usaSearchDialog = false;
         super.isEntityDeveloper = true;
         super.isEntityEmbedded = true;
         super.isEntityUsaDatiDemo = true;

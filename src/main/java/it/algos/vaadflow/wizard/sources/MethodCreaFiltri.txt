@@ -1,0 +1,13 @@
+    /**
+     * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
+     * I filtri normali vanno in updateFiltri() <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto SOLO se ci sono dei filtri che devono essere attivi già alla partenza della Grid <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        super.creaFiltri();
+    }// end of method
