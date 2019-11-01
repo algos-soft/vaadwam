@@ -1456,7 +1456,6 @@ public class TElabora {
 
     /**
      * Cartella di resources META-INF
-     *
      */
     private void copiaMetaInf() {
 //        String srcPath = projectBasePath + DIR_MAIN + RESOURCES_NAME + META_NAME;

@@ -1,11 +1,11 @@
 package it.algos.vaadflow.boot;
 
 import it.algos.vaadflow.application.FlowVar;
+import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.data.FlowData;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.Company;
-import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.service.AMongoService;
@@ -13,13 +13,13 @@ import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
 /**
@@ -66,47 +66,6 @@ public abstract class ABoot implements ServletContextListener {
     protected ATextService text;
 
 
-    //    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    private UtenteService utente;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-////    @Autowired
-////    private AddressService address;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-////    @Autowired
-////    private PersonService person;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-////    @Autowired
-////    private CompanyService company;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    private LogtypeService logtype;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    private SecoloService secolo;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    private MeseService mese;
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    private AnnoService anno;
-
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
@@ -118,13 +77,6 @@ public abstract class ABoot implements ServletContextListener {
      */
     @Autowired
     private FlowData flowData;
-
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     */
-    @Autowired
-    @Qualifier(TAG_COM)
-    protected IAService companyService;
 
     /**
      * Executed on container startup
@@ -148,7 +100,8 @@ public abstract class ABoot implements ServletContextListener {
      * Stampa a video (productionMode) i valori per controllo
      * Deve essere sovrascritto dalla sottoclasse concreta che invocherà questo metodo()
      */
-    protected void inizia() {
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         this.iniziaDBMongo();
         this.iniziaVersioni();
         this.regolaInfo();
@@ -199,15 +152,17 @@ public abstract class ABoot implements ServletContextListener {
     protected int creaPreferenze() {
         int numPref = 0;
         List<? extends AEntity> listaCompany = null;
+        IAService serviceCompany;
 
         if (usaCompany) {
-            listaCompany = companyService.findAll();
+            serviceCompany = (IAService) StaticContextAccessor.getBean(FlowVar.companyServiceClazz);
+            listaCompany = serviceCompany.findAllAll();
             for (EAPreferenza eaPref : EAPreferenza.values()) {
                 //--se usa company ed è companySpecifica=true, crea una preferenza per ogni company
                 if (eaPref.isCompanySpecifica()) {
                     for (AEntity company : listaCompany) {
                         if (company instanceof Company) {
-                            numPref = preferenzaService.creaIfNotExist(eaPref, (Company)company) ? numPref + 1 : numPref;
+                            numPref = preferenzaService.creaIfNotExist(eaPref, (Company) company) ? numPref + 1 : numPref;
                         }// end of if cycle
                     }// end of for cycle
                 } else {
@@ -232,6 +187,7 @@ public abstract class ABoot implements ServletContextListener {
      */
     protected void fixPreferenze() {
     }// end of method
+
 
     /**
      * Cancella e ricrea le preferenze standard <br>

@@ -241,6 +241,15 @@ public class CompanyService extends AService {
     public ArrayList<Company> findAll() {
         return (ArrayList) repository.findAllByOrderByCodeAsc();
     }// end of method
+    /**
+     * Returns all entities of the type <br>
+     *
+     * @return all ordered entities
+     */
+    @Override
+    public ArrayList<Company> findAllAll() {
+        return (ArrayList) repository.findAllByOrderByCodeAsc();
+    }// end of method
 
 
     /**

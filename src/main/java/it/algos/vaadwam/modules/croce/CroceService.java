@@ -252,6 +252,15 @@ public class CroceService extends WamService {
         return lista;
     }// end of method
 
+    /**
+     * Returns all entities of the type <br>
+     *
+     * @return all ordered entities
+     */
+    @Override
+    public ArrayList<Croce> findAllAll() {
+        return (ArrayList) repository.findAllByOrderByCodeAsc();
+    }// end of method
 
     /**
      * Returns the number of entities available for the current company

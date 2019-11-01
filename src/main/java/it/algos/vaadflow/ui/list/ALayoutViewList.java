@@ -15,6 +15,7 @@ import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAColor;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import lombok.extern.slf4j.Slf4j;
@@ -211,7 +212,7 @@ public abstract class ALayoutViewList extends APrefViewList {
                 break;
             case editField:
                 //--campo EditSearch predisposto su un unica property
-                searchField = new TextField("", "Cerca");
+                searchField = new TextField("", "Cerca...");
                 searchField.setPrefixComponent(new Icon("lumo", "search"));
                 searchField.getElement().setAttribute("title", "Caratteri iniziali della ricerca");
                 searchField.addClassName("view-toolbar__search-field");
@@ -244,9 +245,9 @@ public abstract class ALayoutViewList extends APrefViewList {
         } // end of switch statement
 
         //--eventuale filtro sulla company
-        if (usaCompany && login.isDeveloper()) {
+        if (usaCompany) {
             creaCompanyFiltro();
-            if (filtroCompany != null) {
+            if (filtroCompany != null && login.isDeveloper()) {
                 topPlaceholder.add(filtroCompany);
             }// end of if cycle
         }// end of if cycle
@@ -340,13 +341,20 @@ public abstract class ALayoutViewList extends APrefViewList {
      */
     protected void creaCompanyFiltro() {
         IAService serviceCompany;
+        Company companyCorrente = null;
 
         if (usaFiltroCompany) {
             serviceCompany = (IAService) appContext.getBean(FlowVar.companyServiceClazz);
             filtroCompany = new AComboBox();
-            filtroCompany.setPlaceholder("company ...");
+            filtroCompany.setPlaceholder(text.primaMaiuscola(FlowVar.companyClazzName) + " ...");
             filtroCompany.setWidth("9em");
-            filtroCompany.setItems(serviceCompany.findAll());
+            filtroCompany.setItems(serviceCompany.findAllAll());
+            if (login != null) {
+                companyCorrente = login.getCompany();
+                if (companyCorrente != null) {
+                    filtroCompany.setValue(companyCorrente);
+                }// end of if cycle
+            }// end of if cycle
         }// end of if cycle
 
     }// end of method
@@ -383,15 +391,6 @@ public abstract class ALayoutViewList extends APrefViewList {
             gridPlaceholder.add(grid);
             gridPlaceholder.setFlexGrow(0);
         }// end of if cycle
-
-
-        //--Regolazioni di larghezza
-        //gridPlaceholder.setWidth(gridWith + "em");
-        //gridPlaceholder.setFlexGrow(0);
-        //gridPlaceholder.getElement().getStyle().set("background-color", "#ffaabb");//rosa
-
-        //--eventuale barra di bottoni sotto la grid
-//        creaGridBottomLayout();
     }// end of method
 
 }// end of class

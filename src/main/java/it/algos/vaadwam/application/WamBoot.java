@@ -6,6 +6,7 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.modules.company.CompanyList;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadflow.modules.company.CompanyService;
@@ -149,17 +150,17 @@ public class WamBoot extends ABoot {
     }// end of Spring constructor
 
 
-    /**
-     * Executed on container startup <br>
-     * Setup non-UI logic here <br>
-     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
-     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
-     * questa sottoclasse concreta può singolarmente modificarle <br>
-     */
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        super.inizia();
-    }// end of method
+//    /**
+//     * Executed on container startup <br>
+//     * Setup non-UI logic here <br>
+//     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
+//     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
+//     * questa sottoclasse concreta può singolarmente modificarle <br>
+//     */
+//    @Override
+//    public void contextInitialized(ServletContextEvent servletContextEvent) {
+//        super.inizia();
+//    }// end of method
 
 
     /**
@@ -290,6 +291,23 @@ public class WamBoot extends ABoot {
          * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
          */
         FlowVar.loginClazz = WamLogin.class;
+
+        /**
+         * Service da usare per recuperare la lista delle Company (o sottoclassi) <br>
+         * Di default CompanyService oppure eventuale sottoclasse specializzata per Company particolari <br>
+         * Eventuale casting a carico del chiamante <br>
+         * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.companyServiceClazz = CroceService.class;
+
+        /**
+         * Nome da usare per recuperare la lista delle Company (o sottoclassi) <br>
+         * Di default 'company' oppure eventuale sottoclasse specializzata per Company particolari <br>
+         * Eventuale casting a carico del chiamante <br>
+         * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.companyClazzName = "croce";
+
     }// end of method
 
 

@@ -177,7 +177,7 @@ public abstract class APrefViewList extends AViewList {
 
         //--controlla alcune condizioni indispensabili
         if (usaFiltroCompany) {
-            if (usaCompany && login.isDeveloper()) {
+            if (usaCompany) {
             } else {
                 usaFiltroCompany = false;
             }// end of if/else cycle

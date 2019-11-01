@@ -9,6 +9,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.data.selection.SelectionListener;
 import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.enumeration.EASearch;
@@ -296,7 +297,7 @@ public abstract class AGridViewList extends ALayoutViewList {
 
         if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
             if (filtroCompany.getValue() != null) {
-                filtri.add(Criteria.where("company").is(filtroCompany.getValue()));
+                filtri.add(Criteria.where(FlowVar.companyClazzName).is(filtroCompany.getValue()));
             }// end of if cycle
         }// end of if cycle
     }// end of method

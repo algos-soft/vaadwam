@@ -1,7 +1,6 @@
 package it.algos.vaadflow.service;
 
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.company.Company;
@@ -81,6 +80,8 @@ public interface IAService {
      * @return all entities
      */
     public List<? extends AEntity> findAll();
+
+    public List<? extends AEntity> findAllAll();
 
     public List<? extends AEntity> findAllByCompany(Company company);
 
