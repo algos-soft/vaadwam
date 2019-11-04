@@ -1,0 +1,9 @@
+**An ApplicationListener**
+This approach can be used for running logic after the Spring context has been initialized,
+so we are not focusing on any particular bean, but waiting for all of them to initialize.
+The same results can be achieved by using the newly-introduced @EventListener annotation:
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        doSomething();
+    }// end of method
