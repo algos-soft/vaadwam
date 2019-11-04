@@ -212,9 +212,11 @@ public abstract class ALayoutViewList extends APrefViewList {
                 break;
             case editField:
                 //--campo EditSearch predisposto su un unica property
-                searchField = new TextField("", "Cerca...");
+                String placeHolder = text.isValid(searchProperty) ? text.primaMaiuscola(searchProperty) + "..." : "Cerca...";
+                String toolTip = "Caratteri iniziali della ricerca" + (text.isValid(searchProperty) ? " nel campo '" + searchProperty + "'" : "");
+                searchField = new TextField("", placeHolder);
                 searchField.setPrefixComponent(new Icon("lumo", "search"));
-                searchField.getElement().setAttribute("title", "Caratteri iniziali della ricerca");
+                searchField.getElement().setAttribute("title", toolTip);
                 searchField.addClassName("view-toolbar__search-field");
                 searchField.setValueChangeMode(ValueChangeMode.EAGER);
 

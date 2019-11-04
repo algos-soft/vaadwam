@@ -145,15 +145,10 @@ public class AnnoList extends AGridViewList {
         super.creaPopupFiltro();
 
         filtroComboBox.setWidth("12em");
-        filtroComboBox.setPlaceholder("secolo ...");
+        filtroComboBox.setPlaceholder("Secolo ...");
         filtroComboBox.setItems(secoloService.findAll());
     }// end of method
 
-
-//    public void updateFiltri() {
-//        Secolo secolo = (Secolo) filtroComboBox.getValue();
-//        items = ((AnnoService) service).findAllBySecolo(secolo);
-//    }// end of method
 
 
     /**
@@ -168,8 +163,6 @@ public class AnnoList extends AGridViewList {
     protected void creaFiltri() {
         super.creaFiltri();
         Secolo secolo = null;
-//        v = (Secolo) filtroComboBox.getValue();
-//        items = ((AnnoService) service).findAllBySecolo(secolo);
 
         if (filtroComboBox != null && filtroComboBox.getValue() != null) {
             secolo = (Secolo) filtroComboBox.getValue();

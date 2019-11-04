@@ -288,11 +288,23 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
      */
     private void fixListener() {
         if (militeEntity != null) {
-            funzioneButton.addClickListener(e -> cancellaMilite());
-            militeButton.addClickListener(e -> cancellaMilite());
+            funzioneButton.addClickListener(e -> {
+                cancellaMilite();
+                syncCode();
+            });//end of lambda expressions
+            militeButton.addClickListener(e -> {
+                cancellaMilite();
+                syncCode();
+            });//end of lambda expressions
         } else {
-            funzioneButton.addClickListener(e -> segnaMilite());
-            militeButton.addClickListener(e -> segnaMilite());
+            funzioneButton.addClickListener(e -> {
+                segnaMilite();
+                syncCode();
+            });//end of lambda expressions
+            militeButton.addClickListener(e -> {
+                segnaMilite();
+                syncCode();
+            });//end of lambda expressions
         }// end of if/else cycle
     }// end of method
 
@@ -303,7 +315,6 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     private void cancellaMilite() {
         militeEntity = null;
         militeButton.setText("");
-        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
@@ -313,7 +324,6 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     private void segnaMilite() {
         militeEntity = militeLoggato;
         militeButton.setText(militeEntity.getSigla());
-        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
@@ -326,6 +336,10 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         if (time != null) {
             inizio.setValue(time);
             inizio.setStep(Duration.ofMinutes(15));
+        }// end of if cycle
+
+        if (inizio != null) {
+            inizio.addValueChangeListener(e -> syncCode());
         }// end of if cycle
     }// end of method
 
@@ -342,6 +356,9 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
             note.setValue(noteTxt);
         }// end of if cycle
 
+        if (note != null) {
+            note.addValueChangeListener(e -> syncCode());
+        }// end of if cycle
     }// end of method
 
 
@@ -354,6 +371,10 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         if (time != null) {
             fine.setValue(time);
             fine.setStep(Duration.ofMinutes(15));
+        }// end of if cycle
+
+        if (inizio != null) {
+            inizio.addValueChangeListener(e -> syncCode());
         }// end of if cycle
     }// end of method
 
@@ -424,6 +445,20 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         time = (LocalTime) optional.get();
 
         return time;
+    }// end of method
+
+
+    /**
+     * Controlla il bottone 'registra' <br>
+     */
+    public void syncCode() {
+        boolean status = false;
+
+        if (inizio.getValue() == iscrizioneEntity.inizio) {
+            status = true;
+        }// end of if cycle
+
+        bottoniPolymer.setConfermaEnabled(status);
     }// end of method
 
 }// end of class

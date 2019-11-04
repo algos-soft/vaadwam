@@ -112,6 +112,7 @@ public class LogList extends AGridViewList {
     protected void creaPopupFiltro() {
         super.creaPopupFiltro();
 
+        filtroComboBox.setPlaceholder("Livello ...");
         filtroComboBox.setItems(Livello.values());
         filtroComboBox.addValueChangeListener(e -> {
             updateFiltri();

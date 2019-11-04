@@ -8,9 +8,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
-import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.IAService;
@@ -129,8 +129,10 @@ public class MiliteList extends WamViewList {
 
         super.isEntityModificabile = true;
         if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
+            super.searchType = EASearch.editField;
             super.usaPopupFiltro = true;
         } else {
+            super.searchType = EASearch.nonUsata;
             super.usaPopupFiltro = false;
         }// end of if/else cycle
     }// end of method
@@ -175,15 +177,12 @@ public class MiliteList extends WamViewList {
     protected void creaPopupFiltro() {
         if (login.isDeveloper() || login.isAdmin()) {
             super.creaPopupFiltro();
+
             filtroComboBox.setWidth("14em");
             filtroComboBox.setPlaceholder("Tipologia ...");
 
             filtroComboBox.setItems(EAFiltroMilite.values());
             filtroComboBox.setValue(EAFiltroMilite.attivi);
-//            filtroComboBox.addValueChangeListener(e -> {
-//                updateItems();
-//                updateView();
-//            });
         }// end of if cycle
     }// end of method
 
@@ -204,6 +203,31 @@ public class MiliteList extends WamViewList {
         }// end of if cycle
 
         return gridPropertyNamesList;
+    }// end of method
+
+
+    /**
+     * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
+     * I filtri normali vanno in updateFiltri() <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto SOLO se ci sono dei filtri che devono essere attivi già alla partenza della Grid <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        super.creaFiltri();
+        Milite milite = null;
+
+        if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
+        } else {
+            milite = wamLogin.getMilite();
+            if (milite != null) {
+                filtri.add(Criteria.where("username").is(milite.username));
+            }// end of if cycle
+        }// end of if/else cycle
+
     }// end of method
 
 
@@ -265,30 +289,6 @@ public class MiliteList extends WamViewList {
         }// end of if/else cycle
 
     }// end of method
-
-
-//    public void updateGrid() {
-//        if (items != null) {
-//            try { // prova ad eseguire il codice
-//                grid.deselectAll();
-//                grid.setItems(items);
-//                headerGridHolder.setText(getGridHeaderText());
-//            } catch (Exception unErrore) { // intercetta l'errore
-//                log.error(unErrore.toString());
-//            }// fine del blocco try-catch
-//        }// end of if cycle
-//
-//        creaAlertLayout();
-//    }// end of method
-
-
-//    protected Button createEditButton(AEntity entityBean) {
-//        Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.edit, context));
-//        edit.setIcon(new Icon("lumo", "edit"));
-//        edit.addClassName("review__edit");
-//        edit.getElement().setAttribute("theme", "tertiary");
-//        return edit;
-//    }// end of method
 
 
     /**

@@ -32,7 +32,6 @@
                     {{item.milite}}
                 </button>
             </template>
-
         </div>
 
     </template>
@@ -42,12 +41,12 @@
 
             static get is() {
                 return 'turno-cell'
-            }
-
+            }// end of static script method
+            // Eventuale JavaScript event handler, run immediately
             handleClick() {
-                window.alert('Button was clicked');
-            }
-        }
+                // window.alert('Button was clicked');
+            }// end of script method
+        }// end of script class
         customElements.define(TurnoCellPolymer.is, TurnoCellPolymer);
     </script>
 
