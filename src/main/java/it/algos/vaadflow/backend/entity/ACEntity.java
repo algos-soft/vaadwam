@@ -28,7 +28,6 @@ public abstract class ACEntity extends AEntity {
      * riferimento dinamico CON @DBRef
      */
     @DBRef
-    @Field("comp")
     @AIField(type = EAFieldType.combo, serviceClazz = CompanyService.class, dev = EAFieldAccessibility.newOnly, admin = EAFieldAccessibility.showOnly)
     @AIColumn(name = "company", widthEM = 7)
     public Company company;

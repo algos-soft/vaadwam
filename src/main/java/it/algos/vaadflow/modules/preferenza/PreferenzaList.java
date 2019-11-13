@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.preferenza;
 
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -10,15 +11,18 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
+
+import java.util.ArrayList;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
 
@@ -94,7 +98,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
  * Annotated with @AIView (facoltativo Algos) per il menu-name, l'icona-menu, la property-search e la visibilità <br>
  * Se serve una Grid paginata estende APaginatedGridViewList altrimenti AGridViewList <br>
  * Se si usa APaginatedGridViewList è obbligatorio creare la PaginatedGrid
- * 'tipizzata' con la entityClazz (Collection) specifica nel metodo creaGridPaginata <br>
+ * 'tipizzata' con la entityClazz (Collection) specifica nel metodo creaGridPaginata() <br>
  */
 @UIScope
 @Route(value = TAG_PRE, layout = MainLayout14.class)
@@ -125,6 +129,20 @@ public class PreferenzaList extends AGridViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Preferenza>();
+    }// end of method
+
+
+    /**
      * Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
      * Può essere sovrascritto, per aggiungere informazioni
      * Invocare PRIMA il metodo della superclasse
@@ -138,13 +156,10 @@ public class PreferenzaList extends AGridViewList {
             super.usaBottoneReset = true;
         }// end of if cycle
 
-        super.usaSearch = false;
-        super.usaSearchDialog = false;
+        super.usaBottoneEdit = false;
         super.usaBottoneNew = false;
         super.isEntityDeveloper = true;
         super.usaPagination = true;
-
-        super.grid = new PaginatedGrid<Preferenza>();
     }// end of method
 
 
@@ -159,28 +174,50 @@ public class PreferenzaList extends AGridViewList {
         super.creaAlertLayout();
         alertPlacehorder.add(new Label("Preferenze per regolare alcune funzionalità del programma"));
         alertPlacehorder.add(new Label("Reset cancella tutte le preferenze."));
-        alertPlacehorder.add(new Label("Se l'applicazione è multiCompany, le preferenze con companySpecifica=true vengono ricrete, col valore di default, per TUTTE le company esistenti."));
+        alertPlacehorder.add(new Label("Se l'applicazione è multiCompany, le preferenze con companySpecifica=true vengono ricreate, col valore di default, per TUTTE le company esistenti."));
     }// end of method
 
 
     /**
      * Crea un Popup di selezione della company <br>
-     * Creato solo se devleper=true e usaCompany=true <br>
+     * Creato solo se develeper=true e usaCompany=true <br>
      * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
-    protected void creaCompanyFiltro() {
+    protected void creaCompanyFiltroNo() {
         super.creaCompanyFiltro();
 
-        IAService  serviceCompany = (IAService) appContext.getBean(FlowVar.companyServiceClazz);
+        IAService serviceCompany = (IAService) appContext.getBean(FlowVar.companyServiceClazz);
 
-        filtroCompany.setItems(serviceCompany.findAll());
-        filtroCompany.addValueChangeListener(e -> {
-            updateItems();
-            updateView();
-        });
+        if (filtroCompany != null) {
+            filtroCompany.setItems(serviceCompany.findAll());
+            filtroCompany.addValueChangeListener(e -> {
+                updateFiltri();
+                updateGrid();
+            });//end of lambda expressions
+        }// end of if cycle
+
     }// end of method
 
+    /**
+     * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
+     * I filtri normali vanno in updateFiltri() <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto SOLO se ci sono dei filtri che devono essere attivi già alla partenza della Grid <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        filtri = new ArrayList<CriteriaDefinition>();
+
+        if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
+            if (filtroCompany.getValue() != null) {
+                filtri.add(Criteria.where("company").is(filtroCompany.getValue()));
+            }// end of if cycle
+        }// end of if cycle
+    }// end of method
 
     /**
      * Apertura del dialogo per una entity esistente oppure nuova <br>

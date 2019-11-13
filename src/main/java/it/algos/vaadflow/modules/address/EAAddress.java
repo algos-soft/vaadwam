@@ -1,10 +1,5 @@
 package it.algos.vaadflow.modules.address;
 
-import lombok.extern.slf4j.Slf4j;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
 /**
  * Project vaadflow
  * Created by Algos
@@ -23,7 +18,9 @@ public enum EAAddress {
 
 
     private String indirizzo;
+
     private String localita;
+
     private String cap;
 
 
@@ -38,21 +35,26 @@ public enum EAAddress {
         return indirizzo;
     }// end of method
 
+
     public void setIndirizzo(String indirizzo) {
         this.indirizzo = indirizzo;
     }// end of method
+
 
     public String getLocalita() {
         return localita;
     }// end of method
 
+
     public void setLocalita(String localita) {
         this.localita = localita;
     }// end of method
 
+
     public String getCap() {
         return cap;
     }// end of method
+
 
     public void setCap(String cap) {
         this.cap = cap;

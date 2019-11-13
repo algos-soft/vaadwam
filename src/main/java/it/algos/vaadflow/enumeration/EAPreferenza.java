@@ -50,14 +50,14 @@ public enum EAPreferenza implements IAPreferenza {
     mailTo(FlowCost.MAIL_TO, "Email di default a cui spedire i log di posta", EAPrefType.string, EARole.admin, false, "gac@algos.it"),
 
     //--.grid
-    maxRigheGrid(FlowCost.MAX_RIGHE_GRID, "Numero di elementi oltre il quale scatta la pagination automatica della Grid (se attiva)", EAPrefType.integer, EARole.developer, true, 25),
+    maxRigheGrid(FlowCost.MAX_RIGHE_GRID, "Numero di elementi oltre il quale scatta la pagination automatica della Grid (se attiva)", EAPrefType.integer, EARole.developer, true, 20),
     maxRigheGridClick(FlowCost.MAX_RIGHE_GRID_CLICK, "Numero di elementi oltre il quale scatta la pagination automatica della Grid (se attiva) e se è abilitato il doppio click per aprire il dialogo di edit (le righe sono meno alte)", EAPrefType.integer, EARole.developer, false, 25),
     mongoPageLimit(FlowCost.MONGO_PAGE_LIMIT, "Limite di elementi nelle query mongoDB", EAPrefType.integer, EARole.developer, false, 50000),
     usaSearchCaseSensitive(FlowCost.USA_SEARCH_CASE_SENSITIVE, "Search delle query sensibile alle maiuscole", EAPrefType.bool, EARole.developer, false, false),
     usaButtonShortcut(FlowCost.USA_BUTTON_SHORTCUT, "Shortcut dei bottoni. Disabilitabile in caso di problemi col browser", EAPrefType.bool, EARole.developer, true, true),
     usaGridHeaderPrimaMaiuscola(FlowCost.USA_GRID_HEADER_PRIMA_MAIUSCOLA, "Prima lettera maiuscola nell'header della Grid", EAPrefType.bool, EARole.developer, true, true),
 
-    textButtonSearch(FlowCost.FLAG_TEXT_SEARCH, "Testo del bottone Search", EAPrefType.enumeration, EARole.developer, true, "cerca,ricerca,find;cerca"),
+    textButtonSearch(FlowCost.FLAG_TEXT_SEARCH, "Testo del bottone Search", EAPrefType.enumeration, EARole.developer, true, "cerca...,ricerca...,find...;cerca..."),
     textButtonNew(FlowCost.FLAG_TEXT_NEW, "Testo del bottone New", EAPrefType.enumeration, EARole.developer, true, "new,nuovo;nuovo"),
     textButtonShow(FlowCost.FLAG_TEXT_SHOW, "Testo del bottone Show (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, "show,mostra,vedi;show"),
     textButtonEdit(FlowCost.FLAG_TEXT_EDIT, "Testo del bottone Edit (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, "open,edit,modifica,apre,apri;edit"),

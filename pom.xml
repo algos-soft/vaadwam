@@ -25,7 +25,7 @@
 
         <!-- Dependencies -->
         <!-- Va tenuta aggiornata la versione di VAADIN 14.0.x -->
-        <vaadin.version>14.0.0</vaadin.version>
+        <vaadin.version>14.0.12</vaadin.version>
 
         <!-- Va tenuta aggiornata la versione di spring-boot -->
         <spring-boot.version>2.1.7.RELEASE</spring-boot.version>

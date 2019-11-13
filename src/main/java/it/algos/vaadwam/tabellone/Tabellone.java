@@ -12,16 +12,14 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
-import it.algos.vaadflow.enumeration.EAColor;
-import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.enumeration.EATime;
+import it.algos.vaadflow.enumeration.*;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.WamLayout;
@@ -32,7 +30,6 @@ import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
-import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
@@ -56,6 +56,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Route(value = TAG_TAB_LIST, layout = WamLayout.class)
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
+@AIEntity(company = EACompanyRequired.obbligatoria)
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
 public class Tabellone extends AGridViewList {
@@ -155,7 +156,7 @@ public class Tabellone extends AGridViewList {
      */
     @Autowired
     public Tabellone(@Qualifier(TAG_TAB) IAService service) {
-        super(service, Turno.class);
+        super(service, Riga.class);
     }// end of Vaadin/@Route constructor
 
 
@@ -232,8 +233,9 @@ public class Tabellone extends AGridViewList {
         this.setSpacing(false);
         this.setPadding(false);
 
-        super.usaSearch = false;
+        super.searchType = EASearch.nonUsata;
         super.usaBottoneNew = false;
+        super.usaBottoneEdit = false;
         super.usaBottomLayout = true;
     }// end of method
 
@@ -274,26 +276,22 @@ public class Tabellone extends AGridViewList {
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
      */
-    protected Grid creaGrid(List<String> gridPropertyNamesList) {
-        Grid grid = new Grid(Riga.class, false);
+    @Override
+    protected Grid creaGrid() {
+        grid = new Grid(Riga.class, false);
 
         grid.setHeightByRows(true);
-        //grid.addClassName("pippoz");
-        //grid.getElement().setAttribute("theme", "row-dividers");
-        //grid.addThemeNames("no-border", "no-row-borders", "row-stripes");
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
         grid.addThemeNames("row-stripes");
+        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // costruisce le colonne
         this.setColumns(grid);
 
         // costruisce le righe
-        this.setItems(grid);
-
-        //--eventuale barra di bottoni sotto la grid
-        creaGridBottomLayout();
+        this.updateGrid();
 
         //--legenda dei colori
         if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
@@ -324,37 +322,73 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-    /**
-     * Crea un Popup di selezione della company <br>
-     * Creato solo se developer=true e usaCompany=true <br>
-     */
-    protected void creaCompanyFiltro() {
-        super.creaCompanyFiltro();
-
-        filtroCompany.setItems(croceService.findAll());
-        filtroCompany.addValueChangeListener(event -> {
-            Croce croce = (Croce) event.getValue();
-            wamLogin.setCroce(croce);
-            wamLogin.setCompany(croce);
-            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-        });
-    }// end of method
-
-
-    protected void updateItems() {
-    }// end of method
+//    /**
+//     * Crea un Popup di selezione della company <br>
+//     * Creato solo se developer=true e usaCompany=true <br>
+//     */
+//    protected void creaCompanyFiltro() {
+//        super.creaCompanyFiltro();
+//
+//        filtroCompany.setItems(croceService.findAll());
+//        filtroCompany.addValueChangeListener(event -> {
+//            Croce croce = (Croce) event.getValue();
+//            wamLogin.setCroce(croce);
+//            wamLogin.setCompany(croce);
+//            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+//        });
+//    }// end of method
 
 
     /**
-     * Crea e aggiunge le righe
+     * Sincronizza la company in uso. <br>
+     * Chiamato dal listener di 'filtroCompany' <br>
+     * <p>
+     * Può essere sovrascritto, per modificare la gestione delle company <br>
      */
-    public void setItems(Grid grid) {
+    protected void actionSincroCompany() {
+        Croce croceSelezionata = null;
+
+        if (filtroCompany != null) {
+            croceSelezionata = (Croce) filtroCompany.getValue();
+        }// end of if cycle
+        wamLogin.setCroce(croceSelezionata);
+
+        updateFiltri();
+        updateGrid();
+    }// end of method
+
+
+//    protected void updateItems() {
+//    }// end of method
+
+
+    /**
+     * Aggiorna gli items della Grid, utilizzando i filtri. <br>
+     * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Sviluppato nella sottoclasse AGridViewList, oppure APaginatedGridViewList <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
+     */
+    @Override
+    public void updateGrid() {
         Collection items = tabelloneService.getGridRigheList(startDay, numDays);
 
         if (items != null) {
             grid.setItems(items);
         }
     }// end of method
+
+
+//    /**
+//     * Crea e aggiunge le righe
+//     */
+//    public void setItems(Grid grid) {
+//        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
+//
+//        if (items != null) {
+//            grid.setItems(items);
+//        }
+//    }// end of method
 
 
     /**
@@ -431,6 +465,7 @@ public class Tabellone extends AGridViewList {
     private Component periodoHeader() {
         comboPeriodi = new AComboBox();
         comboPeriodi.setWidth("12em");
+        comboPeriodi.setClearButtonVisible(false);
         comboPeriodi.setItems(EAPeriodo.values());
         comboPeriodi.setValue(currentPeriodValue);
         comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));
@@ -446,40 +481,43 @@ public class Tabellone extends AGridViewList {
         EAPeriodo oldValue = (EAPeriodo) event.getOldValue();//@todo per ora non serve, ma non si sa mai...
         EAPeriodo newValue = (EAPeriodo) event.getValue();
 
-        switch (newValue) {
-            case vuoto:
-                break;
-            case oggi:
-                startDay = LocalDate.now();
-                currentPeriodValue = EAPeriodo.oggi;
-                break;
-            case lunedi:
-                startDay = date.getFirstLunedì(LocalDate.now());
-                currentPeriodValue = EAPeriodo.lunedi;
-                break;
-            case giornoPrecedente:
-                startDay = startDay.minusDays(1);
-                currentPeriodValue = EAPeriodo.vuoto;
-                break;
-            case giornoSuccessivo:
-                startDay = startDay.plusDays(1);
-                currentPeriodValue = EAPeriodo.vuoto;
-                break;
-            case settimanaPrecedente:
-                startDay = startDay.minusDays(GIORNI_STANDARD);
-                currentPeriodValue = EAPeriodo.vuoto;
-                break;
-            case settimanaSuccessiva:
-                startDay = startDay.plusDays(GIORNI_STANDARD);
-                currentPeriodValue = EAPeriodo.vuoto;
-                break;
-            case selezione:
-                apreSelezione();
-                break;
-            default:
-                log.warn("Switch - caso non definito");
-                break;
-        } // end of switch statement
+        if (newValue != null) {
+
+            switch (newValue) {
+                case vuoto:
+                    break;
+                case oggi:
+                    startDay = LocalDate.now();
+                    currentPeriodValue = EAPeriodo.oggi;
+                    break;
+                case lunedi:
+                    startDay = date.getFirstLunedì(LocalDate.now());
+                    currentPeriodValue = EAPeriodo.lunedi;
+                    break;
+                case giornoPrecedente:
+                    startDay = startDay.minusDays(1);
+                    currentPeriodValue = EAPeriodo.vuoto;
+                    break;
+                case giornoSuccessivo:
+                    startDay = startDay.plusDays(1);
+                    currentPeriodValue = EAPeriodo.vuoto;
+                    break;
+                case settimanaPrecedente:
+                    startDay = startDay.minusDays(GIORNI_STANDARD);
+                    currentPeriodValue = EAPeriodo.vuoto;
+                    break;
+                case settimanaSuccessiva:
+                    startDay = startDay.plusDays(GIORNI_STANDARD);
+                    currentPeriodValue = EAPeriodo.vuoto;
+                    break;
+                case selezione:
+                    apreSelezione();
+                    break;
+                default:
+                    log.warn("Switch - caso non definito");
+                    break;
+            } // end of switch statement
+        }// end of if cycle
 
 //        currentPeriodValue = EAPeriodo.vuoto;
 //        comboPeriodi.setValue(currentPeriodValue);
@@ -558,7 +596,7 @@ public class Tabellone extends AGridViewList {
                     Notification.show(entityBean + " non è stata registrata, perché esisteva già con lo stesso code ", 3000, Notification.Position.BOTTOM_START);
                 } else {
                     service.save(entityBean);
-                    updateView();
+                    updateGrid();
                     Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
                 }// end of if/else cycle
                 break;

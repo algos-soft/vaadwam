@@ -11,6 +11,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
@@ -24,6 +25,8 @@ import it.algos.vaadflow.ui.fields.AComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.Collection;
 import java.util.List;
@@ -179,8 +182,6 @@ public abstract class APropertyViewList extends VerticalLayout {
     //--property
     protected TextField searchField;
 
-    //--property
-    protected String searchProperty;
 
     protected Button deleteAllButton;
 
@@ -250,21 +251,35 @@ public abstract class APropertyViewList extends VerticalLayout {
     protected HorizontalLayout bottomPlacehorder;
 
     /**
-     * Flag di preferenza per usare la ricerca e selezione nella barra dei menu. <br>
-     * Se è true, un altro flag seleziona il textField o il textDialog <br>
-     * Se è true, il bottone usaAllButton è sempre presente <br>
-     * Se è true, un altro flag seleziona la presenza o meno del Popup di filtro <br>
-     * Normalmente true. <br>
+     * Flag di preferenza per selezionare la ricerca testuale:
+     * 1) nessuna
+     * 2) campo editText di selezione per una property specificata in searchProperty
+     * 3) dialogo di selezione
      */
-    protected boolean usaSearch;
+    protected EASearch searchType;
 
     /**
-     * Flag di preferenza per selezionare la ricerca:
-     * true per aprire un dialogo di ricerca e selezione su diverse properties <br>
-     * false per presentare un textEdit predisposto per la ricerca su un unica property <br>
-     * Normalmente true.
+     * Flag di preferenza per specificare la property della entity su cui effettuare la ricerca <br>
+     * Ha senso solo se searchType=EASearch.editField
      */
-    protected boolean usaSearchDialog;
+    protected String searchProperty;
+
+//    /**
+//     * Flag di preferenza per usare la ricerca e selezione nella barra dei menu. <br>
+//     * Se è true, un altro flag seleziona il textField o il textDialog <br>
+//     * Se è true, il bottone usaAllButton è sempre presente <br>
+//     * Se è true, un altro flag seleziona la presenza o meno del Popup di filtro <br>
+//     * Normalmente true. <br>
+//     */
+//    protected boolean usaSearch;
+//
+//    /**
+//     * Flag di preferenza per selezionare la ricerca:
+//     * true per aprire un dialogo di ricerca e selezione su diverse properties <br>
+//     * false per presentare un textEdit predisposto per la ricerca su un unica property <br>
+//     * Normalmente true.
+//     */
+//    protected boolean usaSearchDialog;
 
     /**
      * Flag di preferenza per usare il popup di selezione, filtro e ordinamento situato nella searchBar.
@@ -285,7 +300,7 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     /**
      * Flag per costruire una Grid normale o una PaginatedGrid. <br>
-     * Viene regolato da codice. <br>
+     * Viene regolato in postPreferenze(). <br>
      */
     protected boolean isPaginata;
 
@@ -294,9 +309,16 @@ public abstract class APropertyViewList extends VerticalLayout {
      */
     protected boolean usaBottoneNew;
 
+    /**
+     * Popup di selezione della Company, se usata. Faccoltativo. <br>
+     */
+    protected AComboBox filtroCompany;
+
+    /**
+     * Popup di selezione per un filtro costruibile nella sottoclasse concreta. Esiste se usaPopupFiltro=true <br>
+     */
     protected AComboBox filtroComboBox;
 
-    protected AComboBox filtroCompany;
 
     protected Button newButton;
 
@@ -367,6 +389,11 @@ public abstract class APropertyViewList extends VerticalLayout {
     protected boolean usaRefresh;
 
     /**
+     * Flag di preferenza per filtrare la mcompany. Normalmente true. Elaborato in APrefViewList.postPreferenze() <br>
+     */
+    protected boolean usaFiltroCompany;
+
+    /**
      * Flag di preferenza per selezionare il numero di righe visibili della Grid. <br>
      * Normalmente limit = pref.getInt(FlowCost.MAX_RIGHE_GRID). <br>
      */
@@ -395,6 +422,8 @@ public abstract class APropertyViewList extends VerticalLayout {
 //    protected boolean isPagination;
 
     protected Collection items;
+
+    protected List<CriteriaDefinition> filtri;
 
     protected ADeleteDialog deleteDialog;
 

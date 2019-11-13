@@ -110,7 +110,7 @@ public class Giorno extends AEntity {
     @Size(min = 3)
     @Field("tit")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(widthEM = 10)
+    @AIColumn(flexGrow = true)
     public String titolo;
 
 

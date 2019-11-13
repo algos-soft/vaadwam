@@ -9,7 +9,6 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.AMailService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
-import it.algos.vaadflow.ui.list.APaginatedGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.schedule.ATask;
@@ -30,7 +29,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
  * Time: 15:48
  */
 @Slf4j
-public abstract class WamViewList extends APaginatedGridViewList {
+public abstract class WamViewList extends AGridViewList {
 
     protected Button genericFieldValue;
 
@@ -38,11 +37,11 @@ public abstract class WamViewList extends APaginatedGridViewList {
 
     protected Button importButton;
 
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    protected AMailService mailService;
+//    /**
+//     * La injection viene fatta da SpringBoot in automatico <br>
+//     */
+//    @Autowired
+//    protected AMailService mailService;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -84,45 +83,6 @@ public abstract class WamViewList extends APaginatedGridViewList {
     }// end of Vaadin/@Route constructor
 
 
-    /**
-     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
-     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
-     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-     * <p>
-     * Prima viene chiamato il costruttore <br>
-     * Prima viene chiamato init(); <br>
-     * Viene chiamato @PostConstruct (con qualsiasi firma) <br>
-     * Dopo viene chiamato setParameter(); <br>
-     * Dopo viene chiamato beforeEnter(); <br>
-     * <p>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-     * Creazione e posizionamento dei componenti UI <br>
-     * Possono essere sovrascritti nelle sottoclassi <br>
-     */
-    @PostConstruct
-    protected void postConstruct() {
-    }// end of method
-
-
-//    /**
-//     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
-//     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
-//     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-//     * <p>
-//     * Questo metodo viene chiamato per primo subito dopo il costruttore <br>
-//     * Dopo viene chiamato beforeEnter(); <br>
-//     * <p>
-//     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-//     * Creazione e posizionamento dei componenti UI <br>
-//     * Possono essere sovrascritti nelle sottoclassi <br>
-//     */
-//    @PostConstruct
-//    protected void initView() {
-//        //--Crea il wam-login della sessione
-//        wamLogin = wamService.fixWamLogin();
-//        super.initView();
-//    }// end of method
-
 
     /**
      * Le preferenze standard
@@ -136,8 +96,6 @@ public abstract class WamViewList extends APaginatedGridViewList {
 
         //--Crea il wam-login della sessione
         wamLogin = (WamLogin) login;
-
-        super.usaSearch = false;
 
         super.usaBottoneEdit = true;
         super.usaBottoneReset = false;
@@ -212,6 +170,7 @@ public abstract class WamViewList extends APaginatedGridViewList {
         UI.getCurrent().getPage().reload();
     }// end of method
 
+
     /**
      * Eventuale caption sopra la grid
      */
@@ -280,36 +239,53 @@ public abstract class WamViewList extends APaginatedGridViewList {
 //    }// end of method
 
 
+//    /**
+//     * Crea un Popup di selezione della company <br>
+//     * Creato solo se developer=true e usaCompany=true <br>
+//     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
+//     * Invocare PRIMA il metodo della superclasse <br>
+//     */
+//    protected void creaCompanyFiltro() {
+//        super.creaCompanyFiltro();
+//        filtroCompany.setItems(croceService.findAll());
+//        filtroCompany.addValueChangeListener(e -> {
+//            updateFiltri();
+//            updateGrid();
+//        });
+//    }// end of method
+
     /**
-     * Crea un Popup di selezione della company <br>
-     * Creato solo se developer=true e usaCompany=true <br>
-     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
-     * Invocare PRIMA il metodo della superclasse <br>
+     * Sincronizza la company in uso. <br>
+     * Chiamato dal listener di 'filtroCompany' <br>
+     * <p>
+     * Può essere sovrascritto, per modificare la gestione delle company <br>
      */
-    protected void creaCompanyFiltro() {
-        super.creaCompanyFiltro();
-        filtroCompany.setItems(croceService.findAll());
-        filtroCompany.addValueChangeListener(e -> {
-            updateItems();
-            updateView();
-        });
-    }// end of method
+    protected void actionSincroCompany() {
+        Croce croceSelezionata = null;
 
-
-    public void updateItems() {
-        Croce croce;
         if (filtroCompany != null) {
-            croce = (Croce) filtroCompany.getValue();
+            croceSelezionata = (Croce) filtroCompany.getValue();
+        }// end of if cycle
+        wamLogin.setCroce(croceSelezionata);
 
-            if (croce != null) {
-                items = ((WamService) service).findAllByCroce(croce);
-            } else {
-                items = ((WamService) service).findAllCroci();
-            }// end of if/else cycle
-        } else {
-            items = ((WamService) service).findAll();
-        }// end of if/else cycle
-
+        updateFiltri();
+        updateGrid();
     }// end of method
+
+//    public void updateItems() {
+//        Croce croce;
+//        if (filtroCompany != null) {
+//            croce = (Croce) filtroCompany.getValue();
+//
+//            if (croce != null) {
+//                items = ((WamService) service).findAllByCroce(croce);
+//            } else {
+//                items = ((WamService) service).findAllCroci();
+//            }// end of if/else cycle
+//        } else {
+//            items = ((WamService) service).findAll();
+//        }// end of if/else cycle
+//
+//    }// end of method
 
 }// end of class

@@ -132,7 +132,6 @@ public class LogtypeList extends AGridViewList {
         super.isEntityDeveloper = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneReset = true;
-        super.usaSearchDialog = false;
         super.isEntityUsaDatiDemo = true;
     }// end of method
 

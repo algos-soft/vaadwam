@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.anno;
 
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -8,18 +9,22 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.secolo.Secolo;
 import it.algos.vaadflow.modules.secolo.SecoloService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.list.ACronoViewList;
-import it.algos.vaadflow.ui.list.APaginatedGridViewList;
+import it.algos.vaadflow.ui.list.AGridViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
 
@@ -51,8 +56,8 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
 @Slf4j
 @Secured("developer")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "anni", menuIcon = VaadinIcon.CALENDAR, searchProperty = "secolo", roleTypeVisibility = EARoleType.developer)
-public class AnnoList extends APaginatedGridViewList {
+@AIView(vaadflow = true, menuName = "anni", menuIcon = VaadinIcon.CALENDAR, searchProperty = "titolo", roleTypeVisibility = EARoleType.developer)
+public class AnnoList extends AGridViewList {
 
 
     /**
@@ -82,30 +87,44 @@ public class AnnoList extends APaginatedGridViewList {
 
 
     /**
-     * Preferenze standard <br>
-     * Può essere sovrascritto, per aggiungere informazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
      */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Anno>();
+    }// end of method
+
+    /**
+     * Preferenze specifiche di questa view <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse APrefViewList <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
 
         super.limit = 25;
-        super.usaSearch = false;
         super.usaPopupFiltro = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneReset = true;
         super.isEntityDeveloper = true;
         super.usaBottoneNew = false;
         super.usaBottoneEdit = false;
-
-        super.paginatedGrid = new PaginatedGrid<Anno>();
     }// end of method
 
 
     /**
-     * Placeholder (eventuale) per informazioni aggiuntive alla grid ed alla lista di elementi <br>
-     * Normalmente ad uso esclusivo del developer <br>
+     * Eventuali messaggi di avviso specifici di questa view ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
@@ -121,23 +140,35 @@ public class AnnoList extends APaginatedGridViewList {
      * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
      * Invocare PRIMA il metodo della superclasse <br>
      */
+    @Override
     protected void creaPopupFiltro() {
         super.creaPopupFiltro();
 
         filtroComboBox.setWidth("12em");
+        filtroComboBox.setPlaceholder("Secolo ...");
         filtroComboBox.setItems(secoloService.findAll());
-        filtroComboBox.addValueChangeListener(e -> {
-            updateItems();
-            updateView();
-        });
     }// end of method
 
 
-    public void updateItems() {
-        Secolo secolo = (Secolo) filtroComboBox.getValue();
-        items = ((AnnoService) service).findAllBySecolo(secolo);
-    }// end of method
 
+    /**
+     * Crea la lista dei filtri della Grid alla prima visualizzazione della view <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto, per modificare la selezione dei filtri <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        super.creaFiltri();
+        Secolo secolo = null;
+
+        if (filtroComboBox != null && filtroComboBox.getValue() != null) {
+            secolo = (Secolo) filtroComboBox.getValue();
+            filtri.add(Criteria.where("secolo").is(secolo));
+        }// end of if cycle
+    }// end of method
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>

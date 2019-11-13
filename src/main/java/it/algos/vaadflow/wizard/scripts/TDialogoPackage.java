@@ -44,6 +44,7 @@ public class TDialogoPackage extends TDialogo {
     public final static boolean DEFAULT_USA_KEY_CODE_SPECIFICA = false;
     public final static boolean DEFAULT_USA_COMPANY = false;
     public final static boolean DEFAULT_USA_PAGINATED_GRID = true;
+    public final static boolean DEFAULT_USA_LIST_ESTESA = true;
     public final static boolean DEFAULT_USA_SOVRASCRIVE = false;
     public final static boolean DEFAULT_USA_ALL_PACKAGE = false;
     private static final String CAPTION = WizardView.VAADFLOW + WizardView.PACKAGE;
@@ -73,6 +74,7 @@ public class TDialogoPackage extends TDialogo {
     private Checkbox fieldCheckBoxUsaKeyIdCode;
     private Checkbox fieldCheckBoxCompany;
     private Checkbox fieldCheckBoPaginatedGrid;
+    private Checkbox fieldCheckBoListEstesa;
     private Checkbox fieldCheckBoxSovrascrive;
     private Checkbox fieldCheckBoxAllPackage;
 
@@ -176,6 +178,7 @@ public class TDialogoPackage extends TDialogo {
         layout.add(creaKeyIdCode());
         layout.add(creaCompany());
         layout.add(creaGrid());
+        layout.add(creaList());
         layout.add(creaSovrascrive());
         layout.add(creaAllPackage());
 
@@ -289,6 +292,13 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoPaginatedGrid.setLabel("Utilizza PaginatedGrid");
 
         return fieldCheckBoPaginatedGrid;
+    }// end of method
+
+    private Component creaList() {
+        fieldCheckBoListEstesa = new Checkbox();
+        fieldCheckBoListEstesa.setLabel("List estesa");
+
+        return fieldCheckBoListEstesa;
     }// end of method
 
 
@@ -488,6 +498,8 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoxCompany.setEnabled(false);
         fieldCheckBoPaginatedGrid.setValue(true);
         fieldCheckBoPaginatedGrid.setEnabled(false);
+        fieldCheckBoListEstesa.setValue(true);
+        fieldCheckBoListEstesa.setEnabled(false);
         fieldCheckBoxSovrascrive.setValue(false);
         fieldCheckBoxSovrascrive.setEnabled(false);
 
@@ -511,6 +523,8 @@ public class TDialogoPackage extends TDialogo {
         fieldCheckBoxCompany.setEnabled(true);
         fieldCheckBoPaginatedGrid.setValue(DEFAULT_USA_PAGINATED_GRID);
         fieldCheckBoPaginatedGrid.setEnabled(true);
+        fieldCheckBoListEstesa.setValue(DEFAULT_USA_LIST_ESTESA);
+        fieldCheckBoListEstesa.setEnabled(true);
         fieldCheckBoxSovrascrive.setValue(DEFAULT_USA_SOVRASCRIVE);
         fieldCheckBoxSovrascrive.setEnabled(true);
     }// end of method
@@ -681,6 +695,7 @@ public class TDialogoPackage extends TDialogo {
             mappaInput.put(Chiave.flagDescrizione, fieldCheckBoxPropertyDescrizione.getValue());
             mappaInput.put(Chiave.flagCompany, fieldCheckBoxCompany.getValue());
             mappaInput.put(Chiave.flagGrid, fieldCheckBoPaginatedGrid.getValue());
+            mappaInput.put(Chiave.flagList, fieldCheckBoListEstesa.getValue());
             mappaInput.put(Chiave.flagSovrascrive, fieldCheckBoxSovrascrive.getValue());
             mappaInput.put(Chiave.flagUsaAllPackages, fieldCheckBoxAllPackage.getValue());
         }// end of if cycle

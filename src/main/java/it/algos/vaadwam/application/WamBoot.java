@@ -3,18 +3,16 @@ package it.algos.vaadwam.application;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.FlowVar;
-import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
-import it.algos.vaadwam.modules.statistica.StatisticaList;
 import it.algos.vaadflow.modules.company.Company;
-import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
@@ -25,6 +23,7 @@ import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.RigaList;
 import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.modules.statistica.StatisticaList;
 import it.algos.vaadwam.modules.turno.TurnoList;
 import it.algos.vaadwam.tabellone.Tabellone;
 import it.algos.vaadwam.wam.WamLogin;
@@ -33,11 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import javax.servlet.ServletContextEvent;
 import java.time.LocalDate;
 import java.util.List;
-
-import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 
 
 /**
@@ -110,11 +106,11 @@ public class WamBoot extends ABoot {
     @Autowired
     public MiliteService militeService;
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     */
-    @Autowired
-    protected CroceService companyServiceSovrascritta;
+//    /**
+//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+//     */
+//    @Autowired
+//    protected CroceService companyServiceSovrascritta;
 
     @Autowired
     private UtenteService utenteService;
@@ -158,17 +154,17 @@ public class WamBoot extends ABoot {
     }// end of Spring constructor
 
 
-    /**
-     * Executed on container startup <br>
-     * Setup non-UI logic here <br>
-     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
-     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
-     * questa sottoclasse concreta può singolarmente modificarle <br>
-     */
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        super.inizia();
-    }// end of method
+//    /**
+//     * Executed on container startup <br>
+//     * Setup non-UI logic here <br>
+//     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
+//     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
+//     * questa sottoclasse concreta può singolarmente modificarle <br>
+//     */
+//    @Override
+//    public void contextInitialized(ServletContextEvent servletContextEvent) {
+////        super.inizia();
+//    }// end of method
 
 
     /**
@@ -187,7 +183,6 @@ public class WamBoot extends ABoot {
      */
     protected void regolaRiferimenti() {
         preferenzaService.applicationBoot = this;
-        super.companyService = companyServiceSovrascritta;
     }// end of method
 
 
@@ -202,15 +197,13 @@ public class WamBoot extends ABoot {
     @Override
     public int creaPreferenze() {
         int numPref = super.creaPreferenze();
-        List<? extends AEntity> listaCompany = companyService.findAll();
+        List<? extends Company> listaCroci = croceService.findAll();
 
         for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
             //--se è companySpecifica=true, crea una preferenza per ogni company
             if (eaPref.isCompanySpecifica()) {
-                for (AEntity company : listaCompany) {
-                    if (company instanceof Company) {
-                        numPref = preferenzaService.creaIfNotExist(eaPref, (Company) company) ? numPref + 1 : numPref;
-                    }// end of if cycle
+                for (Company croce : listaCroci) {
+                    numPref = preferenzaService.creaIfNotExist(eaPref, croce) ? numPref + 1 : numPref;
                 }// end of for cycle
             } else {
                 numPref = preferenzaService.creaIfNotExist(eaPref) ? numPref + 1 : numPref;
@@ -222,36 +215,48 @@ public class WamBoot extends ABoot {
 
 
     /**
-     * Eventuali regolazione delle preferenze standard effettuata nella sottoclasse specifica <br>
-     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
-     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
-     * Metodo che DEVE essere sovrascritto <br>
+     * Cancella e ricrea le preferenze standard <br>
+     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
+     * nella sottoclasse specifica dell'applicazione <br>
+     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
+     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
+     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @return numero di preferenze creato
      */
     @Override
-    protected void fixPreferenze() {
-//        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
-//        pref.saveValue(FlowCost.USA_COMPANY, true);
-//        pref.saveValue(FlowCost.SHOW_COMPANY, false);
-        usaSecurity = true;
+    public int resetPreferenze() {
+        int numPref = super.resetPreferenze();
+
+        List<? extends Company> listaCroci = croceService.findAll();
+
+        for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
+            //--se è companySpecifica=true, crea una preferenza per ogni company
+            if (eaPref.isCompanySpecifica()) {
+                for (Company croce : listaCroci) {
+                    numPref = preferenzaService.crea(eaPref, croce) ? numPref + 1 : numPref;
+                }// end of for cycle
+            } else {
+                numPref = preferenzaService.crea(eaPref) ? numPref + 1 : numPref;
+            }// end of if/else cycle
+        }// end of for cycle
+
+        return numPref;
     }// end of method
 
-
 //    /**
-//     * Cancella e ricrea le preferenze standard <br>
-//     * Metodo invocato dal metodo reset() di preferenzeService per poter usufruire della sovrascrittura
-//     * nella sottoclasse specifica dell'applicazione <br>
-//     * Il metodo può essere sovrascitto per ricreare le preferenze specifiche dell'applicazione <br>
-//     * Le preferenze standard sono create dalla enumeration EAPreferenza <br>
-//     * Le preferenze specifiche possono essere create da una Enumeration specifica, oppure singolarmente <br>
-//     * Invocare PRIMA il metodo della superclasse <br>
-//     *
-//     * @return numero di preferenze creato
+//     * Eventuali regolazione delle preferenze standard effettuata nella sottoclasse specifica <br>
+//     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
+//     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
+//     * Metodo che DEVE essere sovrascritto <br>
 //     */
 //    @Override
-//    public int resetPreferenze() {
-//        int numPref = super.resetPreferenze();
-//
-//        return numPref;
+//    protected void fixPreferenze() {
+////        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
+////        pref.saveValue(FlowCost.USA_COMPANY, true);
+////        pref.saveValue(FlowCost.SHOW_COMPANY, false);
+//        usaSecurity = true;
 //    }// end of method
 
 
@@ -259,6 +264,21 @@ public class WamBoot extends ABoot {
      * Regola alcune informazioni dell'applicazione
      */
     protected void regolaInfo() {
+        /**
+         * Controlla se l'applicazione usa il login oppure no <br>
+         * Se si usa il login, occorre la classe SecurityConfiguration <br>
+         * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
+         * Di defaul (per sicurezza) uguale a true <br>
+         */
+        FlowVar.usaSecurity = true;
+
+        /**
+         * Controlla se l'applicazione è multi-company oppure no <br>
+         * Di defaul (per sicurezza) uguale a true <br>
+         * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.usaCompany = true;
+
         /**
          * Nome identificativo dell'applicazione <br>
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
@@ -276,21 +296,6 @@ public class WamBoot extends ABoot {
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          */
         FlowVar.versionDate = VERSION_DATE;
-
-        /**
-           * Controlla se l'applicazione usa il login oppure no <br>
-           * Se si usa il login, occorre la classe SecurityConfiguration <br>
-           * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
-           * Di defaul (per sicurezza) uguale a true <br>
-           */
-        FlowVar.usaSecurity = true;
-
-        /**
-         * Controlla se l'applicazione è multi-company oppure no <br>
-         * Di defaul (per sicurezza) uguale a true <br>
-         * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
-         */
-        FlowVar.usaCompany = true;
 
 
         /**
@@ -318,11 +323,19 @@ public class WamBoot extends ABoot {
         FlowVar.companyServiceClazz = CroceService.class;
 
         /**
+         * Nome da usare per recuperare la lista delle Company (o sottoclassi) <br>
+         * Di default 'company' oppure eventuale sottoclasse specializzata per Company particolari <br>
+         * Eventuale casting a carico del chiamante <br>
+         * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+         */
+        FlowVar.companyClazzName = "croce";
+
+        /**
          * Path per recuperare dalle risorse un'immagine da inserire nella barra di menu di MainLayout14 <br>
          * Ogni applicazione può modificarla <br>
          * Deve essere regolata in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
          */
-        FlowVar.pathLogo="frontend/images/wam.png";
+        FlowVar.pathLogo = "frontend/images/wam.png";
     }// end of method
 
 
@@ -418,8 +431,8 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
         FlowVar.menuClazzList.add(MiliteList.class);
-    	FlowVar.menuClazzList.add(StatisticaList.class);
-	}// end of method
+        FlowVar.menuClazzList.add(StatisticaList.class);
+    }// end of method
 
 
     /**

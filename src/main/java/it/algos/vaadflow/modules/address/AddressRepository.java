@@ -1,13 +1,12 @@
 package it.algos.vaadflow.modules.address;
 
-import java.util.List;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
 import static it.algos.vaadflow.application.FlowCost.TAG_ADD;
 
 /**
@@ -28,5 +27,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ADD;
 @Qualifier(TAG_ADD)
 @AIScript(sovrascrivibile = false)
 public interface AddressRepository extends MongoRepository<Address, String> {
+
     public Address findByIndirizzo(String indirizzo);
+
 }// end of class

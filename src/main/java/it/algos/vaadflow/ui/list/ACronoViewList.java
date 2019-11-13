@@ -48,7 +48,6 @@ public abstract class ACronoViewList extends AGridViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaSearch = false;
         super.usaPopupFiltro = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneReset = true;

@@ -69,7 +69,7 @@ import java.util.List;
 @Builder(builderMethodName = "builderMilite")
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "funzioni"})
+@AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "funzioni", "noteWam"})
 @AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "funzioni", "role", "locked", "admin", "dipendente", "infermiere", "enabled", "noteWam"})
 @AIScript(sovrascrivibile = false)
 public class Milite extends Person {
@@ -106,17 +106,17 @@ public class Milite extends Person {
 
     @Field("adm")
     @AIField(type = EAFieldType.checkbox)
-    @AIColumn( headerIcon = VaadinIcon.USER_STAR)
+    @AIColumn(headerIcon = VaadinIcon.USER_STAR)
     public boolean admin;
 
     @Field("dip")
     @AIField(type = EAFieldType.checkbox)
-    @AIColumn( headerIcon = VaadinIcon.USER_CLOCK)
+    @AIColumn(headerIcon = VaadinIcon.USER_CLOCK)
     public boolean dipendente;
 
     @Field("inf")
     @AIField(type = EAFieldType.checkbox)
-    @AIColumn( headerIcon = VaadinIcon.USER_HEART)
+    @AIColumn(headerIcon = VaadinIcon.USER_HEART)
     public boolean infermiere;
 
     /**
@@ -136,7 +136,7 @@ public class Milite extends Person {
      */
     @Field("noteWam")
     @AIField(name = "note", type = EAFieldType.textarea)
-    @AIColumn(name = "note", widthEM = 8)
+    @AIColumn(name = "note", widthEM = 20)
     public String noteWam;
 
 

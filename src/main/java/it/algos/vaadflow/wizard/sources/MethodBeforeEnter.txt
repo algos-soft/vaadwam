@@ -1,0 +1,15 @@
+    /**
+     * Creazione iniziale (business logic) della view DOPO costruttore, init(), postConstruct() e setParameter() <br>
+     * <p>
+     * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia BeforeEnterObserver implementata in AViewList <br>
+     * Chiamato DOPO @PostConstruct e DOPO setParameter() <br>
+     * Qui va tutta la logica inizale della view <br>
+     * Può essere sovrascritto, per costruire diversamente la view <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @param beforeEnterEvent con la location, ui, navigationTarget, source, ecc
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        super.beforeEnter(beforeEnterEvent);
+    }// end of method

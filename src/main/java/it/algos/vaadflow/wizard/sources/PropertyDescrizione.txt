@@ -6,5 +6,5 @@
     @Size(min = 2, max = 50)
     @Field("desc")
     @AIField(type = EAFieldType.text, required = true, firstCapital = true, widthEM = 24)
-    @AIColumn(widthEM = 14)
+    @AIColumn(flexGrow = true)
     public String descrizione;

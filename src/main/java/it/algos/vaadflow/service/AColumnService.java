@@ -12,7 +12,6 @@ import it.algos.vaadflow.modules.preferenza.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -91,7 +90,7 @@ public class AColumnService extends AbstractService {
      * @param entityClazz  modello-dati specifico
      * @param propertyName della property
      */
-    public void create(ApplicationContext appContext, Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName) {
+    public void create(Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName, String searchProperty) {
         pref = StaticContextAccessor.getBean(PreferenzaService.class);
         Grid.Column<AEntity> colonna = null;
         EAFieldType type = annotation.getColumnType(entityClazz, propertyName);
@@ -434,7 +433,7 @@ public class AColumnService extends AbstractService {
                     Label label = new Label();
                     String htmlCode = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     label.getElement().setProperty("innerHTML", htmlCode);
-                    label.getElement().getStyle().set("background-color", (String)reflection.getPropertyValue(entity,propertyName));
+                    label.getElement().getStyle().set("background-color", (String) reflection.getPropertyValue(entity, propertyName));
 
                     return label;
                 }));//end of lambda expressions and anonymous inner class
@@ -511,11 +510,6 @@ public class AColumnService extends AbstractService {
                     Object serviceInstance = null;
                     String value = "";
 
-                    if (appContext == null) {
-                        log.error("Manca il valore di appContext");
-                        return label;
-                    }// end of if cycle
-
                     if (text.isEmpty(methodName)) {
                         log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
                         return label;
@@ -524,7 +518,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         //--il metodo DEVE avere un solo parametro e di tipo AEntity
                         metodo = serviceClazz.getDeclaredMethod(methodName, AEntity.class);
-                        serviceInstance = appContext.getBean(serviceClazz);
+                        serviceInstance = StaticContextAccessor.getBean(serviceClazz);
                         value = (String) metodo.invoke(serviceInstance, entity);
                         label.setText(value);
                     } catch (Exception unErrore) { // intercetta l'errore
@@ -652,6 +646,18 @@ public class AColumnService extends AbstractService {
             } else {
                 colonna.setHeader(headerNotNull);
             }// end of if/else cycle
+
+            if (propertyName.equals(searchProperty)) {
+                Icon icon = new Icon(VaadinIcon.SEARCH);
+                icon.setSize("10px");
+                icon.getStyle().set("float", "center");
+                icon.setColor("red");
+                Label label = new Label();
+                label.add(icon);
+                label.add(text.primaMaiuscola(headerNotNull));
+                label.getElement().getStyle().set("fontWeight", "bold");
+                colonna.setHeader(label);
+            }// end of if cycle
 
             //--di default le colonne NON sono sortable
             //--può essere modificata con sortable = true, nell'annotation @AIColumn della Entity

@@ -98,7 +98,7 @@ public class Utente extends ACEntity implements UserDetails {
     @Indexed(unique = true, sparse = true, direction = IndexDirection.DESCENDING)
     @Field("user")
     @AIField(type = EAFieldType.text)
-    @AIColumn(name = "user", widthEM = 12)
+    @AIColumn(widthEM = 12)
     public String username;
 
 

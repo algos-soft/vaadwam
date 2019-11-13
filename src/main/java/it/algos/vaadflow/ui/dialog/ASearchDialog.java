@@ -23,7 +23,6 @@ import java.util.List;
  * Time: 15:19
  */
 @SpringComponent
-//@Tag(TAG_SEARCH)
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
 public class ASearchDialog extends ADialog {

@@ -103,11 +103,58 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
 
     @PostConstruct
     private void inizia() {
-        if (pref.isBool(USA_COLORAZIONE_DIFFERENZIATA)) {
-            colorazioneDifferenziata();
-        } else {
-            colorazioneUnica();
-        }// end of if/else cycle
+//        if (pref.isBool(USA_COLORAZIONE_DIFFERENZIATA)) {
+//            colorazioneDifferenziata();
+//        } else {
+//            colorazioneUnica();
+//        }// end of if/else cycle
+        colorazione();
+    }// end of method
+
+
+    private void colorazione() {
+        boolean differenziata = pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
+        List<Iscrizione> iscrizioni = null;
+        Servizio servizio = riga.servizio;
+        List<Funzione> funzioni = null;
+        String icona = "";
+        List<RigaCella> righeCella = new ArrayList<>();
+        String colore;
+        turno = rigaService.getTurno(riga, giorno);
+
+        colore = tabelloneService.getColoreTurno(turno).getEsadecimale();
+
+        if (turno != null) {
+            iscrizioni = turno.getIscrizioni();
+        }// end of if cycle
+
+        if (servizio != null) {
+            funzioni = servizio.funzioni;
+        }// end of if cycle
+
+        if (funzioni != null) {
+            for (Funzione funz : funzioni) {
+                icona = "vaadin:" + funz.icona.name().toLowerCase();
+                if (iscrizioni != null) {
+                    for (Iscrizione iscr : iscrizioni) {
+                        if (differenziata) {
+                            colore = tabelloneService.getColoreIscrizione(turno, iscr).getEsadecimale();
+                        }// end of if cycle
+                        if (iscr.funzione.code.equals(funz.code)) {
+                            if (iscr.milite != null) {
+                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+                            } else {
+                                righeCella.add(new RigaCella(colore, icona, ""));
+                            }// end of if/else cycle
+                        }// end of if cycle
+                    }// end of for cycle
+                } else {
+                    righeCella.add(new RigaCella(colore, "", ""));
+                }// end of if/else cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        getModel().setRighecella(righeCella);
     }// end of method
 
 

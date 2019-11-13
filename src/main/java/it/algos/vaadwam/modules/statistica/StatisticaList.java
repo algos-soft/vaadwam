@@ -219,19 +219,19 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Crea la GridPaginata <br>
-     * Per usare una GridPaginata occorre:
-     * 1) la view xxxList deve estendere APaginatedGridViewList anziche AGridViewList <br>
-     * 2) deve essere sovrascritto questo metodo nella classe xxxList <br>
-     * 3) nel metodo sovrascritto va creata la PaginatedGrid 'tipizzata' con la entityClazz (Collection) specifica <br>
-     * 4) il metodo sovrascritto deve invocare DOPO questo stesso superMetodo in APaginatedGridViewList <br>
-     */
-    @Override
-    protected void creaGridPaginata() {
-        paginatedGrid = new PaginatedGrid<Statistica>();
-        super.creaGridPaginata();
-    }// end of method
+//    /**
+//     * Crea la GridPaginata <br>
+//     * Per usare una GridPaginata occorre:
+//     * 1) la view xxxList deve estendere APaginatedGridViewList anziche AGridViewList <br>
+//     * 2) deve essere sovrascritto questo metodo nella classe xxxList <br>
+//     * 3) nel metodo sovrascritto va creata la PaginatedGrid 'tipizzata' con la entityClazz (Collection) specifica <br>
+//     * 4) il metodo sovrascritto deve invocare DOPO questo stesso superMetodo in APaginatedGridViewList <br>
+//     */
+//    @Override
+//    protected void creaGridPaginata() {
+//        paginatedGrid = new PaginatedGrid<Statistica>();
+//        super.creaGridPaginata();
+//    }// end of method
 
 
     /**

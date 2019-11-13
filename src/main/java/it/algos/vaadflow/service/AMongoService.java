@@ -237,6 +237,7 @@ public class AMongoService extends AbstractService {
         if (listaCriteriaDefinition != null && listaCriteriaDefinition.size() > 0) {
             for (CriteriaDefinition criteria : listaCriteriaDefinition) {
                 query.addCriteria(criteria);
+                query.with(new Sort(Sort.Direction.ASC,criteria.getKey()));
             }// end of for cycle
         }// end of if cycle
 

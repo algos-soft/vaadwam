@@ -6,7 +6,6 @@ import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
-import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -29,31 +28,37 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOGIN;
 @Qualifier(TAG_WAM_LOGIN)
 public class WamLogin extends ALogin {
 
-    private Milite milite;
-
-    private Croce croce;
-
-    private EARoleType roleType;
-
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     protected CroceService croceService;
 
+    private Milite milite;
+
+    private Croce croce;
+
+    private EARoleType roleType;
+
+
     public WamLogin() {
     }
 
 
-    public WamLogin(Object utente, Croce croce, EARoleType roleType) {
+    public WamLogin(Object utente, Company company, EARoleType roleType) {
+        if (company instanceof Croce) {
+            this.croce = (Croce) company;
+        }// end of if cycle
+
         if (utente instanceof Milite) {
             this.milite = (Milite) utente;
+            this.croce = milite.getCroce();
         }// end of if cycle
-        this.croce = croce;
         this.roleType = roleType;
 
         super.utente = (Utente) utente;
     }// end of constructor
+
 
     /**
      * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>

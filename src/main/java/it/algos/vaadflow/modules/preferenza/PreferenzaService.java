@@ -4,8 +4,6 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.boot.ABoot;
-import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.AService;
@@ -57,7 +55,7 @@ public class PreferenzaService extends AService {
             Arrays.asList("ordine", "id", "company", "code", "type", "value", "descrizione", "show", "companySpecifica");
 
     public final static List<String> PROPERTIES_NO_COMPANY =
-            Arrays.asList("ordine", "code", "descrizione", "type", "show", "companySpecifica");
+            Arrays.asList("ordine", "code", "type", "value", "descrizione", "show", "companySpecifica");
 
     /**
      * versione della classe per la serializzazione

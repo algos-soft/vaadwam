@@ -1,6 +1,5 @@
 package it.algos.vaadwam.modules.milite;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -11,12 +10,10 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.giorno.Giorno;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadwam.WamLayout;
@@ -28,13 +25,13 @@ import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -64,7 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_MIL)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName =  "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "code",roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "username", roleTypeVisibility = EARoleType.user)
 public class MiliteList extends WamViewList {
 
 
@@ -109,6 +106,20 @@ public class MiliteList extends WamViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Milite>();
+    }// end of method
+
+
+    /**
      * Le preferenze standard <br>
      * Le preferenze specifiche della sottoclasse <br>
      * Può essere sovrascritto, per modificare le preferenze standard <br>
@@ -120,14 +131,12 @@ public class MiliteList extends WamViewList {
 
         super.isEntityModificabile = true;
         if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
-            super.usaSearch = true;
+            super.searchType = EASearch.editField;
             super.usaPopupFiltro = true;
         } else {
-            super.usaSearch = false;
+            super.searchType = EASearch.nonUsata;
             super.usaPopupFiltro = false;
         }// end of if/else cycle
-
-        super.grid = new PaginatedGrid<Milite>();
     }// end of method
 
 
@@ -170,14 +179,12 @@ public class MiliteList extends WamViewList {
     protected void creaPopupFiltro() {
         if (login.isDeveloper() || login.isAdmin()) {
             super.creaPopupFiltro();
+
             filtroComboBox.setWidth("14em");
+            filtroComboBox.setPlaceholder("Tipologia ...");
 
             filtroComboBox.setItems(EAFiltroMilite.values());
             filtroComboBox.setValue(EAFiltroMilite.attivi);
-            filtroComboBox.addValueChangeListener(e -> {
-                updateItems();
-                updateView();
-            });
         }// end of if cycle
     }// end of method
 
@@ -201,7 +208,32 @@ public class MiliteList extends WamViewList {
     }// end of method
 
 
-    public void updateItems() {
+    /**
+     * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
+     * I filtri normali vanno in updateFiltri() <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse AGridViewList <br>
+     * Chiamato SOLO alla creazione della view. Successive modifiche ai filtri sono gestite in updateFiltri() <br>
+     * Può essere sovrascritto SOLO se ci sono dei filtri che devono essere attivi già alla partenza della Grid <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaFiltri() {
+        super.creaFiltri();
+        Milite milite = null;
+
+        if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
+        } else {
+            milite = wamLogin.getMilite();
+            if (milite != null) {
+                filtri.add(Criteria.where("username").is(milite.username));
+            }// end of if cycle
+        }// end of if/else cycle
+    }// end of method
+
+
+    public void updateFiltri() {
+        super.updateFiltri();
         EAFiltroMilite filtro = null;
 
         if (filtroComboBox != null) {
@@ -209,25 +241,26 @@ public class MiliteList extends WamViewList {
             if (filtro != null) {
                 switch (filtro) {
                     case attivi:
-                        items = ((MiliteService) service).findAllByEnabled();
+                        filtri.add(Criteria.where("enabled").is(true));
                         break;
                     case admin:
-                        items = ((MiliteService) service).findAllByAdmin();
+                        filtri.add(Criteria.where("admin").is(true));
                         break;
                     case dipendenti:
-                        items = ((MiliteService) service).findAllByDipendente();
+                        filtri.add(Criteria.where("dipendente").is(true));
                         break;
                     case infermieri:
-                        items = ((MiliteService) service).findAllByInfermiere();
+                        filtri.add(Criteria.where("infermiere").is(true));
                         break;
                     case storico:
-                        items = ((MiliteService) service).findAll();
                         break;
                     case senzaFunzioni:
-                        items = ((MiliteService) service).findAllSenzaFunzioni();
+                        filtri.add(Criteria.where("enabled").is(true));
+                        filtri.add(Criteria.where("funzioni").is(null));
                         break;
                     case conNote:
-                        items = ((MiliteService) service).findAllConNote();
+                        filtri.add(Criteria.where("enabled").is(true));
+                        filtri.add(Criteria.where("noteWam").ne(null));
                         break;
                     default:
                         log.warn("Switch - caso non definito");
@@ -254,30 +287,6 @@ public class MiliteList extends WamViewList {
         }// end of if/else cycle
 
     }// end of method
-
-
-    public void updateView() {
-        if (items != null) {
-            try { // prova ad eseguire il codice
-                grid.deselectAll();
-                grid.setItems(items);
-                headerGridHolder.setText(getGridHeaderText());
-            } catch (Exception unErrore) { // intercetta l'errore
-                log.error(unErrore.toString());
-            }// fine del blocco try-catch
-        }// end of if cycle
-
-        creaAlertLayout();
-    }// end of method
-
-
-//    protected Button createEditButton(AEntity entityBean) {
-//        Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.edit, context));
-//        edit.setIcon(new Icon("lumo", "edit"));
-//        edit.addClassName("review__edit");
-//        edit.getElement().setAttribute("theme", "tertiary");
-//        return edit;
-//    }// end of method
 
 
     /**

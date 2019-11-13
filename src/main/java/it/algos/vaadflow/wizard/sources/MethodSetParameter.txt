@@ -1,0 +1,15 @@
+    /**
+     * Regola i parametri del browser per una view costruita da @Route <br>
+     * <p>
+     * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia HasUrlParameter implementata in AViewList <br>
+     * Chiamato DOPO @PostConstruct ma PRIMA di beforeEnter() <br>
+     * Può essere sovrascritto, per gestire diversamente i parametri in ingresso <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @param event     con la location, ui, navigationTarget, source, ecc
+     * @param parameter opzionali nella chiamata del browser
+     */
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        super.setParameter(event, parameter);
+    }// end of method

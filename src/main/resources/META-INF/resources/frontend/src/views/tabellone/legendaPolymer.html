@@ -1,15 +1,14 @@
-<link href="../../../bower_components/polymer/polymer-element.html" rel="import">
+<!--<link href="../../../bower_components/polymer/polymer-element.html" rel="import">-->
 
 <dom-module id="legenda-tabellone">
     <template>
         <div>
-            &nbsp;Legenda:&nbsp;
+            &nbsp;Legenda:&nbsp;&nbsp;
             <template is="dom-repeat" items="[[colori]]">
-                <vaadin-button style="width: 8.5em; background-color:[[item.tag]]; "
+                <vaadin-button style="width: 8.5em; background-color:[[item.tag]];"
                                title=[[item.legenda]]>
                     [[item.titolo]]
                 </vaadin-button>
-                &nbsp;
             </template>
         </div>
     </template>

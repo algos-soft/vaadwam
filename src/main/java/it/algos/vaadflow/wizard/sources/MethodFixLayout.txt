@@ -1,0 +1,12 @@
+    /**
+     * Costruisce gli oggetti base (placeholder) di questa view <br>
+     * <p>
+     * Li aggiunge alla view stessa <br>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse ALayoutViewList <br>
+     * Può essere sovrascritto, per modificare il layout standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixLayout() {
+        super.fixLayout();
+    }// end of method

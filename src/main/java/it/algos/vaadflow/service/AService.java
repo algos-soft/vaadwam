@@ -216,6 +216,10 @@ public abstract class AService extends AbstractService implements IAService {
         return lista;
     }// end of method
 
+    @Override
+    public List<? extends AEntity> findAllAll() {
+        return null;
+    }// end of method
 
     @Override
     public List<? extends AEntity> findAllByCompany(Company company) {

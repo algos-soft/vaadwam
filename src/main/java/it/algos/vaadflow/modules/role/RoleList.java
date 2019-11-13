@@ -7,6 +7,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
@@ -48,9 +49,6 @@ import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 public class RoleList extends AGridViewList {
 
 
-    public static final String IRON_ICON = "menu";
-
-
     /**
      * Costruttore @Autowired <br>
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
@@ -75,6 +73,7 @@ public class RoleList extends AGridViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        super.searchType = EASearch.editField;
         super.isEntityDeveloper = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneReset = true;

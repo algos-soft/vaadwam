@@ -256,6 +256,15 @@ public class CroceService extends WamService {
         return lista;
     }// end of method
 
+    /**
+     * Returns all entities of the type <br>
+     *
+     * @return all ordered entities
+     */
+    @Override
+    public List<Croce> findAllAll() {
+        return  repository.findAllByOrderByCodeAsc();
+    }// end of method
 
     /**
      * Returns the number of entities available for the current company
@@ -268,56 +277,6 @@ public class CroceService extends WamService {
         Long num = repository.count();
         return num.intValue();
     }// end of method
-
-//    /**
-//     * Returns the number of entities available.
-//     *
-//     * @return the number of entities
-//     */
-//    @Override
-//    public int count() {
-//        return (int) repository.count();
-//    }// end of method
-
-
-//    /**
-//     * Controlla la collezione
-//     *
-//     * @return true se non ci sono elementi
-//     */
-//    public boolean isVuoto() {
-//        return count() == 0;
-//    }// end of method
-
-
-//    /**
-//     * Costruisce una lista di nomi delle properties della Grid nell'ordine:
-//     * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID)
-//     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
-//     * 3) Sovrascrive la lista nella sottoclasse specifica
-//     * todo ancora da sviluppare
-//     *
-//     * @return lista di nomi di properties
-//     */
-//    @Override
-//    public List<String> getGridPropertyNamesList(AContext context) {
-//        boolean isDeveloper = login.isDeveloper();
-//        boolean isAdmin = login.isAdmin();
-//        List<String> lista = super.getGridPropertyNamesList(context);
-//
-//        if (isDeveloper) {
-//            alertPlacehorder.add(new Label("Lista visibile solo perché sei collegato come developer. Gli admin vedono SOLO la loro Croce. Gli utenti normali non vedono nulla."));
-//            alertPlacehorder.add(new Label("Si possono importare le Croci dal vecchio programma"));
-//            alertPlacehorder.add(creaInfoImport(task, USA_DAEMON_CROCI, LAST_IMPORT_CROCI));
-//        } else {
-//            if (isAdmin) {
-//                alertPlacehorder.add(new Label("Visibile la Croce di appartenenza solo perché sei collegato come admin. Gli utenti normali non la vedono."));
-//                alertPlacehorder.add(new Label("Puoi modificare le descrizioni ed i nomi delle persone. Non il code."));
-//            }// end of if cycle
-//        }// end of if/else cycle
-//
-//        return lista;
-//    }// end of method
 
 
     /**

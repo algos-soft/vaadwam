@@ -66,7 +66,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_RIG;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderRiga")
 @EqualsAndHashCode(callSuper = false)
-@AIEntity(company = EACompanyRequired.nonUsata)
+@AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"giornoIniziale", "servizio", "turni"})
 @AIForm(fields = {"giornoIniziale", "servizio", "turni"})
 @AIScript(sovrascrivibile = false)
