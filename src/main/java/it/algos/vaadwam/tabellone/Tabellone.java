@@ -284,7 +284,6 @@ public class Tabellone extends AGridViewList {
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
         grid.addThemeNames("row-stripes");
-        grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // costruisce le colonne
@@ -292,11 +291,6 @@ public class Tabellone extends AGridViewList {
 
         // costruisce le righe
         this.updateGrid();
-
-        //--legenda dei colori
-        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
-            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
-        }// end of if cycle
 
         if (pref.isBool(USA_DEBUG)) {
             grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
@@ -322,23 +316,6 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-//    /**
-//     * Crea un Popup di selezione della company <br>
-//     * Creato solo se developer=true e usaCompany=true <br>
-//     */
-//    protected void creaCompanyFiltro() {
-//        super.creaCompanyFiltro();
-//
-//        filtroCompany.setItems(croceService.findAll());
-//        filtroCompany.addValueChangeListener(event -> {
-//            Croce croce = (Croce) event.getValue();
-//            wamLogin.setCroce(croce);
-//            wamLogin.setCompany(croce);
-//            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-//        });
-//    }// end of method
-
-
     /**
      * Sincronizza la company in uso. <br>
      * Chiamato dal listener di 'filtroCompany' <br>
@@ -358,10 +335,6 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-//    protected void updateItems() {
-//    }// end of method
-
-
     /**
      * Aggiorna gli items della Grid, utilizzando i filtri. <br>
      * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
@@ -377,18 +350,6 @@ public class Tabellone extends AGridViewList {
             grid.setItems(items);
         }
     }// end of method
-
-
-//    /**
-//     * Crea e aggiunge le righe
-//     */
-//    public void setItems(Grid grid) {
-//        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
-//
-//        if (items != null) {
-//            grid.setItems(items);
-//        }
-//    }// end of method
 
 
     /**
@@ -563,22 +524,22 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-//    /**
-//     * Costruisce un (eventuale) layout con bottoni aggiuntivi
-//     * Facoltativo (assente di default)
-//     * Può essere sovrascritto, per aggiungere informazioni
-//     * Invocare PRIMA il metodo della superclasse
-//     */
-//    @Override
-//    protected void creaGridBottomLayout() {
-//        super.creaGridBottomLayout();
-//
-//        //--legenda dei colori
-//        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
-//            bottomPlacehorder.add(appContext.getBean(LegendaPolymer.class));
-//        }// end of if cycle
-//
-//    }// end of method
+    /**
+     * Costruisce un (eventuale) layout con bottoni aggiuntivi
+     * Facoltativo (assente di default)
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     */
+    @Override
+    protected void creaGridBottomLayout() {
+        super.creaGridBottomLayout();
+
+        //--legenda dei colori
+        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
+            gridPlaceholder.add(appContext.getBean(LegendaPolymer.class));
+        }// end of if cycle
+
+    }// end of method
 
 
     /**

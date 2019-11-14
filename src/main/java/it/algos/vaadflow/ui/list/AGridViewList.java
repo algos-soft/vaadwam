@@ -126,6 +126,8 @@ public abstract class AGridViewList extends ALayoutViewList {
             }// end of inner method
         });//end of lambda expressions and anonymous inner class
 
+        creaGridBottomLayout();
+
         return grid;
     }// end of method
 
@@ -198,10 +200,6 @@ public abstract class AGridViewList extends ALayoutViewList {
     protected void creaGridBottomLayout() {
         bottomPlacehorder = new HorizontalLayout();
         bottomPlacehorder.addClassName("view-toolbar");
-
-        if (usaBottomLayout) {
-            this.add(bottomPlacehorder);
-        }// end of if cycle
     }// end of method
 
 

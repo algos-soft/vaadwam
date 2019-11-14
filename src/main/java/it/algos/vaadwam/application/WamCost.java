@@ -24,7 +24,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @AIScript(sovrascrivibile = false)
 public class WamCost {
-	public final static String TAG_STA = "statistica";
+
+    public final static String TAG_STA = "statistica";
 
     public final static String TAG_RIG = "riga";
 
@@ -129,6 +130,8 @@ public class WamCost {
     public final static String MOSTRA_ORARIO_SERVIZIO = "mostraOrarioServizio";
 
     public final static String MOSTRA_LEGENDA_TABELLONE = "mostraLegendaTabellone";
+
+    public final static String CREAZIONE_NUOVO_TURNO_DA_UTENTE = "creazioneNuovoTurnoDaUtente";
 
     //--mappa @Route
     public final static String KEY_MAP_GIORNO = "giorno";

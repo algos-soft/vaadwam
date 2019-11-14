@@ -13,6 +13,7 @@ import com.vaadin.flow.shared.ui.LoadMode;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.footer.AFooter;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.service.AMongoService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.IAView;
@@ -236,6 +237,11 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         if (gridPlaceholder.getComponentCount() > 0) {
             this.add(gridPlaceholder);
         }// end of if cycle
+        //--aggiunge al layout una (eventuale) legenda-componente di bottoni in basso sotto la grid
+        this.creaGridBottomLayout();
+        if (usaBottomLayout && bottomPlacehorder.getComponentCount() > 0) {
+            this.add(bottomPlacehorder);
+        }// end of if cycle
 
         //--aggiunge il footer standard
         this.add(appContext.getBean(AFooter.class));
@@ -342,6 +348,16 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected Grid creaGrid() {
         return null;
+    }// end of method
+
+
+    /**
+     * Costruisce un (eventuale) layout con bottoni aggiuntivi <br>
+     * Facoltativo (assente di default) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaGridBottomLayout() {
     }// end of method
 
 
@@ -467,6 +483,13 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * Può essere sovrascritto, per modificare la gestione delle company <br>
      */
     protected void actionSincroCompany() {
+        Company companySelezionata = null;
+
+        if (filtroCompany != null) {
+            companySelezionata = (Company) filtroCompany.getValue();
+        }// end of if cycle
+        login.setCompany(companySelezionata);
+
         updateFiltri();
         updateGrid();
     }// end of method
