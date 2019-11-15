@@ -58,6 +58,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     protected void postConstruct() {
         login.setAction("login");
         login.setOpened(true);
+        login.setForgotPasswordButtonVisible(false);
         getElement().appendChild(login.getElement());
 
         creaHeader();
@@ -83,23 +84,27 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         login.setDescription(FlowVar.projectBanner);
     }// end of method
 
+
     /**
      * Crea un'istanza per la visualizzazione di messaggi: di avviso e/o di errore <br>
      * L'oggetto LoginI18n viene creato con un messaggio di errore 'standard' e senza messaggi di avviso <br>
      */
     private void creaErrorAndMessage() {
         i18n = LoginI18n.createDefault();
-        login.setI18n(i18n);
         addMessage();
         fixError();
+        login.setI18n(i18n);
     }// end of method
+
 
     /**
      * Aggiunge un messaggio di avviso <br>
      */
     private void addMessage() {
-        i18n.setAdditionalInformation("To close the login form submit non-empty username and password");
+//        i18n.setAdditionalInformation("To close the login form submit non-empty username and password");
+        i18n.setAdditionalInformation("Per chiudere la scheda di login inserisci un valido username e una password");
     }// end of method
+
 
     /**
      * Personalizza il messaggio di errore che sovrascrive quello 'standard' <br>
