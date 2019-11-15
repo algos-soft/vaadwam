@@ -268,9 +268,9 @@ public class MainLayout14 extends AppLayout {
         Tabs tabs = new Tabs();
         Map<String, ArrayList<Class<? extends IAView>>> mappa = menuService.creaMappa();
 
-        if (usaSecurity) {
+        if (usaSecurity && context != null) {
             //--crea menu dello sviluppatore (se loggato)
-            if (context.isDev()) {
+            if (context != null && context.isDev()) {
                 tabs = menuService.addTabsDeveloper(tabs, mappa);
             }// end of if cycle
 

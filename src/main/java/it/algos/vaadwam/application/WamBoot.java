@@ -12,7 +12,6 @@ import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.migration.MigrationService;
-import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
@@ -60,11 +59,13 @@ import java.util.List;
 @AIScript(sovrascrivibile = false)
 public class WamBoot extends ABoot {
 
-    private final static String PROJECT_NAME = "webambulanze";
+    private final static String PROJECT_NAME = "wam";
 
-    private final static double PROJECT_VERSION = 1.9;
+    private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 11, 4);
+    private final static double PROJECT_VERSION = 2.0;
+
+    private final static LocalDate VERSION_DATE = LocalDate.of(2019, 11, 15);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -284,6 +285,12 @@ public class WamBoot extends ABoot {
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          */
         FlowVar.projectName = PROJECT_NAME;
+
+        /**
+         * Descrizione completa dell'applicazione <br>
+         * Usato (eventualmente) nella barra di menu in testa pagina <br>
+         */
+        FlowVar.projectBanner = PROJECT_BANNER;
 
         /**
          * Versione dell'applicazione <br>

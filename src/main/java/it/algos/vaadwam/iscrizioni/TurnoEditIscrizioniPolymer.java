@@ -8,15 +8,16 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
-import it.algos.vaadwam.wam.WamLogin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -224,6 +225,11 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
      * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
      */
     protected void conferma() {
+        if (segnatoNelTurno()) {
+            Notification.show("Non ci si può segnare due volte nello stesso turno", 3000, Notification.Position.MIDDLE);
+            return;
+        }// end of if cycle
+
         turnoService.save(turno);
         getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
@@ -240,6 +246,25 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
             turno.iscrizioni.get(pos).note = edit.getNote();
             turno.iscrizioni.get(pos).fine = edit.getFine();
         }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Controlla che il milite non sia già segnato nel turno <br>
+     */
+    protected boolean segnatoNelTurno() {
+        boolean status = false;
+        List<Milite> lista = new ArrayList<>();
+
+        for (Iscrizione iscr : turno.iscrizioni) {
+            if (lista.contains(iscr.milite)) {
+                status = true;
+            } else {
+                lista.add(iscr.milite);
+            }// end of if/else cycle
+        }// end of for cycle
+
+        return status;
     }// end of method
 
 }// end of class

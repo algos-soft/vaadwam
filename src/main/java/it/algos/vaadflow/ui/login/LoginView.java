@@ -1,46 +1,114 @@
 package it.algos.vaadflow.ui.login;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.page.Viewport;
-import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.login.LoginOverlay;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.InitialPageSettings;
-import com.vaadin.flow.server.PageConfigurator;
-import com.vaadin.flow.templatemodel.TemplateModel;
-import it.algos.vaadflow.application.FlowCost;
+import it.algos.vaadflow.application.FlowVar;
 
-@Tag("login-view")
-@HtmlImport("src/views/login/login-view.html")
-//// Override elements with Lumo styled ones
-@HtmlImport("bower_components/vaadin-button/theme/lumo/vaadin-button.html")
-@HtmlImport("bower_components/vaadin-text-field/theme/lumo/vaadin-text-field.html")
-@HtmlImport("bower_components/vaadin-text-field/theme/lumo/vaadin-password-field.html")
-@Route(value = "login")
-@PageTitle("Backery")
-@Viewport(FlowCost.VIEWPORT)
-public class LoginView extends PolymerTemplate<LoginView.Model> implements PageConfigurator, AfterNavigationObserver {
+import javax.annotation.PostConstruct;
+import java.util.Collections;
 
-	@Override
-	public void configurePage(InitialPageSettings settings) {
-		// Force login page to use Shady DOM to avoid problems with browsers and
-		// password managers not supporting shadow DOM
-		settings.addInlineWithContents(InitialPageSettings.Position.PREPEND,
-				"window.customElements=window.customElements||{};" +
-						"window.customElements.forcePolyfill=true;" +
-						"window.ShadyDOM={force:true};", InitialPageSettings.WrapMode.JAVASCRIPT);
-	}
+/**
+ * Project vaadwam
+ * Created by Algos
+ * User: gac
+ * Date: ven, 15-nov-2019
+ * Time: 15:05
+ */
+@Tag("sa-login-view")
+@Route(value = LoginView.ROUTE)
+@PageTitle("Login")
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-	@Override
-	public void afterNavigation(AfterNavigationEvent event) {
-		boolean error = event.getLocation().getQueryParameters().getParameters().containsKey("error");
-		getModel().setError(error);
-	}
+    //--property che DEVE essere unica per tutto il programma
+    public static final String ROUTE = "login";
 
-	public interface Model extends TemplateModel {
-		void setError(boolean error);
-	}
-}
+    //--componente di Vaadin flow invocato dall'Annotation @Tag("sa-login-view")
+    private LoginOverlay login = new LoginOverlay();
+
+    //--componente per la gestione degli avvisi informativi e per gli errori
+    private LoginI18n i18n;
+
+
+    /**
+     * Costruttore base senza parametri <br>
+     * Non usato <br>
+     * Performing the initialization in a constructor is not suggested <br>
+     * as the state of the UI is not properly set up when the constructor is invoked <br>
+     */
+    public LoginView() {
+    }// end of constructor
+
+
+    /**
+     * Metodo invocato subito DOPO il costruttore
+     * <p>
+     * Performing the initialization in a constructor is not suggested
+     * as the state of the UI is not properly set up when the constructor is invoked.
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti,
+     * ma l'ordine con cui vengono chiamati NON è garantito
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        login.setAction("login");
+        login.setOpened(true);
+        getElement().appendChild(login.getElement());
+
+        creaHeader();
+        creaErrorAndMessage();
+    }// end of method
+
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        // inform the user about an authentication error
+        // (yes, the API for resolving query parameters is annoying...)
+        if (!event.getLocation().getQueryParameters().getParameters().getOrDefault("error", Collections.emptyList()).isEmpty()) {
+            login.setError(true);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Crea il titolo esplicativo dell'applicazione <br>
+     */
+    private void creaHeader() {
+        login.setTitle(FlowVar.projectName.toUpperCase());
+        login.setDescription(FlowVar.projectBanner);
+    }// end of method
+
+    /**
+     * Crea un'istanza per la visualizzazione di messaggi: di avviso e/o di errore <br>
+     * L'oggetto LoginI18n viene creato con un messaggio di errore 'standard' e senza messaggi di avviso <br>
+     */
+    private void creaErrorAndMessage() {
+        i18n = LoginI18n.createDefault();
+        login.setI18n(i18n);
+        addMessage();
+        fixError();
+    }// end of method
+
+    /**
+     * Aggiunge un messaggio di avviso <br>
+     */
+    private void addMessage() {
+        i18n.setAdditionalInformation("To close the login form submit non-empty username and password");
+    }// end of method
+
+    /**
+     * Personalizza il messaggio di errore che sovrascrive quello 'standard' <br>
+     */
+    private void fixError() {
+        LoginI18n.ErrorMessage errore = new LoginI18n.ErrorMessage();
+        errore.setTitle("Riprova");
+        errore.setMessage("Username o password non corretti");
+        i18n.setErrorMessage(errore);
+    }// end of method
+
+}// end of class
