@@ -6,7 +6,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.IUtenteService;
@@ -131,7 +130,6 @@ public class AVaadinService {
                         if (roleType == null) {
                             roleType = service.isAdmin(utente) ? EARoleType.admin : EARoleType.user;
                         }// end of if cycle
-                        Company company=utente.getCompany();
                         login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
                         context = appContext.getBean(AContext.class, login);
                         context.setUsaLogin(true);

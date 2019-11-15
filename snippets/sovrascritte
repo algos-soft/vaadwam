@@ -1,0 +1,43 @@
+**Alcune classi generali vanno sovrascritte**
+**Uso pertanto delle interfacce**
+
+
+== Login ==
+interfaccia: IALogin
+classe: ALogin
+variabile generale: FlowVar.loginClazz = ALogin.class;
+sottoclasse: WamLogin
+variabile generale: FlowVar.loginClazz = WamLogin.class;
+
+== Company ==
+interfaccia: IACompany
+classe: Company
+variabile generale: FlowVar.companyClazzName = "company";
+variabile generale: FlowVar.companyServiceClazz = CompanyService.class;
+sottoclasse: Croce
+variabile generale: FlowVar.companyClazzName = "croce";
+variabile generale: FlowVar.companyServiceClazz = CroceService.class;
+
+== Utente ==
+interfaccia: IAUtente
+classe: Utente
+variabile generale: FlowVar.loginServiceClazz = UtenteService.class;
+sottoclasse: Milite
+variabile generale: FlowVar.loginServiceClazz = MiliteService.class;
+
+== Preferenza (enumeration) ==
+interfaccia: IAPreferenza
+classe: EAPreferenza
+sottoclasse: EAPreferenzaWam
+
+== Boot ==
+classe: ABoot
+sottoclasse: WamBoot
+
+== Versione ==
+classe: AVers
+sottoclasse: WamVers
+
+== Layout ==
+classe: MainLayout14
+sottoclasse: WamLayout

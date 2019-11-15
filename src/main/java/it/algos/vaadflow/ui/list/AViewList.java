@@ -8,6 +8,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.ui.LoadMode;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -350,7 +351,6 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         return null;
     }// end of method
 
-
     /**
      * Costruisce un (eventuale) layout con bottoni aggiuntivi <br>
      * Facoltativo (assente di default) <br>
@@ -359,7 +359,6 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected void creaGridBottomLayout() {
     }// end of method
-
 
     /**
      * Navigazione verso un altra pagina

@@ -1,3 +1,4 @@
+mvn compile
 
 The list property updates are propagated only from the server side to the client side.
 The two-way data binding doesn’t work with the list property.
@@ -58,4 +59,4 @@ _computeSomething: function(prop) {
     <template is="dom-if" if="{{user.isAdmin}}">
       <!-- Only admins will see this. -->
       <my-admin-panel user="{{user}}"></my-admin-panel>
-    </template>
+    </tempxlate>
