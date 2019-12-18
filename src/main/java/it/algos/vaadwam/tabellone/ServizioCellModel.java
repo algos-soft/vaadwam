@@ -20,7 +20,7 @@ public interface ServizioCellModel extends TemplateModel {
     @Include({"code", "descrizione"})
     void setServizio(Servizio servizio);
 
-    @Include({"code", "icona"})
+    @Include({"code", "nomeIcona"})
     void setFunzioni(List<Funzione> funzioni);
 
     void setOrario(String orario);

@@ -116,6 +116,12 @@ public class Funzione extends WamEntity {
 
 
     /**
+     * icona (facoltativa)
+     */
+    public String nomeIcona;
+
+
+    /**
      * sigla di codifica visibile (obbligatoria, non unica)
      */
     @NotNull
