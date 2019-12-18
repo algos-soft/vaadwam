@@ -13,17 +13,17 @@
                 border-top-width: 0.1em;
                 border-top-left-radius: 0.5em;
                 border-color: rgb(101, 101, 104);
-                background-color: yellow;
+                /*background-color: yellow;*/
             }
 
             #left {
-                width: 60%;
+                width: 70%;
                 display: flex;
                 flex-direction: column;
             }
 
             #right {
-                width: 40%;
+                width: 30%;
                 /*font-size: small;*/
                 font-size: 80%;
                 display: flex;
@@ -48,12 +48,11 @@
             }
 
             #ruolo {
+                display: flex;
                 height: 8mm;
-                white-space: normal;
                 border-bottom: 0.05em solid;
-                  align-items: center;
-  justify-content: center;
-
+                justify-content: center;
+                align-items: center;
             }
 
             #button {
@@ -61,16 +60,15 @@
                 border-bottom: 0.05em solid;
             }
 
-
         </style>
 
         <div id="container">
 
             <div id="left">
                 <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
-                <div id="servizioorario" style="background-color:{{colore}};">[[orario]]</div>
-                <div id="servizioservizio">[[servizio.descrizione]]</div>
-                <template is="dom-if" if=[[lastInType]]>
+                <div id="servizioorario" style="background-color:{{colore}};">{{orario}}</div>
+                <div id="servizioservizio">{{servizio.code}}</div>
+                <template is="dom-if" if={{lastInType}}>
                     <div style="flex-grow:1"></div>
                     <div style="display: flex; justify-content: center;">
                         <button>Aggiungi...</button>
@@ -82,10 +80,8 @@
 
             <div id="right">
                 <template is="dom-repeat" items="[[funzioni]]">
-                    <!--                    <div id="ruolo">{{item.code}}</div>-->
-                    <div id="ruolo" style="background-color: red;">
-<!--                        <iron-icon icon={{item.nomeIcona}} style="height:4.5mm"></iron-icon>-->
-                        <iron-icon icon="vaadin:vaadin-h" style="height:4.5mm, background-color: black; border-style: solid;"></iron-icon>
+                    <div id="ruolo">
+                        <iron-icon icon="{{item.nomeIcona}}" style="height:4.5mm"></iron-icon>
                     </div>
                 </template>
             </div>
