@@ -387,7 +387,7 @@ public class Tabellone extends AGridViewList {
 
         column.setHeader(periodoHeader());
         column.setFlexGrow(0);
-        column.setWidth("12em");
+        column.setWidth("9em");
         column.setSortable(false);
         column.setResizable(false);
         column.setFrozen(true);
