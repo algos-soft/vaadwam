@@ -118,7 +118,7 @@ public class Funzione extends WamEntity {
     /**
      * nome dell'icona
      */
-    public String nomeIcona="vaadin:vaadin-h";
+    public String nomeIcona;
 
 
     /**

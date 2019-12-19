@@ -114,6 +114,14 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
 
 
     public void setFunzioni(List<Funzione> funzioni) {
+        String tag = "vaadin:";
+
+        if (funzioni != null) {
+            for (Funzione funzione : funzioni) {
+                funzione.nomeIcona = funzione.icona != null ? tag + funzione.icona.name().toLowerCase() : "";
+            }// end of for cycle
+        }// end of if cycle
+
         getModel().setFunzioni(funzioni);
     }// end of method
 
