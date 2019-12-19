@@ -259,7 +259,7 @@ public class TabelloneService extends AService {
                 colore = EAWamColore.critico;
             } else {
                 if (isPiuRecente(turno, semicritico)) {
-                    colore = EAWamColore.semicritico;
+                    colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
                 }// end of if/else cycle
@@ -295,7 +295,7 @@ public class TabelloneService extends AService {
                 colore = EAWamColore.critico;
             } else {
                 if (isPiuRecente(turno, semicritico)) {
-                    colore = EAWamColore.semicritico;
+                    colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
                 }// end of if/else cycle

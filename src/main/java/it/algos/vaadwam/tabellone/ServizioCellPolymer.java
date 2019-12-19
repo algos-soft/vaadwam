@@ -115,13 +115,11 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
 
 
     public void setIcone(List<Funzione> funzioni) {
-        String tag = "vaadin:";
-
         if (funzioni != null) {
-            List<String> icone=new ArrayList<>();
+            List<String> icone = new ArrayList<>();
             for (Funzione funzione : funzioni) {
                 if (funzione.icona != null) {
-                    icone.add(tag + funzione.icona.name().toLowerCase());
+                    icone.add(funzione.icona.name().toLowerCase());
                 }// end of if cycle
             }// end of for cycle
             getModel().setIcone(icone);

@@ -18,7 +18,7 @@ public enum EAWamColore {
 
     storico(EAColor.lightgray, "storico", "", "Turno effettuato o non creabile", ""),
     critico(EAColor.lightsalmon, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
-    semicritico(EAColor.lightpink, "semicritico", "semicritica", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
+    urgente(EAColor.lightpink, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
     normale(EAColor.lightgreen, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),
     previsto(EAColor.lightskyblue, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),
     creabile(EAColor.lightcyan, "creabile", "", "Turno creabile", ""),
