@@ -9,17 +9,31 @@ package it.algos.vaadwam.tabellone;
  */
 public class RigaCella {
 
+    private static String AVVISO = "vaadin:alarm";
+
     private String colore;
 
     private String icona;
 
+    private String iconaAvviso;
+
     private String milite;
+
+    private boolean aggiungiAvviso;
 
 
     public RigaCella(String colore, String icona, String milite) {
+        this(colore, icona, milite, false);
+    }// end of constructor
+
+
+    public RigaCella(String colore, String icona, String milite, boolean aggiungiAvviso) {
         this.colore = colore;
         this.icona = icona;
         this.milite = milite;
+        if (aggiungiAvviso) {
+            this.iconaAvviso = AVVISO;
+        }// end of if cycle
     }// end of constructor
 
 
@@ -50,6 +64,16 @@ public class RigaCella {
 
     public void setMilite(String milite) {
         this.milite = milite;
+    }// end of method
+
+
+    public String getIconaAvviso() {
+        return iconaAvviso;
+    }// end of method
+
+
+    public void setIconaAvviso(String iconaAvviso) {
+        this.iconaAvviso = iconaAvviso;
     }// end of method
 
 }// end of class

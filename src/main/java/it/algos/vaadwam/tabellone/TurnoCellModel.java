@@ -2,7 +2,6 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
-import it.algos.vaadwam.modules.milite.Milite;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public interface TurnoCellModel extends TemplateModel {
 
-    @Include({"colore", "icona", "milite"})
+    @Include({"colore", "icona", "milite", "iconaAvviso"})
     public void setRighecella(List<RigaCella> righe);
 
 }// end of interface

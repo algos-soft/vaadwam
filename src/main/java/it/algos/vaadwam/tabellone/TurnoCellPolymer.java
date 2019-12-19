@@ -156,7 +156,11 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
                         }// end of if cycle
                         if (iscr.funzione.code.equals(funz.code)) {
                             if (iscr.milite != null) {
-                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+                                if (iscr.note != null && iscr.note.length() > 0) {
+                                    righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla(), true));
+                                } else {
+                                    righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+                                }// end of if/else cycle
                             } else {
                                 righeCella.add(new RigaCella(colore, icona, ""));
                             }// end of if/else cycle
