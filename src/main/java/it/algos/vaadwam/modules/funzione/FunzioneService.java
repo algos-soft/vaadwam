@@ -147,7 +147,6 @@ public class FunzioneService extends WamService {
                 .descrizione(text.isValid(descrizione) ? descrizione : null)
                 .icona(icona)
                 .dipendenti(dipendenti)
-                .nomeIcona("vaadin:vaadin-h")   // qui non funziona arriva null
                 .build();
 
         return (Funzione) super.addCroce(entity, croce);

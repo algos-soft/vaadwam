@@ -15,6 +15,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +97,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
         }// end of if cycle
 
         if (array.isValid(funzioni)) {
-            setFunzioni(funzioni);
+            setIcone(funzioni);
         }// end of if cycle
 
         this.setLastInType();
@@ -113,16 +114,18 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
     }// end of method
 
 
-    public void setFunzioni(List<Funzione> funzioni) {
+    public void setIcone(List<Funzione> funzioni) {
         String tag = "vaadin:";
 
         if (funzioni != null) {
+            List<String> icone=new ArrayList<>();
             for (Funzione funzione : funzioni) {
-                funzione.nomeIcona = funzione.icona != null ? tag + funzione.icona.name().toLowerCase() : "";
+                if (funzione.icona != null) {
+                    icone.add(tag + funzione.icona.name().toLowerCase());
+                }// end of if cycle
             }// end of for cycle
+            getModel().setIcone(icone);
         }// end of if cycle
-
-        getModel().setFunzioni(funzioni);
     }// end of method
 
 
