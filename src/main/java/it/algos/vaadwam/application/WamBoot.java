@@ -389,7 +389,7 @@ public class WamBoot extends ABoot {
 
 
         //--patch di accesso
-        utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRF(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
         utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");

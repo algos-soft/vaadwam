@@ -264,7 +264,7 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
             }// end of if/else cycle
         }// end of for cycle
 
-        return status;
+        return false;
     }// end of method
 
 }// end of class

@@ -304,7 +304,6 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
             });//end of lambda expressions
             militeButton.addClickListener(e -> {
                 segnaMilite();
-                syncCode();
             });//end of lambda expressions
         }// end of if/else cycle
     }// end of method
@@ -316,6 +315,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     private void cancellaMilite() {
         militeEntity = null;
         militeButton.setText("");
+        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
@@ -325,6 +325,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     private void segnaMilite() {
         militeEntity = militeLoggato;
         militeButton.setText(militeEntity.getSigla());
+        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
