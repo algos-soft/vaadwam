@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.mese;
 
+import it.algos.vaadflow.modules.secolo.EASecolo;
 import it.algos.vaadflow.service.ATextService;
 
 import java.time.Year;
@@ -97,7 +98,7 @@ public enum EAMese {
      *
      * @return Mese
      */
-    public EAMese getMese(String nomeBreveLungo) {
+    public static EAMese getMese(String nomeBreveLungo) {
         EAMese mese = null;
         String nomeBreveLungoMinuscolo;
 
@@ -121,7 +122,7 @@ public enum EAMese {
      *
      * @return Numero del mese
      */
-    public int getOrd(String nomeBreveLungo) {
+    public static int getOrder(String nomeBreveLungo) {
         int numMeseDellAnno = 0;
         EAMese mese = getMese(nomeBreveLungo);
 

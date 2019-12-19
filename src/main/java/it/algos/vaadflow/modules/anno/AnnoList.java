@@ -9,22 +9,19 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.secolo.Secolo;
 import it.algos.vaadflow.modules.secolo.SecoloService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadflow.wrapper.AFiltro;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
 
@@ -112,10 +109,10 @@ public class AnnoList extends AGridViewList {
 
         super.limit = 25;
         super.usaPopupFiltro = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
         super.isEntityDeveloper = true;
-        super.usaBottoneNew = false;
+        super.usaButtonNew = false;
         super.usaBottoneEdit = false;
     }// end of method
 
@@ -166,7 +163,7 @@ public class AnnoList extends AGridViewList {
 
         if (filtroComboBox != null && filtroComboBox.getValue() != null) {
             secolo = (Secolo) filtroComboBox.getValue();
-            filtri.add(Criteria.where("secolo").is(secolo));
+            filtri.add(new AFiltro(Criteria.where("secolo").is(secolo)));
         }// end of if cycle
     }// end of method
 

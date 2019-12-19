@@ -16,6 +16,7 @@ import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -226,7 +227,7 @@ public class MiliteList extends WamViewList {
         } else {
             milite = wamLogin.getMilite();
             if (milite != null) {
-                filtri.add(Criteria.where("username").is(milite.username));
+                filtri.add(new AFiltro(Criteria.where("username").is(milite.username)));
             }// end of if cycle
         }// end of if/else cycle
     }// end of method
@@ -241,26 +242,26 @@ public class MiliteList extends WamViewList {
             if (filtro != null) {
                 switch (filtro) {
                     case attivi:
-                        filtri.add(Criteria.where("enabled").is(true));
+                        filtri.add(new AFiltro(Criteria.where("enabled").is(true)));
                         break;
                     case admin:
-                        filtri.add(Criteria.where("admin").is(true));
+                        filtri.add(new AFiltro(Criteria.where("admin").is(true)));
                         break;
                     case dipendenti:
-                        filtri.add(Criteria.where("dipendente").is(true));
+                        filtri.add(new AFiltro(Criteria.where("dipendente").is(true)));
                         break;
                     case infermieri:
-                        filtri.add(Criteria.where("infermiere").is(true));
+                        filtri.add(new AFiltro(Criteria.where("infermiere").is(true)));
                         break;
                     case storico:
                         break;
                     case senzaFunzioni:
-                        filtri.add(Criteria.where("enabled").is(true));
-                        filtri.add(Criteria.where("funzioni").is(null));
+                        filtri.add(new AFiltro(Criteria.where("enabled").is(true)));
+                        filtri.add(new AFiltro(Criteria.where("funzioni").is(null)));
                         break;
                     case conNote:
-                        filtri.add(Criteria.where("enabled").is(true));
-                        filtri.add(Criteria.where("noteWam").ne(null));
+                        filtri.add(new AFiltro(Criteria.where("enabled").is(true)));
+                        filtri.add(new AFiltro(Criteria.where("noteWam").ne(null)));
                         break;
                     default:
                         log.warn("Switch - caso non definito");

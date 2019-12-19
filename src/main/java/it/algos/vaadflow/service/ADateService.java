@@ -3,7 +3,6 @@ package it.algos.vaadflow.service;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.mese.EAMese;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -40,19 +39,19 @@ import static it.algos.vaadflow.application.FlowCost.*;
 @Slf4j
 public class ADateService extends AbstractService {
 
+    public static final String INFERIORE_SECONDO = "meno di un secondo";
+
+    public static final String INFERIORE_MINUTO = "meno di un minuto";
+
     /**
      * versione della classe per la serializzazione
      */
     private final static long serialVersionUID = 1L;
 
-
     /**
      * Private final property
      */
     private static final ADateService INSTANCE = new ADateService();
-
-
-    private static final String INFERIORE_SECONDO = "meno di un sec.";
 
     private static final String SECONDI = " sec.";
 
@@ -147,6 +146,7 @@ public class ADateService extends AbstractService {
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }// end of method
 
+
     /**
      * Convert java.util.Date to java.time.LocalDateTime
      * Date HA ore, minuti e secondi
@@ -161,6 +161,7 @@ public class ADateService extends AbstractService {
         Instant instant = Instant.ofEpochMilli(data.getTime());
         return LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
     }// end of method
+
 
     /**
      * Convert java.time.LocalDateTime to java.util.Date
@@ -208,7 +209,7 @@ public class ADateService extends AbstractService {
      * @return data con ore e minuti alla mezzanotte
      */
     public LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime) {
-        return localDateTime.toLocalDate();
+        return localDateTime != null ? localDateTime.toLocalDate() : null;
     }// end of method
 
 
@@ -366,6 +367,22 @@ public class ADateService extends AbstractService {
 
 
     /**
+     * Restituisce la data corrente nella forma del pattern ricevuto
+     * <p>
+     * Returns a string representation of the date <br>
+     * Not using leading zeroes in day <br>
+     * Two numbers for year <b>
+     *
+     * @param patternEnum enumeration di pattern per la formattazione
+     *
+     * @return la data sotto forma di stringa
+     */
+    public String get(EATime patternEnum) {
+        return get(LocalDate.now(), patternEnum.getPattern());
+    }// end of method
+
+
+    /**
      * Restituisce la data nella forma del pattern ricevuto
      * <p>
      * Returns a string representation of the date <br>
@@ -404,6 +421,7 @@ public class ADateService extends AbstractService {
     public int getMeseCorrente() {
         return LocalDate.now().getMonthValue();
     }// end of method
+
 
     /**
      * Restituisce il giorno della settimana in forma estesa
@@ -480,7 +498,7 @@ public class ADateService extends AbstractService {
      * @return la data sotto forma di stringa
      */
     public String getDate(LocalDateTime localDateTime) {
-        return getDate(localDateTimeToLocalDate(localDateTime));
+        return localDateTime != null ? getDate(localDateTimeToLocalDate(localDateTime)) : VUOTA;
     }// end of method
 
 
@@ -539,8 +557,26 @@ public class ADateService extends AbstractService {
      *
      * @return la data sotto forma di stringa
      */
+    public String getDateTime(LocalDateTime localDateTime) {
+        return localDateTime != null ? getDate(localDateTime) + SPAZIO + getOrario(localDateTime) : VUOTA;
+    }// end of method
+
+
+    /**
+     * Restituisce la data completa di tempo
+     * <p>
+     * 5-ott-14 alle 7:04
+     * <p>
+     * Returns a string representation of the date
+     * Not using leading zeroes in day <br>
+     * Two numbers for year <b>
+     *
+     * @param localDateTime da rappresentare
+     *
+     * @return la data sotto forma di stringa
+     */
     public String getTime(LocalDateTime localDateTime) {
-        return getDate(localDateTime) + SPAZIO + getOrario(localDateTime);
+        return localDateTime != null ? getDate(localDateTime) + " alle " + getOrario(localDateTime) : VUOTA;
     }// end of method
 
 
@@ -710,6 +746,7 @@ public class ADateService extends AbstractService {
     public String getWeekShort(LocalDate localDate) {
         return get(localDate, EATime.weekShort);
     }// end of method
+
 
     /**
      * Ritorna il giorno (numero) del mese ed il mese (testo)  di una data fornita.
@@ -1059,6 +1096,16 @@ public class ADateService extends AbstractService {
     }// end of  method
 
 
+    public String toTextMinuti(long durata) {
+        return durata < 1 ? INFERIORE_MINUTO : toTextSecondi(durata * 60);
+    }// end of  method
+
+
+    public String toTextSecondi(long durata) {
+        return durata < 1 ? INFERIORE_SECONDO : toText(durata * 1000);
+    }// end of  method
+
+
     /**
      * Restituisce come stringa (intelligente) una durata espressa in long
      * - Meno di 1 secondo
@@ -1066,6 +1113,8 @@ public class ADateService extends AbstractService {
      * - Meno di 1 ora
      * - Meno di 1 giorno
      * - Meno di 1 anno
+     *
+     * @param durata in millisecondi
      *
      * @return durata (arrotondata e semplificata) in forma leggibile
      */

@@ -50,8 +50,13 @@ public abstract class FlowCost {
     public static final String VUOTA = "";
 
     public static final String SPAZIO = " ";
+    public static final String SEP = " - ";
 
     public static final String VIRGOLA = ",";
+
+    public static final String PUNTO_VIRGOLA = ";";
+
+    public static final String TRE_PUNTI = "...";
 
     public static final String A_CAPO = "\n";
 
@@ -146,6 +151,8 @@ public abstract class FlowCost {
     public static final String FLAG_TEXT_SHOW = "textShow";
 
     public static final String FLAG_TEXT_EDIT = "textEdit";
+
+    public static final String FLAG_LOG_ACTION = "logAction";
 
     public static final String BOT_ACCETTA = "Accetta";
 

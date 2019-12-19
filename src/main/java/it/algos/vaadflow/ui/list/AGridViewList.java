@@ -14,9 +14,9 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.wrapper.AFiltro;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -291,11 +291,11 @@ public abstract class AGridViewList extends ALayoutViewList {
      */
     @Override
     protected void creaFiltri() {
-        filtri = new ArrayList<CriteriaDefinition>();
+        filtri = new ArrayList<AFiltro>();
 
         if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
             if (filtroCompany.getValue() != null) {
-                filtri.add(Criteria.where(FlowVar.companyClazzName).is(filtroCompany.getValue()));
+                filtri.add(new AFiltro(Criteria.where(FlowVar.companyClazzName).is(filtroCompany.getValue())));
             }// end of if cycle
         }// end of if cycle
     }// end of method
@@ -323,16 +323,16 @@ public abstract class AGridViewList extends ALayoutViewList {
             switch (type) {
                 case text:
                     if (pref.isBool(USA_SEARCH_CASE_SENSITIVE)) {
-                        filtri.add(Criteria.where(searchProperty).regex("^" + searchField.getValue()));
+                        filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + searchField.getValue())));
                     } else {
-                        filtri.add(Criteria.where(searchProperty).regex("^" + searchField.getValue(), "i"));
+                        filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + searchField.getValue(), "i")));
                     }// end of if/else cycle
 
                     break;
                 case integer:
                     try { // prova ad eseguire il codice
                         intValue = Integer.decode(searchField.getValue());
-                        filtri.add(Criteria.where(searchProperty).is(intValue));
+                        filtri.add(new AFiltro(Criteria.where(searchProperty).is(intValue)));
                     } catch (Exception unErrore) { // intercetta l'errore
                         log.error(unErrore.toString());
                     }// fine del blocco try-catch
@@ -342,9 +342,19 @@ public abstract class AGridViewList extends ALayoutViewList {
                     log.warn("Switch - caso non definito");
                     break;
             } // end of switch statement
-
         }// end of if cycle
 
+        updateFiltriSpecifici();
+    }// end of method
+
+
+    /**
+     * Aggiorna i filtri specifici della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Può essere sovrascritto, per costruire i filtri specifici dei combobox, popup, ecc. <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void updateFiltriSpecifici() {
     }// end of method
 
 

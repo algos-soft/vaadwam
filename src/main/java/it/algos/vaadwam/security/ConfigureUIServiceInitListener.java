@@ -63,6 +63,12 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
      * @param event before navigation event with event details
      */
     private void beforeEnter(BeforeEnterEvent event) {
+String alfa=event.getLocation().getFirstSegment();
+
+        if (alfa!=null&&alfa.equals("gaps")) {
+            event.rerouteTo(Tabellone.class);
+        }// end of if cycle
+
         if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
             if(SecurityUtils.isUserLoggedIn()) {
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {

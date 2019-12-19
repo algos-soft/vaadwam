@@ -77,8 +77,8 @@ public class PersonList extends AGridViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
         super.isEntityDeveloper = true;
         super.isEntityEmbedded = true;
         super.isEntityUsaDatiDemo = true;

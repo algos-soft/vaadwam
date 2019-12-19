@@ -1,0 +1,11 @@
+    /**
+     * Può essere sovrascritto. Deve invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void nomeMetodo() {
+    }// end of method
+
+    /**
+     * Può essere sovrascritto. Ma DOPO deve invocare il metodo della superclasse <br>
+     */
+    protected void nomeMetodo() {
+    }// end of method

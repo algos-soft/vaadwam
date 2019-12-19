@@ -1,33 +1,17 @@
 package it.algos.vaadflow.enumeration;
 
-import it.algos.vaadflow.service.ATextService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import static it.algos.vaadflow.application.FlowCost.*;
 
 /**
  * Project vaadflow
  * Created by Algos
  * User: gac
- * Date: dom, 23-dic-2018
- * Time: 09:23
+ * Date: sab, 16-nov-2019
+ * Time: 17:37
  */
-public enum EAMenu implements IAEnum {
+public enum EAShowText implements IAEnum {
 
-    routers, tabs, buttons, popup, flowing, vaadin;
-
-
-    public static EAMenu getMenu(String nameMenu) {
-        EAMenu menu = null;
-
-        for (EAMenu menuTmp : EAMenu.values()) {
-            if (menuTmp.toString().equals(nameMenu)) {
-                menu = menuTmp;
-            }// fine del blocco if
-        }// end of for cycle
-
-        return menu;
-    }// end of static method
+    show, mostra, vedi;
 
 
     /**
@@ -41,8 +25,8 @@ public enum EAMenu implements IAEnum {
     public String getPref() {
         String testo = VUOTA;
 
-        for (EAMenu eaMenu : EAMenu.values()) {
-            testo += eaMenu.name();
+        for (EAShowText eaShowText : EAShowText.values()) {
+            testo += eaShowText.name();
             testo += VIRGOLA;
         }// end of for cycle
 

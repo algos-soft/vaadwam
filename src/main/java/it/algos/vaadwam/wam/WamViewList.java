@@ -98,16 +98,16 @@ public abstract class WamViewList extends AGridViewList {
         wamLogin = (WamLogin) login;
 
         super.usaBottoneEdit = true;
-        super.usaBottoneReset = false;
+        super.usaButtonReset = false;
 
         if (login.isDeveloper()) {
-            super.usaBottoneDeleteAll = true;
+            super.usaButtonDelete = true;
         }// end of if cycle
 
         if (login.isDeveloper() || login.isAdmin()) {
-            super.usaBottoneNew = true;
+            super.usaButtonNew = true;
         } else {
-            super.usaBottoneNew = false;
+            super.usaButtonNew = false;
         }// end of if/else cycle
 
         if (wamLogin.isAdminOrDev()) {

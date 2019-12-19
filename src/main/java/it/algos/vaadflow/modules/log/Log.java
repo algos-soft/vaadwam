@@ -4,6 +4,7 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
+import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.logtype.Logtype;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import lombok.*;
@@ -87,9 +88,9 @@ public class Log extends ACEntity {
     @NotNull
     @Enumerated(EnumType.ORDINAL)
     @Field("liv")
-    @AIField(type = EAFieldType.enumeration, enumClazz = Livello.class, required = true, widthEM = 4)
+    @AIField(type = EAFieldType.enumeration, enumClazz = EALogLivello.class, required = true, widthEM = 4)
     @AIColumn(widthEM = 6, sortable = false)
-    public Livello livello;
+    public EALogLivello livello;
 
     /**
      * descrizione (obbligatoria, non unica) <br>

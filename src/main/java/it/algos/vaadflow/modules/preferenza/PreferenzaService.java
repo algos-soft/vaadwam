@@ -4,6 +4,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.AService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -422,6 +424,17 @@ public class PreferenzaService extends AService {
         return pref;
     }// end of method
 
+    public List<Preferenza> findAllByType(EAPrefType type) {
+//        Query query = new Query();
+//        String meseField = "mese";
+//
+//        if (mese != null) {
+//            query.addCriteria(Criteria.where(meseField).is(mese));
+//        }// end of if cycle
+//
+//        return mongo.mongoOp.find(query, Preferenza.class);
+        return repository.findAllByTypeOrderByValue(type);
+    }// end of method
 
     /**
      * Metodo invocato da ABoot (o da una sua sottoclasse) <br>
@@ -656,6 +669,38 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
+
+
+    public long getLong(IAPreferenza eaPref) {
+        return getLong(eaPref.getCode(), (long) eaPref.getValue());
+    } // end of method
+
+
+    public long getLong(String keyCode) {
+        return getLong(keyCode, 0);
+    } // end of method
+
+
+    public long getLong(String keyCode, long defaultValue) {
+        long valoreLungo = defaultValue;
+        Object value = getValue(keyCode);
+
+        if (value != null) {
+            if (value instanceof Long) {
+                valoreLungo = (Long) value;
+            } else {
+                log.error("Algos - Preferenze. La preferenza: " + keyCode + " è del tipo sbagliato");
+            }// end of if/else cycle
+        } else {
+            log.warn("Algos - Preferenze. Non esiste la preferenza: " + keyCode);
+        }// end of if/else cycle
+
+        return valoreLungo;
+    } // end of method
+
+
+
+
     public String getEnumStr(IAPreferenza eaPref) {
         return getEnumStr(eaPref.getCode(), (String) eaPref.getValue());
     } // end of method
@@ -765,7 +810,7 @@ public class PreferenzaService extends AService {
     public Preferenza setDate(String keyCode, LocalDateTime value) {
         Preferenza pref = findByKeyUnica(keyCode);
 
-        if (pref != null && pref.type == EAPrefType.date) {
+        if (pref != null && pref.type == EAPrefType.localdatetime) {
             pref = this.setValue(keyCode, value);
         }// end of if cycle
 

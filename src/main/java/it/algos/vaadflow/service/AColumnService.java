@@ -8,7 +8,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import lombok.extern.slf4j.Slf4j;
@@ -376,7 +376,7 @@ public class AColumnService extends AbstractService {
                         obj = field.get(entity);
                         if (obj instanceof LocalDateTime) {
                             timeStamp = (LocalDateTime) obj;
-                            testo = date.getTime(timeStamp); //@todo aggiungere un selettore per modificare il format dalla annotation
+                            testo = date.getDateTime(timeStamp); //@todo aggiungere un selettore per modificare il format dalla annotation
                         } else {
                             log.warn("localdatetime non definito");
                         }// end of if/else cycle
@@ -485,8 +485,13 @@ public class AColumnService extends AbstractService {
                         case integer:
                             message = text.format(value);
                             break;
-                        case date:
+                        case localdatetime:
+                            message = date.getDateTime((LocalDateTime) value);
                             break;
+//                        case localdate:
+//                            break;
+//                        case localtime:
+//                            break;
                         case email:
                             break;
                         case enumeration:
@@ -591,10 +596,10 @@ public class AColumnService extends AbstractService {
                 width = text.isValid(width) ? width : "7em";
                 break;
             case localdatetime:
-                //--larghezza di default per un data+tempo = 10em
+                //--larghezza di default per un data+tempo = 12em
                 //--vale per la formattazione standard della data
                 //--per modificare, inserire widthEM = ... nell'annotation @AIColumn della Entity
-                width = text.isValid(width) ? width : "10em";
+                width = text.isValid(width) ? width : "12em";
                 break;
             case localtime:
                 //--larghezza di default per il solo tempo = 5em

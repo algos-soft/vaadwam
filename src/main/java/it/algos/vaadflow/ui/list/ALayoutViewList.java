@@ -91,7 +91,7 @@ public abstract class ALayoutViewList extends APrefViewList {
 
         if (pref.isBool(USA_DEBUG)) {
             this.getElement().getStyle().set("background-color", EAColor.yellow.getEsadecimale());
-            alertPlacehorder.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
+            alertPlacehorder.getElement().getStyle().set("background-color", EAColor.lightgreen.getEsadecimale());
             topPlaceholder.getElement().getStyle().set("background-color", EAColor.lime.getEsadecimale());
             gridPlaceholder.getElement().getStyle().set("background-color", EAColor.red.getEsadecimale());
             bottomPlacehorder.getElement().getStyle().set("background-color", EAColor.silver.getEsadecimale());
@@ -173,37 +173,37 @@ public abstract class ALayoutViewList extends APrefViewList {
         boolean isAdmin = login.isAdmin();
 
         //--il bottone associa un evento standard -> AViewList.openConfirmDelete(), che può essere sovrascritto
-        if ((!FlowVar.usaSecurity && usaBottoneDeleteAll) || (isDeveloper && usaBottoneDeleteAll)) {
-            deleteAllButton = new Button("Delete", new Icon(VaadinIcon.CLOSE_CIRCLE));
-            deleteAllButton.getElement().setAttribute("theme", "error");
-            deleteAllButton.getElement().setAttribute("title", "Cancella tutta la collezione");
-            deleteAllButton.addClassName("view-toolbar__button");
-            topPlaceholder.add(deleteAllButton);
+        if ((!FlowVar.usaSecurity && usaButtonDelete) || (isDeveloper && usaButtonDelete)) {
+            buttonDelete = new Button("Delete", new Icon(VaadinIcon.CLOSE_CIRCLE));
+            buttonDelete.getElement().setAttribute("theme", "error");
+            buttonDelete.getElement().setAttribute("title", "Cancella tutta la collezione");
+            buttonDelete.addClassName("view-toolbar__button");
+            topPlaceholder.add(buttonDelete);
         }// end of if cycle
 
 
         //--il bottone associa un evento standard -> AViewList.openConfirmReset(), che rinvia al service specifico
-        if ((!FlowVar.usaSecurity && usaBottoneReset) || (isDeveloper && usaBottoneReset)) {
-            resetButton = new Button("Reset", new Icon(VaadinIcon.CLOSE_CIRCLE));
-            resetButton.getElement().setAttribute("theme", "error");
-            resetButton.getElement().setAttribute("title", "Ripristina tutta la collezione");
-            resetButton.addClassName("view-toolbar__button");
-            topPlaceholder.add(resetButton);
+        if ((!FlowVar.usaSecurity && usaButtonReset) || (isDeveloper && usaButtonReset)) {
+            buttonReset = new Button("Reset", new Icon(VaadinIcon.CLOSE_CIRCLE));
+            buttonReset.getElement().setAttribute("theme", "error");
+            buttonReset.getElement().setAttribute("title", "Ripristina tutta la collezione");
+            buttonReset.addClassName("view-toolbar__button");
+            topPlaceholder.add(buttonReset);
         }// end of if cycle
 
 
         //--il bottone associa un evento standard -> AViewList.openNew()
         //--il bottone associa, se previsto da pref, un tasto shortcut
-        if (usaBottoneNew) {
+        if (usaButtonNew) {
             buttonTitle = text.primaMaiuscola(pref.getStr(FlowCost.FLAG_TEXT_NEW));
-            newButton = new Button(buttonTitle, new Icon("lumo", "plus"));
-            newButton.getElement().setAttribute("theme", "primary");
-            newButton.getElement().setAttribute("title", "Crea una nuova entity");
-            newButton.addClassName("view-toolbar__button");
+            buttonNew = new Button(buttonTitle, new Icon("lumo", "plus"));
+            buttonNew.getElement().setAttribute("theme", "primary");
+            buttonNew.getElement().setAttribute("title", "Crea una nuova entity");
+            buttonNew.addClassName("view-toolbar__button");
             if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-                newButton.addClickShortcut(Key.KEY_N, KeyModifier.ALT);
+                buttonNew.addClickShortcut(Key.KEY_N, KeyModifier.ALT);
             }// end of if cycle
-            topPlaceholder.add(newButton);
+            topPlaceholder.add(buttonNew);
         }// end of if cycle
 
         //--eventuale campo o dialogo diu ricerca
@@ -221,25 +221,25 @@ public abstract class ALayoutViewList extends APrefViewList {
                 searchField.setValueChangeMode(ValueChangeMode.EAGER);
 
                 //--bottone piccolo per pulire il campo testo di ricerca
-                clearFilterButton = new Button(new Icon(VaadinIcon.CLOSE_CIRCLE));
-                clearFilterButton.setEnabled(false);
-                clearFilterButton.getElement().setAttribute("title", "Pulisce il campo di ricerca");
-                topPlaceholder.add(searchField, clearFilterButton);
+                buttonClearFilter = new Button(new Icon(VaadinIcon.CLOSE_CIRCLE));
+                buttonClearFilter.setEnabled(false);
+                buttonClearFilter.getElement().setAttribute("title", "Pulisce il campo di ricerca");
+                topPlaceholder.add(searchField, buttonClearFilter);
 
                 break;
             case dialog:
                 //--il bottone associa un evento standard -> openConfirmDialogDelete(), che deve essere sovrascritto
                 buttonTitle = text.primaMaiuscola(pref.getStr(FlowCost.FLAG_TEXT_SEARCH));
-                searchButton = new Button(buttonTitle, new Icon("lumo", "search"));
-                searchButton.getElement().setAttribute("theme", "secondary");
-                searchButton.getElement().setAttribute("title", "Apre una finestra di dialogo");
-                searchButton.addClassName("view-toolbar__button");
+                buttonSearch = new Button(buttonTitle, new Icon("lumo", "search"));
+                buttonSearch.getElement().setAttribute("theme", "secondary");
+                buttonSearch.getElement().setAttribute("title", "Apre una finestra di dialogo");
+                buttonSearch.addClassName("view-toolbar__button");
 
                 //--bottone piccolo per ripristinare la condizione senza filtro
-                clearFilterButton = new Button(new Icon(VaadinIcon.CLOSE_CIRCLE));
-                clearFilterButton.setEnabled(false);
-                clearFilterButton.getElement().setAttribute("title", "Annulla la selezione effettuata");
-                topPlaceholder.add(searchButton, clearFilterButton);
+                buttonClearFilter = new Button(new Icon(VaadinIcon.CLOSE_CIRCLE));
+                buttonClearFilter.setEnabled(false);
+                buttonClearFilter.getElement().setAttribute("title", "Annulla la selezione effettuata");
+                topPlaceholder.add(buttonSearch, buttonClearFilter);
                 break;
             default:
                 log.warn("Switch - caso non definito");
@@ -275,16 +275,16 @@ public abstract class ALayoutViewList extends APrefViewList {
     protected void addListeners() {
         super.addListeners();
 
-        if (deleteAllButton != null) {
-            deleteAllButton.addClickListener(event -> openConfirmDelete());
+        if (buttonDelete != null) {
+            buttonDelete.addClickListener(event -> openConfirmDelete());
         }// end of if cycle
 
-        if (resetButton != null) {
-            resetButton.addClickListener(e -> openConfirmReset());
+        if (buttonReset != null) {
+            buttonReset.addClickListener(e -> openConfirmReset());
         }// end of if cycle
 
-        if (newButton != null) {
-            newButton.addClickListener(event -> openNew());
+        if (buttonNew != null) {
+            buttonNew.addClickListener(event -> openNew());
         }// end of if cycle
 
         if (searchField != null) {
@@ -292,23 +292,23 @@ public abstract class ALayoutViewList extends APrefViewList {
                 updateFiltri();
                 updateGrid();
                 if (searchField.getValue().isEmpty()) {
-                    clearFilterButton.setEnabled(false);
+                    buttonClearFilter.setEnabled(false);
                 } else {
-                    clearFilterButton.setEnabled(true);
+                    buttonClearFilter.setEnabled(true);
                 }// end of if/else cycle
             });//end of lambda expression
-            if (clearFilterButton != null) {
-                clearFilterButton.addClickListener(e -> {
+            if (buttonClearFilter != null) {
+                buttonClearFilter.addClickListener(e -> {
                     searchField.clear();
                     actionSincroSearch();
                 });//end of lambda expressions
             }// end of if cycle
         }// end of if cycle
 
-        if (searchButton != null) {
-            searchButton.addClickListener(e -> openSearch());
-            if (clearFilterButton != null) {
-                clearFilterButton.addClickListener(e -> {
+        if (buttonSearch != null) {
+            buttonSearch.addClickListener(e -> openSearch());
+            if (buttonClearFilter != null) {
+                buttonClearFilter.addClickListener(e -> {
                     actionSincroSearch();
                 });//end of lambda expressions
             }// end of if cycle

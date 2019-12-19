@@ -1,7 +1,7 @@
 package it.algos.vaadflow.service;
 
 import it.algos.vaadflow.enumeration.EAFirstChar;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

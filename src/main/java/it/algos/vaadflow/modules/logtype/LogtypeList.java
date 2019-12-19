@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_LOG;
 import static it.algos.vaadflow.application.FlowCost.TAG_TYP;
 
 /**
@@ -130,8 +129,8 @@ public class LogtypeList extends AGridViewList {
         super.fixPreferenze();
 
         super.isEntityDeveloper = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
         super.isEntityUsaDatiDemo = true;
     }// end of method
 

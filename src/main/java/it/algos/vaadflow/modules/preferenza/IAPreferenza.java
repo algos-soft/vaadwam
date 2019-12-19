@@ -1,5 +1,6 @@
 package it.algos.vaadflow.modules.preferenza;
 
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.role.EARole;
 
 /**

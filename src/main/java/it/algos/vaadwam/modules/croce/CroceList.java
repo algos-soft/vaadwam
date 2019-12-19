@@ -100,14 +100,14 @@ public class CroceList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = false;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = false;
         super.isEntityUsaDatiDemo = false;
 
         if (wamLogin.isDeveloper()) {
-            super.usaBottoneNew = true;
+            super.usaButtonNew = true;
         } else {
-            super.usaBottoneNew = false;
+            super.usaButtonNew = false;
         }// end of if/else cycle
 
     }// end of method

@@ -6,6 +6,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.service.AEnumerationService;
 import it.algos.vaadflow.service.IAService;
@@ -162,7 +163,7 @@ public class PreferenzaDialog extends AViewDialog<Preferenza> {
             case bool:
                 valueField.setValue((boolean) genericValue);
                 break;
-            case date:
+            case localdatetime:
                 if (genericValue instanceof LocalDateTime) {
                     genericValue = date.localDateTimeToLocalDate((LocalDateTime) genericValue);
                 }// end of if cycle
@@ -216,7 +217,7 @@ public class PreferenzaDialog extends AViewDialog<Preferenza> {
             case bool:
                 valueField = new ACheckBox(caption + "(vero/falso)");
                 break;
-            case date:
+            case localdatetime:
                 valueField = new DatePicker(caption + "(giorno)");
                 break;
             case enumeration:
@@ -262,7 +263,7 @@ public class PreferenzaDialog extends AViewDialog<Preferenza> {
                     break;
                 case bool:
                     break;
-                case date:
+                case localdatetime:
                     break;
                 case enumeration:
                     if (currentItem != null && text.isValid(currentItem.id)) {

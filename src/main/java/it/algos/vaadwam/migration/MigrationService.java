@@ -2,9 +2,9 @@ package it.algos.vaadwam.migration;
 
 import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.enumeration.EAColor;
+import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
-import it.algos.vaadflow.modules.log.Livello;
 import it.algos.vaadflow.modules.log.Log;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.logtype.Logtype;
@@ -1155,11 +1155,11 @@ public class MigrationService {
         militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, (List<Role>) null, mail, enabled, admin, dipendente, infermiere, funzioni);
 
         if (utenteOld == null) {
-            importMilite(Livello.warn, croceNew.getCode() + " - Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
+            importMilite(EALogLivello.warn, croceNew.getCode() + " - Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
         }// end of if cycle
 
         if (funzioni == null && enabled) {
-            importMilite(Livello.debug, croceNew.getCode() + " - Il milite " + militeOld.getNome() + " " + militeOld.getCognome() + " (attivo), non ha nessuna funzione abilitata.");
+            importMilite(EALogLivello.debug, croceNew.getCode() + " - Il milite " + militeOld.getNome() + " " + militeOld.getCognome() + " (attivo), non ha nessuna funzione abilitata.");
         }// end of if cycle
 
         if (!militeSaved) {
@@ -1168,12 +1168,12 @@ public class MigrationService {
 
             if (militeSaved) {
                 message = "Al milite " + militeOld.getNome() + " " + militeOld.getCognome() + " è stato cambiato nickName perché ne esisteva già un altro";
-                importMilite(Livello.warn, message);
+                importMilite(EALogLivello.warn, message);
                 militeNew = militeService.findByKeyUnica(nickname2);
                 militeNew.noteWam = message;
                 militeService.save(militeNew);
             } else {
-                importMilite(Livello.error, croceNew.getCode() + " - Il milite " + militeOld.getNome() + " " + militeOld.getCognome() + " esiste già in altra croce e non sono riuscito a cambiargli il nicName");
+                importMilite(EALogLivello.error, croceNew.getCode() + " - Il milite " + militeOld.getNome() + " " + militeOld.getCognome() + " esiste già in altra croce e non sono riuscito a cambiargli il nicName");
                 status = false;
             }// end of if/else cycle
 
@@ -1521,14 +1521,14 @@ public class MigrationService {
 
 
     //--registra un avviso
-    public void importMilite(Livello livello, String descrizione) {
+    public void importMilite(EALogLivello livello, String descrizione) {
         logger.crea(livello, (Logtype) logtype.findById(WamCost.IMPORT_MILITI), descrizione);
     }// fine del metodo
 
 
     //--registra un avviso
     public void importTurno(String descrizione) {
-        logger.crea(Livello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
+        logger.crea(EALogLivello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
     }// fine del metodo
 
 

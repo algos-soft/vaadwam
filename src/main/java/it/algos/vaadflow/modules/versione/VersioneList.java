@@ -80,8 +80,8 @@ public class VersioneList extends AGridViewList {
         super.fixPreferenze();
 
         super.isEntityDeveloper = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneNew = false;
+        super.usaButtonDelete = true;
+        super.usaButtonNew = false;
 
         super.grid = new PaginatedGrid<Versione>();
     }// end of method

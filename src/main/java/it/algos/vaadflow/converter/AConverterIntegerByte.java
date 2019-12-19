@@ -4,7 +4,7 @@ import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 

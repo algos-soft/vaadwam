@@ -8,7 +8,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.ui.LoadMode;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -26,7 +25,9 @@ import it.algos.vaadflow.ui.fields.AIntegerField;
 import it.algos.vaadflow.ui.fields.ATextArea;
 import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadflow.ui.fields.IAField;
+import it.algos.vaadflow.wrapper.AFiltro;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import javax.annotation.PostConstruct;
@@ -469,8 +470,8 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
     protected void actionSincroSearch() {
         updateFiltri();
         updateGrid();
-        if (clearFilterButton != null) {
-            clearFilterButton.setEnabled(false);
+        if (buttonClearFilter != null) {
+            buttonClearFilter.setEnabled(false);
         }// end of if cycle
     }// end of method
 
@@ -595,18 +596,18 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
             fieldValue = field.getValore();
             if (field instanceof ATextField || field instanceof ATextArea) {
                 if (text.isValid(fieldValue)) {
-                    filtri.add(Criteria.where(fieldName).is(fieldValue));
+                    filtri.add(new AFiltro(Criteria.where(fieldName).is(fieldValue)));
                 }// end of if cycle
             }// end of if cycle
             if (field instanceof AIntegerField) {
                 if ((Integer) fieldValue > 0) {
-                    filtri.add(Criteria.where(fieldName).is(fieldValue));
+                    filtri.add(new AFiltro(Criteria.where(fieldName).is(fieldValue)));
                 }// end of if cycle
             }// end of if cycle
         }// end of for cycle
 
-        if (clearFilterButton != null) {
-            clearFilterButton.setEnabled(true);
+        if (buttonClearFilter != null) {
+            buttonClearFilter.setEnabled(true);
         }// end of if cycle
 
         this.updateGrid();

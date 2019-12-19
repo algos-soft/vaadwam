@@ -22,11 +22,11 @@ import it.algos.vaadflow.ui.dialog.ADeleteDialog;
 import it.algos.vaadflow.ui.dialog.ASearchDialog;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadflow.wrapper.AFiltro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
-import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.Collection;
 import java.util.List;
@@ -182,14 +182,46 @@ public abstract class APropertyViewList extends VerticalLayout {
     //--property
     protected TextField searchField;
 
+    /**
+     * Bottone standard (opzionale, un flag controlla se mostrarlo o meno) (primo partendo da sinistra) <br>
+     */
+    protected Button buttonDelete;
 
-    protected Button deleteAllButton;
+    /**
+     * Flag di preferenza per cancellare tutti gli elementi. Normalmente false. <br>
+     */
+    protected boolean usaButtonDelete;
 
-    protected Button resetButton;
 
-    protected Button clearFilterButton;
+    /**
+     * Bottone standard (opzionale, un flag controlla se mostrarlo o meno) (secondo partendo da sinistra) <br>
+     */
+    protected Button buttonReset;
 
-    protected Button searchButton;
+    /**
+     * Flag di preferenza per resettare le condizioni standard di partenza. Normalmente false. <br>
+     */
+    protected boolean usaButtonReset;
+
+    /**
+     * Bottone standard (opzionale, un flag controlla se mostrarlo o meno) (terzo partendo da sinistra) <br>
+     */
+    protected Button buttonSearch;
+
+    /**
+     * Bottone standard (opzionale, un flag controlla se mostrarlo o meno) (quarto partendo da sinistra) <br>
+     */
+    protected Button buttonClearFilter;
+
+    /**
+     * Bottone standard (opzionale, un flag controlla se mostrarlo o meno) (quinto partendo da sinistra) <br>
+     */
+    protected Button buttonNew;
+
+    /**
+     * Flag di preferenza per usare il bottone new situato nella topLayout. Normalmente true. <br>
+     */
+    protected boolean usaButtonNew;
 
     /**
      * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
@@ -304,10 +336,6 @@ public abstract class APropertyViewList extends VerticalLayout {
      */
     protected boolean isPaginata;
 
-    /**
-     * Flag di preferenza per usare il bottone new situato nella topLayout. Normalmente true. <br>
-     */
-    protected boolean usaBottoneNew;
 
     /**
      * Popup di selezione della Company, se usata. Faccoltativo. <br>
@@ -319,8 +347,6 @@ public abstract class APropertyViewList extends VerticalLayout {
      */
     protected AComboBox filtroComboBox;
 
-
-    protected Button newButton;
 
     /**
      * Flag di preferenza per usare il placeholder di informazioni specifiche sopra la Grid. Normalmente false. <br>
@@ -348,15 +374,6 @@ public abstract class APropertyViewList extends VerticalLayout {
      */
     protected boolean usaBottomLayout;
 
-    /**
-     * Flag di preferenza per cancellare tutti gli elementi. Normalmente false. <br>
-     */
-    protected boolean usaBottoneDeleteAll;
-
-    /**
-     * Flag di preferenza per resettare le condizioni standard di partenza. Normalmente false. <br>
-     */
-    protected boolean usaBottoneReset;
 
     /**
      * Flag di preferenza per aggiungere una caption di info sopra la grid. Normalmente false. <br>
@@ -423,7 +440,7 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     protected Collection items;
 
-    protected List<CriteriaDefinition> filtri;
+    protected List<AFiltro> filtri;
 
     protected ADeleteDialog deleteDialog;
 

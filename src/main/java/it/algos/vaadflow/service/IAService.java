@@ -256,6 +256,17 @@ public interface IAService {
 
 
     /**
+     * Deletes a given entity.
+     *
+     * @param keyCode must not be null
+     *
+     * @return true, se la entity è stata effettivamente cancellata
+     *
+     * @throws IllegalArgumentException in case the given keyCode is {@literal null}.
+     */
+    public boolean delete(String keyCode);
+
+    /**
      * Deletes all entities of the collection.
      */
     public boolean deleteAll();

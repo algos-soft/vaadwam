@@ -2,17 +2,7 @@ package it.algos.vaadflow.ui.list;
 
 import com.vaadin.flow.component.html.Label;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.modules.anno.Anno;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.IADialog;
-import it.algos.vaadflow.ui.list.AGridViewList;
-import it.algos.vaadflow.ui.list.ALayoutViewList;
-import it.algos.vaadflow.ui.list.AViewList;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import static it.algos.vaadflow.application.FlowCost.TAG_ANN;
 
 /**
  * Project vaadflow
@@ -49,10 +39,10 @@ public abstract class ACronoViewList extends AGridViewList {
         super.fixPreferenze();
 
         super.usaPopupFiltro = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
         super.isEntityDeveloper = true;
-        super.usaBottoneNew = false;
+        super.usaButtonNew = false;
         super.usaBottoneEdit = true;
     }// end of method
 

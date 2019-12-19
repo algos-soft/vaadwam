@@ -234,7 +234,7 @@ public class Tabellone extends AGridViewList {
         this.setPadding(false);
 
         super.searchType = EASearch.nonUsata;
-        super.usaBottoneNew = false;
+        super.usaButtonNew = false;
         super.usaBottoneEdit = false;
         super.usaBottomLayout = true;
     }// end of method

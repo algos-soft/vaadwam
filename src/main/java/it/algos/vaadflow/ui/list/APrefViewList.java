@@ -72,7 +72,7 @@ public abstract class APrefViewList extends AViewList {
         usaPopupFiltro = false;
 
         //--Flag di preferenza per usare il bottone new situato nella barra topLayout. Normalmente true.
-        usaBottoneNew = true;
+        usaButtonNew = true;
 
         //--Flag di preferenza per usare il placeholder di informazioni specifiche sopra la Grid. Normalmente false.
         usaTopAlert = false;
@@ -92,10 +92,10 @@ public abstract class APrefViewList extends AViewList {
         usaBottomLayout = false;
 
         //--Flag di preferenza per cancellare tutti gli elementi. Normalmente false.
-        usaBottoneDeleteAll = false;
+        usaButtonDelete = false;
 
         //--Flag di preferenza per resettare le condizioni standard di partenza. Normalmente false.
-        usaBottoneReset = false;
+        usaButtonReset = false;
 
         //--Flag di preferenza per aggiungere una caption di info sopra la grid. Normalmente false.
         isEntityDeveloper = false;

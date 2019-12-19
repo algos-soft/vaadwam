@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.*;
+
 /**
  * Project springvaadin
  * Created by Algos
@@ -67,7 +69,7 @@ public class AArrayService extends AbstractService {
      *
      * @return lista ordinata, null se listaDisordinata è null
      */
-    public ArrayList sort(ArrayList listaDisordinata) {
+    public ArrayList sort(List listaDisordinata) {
         ArrayList<Object> objList;
         Object[] objArray = listaDisordinata.toArray();
 
@@ -78,6 +80,30 @@ public class AArrayService extends AbstractService {
         objList = fromObj(objArray);
 
         return objList;
+    }// end of method
+
+
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public LinkedHashMap sort(HashMap mappaDisordinata) {
+        LinkedHashMap mappaOrdinata = new LinkedHashMap();
+        Object[] listaChiavi = mappaDisordinata.keySet().toArray();
+
+        try { // prova ad eseguire il codice
+            Arrays.sort(listaChiavi);
+        } catch (Exception unErrore) { // intercetta l'errore
+        }// fine del blocco try-catch
+
+        for (Object chiave : listaChiavi) {
+            mappaOrdinata.put(chiave, mappaDisordinata.get(chiave));
+        }// end of for cycle
+
+        return mappaOrdinata;
     }// end of method
 
 
@@ -319,6 +345,22 @@ public class AArrayService extends AbstractService {
 
 
     /**
+     * Convert a stringArray to List
+     *
+     * @param strArray to convert
+     *
+     * @return the corresponding casted List
+     */
+    public List<String> fromStr(String[] strArray) {
+        List<String> strList = new ArrayList<String>();
+
+        Collections.addAll(strList, strArray);
+
+        return strList;
+    }// end of method
+
+
+    /**
      * Costruisce una stringa con i singoli valori divisi da un pipe
      * <p>
      *
@@ -332,6 +374,32 @@ public class AArrayService extends AbstractService {
 
 
     /**
+     * Costruisce una stringa con i singoli valori divisi da una virgola seguita da uno spazio
+     * <p>
+     *
+     * @param array lista di valori
+     *
+     * @return stringa con i singoli valori divisi da un separatore
+     */
+    public String toStringaSpazio(List array) {
+        return toStringa(array, VIRGOLA + SPAZIO);
+    }// end of method
+
+
+    /**
+     * Costruisce una stringa con i singoli valori divisi da un separatore virgola
+     * <p>
+     *
+     * @param array lista di valori
+     *
+     * @return stringa con i singoli valori divisi da un separatore
+     */
+    public String toStringa(List array) {
+        return toStringa(array, VIRGOLA);
+    }// end of method
+
+
+    /**
      * Costruisce una stringa con i singoli valori divisi da un separatore
      * <p>
      *
@@ -340,16 +408,19 @@ public class AArrayService extends AbstractService {
      *
      * @return stringa con i singoli valori divisi da un separatore
      */
-    public String toStringa(ArrayList array, String sep) {
-        String testo;
-        StringBuilder textBuffer = new StringBuilder();
+    public String toStringa(List array, String sep) {
+        String testo = VUOTA;
+        StringBuilder textBuffer = null;
 
-        for (Object obj : array) {
-            textBuffer.append(obj.toString());
-            textBuffer.append(sep);
-        } // fine del ciclo for-each
-        testo = textBuffer.toString();
-        testo = text.levaCoda(testo, sep);
+        if (array != null) {
+            textBuffer = new StringBuilder();
+            for (Object obj : array) {
+                textBuffer.append(obj.toString());
+                textBuffer.append(sep);
+            } // fine del ciclo for-each
+            testo = textBuffer.toString();
+            testo = text.levaCoda(testo, sep);
+        }// end of if cycle
 
         return testo;
     }// end of method
@@ -656,6 +727,7 @@ public class AArrayService extends AbstractService {
         return listaStringhe;
     }// end of method
 
+
     /**
      * Controlla se la mappa può essere semplicficata
      * La mappa prevede delle liste di valori per ogni key, quindi Map<String, List<String>>
@@ -672,6 +744,7 @@ public class AArrayService extends AbstractService {
 
         return status;
     }// end of method
+
 
     /**
      * Semplifica la mappa

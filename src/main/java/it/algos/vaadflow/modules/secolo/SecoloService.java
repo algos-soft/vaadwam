@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_SEC;
@@ -82,7 +85,7 @@ public class SecoloService extends AService {
         boolean creata = false;
 
         if (isMancaByKeyUnica(eaSec.getTitolo())) {
-            AEntity entity = save(newEntity(eaSec.getTitolo(), eaSec.getInizio(), eaSec.getFine(), eaSec.isAnteCristo()));
+            AEntity entity = save(newEntity(eaSec.getTitolo(), eaSec.getInizio(), eaSec.getFine(), eaSec.isAnteCristo(), eaSec.ordinal() + 1));
             creata = entity != null;
         }// end of if cycle
 
@@ -98,7 +101,7 @@ public class SecoloService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Secolo newEntity() {
-        return newEntity("", 0, 0, false);
+        return newEntity("", 0, 0, false, 0);
     }// end of method
 
 
@@ -112,15 +115,17 @@ public class SecoloService extends AService {
      * @param inizio     (obbligatorio, unico)
      * @param fine       (obbligatorio, unico)
      * @param anteCristo flag per i secoli prima di cristo (obbligatorio)
+     * @param ordine     (obbligatorio, unico)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Secolo newEntity(String titolo, int inizio, int fine, boolean anteCristo) {
+    public Secolo newEntity(String titolo, int inizio, int fine, boolean anteCristo, int ordine) {
         return Secolo.builderSecolo()
                 .titolo(text.isValid(titolo) ? titolo : null)
                 .inizio(inizio)
                 .fine(fine)
                 .anteCristo(anteCristo)
+                .ordine(ordine)
                 .build();
     }// end of method
 
@@ -202,6 +207,38 @@ public class SecoloService extends AService {
         }// end of for cycle
 
         return numRec;
+    }// end of method
+
+
+    /**
+     * Riordina una lista di valori <br>
+     *
+     * @return numero di elementi creato
+     */
+    public List<String> riordina(List<String> listaDisordinata) {
+        List<String> listaOrdinata = null;
+        List<Integer> keyList = null;
+        HashMap<Integer, String> mappa;
+        int key;
+
+        if (listaDisordinata != null && listaDisordinata.size() > 0) {
+            mappa = new LinkedHashMap();
+            keyList = new ArrayList<>();
+
+            for (String titolo : listaDisordinata) {
+                key = EASecolo.getOrder(titolo);
+                keyList.add(key);
+                mappa.put(key, titolo);
+            }// end of for cycle
+
+            keyList = array.sort(keyList);
+            listaOrdinata = new ArrayList<>();
+            for (int pos : keyList) {
+                listaOrdinata.add(mappa.get(pos));
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaOrdinata;
     }// end of method
 
 }// end of class

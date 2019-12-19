@@ -10,13 +10,16 @@ import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
+import it.algos.vaadflow.wrapper.AFiltro;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.security.access.annotation.Secured;
@@ -152,12 +155,13 @@ public class PreferenzaList extends AGridViewList {
         super.fixPreferenze();
 
         if (!FlowVar.usaSecurity || login.isDeveloper()) {
-            super.usaBottoneDeleteAll = true;
-            super.usaBottoneReset = true;
+            super.usaButtonDelete = true;
+            super.usaButtonReset = true;
         }// end of if cycle
 
+        super.usaPopupFiltro = true;
         super.usaBottoneEdit = false;
-        super.usaBottoneNew = false;
+        super.usaButtonNew = false;
         super.isEntityDeveloper = true;
         super.usaPagination = true;
     }// end of method
@@ -179,6 +183,23 @@ public class PreferenzaList extends AGridViewList {
 
 
     /**
+     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
+     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaPopupFiltro() {
+        super.creaPopupFiltro();
+
+        filtroComboBox.setPlaceholder("Type ...");
+        filtroComboBox.setItems(EAPrefType.values());
+        filtroComboBox.addValueChangeListener(e -> {
+            updateFiltri();
+            updateGrid();
+        });
+    }// end of method
+
+
+    /**
      * Crea la lista dei SOLI filtri necessari alla Grid per la prima visualizzazione della view <br>
      * I filtri normali vanno in updateFiltri() <br>
      * <p>
@@ -189,12 +210,35 @@ public class PreferenzaList extends AGridViewList {
      */
     @Override
     protected void creaFiltri() {
-        filtri = new ArrayList<CriteriaDefinition>();
+        filtri = new ArrayList<AFiltro>();
 
         if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
             if (filtroCompany.getValue() != null) {
-                filtri.add(Criteria.where("company").is(filtroCompany.getValue()));
+                filtri.add(new AFiltro(Criteria.where("company").is(filtroCompany.getValue())));
             }// end of if cycle
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Aggiorna i filtri specifici della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Può essere sovrascritto, per costruire i filtri specifici dei combobox, popup, ecc. <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void updateFiltriSpecifici() {
+        super.updateFiltriSpecifici();
+        String fieldName = "type";
+        String fieldSort = "code";
+        EAPrefType fieldType = (EAPrefType) filtroComboBox.getValue();
+
+        if (fieldType!=null) {
+            CriteriaDefinition criteria = Criteria.where(fieldName).is(fieldType);
+            Sort sort = new Sort(Sort.Direction.ASC, fieldSort);
+            AFiltro filtro = new AFiltro(criteria, sort);
+
+            filtri.add(filtro);
         }// end of if cycle
     }// end of method
 

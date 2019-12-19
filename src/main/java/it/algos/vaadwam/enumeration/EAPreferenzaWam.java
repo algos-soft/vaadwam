@@ -1,7 +1,7 @@
 package it.algos.vaadwam.enumeration;
 
 
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.IAPreferenza;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadwam.tabellone.EACancellazione;
@@ -28,11 +28,11 @@ public enum EAPreferenzaWam implements IAPreferenza {
     usaDaemonTurni(USA_DAEMON_TURNI, "Crono per download turni", EAPrefType.bool, EARole.developer, false,false),
 
     //--cronologia degli import
-    lastDownloadCroci(LAST_IMPORT_CROCI, "Data ultimo import di croci", EAPrefType.date, EARole.developer, false,null),
-    lastDownloadFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import di funzioni", EAPrefType.date, EARole.developer, false,null),
-    lastDownloadServizi(LAST_IMPORT_SERVIZI, "Data ultimo import di servizi", EAPrefType.date, EARole.developer, false,null),
-    lastDownloadMiliti(LAST_IMPORT_MILITI, "Data ultimo import di militi", EAPrefType.date, EARole.developer, false,null),
-    lastDownloadTurni(LAST_IMPORT_TURNI, "Data ultimo import di turni", EAPrefType.date, EARole.developer, false,null),
+    lastDownloadCroci(LAST_IMPORT_CROCI, "Data ultimo import di croci", EAPrefType.localdatetime, EARole.developer, false,null),
+    lastDownloadFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import di funzioni", EAPrefType.localdatetime, EARole.developer, false,null),
+    lastDownloadServizi(LAST_IMPORT_SERVIZI, "Data ultimo import di servizi", EAPrefType.localdatetime, EARole.developer, false,null),
+    lastDownloadMiliti(LAST_IMPORT_MILITI, "Data ultimo import di militi", EAPrefType.localdatetime, EARole.developer, false,null),
+    lastDownloadTurni(LAST_IMPORT_TURNI, "Data ultimo import di turni", EAPrefType.localdatetime, EARole.developer, false,null),
 
     usaMailImport(USA_MAIL_IMPORT, "Spedisce una mail ad ogni import", EAPrefType.bool, EARole.developer, true,true),
     usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true,false),

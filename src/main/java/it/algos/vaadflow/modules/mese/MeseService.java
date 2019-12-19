@@ -3,8 +3,8 @@ package it.algos.vaadflow.modules.mese;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.secolo.EASecolo;
 import it.algos.vaadflow.service.AService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_MES;
@@ -83,7 +86,7 @@ public class MeseService extends AService {
         boolean creata = false;
 
         if (isMancaByKeyUnica(eaMese.getLungo())) {
-            AEntity entity = save(newEntity(eaMese.getLungo(), eaMese.getBreve(), eaMese.getGiorni()));
+            AEntity entity = save(newEntity(eaMese.getLungo(), eaMese.getBreve(), eaMese.getGiorni(), eaMese.ordinal() + 1));
             creata = entity != null;
         }// end of if cycle
 
@@ -99,7 +102,7 @@ public class MeseService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Mese newEntity() {
-        return newEntity("", "", 0);
+        return newEntity("", "", 0, 0);
     }// end of method
 
 
@@ -112,14 +115,16 @@ public class MeseService extends AService {
      * @param titoloLungo nome completo (obbligatorio, unico)
      * @param titoloBreve nome abbreviato di tre cifre (obbligatorio, unico)
      * @param giorni      numero di giorni presenti (obbligatorio)
+     * @param ordine      (obbligatorio, unico)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Mese newEntity(String titoloLungo, String titoloBreve, int giorni) {
+    public Mese newEntity(String titoloLungo, String titoloBreve, int giorni, int ordine) {
         return Mese.builderMese()
                 .titoloLungo(text.isValid(titoloLungo) ? titoloLungo : null)
                 .titoloBreve(text.isValid(titoloBreve) ? titoloBreve : null)
                 .giorni(giorni)
+                .ordine(ordine)
                 .build();
     }// end of method
 
@@ -179,7 +184,7 @@ public class MeseService extends AService {
      */
     @Override
     public List<? extends AEntity> findAll() {
-        return (List<Mese>)super.findAll();
+        return (List<Mese>) super.findAll();
     }// end of method
 
 
@@ -201,6 +206,37 @@ public class MeseService extends AService {
         }// end of for cycle
 
         return numRec;
+    }// end of method
+
+    /**
+     * Riordina una lista di valori <br>
+     *
+     * @return numero di elementi creato
+     */
+    public List<String> riordina(List<String> listaDisordinata) {
+        List<String> listaOrdinata = null;
+        List<Integer> keyList = null;
+        HashMap<Integer, String> mappa;
+        int key;
+
+        if (listaDisordinata != null && listaDisordinata.size() > 0) {
+            mappa = new LinkedHashMap();
+            keyList = new ArrayList<>();
+
+            for (String titolo : listaDisordinata) {
+                key = EAMese.getOrder(titolo);
+                keyList.add(key);
+                mappa.put(key, titolo);
+            }// end of for cycle
+
+            keyList = array.sort(keyList);
+            listaOrdinata = new ArrayList<>();
+            for (int pos : keyList) {
+                listaOrdinata.add(mappa.get(pos));
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaOrdinata;
     }// end of method
 
 }// end of class

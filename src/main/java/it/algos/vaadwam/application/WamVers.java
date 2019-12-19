@@ -2,7 +2,6 @@ package it.algos.vaadwam.application;
 
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.boot.AVers;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;

@@ -221,6 +221,21 @@ public class GiornoService extends AService {
     }// end of method
 
 
+    public List<String> findAllTitoliOrdered() {
+        List<String> listaTitoli = null;
+        List<Giorno> lista = repository.findAllByOrderByOrdineAsc();
+
+        if (array.isValid(lista)) {
+            listaTitoli=new ArrayList<>();
+            for (Giorno giorno : lista) {
+                listaTitoli.add(giorno.titolo);
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaTitoli;
+    }// end of method
+
+
     /**
      * Controlla l'esistenza di una Entity usando la query della property specifica (obbligatoria ed unica) <br>
      *

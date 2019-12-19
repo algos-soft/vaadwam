@@ -22,8 +22,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.lang.reflect.Field;
@@ -216,10 +214,12 @@ public abstract class AService extends AbstractService implements IAService {
         return lista;
     }// end of method
 
+
     @Override
     public List<? extends AEntity> findAllAll() {
         return null;
     }// end of method
+
 
     @Override
     public List<? extends AEntity> findAllByCompany(Company company) {
@@ -253,8 +253,7 @@ public abstract class AService extends AbstractService implements IAService {
 //            lista = new ArrayList<>(repository.findAll());
 //        }// end of if/else cycle
 
-        lista = mongo.findAllByProperty(entityClass, "company",company);
-
+        lista = mongo.findAllByProperty(entityClass, "company", company);
 
 
         return lista;
@@ -1013,6 +1012,28 @@ public abstract class AService extends AbstractService implements IAService {
 
         if (result != null && result.getDeletedCount() == 1) {
             status = true;
+        }// end of if cycle
+
+        return status;
+    }// end of method
+
+
+    /**
+     * Deletes a given entity.
+     *
+     * @param keyCode must not be null
+     *
+     * @return true, se la entity è stata effettivamente cancellata
+     *
+     * @throws IllegalArgumentException in case the given keyCode is {@literal null}.
+     */
+    @Override
+    public boolean delete(String keyCode) {
+        boolean status = false;
+        AEntity entityBean = findByKeyUnica(keyCode);
+
+        if (entityBean != null) {
+            status = delete(entityBean);
         }// end of if cycle
 
         return status;

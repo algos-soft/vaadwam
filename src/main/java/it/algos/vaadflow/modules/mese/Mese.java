@@ -65,8 +65,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "mese", company = EACompanyRequired.nonUsata)
-@AIList(fields = {"giorni", "titoloBreve", "titoloLungo"})
-@AIForm(fields = {"giorni", "titoloBreve", "giorni", "titoloLungo"})
+@AIList(fields = {"ordine", "giorni", "titoloBreve", "titoloLungo"})
+@AIForm(fields = {"ordine", "giorni", "titoloBreve", "giorni", "titoloLungo"})
 public class Mese extends AEntity {
 
 
@@ -75,6 +75,16 @@ public class Mese extends AEntity {
      */
     private final static long serialVersionUID = 1L;
 
+
+    /**
+     * ordinamento (obbligatorio, unico) <br>
+     */
+    @NotNull
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    @Field("ord")
+    @AIField(type = EAFieldType.integer, widthEM = 5)
+    @AIColumn(name = "#", widthEM = 5)
+    public int ordine;
 
     /**
      * numero di giorni presenti (obbligatorio) <br>

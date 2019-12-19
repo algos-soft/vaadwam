@@ -2,11 +2,8 @@ package it.algos.vaadflow.enumeration;
 
 
 import it.algos.vaadflow.application.FlowCost;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.IAPreferenza;
-import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.EARole;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Project it.algos.vaadflow
@@ -40,7 +37,7 @@ public enum EAPreferenza implements IAPreferenza {
     showGiorno(FlowCost.SHOW_GIORNO, showMenu(FlowCost.TAG_GIO), EAPrefType.bool, EARole.developer, false, false),
 
     //--menu
-    usaMenu(FlowCost.USA_MENU, "Tipo di menu in uso", EAPrefType.enumeration, EARole.developer, false, "routers,tabs,buttons,popup,flowing,vaadin;tabs"),
+    usaMenu(FlowCost.USA_MENU, "Tipo di menu in uso", EAPrefType.enumeration, EARole.developer, false, EAMenu.tabs),
     showAccount(FlowCost.SHOW_ACCOUNT_ON_MENU, "Mostra l'account nella barra di menu", EAPrefType.bool, EARole.developer, false, true),
     showIcons(FlowCost.SHOW_ICONS_MENU, "Mostra le icone nella barra di menu", EAPrefType.bool, EARole.developer, false, true),
 
@@ -57,12 +54,13 @@ public enum EAPreferenza implements IAPreferenza {
     usaButtonShortcut(FlowCost.USA_BUTTON_SHORTCUT, "Shortcut dei bottoni. Disabilitabile in caso di problemi col browser", EAPrefType.bool, EARole.developer, true, true),
     usaGridHeaderPrimaMaiuscola(FlowCost.USA_GRID_HEADER_PRIMA_MAIUSCOLA, "Prima lettera maiuscola nell'header della Grid", EAPrefType.bool, EARole.developer, true, true),
 
-    textButtonSearch(FlowCost.FLAG_TEXT_SEARCH, "Testo del bottone Search", EAPrefType.enumeration, EARole.developer, true, "cerca...,ricerca...,find...;cerca..."),
-    textButtonNew(FlowCost.FLAG_TEXT_NEW, "Testo del bottone New", EAPrefType.enumeration, EARole.developer, true, "new,nuovo;nuovo"),
-    textButtonShow(FlowCost.FLAG_TEXT_SHOW, "Testo del bottone Show (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, "show,mostra,vedi;show"),
-    textButtonEdit(FlowCost.FLAG_TEXT_EDIT, "Testo del bottone Edit (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, "open,edit,modifica,apre,apri;edit"),
+    textButtonSearch(FlowCost.FLAG_TEXT_SEARCH, "Testo del bottone Search", EAPrefType.enumeration, EARole.developer, true, EASearchText.cerca),
+    textButtonNew(FlowCost.FLAG_TEXT_NEW, "Testo del bottone New", EAPrefType.enumeration, EARole.developer, true, EANewText.nuovoItaliano),
+    textButtonShow(FlowCost.FLAG_TEXT_SHOW, "Testo del bottone Show (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, EAShowText.show),
+    textButtonEdit(FlowCost.FLAG_TEXT_EDIT, "Testo del bottone Edit (potrebbe esserci solo l'icona)", EAPrefType.enumeration, EARole.developer, true, EAEditText.edit),
     usaTextEditButton(FlowCost.USA_TEXT_EDIT_BUTTON, "Usa un testo (oltre all'icona) per il bottone di Edit che apre il dialog", EAPrefType.bool, EARole.developer, true, true),
     usaEditButton(FlowCost.USA_EDIT_BUTTON, "Usa una colonna di bottoni Edit per aprire il dialogo. Se falso, usa un doppio clik nella riga", EAPrefType.bool, EARole.developer, false, true),
+    logAction(FlowCost.FLAG_LOG_ACTION, "Azione di log", EAPrefType.enumeration, EARole.developer, false, EALogAction.terminale),
     ;
 
 
@@ -88,7 +86,7 @@ public enum EAPreferenza implements IAPreferenza {
         this.setType(type);
         this.setShow(show);
         this.setCompanySpecifica(companySpecifica);
-        this.setValue(value);
+        this.setValue(type != EAPrefType.enumeration ? value : ((IAEnum) value).getPref());
     }// fine del costruttore
 
 

@@ -3,10 +3,9 @@ package it.algos.vaadflow.modules.versione;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.modules.preferenza.EAPrefType;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -394,7 +393,7 @@ public class VersioneService extends AService {
      * @param value    di default della preferenza
      */
     public void creaPrefDate(String sigla, String codePref, String descPref, LocalDateTime value) {
-        creaPref(sigla, codePref, descPref, EAPrefType.date, value);
+        creaPref(sigla, codePref, descPref, EAPrefType.localdatetime, value);
     }// end of method
 
 

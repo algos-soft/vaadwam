@@ -81,8 +81,8 @@ public class UtenteList extends AGridViewList {
         super.fixPreferenze();
 
         super.isEntityDeveloper = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
         super.isEntityUsaDatiDemo = true;
     }// end of method
 

@@ -149,9 +149,9 @@ public class StatisticaList extends WamViewList {
         super.fixPreferenze();
 
         if (wamLogin.isAdmin()) {
-            super.usaBottoneDeleteAll = true;
+            super.usaButtonDelete = true;
         }// end of if cycle
-        super.usaBottoneNew = false;
+        super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
 

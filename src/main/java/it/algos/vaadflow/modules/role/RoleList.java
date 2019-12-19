@@ -75,8 +75,8 @@ public class RoleList extends AGridViewList {
 
         super.searchType = EASearch.editField;
         super.isEntityDeveloper = true;
-        super.usaBottoneDeleteAll = true;
-        super.usaBottoneReset = true;
+        super.usaButtonDelete = true;
+        super.usaButtonReset = true;
     }// end of method
 
 

@@ -1,4 +1,4 @@
-package it.algos.vaadflow.modules.logtype;
+package it.algos.vaadflow.enumeration;
 
 import it.algos.vaadflow.application.FlowCost;
 
