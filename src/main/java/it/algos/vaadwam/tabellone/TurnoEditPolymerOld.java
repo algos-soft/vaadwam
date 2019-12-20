@@ -61,7 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Route(value = WamCost.TAG_TURNO_EDIT)
+@Route(value = WamCost.TAG_TURNO_EDIT+"old")
 @Viewport("width=device-width")
 @Tag("turno-edit")
 @HtmlImport("src/views/tabellone/turnoEditPolymer.html")
