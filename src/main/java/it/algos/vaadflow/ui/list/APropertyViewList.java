@@ -237,6 +237,14 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     /**
      * Placeholder SOPRA la Grid <br>
+     * Contenuto eventuale, non presente di default <br>
+     * Label o altro per informazioni specifiche; di norma per il developer <br>
+     */
+    protected VerticalLayout alertPlacehorder;
+
+
+    /**
+     * Placeholder SOPRA la Grid <br>
      * Contenuto eventuale, presente di default <br>
      * - con o senza un bottone per cancellare tutta la collezione
      * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
@@ -252,10 +260,10 @@ public abstract class APropertyViewList extends VerticalLayout {
 
     /**
      * Placeholder SOPRA la Grid <br>
-     * Contenuto eventuale, non presente di default <br>
-     * Label o altro per informazioni specifiche; di norma per il developer <br>
+     * Contenuto eventuale, di norma NON presente <br>
+     * Seconda riga di bottoni-menu aggiuntivi <br>
      */
-    protected VerticalLayout alertPlacehorder;
+    protected HorizontalLayout secondTopPlaceholder;
 
     /**
      * Label (obbligatoria)  che appare nell'header della Grid. <br>
@@ -352,6 +360,11 @@ public abstract class APropertyViewList extends VerticalLayout {
      * Flag di preferenza per usare il placeholder di informazioni specifiche sopra la Grid. Normalmente false. <br>
      */
     protected boolean usaTopAlert;
+
+    /**
+     * Flag di preferenza per usare la seconda riga di menu sopra la Grid. Normalmente false. <br>
+     */
+    protected boolean usaSecondTopPlaceholder;
 
     /**
      * Flag di preferenza per la Label nell'header della Grid grid. Normalmente true. <br>

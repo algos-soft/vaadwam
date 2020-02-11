@@ -21,43 +21,43 @@ public enum EASchedule {
     /**
      * Descrizione: ogni giorno 1 minuto dopo mezzanotte
      */
-    giornoPrimoMinuto("1 0 * * *", "ogni giorno 1 minuto dopo mezzanotte"),
+    giornoPrimoMinuto("1 0 * * *", "ogni giorno 1 minuto dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 2 minuti dopo mezzanotte
      */
-    giornoSecondoMinuto("2 0 * * *", "ogni giorno 2 minuti dopo mezzanotte"),
+    giornoSecondoMinuto("2 0 * * *", "ogni giorno 2 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 3 minuti dopo mezzanotte
      */
-    giornoTerzoMinuto("3 0 * * *", "ogni giorno 3 minuti dopo mezzanotte"),
+    giornoTerzoMinuto("3 0 * * *", "ogni giorno 3 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 4 minuti dopo mezzanotte
      */
-    giornoQuartoMinuto("4 0 * * *", "ogni giorno 4 minuti dopo mezzanotte"),
+    giornoQuartoMinuto("4 0 * * *", "ogni giorno 4 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 5 minuti dopo mezzanotte
      */
-    giornoQuintoMinuto("5 0 * * *", "ogni giorno 5 minuti dopo mezzanotte"),
+    giornoQuintoMinuto("5 0 * * *", "ogni giorno 5 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 6 minuti dopo mezzanotte
      */
-    giornoSestoMinuto("6 0 * * *", "ogni giorno 6 minuti dopo mezzanotte"),
+    giornoSestoMinuto("6 0 * * *", "ogni giorno 6 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno a mezzanotte
      */
-    giornoSettimoMinuto("7 0 * * *", "ogni giorno 7 minuti dopo mezzanotte"),
+    giornoSettimoMinuto("7 0 * * *", "ogni giorno 7 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 8 minuti dopo mezzanotte
      */
-    giornoOttavoMinuto("8 0 * * *", "ogni giorno 8 minuti dopo mezzanotte"),
+    giornoOttavoMinuto("8 0 * * *", "ogni giorno 8 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 9 minuti dopo mezzanotte
      */
-    giornoNonoMinuto("9 0 * * *", "ogni giorno 9 minuti dopo mezzanotte"),
+    giornoNonoMinuto("9 0 * * *", "ogni giorno 9 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni giorno 10 minuti dopo mezzanotte
      */
-    giornoDecimoMinuto("10 0 * * *", "ogni giorno 10 minuti dopo mezzanotte"),
+    giornoDecimoMinuto("10 0 * * *", "ogni giorno 10 minuti dopo mezzanotte."),
     /**
      * Descrizione: ogni ora, al minuto 2
      */
@@ -118,6 +118,22 @@ public enum EASchedule {
      * Descrizione: ogni giorno alle ore 8 del mattino
      */
     oreOttoMercoledi("5 8 * * 3", "ogni mercoledì alle ore 8:05 del mattino."),
+    /**
+     * Descrizione: ogni giorno alle ore 8 del mattino
+     */
+    oreOttoGiovedi("5 8 * * 4", "ogni giovedì alle ore 8:05 del mattino."),
+    /**
+     * Descrizione: ogni giorno alle ore 8 del mattino
+     */
+    oreOttoVenerdi("5 8 * * 5", "ogni venerdì alle ore 8:05 del mattino."),
+    /**
+     * Descrizione: ogni giorno alle ore 8 del mattino
+     */
+    oreOttoSabato("5 8 * * 6", "ogni sabato alle ore 8:05 del mattino."),
+    /**
+     * Descrizione: ogni giorno alle ore 8 del mattino
+     */
+    oreOttoDomenica("5 8 * * 7", "ogni domenica alle ore 8:05 del mattino."),
     /**
      * Descrizione: ogni giorno alle ore 8 del mattino
      */

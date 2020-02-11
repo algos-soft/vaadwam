@@ -7,7 +7,6 @@ import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
 import it.algos.vaadflow.modules.log.Log;
 import it.algos.vaadflow.modules.log.LogService;
-import it.algos.vaadflow.modules.logtype.Logtype;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
@@ -42,10 +41,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -214,8 +210,9 @@ public class MigrationService {
             importFunzioni(croceOld);
             importServizi(croceOld);
             importMiliti(croceOld);
-//            importTurni(croceOld);
         }// end of for cycle
+
+//        importTurniAnno();
     }// end of method
 
 
@@ -535,91 +532,90 @@ public class MigrationService {
 //    }// end of method
 
 
-//    /**
-//     * Importa da webambulanze i turni di tutte le croci esistenti <br>
-//     */
-//    public boolean importTurniDebug() {
-//        boolean status = true;
-//        setup();
-//
-//        for (CroceAmb croceOld : crociOld) {
-//            if (!importTurniDebug(croceOld)) {
-//                status = false;
-//            }// end of if cycle
-//        }// end of for cycle
-//
-//        if (status) {
-//            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
-//        }// end of if cycle
-//
-//        return status;
-//    }// end of method
+    /**
+     * Importa da webambulanze i turni di tutte le croci esistenti <br>
+     */
+    public boolean importTurniAnno() {
+        boolean status = true;
+        setup();
+
+        for (CroceAmb croceOld : crociOld) {
+            if (!importTurni(croceOld)) {
+                status = false;
+            }// end of if cycle
+        }// end of for cycle
+
+        if (status) {
+            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
+        }// end of if cycle
+
+        return status;
+    }// end of method
 
 
-//    /**
-//     * Importa da webambulanze i turni di una sola croce <br>
-//     *
-//     * @param croceOld esistente su webambulanze
-//     */
-//    private boolean importTurni(CroceAmb croceOld) {
-//        return importTurni(croceOld, getCroce(croceOld));
-//    }// end of method
+    /**
+     * Importa da webambulanze i turni di una sola croce <br>
+     *
+     * @param croceOld esistente su webambulanze
+     */
+    private boolean importTurni(CroceAmb croceOld) {
+        return importTurni(croceOld, getCroce(croceOld));
+    }// end of method
 
 
-//    /**
-//     * Importa da webambulanze i turni di una sola croce <br>
-//     *
-//     * @param croceNew di waadwam
-//     */
-//    public boolean importTurni(Croce croceNew) {
-//        return importTurni(getCroce(croceNew), croceNew);
-//    }// end of method
+    /**
+     * Importa da webambulanze i turni di una sola croce <br>
+     *
+     * @param croceNew di waadwam
+     */
+    public boolean importTurni(Croce croceNew) {
+        return importTurniAnno(croceNew, date.getAnnoCorrente());
+    }// end of method
 
 
-//    /**
-//     * Importa da webambulanze tutti i turni di una sola croce <br>
-//     *
-//     * @param croceOld esistente su webambulanze
-//     * @param croceNew di waadwam
-//     */
-//    public boolean importTurni(CroceAmb croceOld, Croce croceNew) {
-//        boolean status = true;
-//        List<TurnoAmb> turniOld = null;
-//
-//        turnoService.deleteAllCroce(croceNew);
-//        turniOld = turnoAmb.findAll((int) croceOld.getId());
-//        for (TurnoAmb turnoOld : turniOld) {
-//            status = status && creaSingoloTurno(croceNew, turnoOld);
-//        }// end of for cycle
-//
-//        return status;
-//    }// end of method
+    /**
+     * Importa da webambulanze tutti i turni di una sola croce <br>
+     *
+     * @param croceOld esistente su webambulanze
+     * @param croceNew di waadwam
+     */
+    public boolean importTurni(CroceAmb croceOld, Croce croceNew) {
+        boolean status = true;
+        List<TurnoAmb> turniOld = null;
+
+        turnoService.deleteAllCroce(croceNew);
+        turniOld = turnoAmb.findAll((int) croceOld.getId());
+        for (TurnoAmb turnoOld : turniOld) {
+            status = status && creaSingoloTurno(croceNew, turnoOld);
+        }// end of for cycle
+
+        return status;
+    }// end of method
 
 
-//    /**
-//     * Importa da webambulanze i turni di una sola croce per l'anno in corso <br>
-//     *
-//     * @param croceNew di waadwam
-//     * @param anno     da importare
-//     */
-//    public boolean importTurniAnno(Croce croceNew, int anno) {
-//        boolean status = true;
-//        CroceAmb croceOld = getCroce(croceNew);
-//        List<TurnoAmb> turniOld = null;
-//
-//        turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
-//        for (TurnoAmb turnoOld : turniOld) {
-//            status = status && creaSingoloTurno(croceNew, turnoOld);
-//        }// end of for cycle
-//
-//        return status;
-//    }// end of method
+    /**
+     * Importa da webambulanze i turni di una sola croce per l'anno in corso <br>
+     *
+     * @param croceNew di waadwam
+     * @param anno     da importare
+     */
+    public boolean importTurniAnno(Croce croceNew, int anno) {
+        boolean status = true;
+        CroceAmb croceOld = getCroce(croceNew);
+        List<TurnoAmb> turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
+
+        for (TurnoAmb turnoOld : turniOld) {
+            status = status && creaSingoloTurno(croceNew, turnoOld);
+        }// end of for cycle
+
+        return status;
+    }// end of method
 
 
     /**
      * Importa da webambulanze i turni per l'anno in corso da tutte le croci <br>
      */
-    public boolean importTurniAnno() {
+    public boolean importTurni() {
         boolean status = true;
         int anno = date.getAnnoCorrente();
         List<TurnoAmb> turniOld;
@@ -644,6 +640,20 @@ public class MigrationService {
 
         return status;
     }// end of method
+
+//    /**
+//     * Importa da webambulanze i turni per l'anno in corso <br>
+//     */
+//    public boolean importTurni(Croce croceNew) {
+//        return false;
+//    }// end of method
+//
+//    /**
+//     * Importa da webambulanze i turni per l'anno in corso <br>
+//     */
+//    public boolean importTurni(CroceAmb croceOld) {
+//        return false;
+//    }// end of method
 
 
     /**
@@ -873,7 +883,7 @@ public class MigrationService {
      */
     private void recuperaFunzioniDipendenti(List<FunzioneAmb> listaFunzioniOld, Croce croceNew) {
         String funzioniDipendentiOld = "";
-        List<Funzione> dipendenti = null;
+        Set<Funzione> dipendenti = null;
         Funzione funzioneBase = null;
         Funzione funzioneDip = null;
         String[] parti = null;
@@ -888,7 +898,7 @@ public class MigrationService {
                 }// end of if cycle
 
                 if (parti != null) {
-                    dipendenti = new ArrayList<>();
+                    dipendenti = new HashSet();
                     for (String code : parti) {
                         funzioneDip = funzioneService.findByKeyUnica(croceNew, code.trim());
                         if (funzioneDip != null) {
@@ -897,7 +907,7 @@ public class MigrationService {
                     }// end of for cycle
                 }// end of if cycle
 
-                if (array.isValid(dipendenti)) {
+                if (dipendenti != null) {
                     funzioneBase = funzioneService.findByKeyUnica(croceNew, funzOld.getSigla());
                     if (funzioneBase != null) {
                         funzioneBase.dipendenti = dipendenti;
@@ -935,7 +945,7 @@ public class MigrationService {
         boolean multiplo = servizioOld.isMultiplo();
         boolean primo = servizioOld.isPrimo();//--non utilizzato
         boolean fineGiornoSuccessivo = servizioOld.isFine_giorno_successivo(); //--non utilizzato
-        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
+        Set<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
         LocalTime inizio = LocalTime.of(oraInizio, minutiInizio);
         LocalTime fine = LocalTime.of(oraFine, minutiFine);
 
@@ -957,8 +967,8 @@ public class MigrationService {
      *
      * @param servizioOld della companyOld
      */
-    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
-        List<Funzione> listaFunzioni = new ArrayList<>();
+    private Set<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
+        Set<Funzione> listaFunzioni = new HashSet<>();
         FunzioneAmb funzAmb = null;
         Funzione funz = null;
         int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
@@ -1149,10 +1159,12 @@ public class MigrationService {
         String nickname = utenteOld.getNickname();
         String nickname2 = "";
         Role ruoloNew = getRoleNew(ruoloOld);
+        Set<Role> ruoliNew = getRuoli(ruoloNew);
+
         List<Funzione> funzioni = getFunzioniNew(croceNew, militeOld);
         String message;
 
-        militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, (List<Role>) null, mail, enabled, admin, dipendente, infermiere, funzioni);
+        militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni);
 
         if (utenteOld == null) {
             importMilite(EALogLivello.warn, croceNew.getCode() + " - Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
@@ -1164,7 +1176,7 @@ public class MigrationService {
 
         if (!militeSaved) {
             nickname2 = nickname + "/2";
-            militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname2, pass, (List<Role>) null, mail, enabled, admin, dipendente, infermiere, funzioni);
+            militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname2, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni);
 
             if (militeSaved) {
                 message = "Al milite " + militeOld.getNome() + " " + militeOld.getCognome() + " è stato cambiato nickName perché ne esisteva già un altro";
@@ -1180,6 +1192,20 @@ public class MigrationService {
         }// end of if cycle
 
         return status;
+    }// end of method
+
+
+    private Set<Role> getRuoli(Role ruoloNew) {
+        Set<Role> ruoliNew = new HashSet<>();
+        Role ruoloUtente = roleService.getUser();
+        ruoliNew.add(ruoloNew);
+
+        //--aggiunge comunque (se manca) il ruolo utente
+        if (!ruoliNew.contains(ruoloUtente)) {
+            ruoliNew.add(ruoloUtente);
+        }// end of if cycle
+
+        return ruoliNew;
     }// end of method
 
 
@@ -1457,7 +1483,7 @@ public class MigrationService {
     private Funzione recuperaFunzione(long keyID, Servizio servizio) {
         Funzione funzioneNew = null;
         FunzioneAmb funzioneOld = null;
-        List<Funzione> funzioniEmbeddeNelServizio = null;
+        Set<Funzione> funzioniEmbeddeNelServizio = null;
         String siglaOld = "";
         String codeNew = "";
 
@@ -1522,13 +1548,13 @@ public class MigrationService {
 
     //--registra un avviso
     public void importMilite(EALogLivello livello, String descrizione) {
-        logger.crea(livello, (Logtype) logtype.findById(WamCost.IMPORT_MILITI), descrizione);
+//        logger.crea(livello, (Logtype) logtype.findById(WamCost.IMPORT_MILITI), descrizione);
     }// fine del metodo
 
 
     //--registra un avviso
     public void importTurno(String descrizione) {
-        logger.crea(EALogLivello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
+//        logger.crea(EALogLivello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
     }// fine del metodo
 
 

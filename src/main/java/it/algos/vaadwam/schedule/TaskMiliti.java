@@ -37,7 +37,7 @@ public class TaskMiliti extends ATask {
      */
     @PostConstruct
     public void inizia() {
-        super.schedule = EASchedule.giornoOttavoMinuto;
+        super.schedule = EASchedule.giornoDecimoMinuto;
     }// end of method
 
 

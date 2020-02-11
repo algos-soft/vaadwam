@@ -1,6 +1,7 @@
 package it.algos.vaadwam.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadflow.enumeration.EALogType;
 import it.algos.vaadflow.enumeration.EASchedule;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
@@ -32,7 +33,7 @@ public class TaskTurni extends ATask {
 
     @PostConstruct
     public void inizia() {
-        super.schedule = EASchedule.giornoNonoMinuto;
+        super.schedule = EASchedule.oreQuattro;
     }// end of method
 
 
@@ -46,6 +47,7 @@ public class TaskTurni extends ATask {
             if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
                 mailService.sendIP("Import turni anno corrente", inizio);
             }// end of if cycle
+
         }// end of if cycle
     }// end of method
 

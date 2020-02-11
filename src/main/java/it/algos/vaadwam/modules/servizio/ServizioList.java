@@ -92,17 +92,20 @@ public class ServizioList extends WamViewList {
         super.creaAlertLayout();
         boolean isDeveloper = login.isDeveloper();
         boolean isAdmin = login.isAdmin();
+        boolean isUser = !isDeveloper && !isAdmin;
 
-        alertPlacehorder.add(new Label("Servizi specifici dell'associazione.  Caratterizzano ogni singolo turno."));
-        if (isDeveloper) {
-            alertPlacehorder.add(new Label("Come developer si possono importare i servizi dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_SERVIZI, LAST_IMPORT_SERVIZI));
+        alertPlacehorder.add(getLabelUser("Servizi specifici dell'associazione. Caratterizzano ogni singolo turno."));
+        if (isUser) {
+            alertPlacehorder.add(getLabelUser("Solo in visione. Le modifiche vengono effettuate da un admin."));
         } else {
-            if (isAdmin) {
-                alertPlacehorder.add(new Label("Come admin si possono aggiungere, modificare e cancellare i servizi . Gli utenti normali possono solo vederli"));
-            } else {
-                alertPlacehorder.add(new Label("Solo in visione. Le modifiche vengono effettuate da un admin."));
-            }// end of if/else cycle
+            alertPlacehorder.add(getLabelAdmin("Ogni servizio prevede un gruppo di funzioni che possono essere obbligatorie o facoltative."));
+            alertPlacehorder.add(getLabelAdmin("Un servizio può avere un orario predefinito ed uguale ogni giorno oppure da stabilirsi di volta in volta."));
+            alertPlacehorder.add(getLabelAdmin("Un servizio non più utilizzato può venire disabilitato per non visualizzarlo nel tabellone."));
+            alertPlacehorder.add(getLabelAdmin("Ogni servizio prevede un colore per un raggruppamento logico nel tabellone."));
+            if (isDeveloper) {
+                alertPlacehorder.add(getLabelDev("Come developer si possono importare i servizi dal vecchio programma"));
+                alertPlacehorder.add(getInfoImport(task, USA_DAEMON_SERVIZI, LAST_IMPORT_SERVIZI));
+            }// end of if cycle
         }// end of if/else cycle
     }// end of method
 

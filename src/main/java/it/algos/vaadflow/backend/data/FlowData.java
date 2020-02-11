@@ -1,14 +1,15 @@
 package it.algos.vaadflow.backend.data;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.address.AddressService;
 import it.algos.vaadflow.modules.anno.AnnoService;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.giorno.GiornoService;
+import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.mese.MeseService;
 import it.algos.vaadflow.modules.person.PersonService;
-import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.secolo.SecoloService;
@@ -53,6 +54,12 @@ public class FlowData extends AData {
      */
     @Autowired
     private LogtypeService logtypeService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private LogService logService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -112,6 +119,7 @@ public class FlowData extends AData {
     public void loadAllData() {
         roleService.loadData();
         logtypeService.loadData();
+        logService.loadData();
 
         addressService.loadData();
         personService.loadData();

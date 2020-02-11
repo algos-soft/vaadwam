@@ -9,6 +9,7 @@ import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
@@ -70,7 +71,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "funzioni", "noteWam"})
-@AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "funzioni", "role", "locked", "admin", "dipendente", "infermiere", "enabled", "noteWam"})
+@AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo",  "role", "locked", "admin", "dipendente", "infermiere", "enabled", "noteWam"})
 @AIScript(sovrascrivibile = false)
 public class Milite extends Person {
 
@@ -127,7 +128,7 @@ public class Milite extends Person {
      * Se modifico successivamente la funzione originaria, le modifiche NON si estendono alla funzione 'congelata' nel milite
      */
     @Field("funz")
-    @AIField(type = EAFieldType.multicombo, widthEM = 20, name = "Funzioni per le quali il milite è abilitato")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = MiliteService.class, widthEM = 20, name = "Funzioni per le quali il milite è abilitato")
     @AIColumn(flexGrow = true)
     public List<Funzione> funzioni;
 

@@ -395,7 +395,11 @@ public class ADateService extends AbstractService {
      * @return la data sotto forma di stringa
      */
     public String get(LocalDate localDate, String pattern) {
-        return localDate.format(DateTimeFormatter.ofPattern(pattern, LOCALE));
+        if (localDate != null) {
+            return localDate.format(DateTimeFormatter.ofPattern(pattern, LOCALE));
+        } else {
+            return VUOTA;
+        }// end of if/else cycle
     }// end of method
 
 
@@ -1452,6 +1456,56 @@ public class ADateService extends AbstractService {
         }// end of if cycle
 
         return durata;
+    }// end of method
+
+
+    /**
+     * Controlla la validità del localDate
+     * Deve esistere (not null)
+     * Deve avere valore più recente del 1 gennaio 1970
+     *
+     * @param localDate in ingresso da controllare
+     *
+     * @return vero se il localDate soddisfa le condizioni previste
+     */
+    public boolean isValid(LocalDate localDate) {
+        boolean status = false;
+        int result = 0;
+        LocalDate primaDataValida = LocalDate.of(1970, 1, 1);
+
+        if (localDate != null) {
+            result = localDate.compareTo(primaDataValida);
+            if (result > 0) {
+                status = true;
+            }// end of if cycle
+        }// end of if cycle
+
+        return status;
+    }// end of method
+
+
+    /**
+     * Controlla la validità del localDateTime
+     * Deve esistere (not null)
+     * Deve avere valore più recente del 1 gennaio 1970, ore zero, minuti zero
+     *
+     * @param localDateTime in ingresso da controllare
+     *
+     * @return vero se il localDateTime soddisfa le condizioni previste
+     */
+    public boolean isValid(LocalDateTime localDateTime) {
+        boolean status = false;
+        int result = 0;
+        LocalDateTime primoDateTimeValida = LocalDateTime.of(1970, 1, 1,0,0);
+
+        if (localDateTime != null) {
+            result = localDateTime.compareTo(primoDateTimeValida);
+            if (result > 0) {
+                status = true;
+            }// end of if cycle
+        }// end of if cycle
+
+        return status;
     }// end of method
 
 

@@ -6,7 +6,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.service.AMailService;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
@@ -36,6 +36,12 @@ public abstract class WamViewList extends AGridViewList {
     protected Button deleteButton;
 
     protected Button importButton;
+
+    protected String lastImport;
+
+    protected String durataLastImport;
+
+    protected EATempo eaTempoTypeImport;
 
 //    /**
 //     * La injection viene fatta da SpringBoot in automatico <br>
@@ -83,7 +89,6 @@ public abstract class WamViewList extends AGridViewList {
     }// end of Vaadin/@Route constructor
 
 
-
     /**
      * Le preferenze standard
      * Può essere sovrascritto, per aggiungere informazioni
@@ -117,6 +122,10 @@ public abstract class WamViewList extends AGridViewList {
         }// end of if/else cycle
 
         super.usaPagination = false;
+
+        this.lastImport = VUOTA;
+        this.durataLastImport = VUOTA;
+        this.eaTempoTypeImport = EATempo.nessuno;
     }// end of method
 
 
@@ -167,7 +176,18 @@ public abstract class WamViewList extends AGridViewList {
         ((WamService) service).importa();
 
         log.info("Import effettuato in " + date.deltaText(inizio));
+        setLastImport(inizio);
         UI.getCurrent().getPage().reload();
+    }// end of method
+
+
+    /**
+     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     */
+    protected void setLastImport(long inizio) {
+        pref.saveValue(lastImport, LocalDateTime.now());
+        pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio));
     }// end of method
 
 
@@ -178,10 +198,10 @@ public abstract class WamViewList extends AGridViewList {
         Label label = null;
         String testo = "";
         String tag = "Import automatico: ";
-        String nota = task.getSchedule().getNota() + ".";
+        String nota = task.getSchedule().getNota();
 
         if (login.isDeveloper()) {
-            LocalDateTime lastDownload = pref.getDate(flagLastDownload);
+            LocalDateTime lastDownload = pref.getDateTime(flagLastDownload);
             testo = tag;
 
             if (pref.isBool(flagDaemon)) {
@@ -191,12 +211,12 @@ public abstract class WamViewList extends AGridViewList {
             }// end of if/else cycle
 
             if (lastDownload != null) {
-                label = new Label(testo + " Ultimo import il " + date.getTime(lastDownload));
+                label = getLabelDev(testo + " Ultimo import il " + date.getTime(lastDownload));
             } else {
                 if (pref.isBool(flagDaemon)) {
-                    label = new Label(tag + nota + " Non ancora effettuato.");
+                    label = getLabelDev(tag + nota + " Non ancora effettuato.");
                 } else {
-                    label = new Label(testo);
+                    label = getLabelDev(testo);
                 }// end of if/else cycle
             }// end of if/else cycle
 
@@ -253,6 +273,7 @@ public abstract class WamViewList extends AGridViewList {
 //            updateGrid();
 //        });
 //    }// end of method
+
 
     /**
      * Sincronizza la company in uso. <br>

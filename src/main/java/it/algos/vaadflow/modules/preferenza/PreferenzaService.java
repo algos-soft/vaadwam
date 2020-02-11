@@ -2,6 +2,7 @@ package it.algos.vaadflow.modules.preferenza;
 
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.enumeration.EAPrefType;
@@ -14,14 +15,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.TAG_PRE;
+import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.START_TIME;
 import static it.algos.vaadflow.application.FlowVar.projectName;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
@@ -424,6 +427,7 @@ public class PreferenzaService extends AService {
         return pref;
     }// end of method
 
+
     public List<Preferenza> findAllByType(EAPrefType type) {
 //        Query query = new Query();
 //        String meseField = "mese";
@@ -435,6 +439,7 @@ public class PreferenzaService extends AService {
 //        return mongo.mongoOp.find(query, Preferenza.class);
         return repository.findAllByTypeOrderByValue(type);
     }// end of method
+
 
     /**
      * Metodo invocato da ABoot (o da una sua sottoclasse) <br>
@@ -669,8 +674,6 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-
-
     public long getLong(IAPreferenza eaPref) {
         return getLong(eaPref.getCode(), (long) eaPref.getValue());
     } // end of method
@@ -697,8 +700,6 @@ public class PreferenzaService extends AService {
 
         return valoreLungo;
     } // end of method
-
-
 
 
     public String getEnumStr(IAPreferenza eaPref) {
@@ -730,7 +731,19 @@ public class PreferenzaService extends AService {
     } // end of method
 
 
-    public LocalDateTime getDate(String code) {
+    public LocalDate getDate(String code) {
+        LocalDate value = null;
+        Object genericValue = getValue(code);
+
+        if (genericValue instanceof LocalDate) {
+            value = (LocalDate) genericValue;
+        }// end of if cycle
+
+        return value != null ? value : START_DATE;
+    } // end of method
+
+
+    public LocalDateTime getDateTime(String code) {
         LocalDateTime value = null;
         Object genericValue = getValue(code);
 
@@ -738,7 +751,19 @@ public class PreferenzaService extends AService {
             value = (LocalDateTime) genericValue;
         }// end of if cycle
 
-        return value;
+        return value != null ? value : START_DATE_TIME;
+    } // end of method
+
+
+    public LocalTime getTime(String code) {
+        LocalTime value = null;
+        Object genericValue = getValue(code);
+
+        if (genericValue instanceof LocalTime) {
+            value = (LocalTime) genericValue;
+        }// end of if cycle
+
+        return value != null ? value : START_TIME;
     } // end of method
 
 

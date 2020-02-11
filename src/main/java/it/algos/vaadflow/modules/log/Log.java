@@ -4,7 +4,6 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.backend.entity.ACEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.logtype.Logtype;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import lombok.*;
@@ -15,8 +14,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -56,9 +53,9 @@ import java.time.LocalDateTime;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- *      (EAFieldType.link e XxxPresenter.class)
+ * (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -71,8 +68,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "log", company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"livello", "type", "evento", "descrizione"})
-@AIForm(fields = {"livello", "type", "descrizione", "evento"})
+@AIList(fields = {"type", "evento", "descrizione"})
+@AIForm(fields = {"type", "evento", "descrizione"})
 public class Log extends ACEntity {
 
 
@@ -83,14 +80,24 @@ public class Log extends ACEntity {
 
 
     /**
-     * rilevanza del log (obbligatorio) <br>
+     * raggruppamento logico dei log per type di eventi (obbligatorio)
      */
-    @NotNull
-    @Enumerated(EnumType.ORDINAL)
-    @Field("liv")
-    @AIField(type = EAFieldType.enumeration, enumClazz = EALogLivello.class, required = true, widthEM = 4)
-    @AIColumn(widthEM = 6, sortable = false)
-    public EALogLivello livello;
+    @NotEmpty(message = "La tipologia del log è obbligatoria")
+    @Indexed()
+    @Field("type")
+    @AIField(type = EAFieldType.combo, serviceClazz = LogtypeService.class, nullSelectionAllowed = false, widthEM = 10)
+    @AIColumn(widthEM = 8, sortable = false)
+    public Logtype type;
+
+//    /**
+//     * rilevanza del log (obbligatorio) <br>
+//     */
+//    @NotNull
+//    @Enumerated(EnumType.ORDINAL)
+//    @Field("liv")
+//    @AIField(type = EAFieldType.enumeration, enumClazz = EALogLivello.class, required = true, widthEM = 4)
+//    @AIColumn(widthEM = 6, sortable = false)
+//    public EALogLivello livello;
 
     /**
      * descrizione (obbligatoria, non unica) <br>
@@ -102,6 +109,7 @@ public class Log extends ACEntity {
     @AIColumn(flexGrow = true)
     public String descrizione;
 
+
     /**
      * Data dell'evento (obbligatoria, non modificabile)
      * Gestita in automatico
@@ -111,16 +119,6 @@ public class Log extends ACEntity {
     @Indexed()
     @AIField(type = EAFieldType.localdatetime)
     public LocalDateTime evento;
-
-    /**
-     * raggruppamento logico dei log per type di eventi (obbligatorio)
-     */
-    @NotEmpty(message = "La tipologia del log è obbligatoria")
-    @Indexed()
-    @Field("type")
-    @AIField(type = EAFieldType.combo, serviceClazz = LogtypeService.class, nullSelectionAllowed = false, widthEM = 10)
-    @AIColumn(widthEM = 7, sortable = false)
-    public Logtype type;
 
 
     /**

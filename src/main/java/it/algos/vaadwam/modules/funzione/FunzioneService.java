@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 
@@ -101,7 +102,7 @@ public class FunzioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Funzione newEntity() {
-        return newEntity((Croce) null, 0, "", "", "", (VaadinIcon) null, (List<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", "", (VaadinIcon) null, (Set<Funzione>) null);
     }// end of method
 
 
@@ -119,7 +120,7 @@ public class FunzioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) {
-        return newEntity(croce, 0, code, sigla, descrizione, icona, (List<Funzione>) null);
+        return newEntity(croce, 0, code, sigla, descrizione, icona, (Set<Funzione>) null);
     }// end of method
 
 
@@ -139,7 +140,7 @@ public class FunzioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, List<Funzione> dipendenti) {
+    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti) {
         Funzione entity = Funzione.builderFunzione()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
                 .code(text.isValid(code) ? code : null)
@@ -180,7 +181,7 @@ public class FunzioneService extends WamService {
         }// end of if cycle
 
         //--elimina informazioni inutili dalla lista (embedded) di funzioni dipendenti
-        if (array.isValid(entity.dipendenti)) {
+        if (entity.dipendenti != null) {
             for (Funzione funz : entity.dipendenti) {
                 funz.croce = null;
                 funz.dipendenti = null;
@@ -285,7 +286,7 @@ public class FunzioneService extends WamService {
      */
     @Override
     public boolean importa() {
-        return migration.importFunzioni();
+        return migration.importFunzioni(getCroce());
     }// end of method
 
 

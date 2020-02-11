@@ -40,7 +40,7 @@ public class TaskFunzioni extends ATask {
      */
     @PostConstruct
     public void inizia() {
-        super.schedule = EASchedule.giornoSestoMinuto;
+        super.schedule = EASchedule.giornoSecondoMinuto;
     }// end of method
 
 

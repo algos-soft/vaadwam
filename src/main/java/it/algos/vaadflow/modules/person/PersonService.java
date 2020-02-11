@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_PER;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
@@ -130,7 +131,7 @@ public class PersonService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Person newEntity() {
-        return newEntity((Company) null, "", "", "", (Address) null, "", "", (List<Role>) null, "", false, false);
+        return newEntity((Company) null, "", "", "", (Address) null, "", "", (Set<Role>) null, "", false, false);
     }// end of method
 
 
@@ -142,7 +143,7 @@ public class PersonService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Person newEntityConSuperclasse() {
-        return newEntity((Company) null, "", "", "", (Address) null, "", "", (List<Role>) null, "", false, true);
+        return newEntity((Company) null, "", "", "", (Address) null, "", "", (Set<Role>) null, "", false, true);
     }// end of method
 
 
@@ -187,7 +188,7 @@ public class PersonService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Person newEntity(String nome, String cognome, String telefono, Address indirizzo, String mail) {
-        return newEntity((Company) null, nome, cognome, telefono, indirizzo, "", "", (List<Role>) null, mail, false, false);
+        return newEntity((Company) null, nome, cognome, telefono, indirizzo, "", "", (Set<Role>) null, mail, false, false);
     }// end of method
 
 
@@ -222,7 +223,7 @@ public class PersonService extends AService {
             Address indirizzo,
             String userName,
             String passwordInChiaro,
-            List<Role> ruoli,
+            Set<Role> ruoli,
             String mail,
             boolean enabled,
             boolean usaSuperClasse) {

@@ -16,7 +16,7 @@ public enum EAPreferenza implements IAPreferenza {
 
     usaDebug(FlowCost.USA_DEBUG, "Flag generale di debug (ce ne possono essere di specifici, validi solo se questo è vero)", EAPrefType.bool, EARole.developer, false, false),
     usaLogDebug(FlowCost.USA_LOG_DEBUG, "Uso del log di registrazione per il livello debug. Di default false.", EAPrefType.bool, EARole.developer, false, false),
-    //    usaCompany(FlowCost.USA_COMPANY, "L'applicazione è multiCompany", EAPrefType.bool, EARole.developer, false, false),
+    logLevelCorrente(FlowCost.LOG_LEVEL_CORRENTE, "Livello corrente di log. Di default info.", EAPrefType.enumeration, EARole.developer, false, EALogLivello.info),
     loadUtenti(FlowCost.LOAD_UTENTI, "Flag per caricare gli utenti di prova allo startup del programma. Di default false.", EAPrefType.bool, EARole.developer, false, false),
 
     //--visibilità standard dei moduli
@@ -43,8 +43,8 @@ public enum EAPreferenza implements IAPreferenza {
 
     //--mail
     usaLogMail(FlowCost.USA_LOG_MAIL, "Uso della mail spedita da un log. Di default false", EAPrefType.bool, EARole.developer, false, false),
-    mailFrom(FlowCost.MAIL_FROM, "Email di default da cui partono i log", EAPrefType.string, EARole.developer, false, "info@algos.it"),
-    mailTo(FlowCost.MAIL_TO, "Email di default a cui spedire i log di posta", EAPrefType.string, EARole.admin, false, "gac@algos.it"),
+    mailFrom(FlowCost.MAIL_FROM, "Email di default da cui partono i log", EAPrefType.email, EARole.developer, false, "info@algos.it"),
+    mailTo(FlowCost.MAIL_TO, "Email di default a cui spedire i log di posta", EAPrefType.email, EARole.admin, false, "gac@algos.it"),
 
     //--.grid
     maxRigheGrid(FlowCost.MAX_RIGHE_GRID, "Numero di elementi oltre il quale scatta la pagination automatica della Grid (se attiva)", EAPrefType.integer, EARole.developer, true, 20),

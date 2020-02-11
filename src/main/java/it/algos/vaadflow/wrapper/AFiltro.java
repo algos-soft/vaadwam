@@ -29,6 +29,11 @@ public class AFiltro {
     }// end of constructor
 
 
+    public AFiltro(Sort sort) {
+        this.sort = sort;
+    }// end of constructor
+
+
     public CriteriaDefinition getCriteria() {
         return criteria;
     }// end of method

@@ -670,7 +670,7 @@ public abstract class AService extends AbstractService implements IAService {
             if (UI.getCurrent() != null) {
                 Notification.show("La scheda non è completa", DURATA, Notification.Position.BOTTOM_START);
             }// end of if cycle
-            log.error("Algos - La scheda " + entityBean.toString() + " di " + entityBean.getClass().getSimpleName() + " non è completa");
+//            log.error("Algos - La scheda " + entityBean.toString() + " di " + entityBean.getClass().getSimpleName() + " non è completa");
         }// end of if/else cycle
 
         return entityValida;

@@ -1,6 +1,5 @@
 package it.algos.vaadwam.modules.funzione;
 
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -8,9 +7,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.schedule.ATask;
@@ -19,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.time.LocalDateTime;
-
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -78,6 +76,7 @@ public class FunzioneList extends WamViewList {
     @Autowired
     private CroceService croceService;
 
+
     /**
      * Costruttore @Autowired <br>
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
@@ -102,6 +101,10 @@ public class FunzioneList extends WamViewList {
     @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
+
+        this.lastImport = VUOTA;
+        this.durataLastImport = VUOTA;
+        this.eaTempoTypeImport = EATempo.nessuno;
     }// end of method
 
 
@@ -116,26 +119,21 @@ public class FunzioneList extends WamViewList {
         super.creaAlertLayout();
         boolean isDeveloper = login.isDeveloper();
         boolean isAdmin = login.isAdmin();
-        String messageUno = "Quando un milite viene abilitato per una funzione, gli vengono abilitate anche le funzioni dipendenti.";
-        String messageDue = "Successivamente le funzioni dipendenti possono essere singolarmente disabilitate.";
+        boolean isUser = !isDeveloper && !isAdmin;
 
-        alertPlacehorder.add(new Label("Funzioni di servizio specifiche dell'associazione. Attribuibili singolarmente ad ogni milite."));
-        if (isDeveloper) {
-            alertPlacehorder.add(new Label("Come developer si possono importare le funzioni dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_FUNZIONI, LAST_IMPORT_FUNZIONI));
-            alertPlacehorder.add(new Label(messageUno));
-            alertPlacehorder.add(new Label(messageDue));
+        alertPlacehorder.add(getLabelUser("Funzioni di servizio specifiche dell'associazione. Attribuibili singolarmente ad ogni milite."));
+        if (isUser) {
+            alertPlacehorder.add(getLabelUser("Solo in visione. Le modifiche vengono effettuate da un admin."));
         } else {
-            if (isAdmin) {
-                alertPlacehorder.add(new Label("Come admin si possono aggiungere, modificare e cancellare le funzioni. Gli utenti normali possono solo vederle."));
-                alertPlacehorder.add(new Label(messageUno));
-                alertPlacehorder.add(new Label(messageDue));
-            } else {
-                alertPlacehorder.add(new Label("Solo in visione. Le modifiche vengono effettuate da un admin."));
-            }// end of if/else cycle
+            alertPlacehorder.add(getLabelAdmin("Quando un milite viene abilitato per una funzione, gli vengono abilitate anche le funzioni dipendenti."));
+            alertPlacehorder.add(getLabelAdmin("Successivamente le funzioni dipendenti possono essere singolarmente disabilitate."));
+            alertPlacehorder.add(getLabelAdmin("Come admin si possono aggiungere, modificare e cancellare le funzioni. Gli utenti normali possono solo vederle."));
+            if (isDeveloper) {
+                alertPlacehorder.add(getLabelDev("Come developer si possono importare le funzioni dal vecchio programma"));
+                alertPlacehorder.add(getInfoImport(task, USA_DAEMON_FUNZIONI, LAST_IMPORT_FUNZIONI));
+            }// end of if cycle
         }// end of if/else cycle
     }// end of method
-
 
 
     /**

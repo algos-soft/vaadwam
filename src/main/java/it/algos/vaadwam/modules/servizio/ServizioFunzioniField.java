@@ -23,7 +23,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadwam
@@ -143,15 +145,15 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
 
 
     public void deleteFunz(Funzione entityBean) {
-        List<Funzione> items = null;
-        ArrayList<Funzione> lista = null;
+        Set<Funzione> items = null;
+        Set<Funzione> lista = null;
 
         if (entityBean != null) {
             items = servizio.getFunzioni();
         }// end of if cycle
 
         if (items != null && items.contains(entityBean)) {
-            lista = new ArrayList<>();
+            lista = new HashSet<>();
             for (Funzione funz : items) {
                 if (funz != entityBean) {
                     lista.add(funz);
@@ -171,7 +173,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
 
 
     private void setItems(Servizio entityBean) {
-        List<Funzione> items = entityBean.getFunzioni();
+        Set<Funzione> items = entityBean.getFunzioni();
         if (items != null && items.size() > 0) {
             grid.setItems(items);
         }// end of if cycle
@@ -197,8 +199,8 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
     }// end of method
 
     public void addFunz(Funzione newFunz) {
-        List<Funzione> items = null;
-        ArrayList<Funzione> lista = new ArrayList<>();
+        Set<Funzione> items = null;
+        Set<Funzione> lista = new HashSet<>();
 
         if (newFunz != null) {
             items = servizio.getFunzioni();

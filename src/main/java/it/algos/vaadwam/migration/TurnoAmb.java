@@ -137,8 +137,8 @@ public class TurnoAmb extends AmbEntity {
 
     public List<TurnoAmb> findAll(int codeCroce, LocalDate inzio, LocalDate fine) {
         String where = " croce_id=" + codeCroce;
-        where += " and giorno>" + SEP + inzio + SEP;
-        where += " and giorno<" + SEP + fine + SEP;
+        where += " and giorno>=" + SEP + inzio + SEP;
+        where += " and giorno<=" + SEP + fine + SEP;
 
         return (List<TurnoAmb>) super.findAll(DBNAME, where);
     }// end of method

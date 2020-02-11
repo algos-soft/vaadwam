@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_UTE;
 
@@ -131,7 +132,7 @@ public class UtenteService extends AService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Company company, String userName, String passwordInChiaro, List<Role> ruoli, String mail) {
+    public boolean creaIfNotExist(Company company, String userName, String passwordInChiaro, Set<Role> ruoli, String mail) {
         boolean creata = false;
         AEntity entity = null;
 
@@ -154,7 +155,7 @@ public class UtenteService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Utente newEntity() {
-        return newEntity((Company) null, "", "", (List<Role>) null, "", true);
+        return newEntity((Company) null, "", "", (Set<Role>) null, "", true);
     }// end of method
 
 
@@ -172,7 +173,7 @@ public class UtenteService extends AService {
         String userName;
         String passwordInChiaro;
         EARole ruolo;
-        List<Role> ruoli;
+        Set<Role> ruoli;
         String mail;
         EACompany eaCompany;
         Company company = null;
@@ -209,7 +210,7 @@ public class UtenteService extends AService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Utente newEntity(Company company, String userName, String passwordInChiaro, List<Role> ruoli, String mail, boolean enabled) {
+    public Utente newEntity(Company company, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled) {
         Utente entity = Utente.builderUtente()
                 .username(text.isValid(userName) ? userName : null)
                 .password(text.isValid(passwordInChiaro) ? passwordInChiaro : null)

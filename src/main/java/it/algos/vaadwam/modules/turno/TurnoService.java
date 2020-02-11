@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
@@ -274,8 +275,7 @@ public class TurnoService extends WamService {
      */
     @Override
     public boolean importa() {
-//        return migration.importTurniAnno();
-        return migration.importTurniDebug(getCroce());
+        return migration.importTurni(getCroce());
     }// end of method
 
 
@@ -451,7 +451,7 @@ public class TurnoService extends WamService {
      */
     public List<Iscrizione> addIscrizioni(Servizio servizio) {
         List<Iscrizione> items = null;
-        List<Funzione> funzioni = null;
+        Set<Funzione> funzioni = null;
         int durata = 0;
 
         if (servizio != null) {
@@ -460,7 +460,7 @@ public class TurnoService extends WamService {
             durata = servizioService.getDurata(servizio);
         }// end of if cycle
 
-        if (array.isValid(funzioni)) {
+        if (funzioni!=null) {
             for (Funzione funz : funzioni) {
                 items.add(Iscrizione.builderIscrizione().funzione(funz).durataEffettiva(durata).build());
             }// end of for cycle
@@ -484,7 +484,7 @@ public class TurnoService extends WamService {
         List<Iscrizione> iscrizioniEmbeddeTurno = turno.getIscrizioni();
         Servizio servizio = null;
         servizio = turno.getServizio();
-        List<Funzione> funzioni = servizio.getFunzioni();
+        Set<Funzione> funzioni = servizio.getFunzioni();
         boolean trovata;
         Funzione funzione = null;
 
@@ -526,7 +526,7 @@ public class TurnoService extends WamService {
         boolean funzValida = false;
         Servizio servizio = null;
         servizio = turno.getServizio();
-        List<Funzione> funzioni = servizio.getFunzioni();
+        Set<Funzione> funzioni = servizio.getFunzioni();
 
         for (Funzione funz : funzioni) {
             if (funz.obbligatoria) {

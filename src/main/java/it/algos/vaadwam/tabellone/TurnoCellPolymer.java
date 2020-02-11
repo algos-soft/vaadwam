@@ -28,10 +28,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -130,7 +127,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         boolean differenziata = pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        List<Funzione> funzioni = null;
+        Set<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore;
@@ -179,7 +176,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     private void colorazioneUnica() {
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        List<Funzione> funzioni = null;
+        Set<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore;
@@ -221,7 +218,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     private void colorazioneDifferenziata() {
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        List<Funzione> funzioni = null;
+        Set<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore = "";

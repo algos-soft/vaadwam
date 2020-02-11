@@ -200,6 +200,7 @@ public class WamBoot extends ABoot {
         int numPref = super.creaPreferenze();
         List<? extends Company> listaCroci = croceService.findAll();
 
+        Object alfa=EAPreferenzaWam.values();
         for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
             //--se è companySpecifica=true, crea una preferenza per ogni company
             if (eaPref.isCompanySpecifica()) {
@@ -376,26 +377,29 @@ public class WamBoot extends ABoot {
         }// end of if cycle
 
         if (funzioneService.isVuoto()) {
-            migration.importFunzioni();
+//            migration.importFunzioni();
         }// end of if cycle
 
         if (servizioService.isVuoto()) {
-            migration.importServizi();
+//            migration.importServizi();
         }// end of if cycle
 
         if (militeService.isVuoto()) {
-            migration.importMiliti();
+//            migration.importMiliti();
         }// end of if cycle
 
 
         //--patch di accesso
-        utenteService.creaIfNotExist(croceService.getCRF(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+//        utenteService.creaIfNotExist(croceService.getGAPS(), "Guido Ceresa", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+//        utenteService.creaIfNotExist(croceService.getGAPS(), "Rino Olivieri", "rino123", roleService.getRoles(EARole.admin), "gac@algos.it");
+//        utenteService.creaIfNotExist(croceService.getGAPS(), "Enrico Delfanti", "enrico123", roleService.getRoles(EARole.user), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
-        utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");
-        utenteService.creaIfNotExist(croceService.getCRF(), "Porcari Stefano", "7777", roleService.getRoles(EARole.admin), "");
-        utenteService.creaIfNotExist(croceService.getPAP(), "Piana Silvano", "piana987", roleService.getRoles(EARole.admin), "");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "Michelini Mauro", "ginevracrpt", roleService.getRoles(EARole.admin), "");
+//        utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
+//        utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");
+//        utenteService.creaIfNotExist(croceService.getCRF(), "Porcari Stefano", "7777", roleService.getRoles(EARole.admin), "");
+//        utenteService.creaIfNotExist(croceService.getPAP(), "Piana Silvano", "piana987", roleService.getRoles(EARole.admin), "");
+//        utenteService.creaIfNotExist(croceService.getCRPT(), "Michelini Mauro", "ginevracrpt", roleService.getRoles(EARole.admin), "");
 
 //        Utente utente = (Utente) utenteService.findById("Addabbo Andrea");
 //        utente.company = croceService.getCRF();

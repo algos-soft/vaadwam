@@ -184,24 +184,24 @@ public class LogtypeService extends AService {
     }// end of method
 
 
-    /**
-     * Raggruppamento logico dei log per type di eventi (nuova entity)
-     *
-     * @return la entity appena trovata
-     */
-    public Logtype getSetup() {
-        return repository.findByCode(LOG_SETUP);
-    }// end of method
-
-
-    /**
-     * Raggruppamento logico dei log per type di eventi (nuova entity)
-     *
-     * @return la entity appena trovata
-     */
-    public Logtype getNew() {
-        return repository.findByCode(LOG_NEW);
-    }// end of method
+//    /**
+//     * Raggruppamento logico dei log per type di eventi (nuova entity)
+//     *
+//     * @return la entity appena trovata
+//     */
+//    public Logtype getSetup() {
+//        return repository.findByCode(LOG_SETUP);
+//    }// end of method
+//
+//
+//    /**
+//     * Raggruppamento logico dei log per type di eventi (nuova entity)
+//     *
+//     * @return la entity appena trovata
+//     */
+//    public Logtype getNew() {
+//        return repository.findByCode(LOG_NEW);
+//    }// end of method
 
 
     /**
@@ -210,27 +210,27 @@ public class LogtypeService extends AService {
      * @return la entity appena trovata
      */
     public Logtype getEdit() {
-        return repository.findByCode(LOG_EDIT);
+        return repository.findByCode(EALogType.edit.getTag());
     }// end of method
 
 
-    /**
-     * Raggruppamento logico dei log per type di eventi (entity cancellata)
-     *
-     * @return la entity appena trovata
-     */
-    public Logtype getDelete() {
-        return repository.findByCode(LOG_DELETE);
-    }// end of method
-
-
-    /**
-     * Raggruppamento logico dei log per type di eventi (import di dati)
-     *
-     * @return la entity appena trovata
-     */
-    public Logtype getImport() {
-        return repository.findByCode(LOG_IMPORT);
-    }// end of method
+//    /**
+//     * Raggruppamento logico dei log per type di eventi (entity cancellata)
+//     *
+//     * @return la entity appena trovata
+//     */
+//    public Logtype getDelete() {
+//        return repository.findByCode(LOG_DELETE);
+//    }// end of method
+//
+//
+//    /**
+//     * Raggruppamento logico dei log per type di eventi (import di dati)
+//     *
+//     * @return la entity appena trovata
+//     */
+//    public Logtype getImport() {
+//        return repository.findByCode(LOG_IMPORT);
+//    }// end of method
 
 }// end of class

@@ -5,6 +5,9 @@ import com.vaadin.flow.router.RouterLayout;
 import it.algos.vaadflow.ui.MainLayout;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +53,7 @@ public abstract class FlowCost {
     public static final String VUOTA = "";
 
     public static final String SPAZIO = " ";
+
     public static final String SEP = " - ";
 
     public static final String VIRGOLA = ",";
@@ -223,24 +227,7 @@ public abstract class FlowCost {
 
     public static final String CONFERMA = "Conferma";
 
-    //log type
-    public static final String LOG_SETUP = "logSetup";
-
-    public static final String LOG_NEW = "logNew";
-
-    public static final String LOG_EDIT = "logEdit";
-
-    public static final String LOG_DELETE = "logDelete";
-
-    public static final String LOG_DEBUG = "logDebug";
-
-    public static final String LOG_INFO = "logInfo";
-
-    public static final String LOG_WARN = "logWarn";
-
-    public static final String LOG_ERROR = "logError";
-
-    public static final String LOG_IMPORT = "logImport";
+    public static final String LOG_LEVEL_CORRENTE = "logLevelCorrente";
 
     // generali
     public static final String USA_DEBUG = "usaDebug";
@@ -248,8 +235,6 @@ public abstract class FlowCost {
     public static final String USA_LOG_DEBUG = "usaLogDebug";
 
     public static final String LOG_ERROR_VIEW = "errorView";
-
-//    public static final String USA_COMPANY = "usaCompany";
 
     public static final String USA_LOG_MAIL = "usaLogMail";
 
@@ -343,12 +328,19 @@ public abstract class FlowCost {
 
     public static final String KEY_CONTEXT = "context";
 
+    public static final String TAG_SEARCH = "search";
+
+
     //--date
     public static final Locale LOCALE = Locale.ITALIAN;
 
-    public static final String TAG_SEARCH = "search";
-
     public static final VaadinIcon VAADIN_ICON_DA_NON_USARE = VaadinIcon.VAADIN_H;
+
+    public static final LocalDate START_DATE = LocalDate.of(1970, 1, 1);
+
+    public static final LocalDateTime START_DATE_TIME = LocalDateTime.of(1970, 1, 1, 0, 0);
+
+    public static final LocalTime START_TIME = LocalTime.of(0, 0);
 
     private static final String[] esclusiAll = {PROPERTY_SERIAL, PROPERTY_CREAZIONE, PROPERTY_MODIFICA};
 
@@ -369,6 +361,5 @@ public abstract class FlowCost {
     private static final String[] companyMatrice = {COMPANY_CODE, COMPANY_UNICO};
 
     public static final List<String> COMPANY_OPTIONAL = Arrays.asList(companyMatrice);
-
 
 }// end of static class

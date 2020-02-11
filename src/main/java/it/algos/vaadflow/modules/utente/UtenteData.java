@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_UTE;
 
@@ -62,7 +63,7 @@ public class UtenteData extends ADataService {
      *
      * @return la entity appena creata
      */
-    public Utente crea(String userName, String passwordInChiaro, List<Role> ruoli, String mail, boolean locked) {
+    public Utente crea(String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean locked) {
         Utente entity = newEntity(userName, passwordInChiaro, ruoli, mail, locked);
         mongo.insert(entity, entityClass);
         return entity;
@@ -85,7 +86,7 @@ public class UtenteData extends ADataService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Utente newEntity(String userName, String passwordInChiaro, List<Role> ruoli, String mail, boolean locked) {
+    public Utente newEntity(String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean locked) {
         Utente entity = Utente.builderUtente()
                 .username(text.isValid(userName) ? userName : null)
                 .password(text.isValid(passwordInChiaro) ? passwordInChiaro : null)
@@ -107,7 +108,7 @@ public class UtenteData extends ADataService {
         String userName;
         String passwordInChiaro;
         EARole ruolo;
-        List<Role> ruoli;
+        Set<Role> ruoli;
         String mail;
 
         for (EAUtente utente : EAUtente.values()) {

@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.TAG_ROL;
 
@@ -227,6 +228,7 @@ public class RoleService extends AService {
         return repository.findByCode(EARole.developer.name());
     }// end of method
 
+
     /**
      * Returns all entities of the type <br>
      *
@@ -236,82 +238,83 @@ public class RoleService extends AService {
         return (ArrayList) repository.findAllByOrderByOrdineAsc();
     }// end of method
 
+
     /**
      * Guest roles
      */
-    public List<Role> getAllGuestRoles() {
-        List<Role> lista = new ArrayList<>();
-        lista.add(getGuest());
-        return lista;
+    public Set<Role> getAllGuestRoles() {
+        Set<Role> gruppo = new HashSet<>();
+        gruppo.add(getGuest());
+        return gruppo;
     }// end of method
 
 
     /**
      * User roles
      */
-    public List<Role> getUserRole() {
-        List<Role> lista = new ArrayList<>();
-        lista.add(getUser());
-        return lista;
+    public Set<Role> getUserRole() {
+        Set<Role> gruppo = new HashSet<>();
+        gruppo.add(getUser());
+        return gruppo;
     }// end of method
 
 
     /**
      * User roles
      */
-    public List<Role> getAllUserRoles() {
-        List<Role> lista = getAllGuestRoles();
-        lista.add(getUser());
-        return lista;
+    public Set<Role> getAllUserRoles() {
+        Set<Role> gruppo = getAllGuestRoles();
+        gruppo.add(getUser());
+        return gruppo;
     }// end of method
 
 
     /**
      * Admin roles
      */
-    public List<Role> getAllAdminRoles() {
-        List<Role> lista = getAllUserRoles();
-        lista.add(getAdmin());
-        return lista;
+    public Set<Role> getAllAdminRoles() {
+        Set<Role> gruppo = getAllUserRoles();
+        gruppo.add(getAdmin());
+        return gruppo;
     }// end of method
 
 
     /**
      * Developer roles
      */
-    public List<Role> getAllDeveloperRoles() {
-        List<Role> lista = getAllAdminRoles();
-        lista.add(getDeveloper());
-        return lista;
+    public Set<Role> getAllDeveloperRoles() {
+        Set<Role> gruppo = getAllAdminRoles();
+        gruppo.add(getDeveloper());
+        return gruppo;
     }// end of method
 
 
     /**
      * Roles
      */
-    public List<Role> getRoles(EARole ruolo) {
-        List<Role> lista;
+    public Set<Role> getRoles(EARole ruolo) {
+        Set<Role> gruppo;
 
         switch (ruolo) {
             case guest:
-                lista = getAllGuestRoles();
+                gruppo = getAllGuestRoles();
                 break;
             case user:
-                lista = getAllUserRoles();
+                gruppo = getAllUserRoles();
                 break;
             case admin:
-                lista = getAllAdminRoles();
+                gruppo = getAllAdminRoles();
                 break;
             case developer:
-                lista = getAllDeveloperRoles();
+                gruppo = getAllDeveloperRoles();
                 break;
             default:
-                lista = getAllGuestRoles();
+                gruppo = getAllGuestRoles();
                 log.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
 
-        return lista;
+        return gruppo;
     }// end of method
 
 

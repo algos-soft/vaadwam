@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadwam
@@ -74,7 +75,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
     private void inizia() {
         String colore = "";
         String orario = "";
-        List<Funzione> funzioni = null;
+        Set<Funzione> funzioni = null;
 
         if (servizio != null) {
             if (servizioService != null) {
@@ -96,7 +97,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
             setServizio(servizio);
         }// end of if cycle
 
-        if (array.isValid(funzioni)) {
+        if (funzioni != null) {
             setIcone(funzioni);
         }// end of if cycle
 
@@ -114,7 +115,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
     }// end of method
 
 
-    public void setIcone(List<Funzione> funzioni) {
+    public void setIcone(Set<Funzione> funzioni) {
         if (funzioni != null) {
             List<String> icone = new ArrayList<>();
             for (Funzione funzione : funzioni) {

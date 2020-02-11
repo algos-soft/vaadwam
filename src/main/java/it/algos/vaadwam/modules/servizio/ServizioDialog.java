@@ -2,7 +2,6 @@ package it.algos.vaadwam.modules.servizio;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -15,22 +14,16 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.data.selection.SelectionListener;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAColor;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +32,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_SER;
 
 /**
@@ -167,9 +158,11 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      * Sovrascritto nella sottoclasse
      */
     protected void fixLayout() {
-        if (currentItem != null) {
-            this.getFormLayout().add(creaGrid(((Servizio) currentItem).funzioni));
-        }// end of if cycle
+        //@todo POPPOPPOP
+
+//        if (currentItem != null) {
+//            this.getFormLayout().add(creaGrid(((Servizio) currentItem).funzioni));
+//        }// end of if cycle
     }// end of method
 
 
@@ -183,7 +176,7 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
 
         if (comboColorField != null) {
             colorValue = comboColorField.getValue();
-            ((Servizio) currentItem).colore=colorValue;
+            ((Servizio) currentItem).colore = colorValue;
         }// end of if cycle
     }// end of method
 
@@ -426,11 +419,13 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      * Aggiunge una nuova funzione al servizio
      */
     private void addFunzione() {
-        ArrayList funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
-        Funzione newFunzioneVuotaDaInserire = funzioneService.newEntity();
-        funzioniAttualmenteVisualizzate.add(newFunzioneVuotaDaInserire);
-        ((Servizio) currentItem).funzioni = funzioniAttualmenteVisualizzate;
-        grid.setItems(funzioniAttualmenteVisualizzate);
+        //@todo POPPOPPOP
+
+//        ArrayList funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
+//        Funzione newFunzioneVuotaDaInserire = funzioneService.newEntity();
+//        funzioniAttualmenteVisualizzate.add(newFunzioneVuotaDaInserire);
+//        ((Servizio) currentItem).funzioni = funzioniAttualmenteVisualizzate;
+//        grid.setItems(funzioniAttualmenteVisualizzate);
 
         sincroAddButton();
     }// end of method
@@ -441,17 +436,19 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      * Si suppone che sia l'ultima e che i valori 'id', 'code' e 'sigla' siano vuoti <br>
      */
     private void fixNewItem(String code) {
-        Funzione newFunzioneDaRegolare = ((Servizio) currentItem).funzioni.get(((Servizio) currentItem).funzioni.size() - 1);
-        Funzione funzioneDellaCroce = funzioneService.findByKeyUnica(code);
+        //@todo POPPOPPOP
 
-        if (funzioneDellaCroce != null) {
-            newFunzioneDaRegolare.id = funzioneDellaCroce.id;
-            newFunzioneDaRegolare.code = funzioneDellaCroce.code;
-            newFunzioneDaRegolare.sigla = funzioneDellaCroce.sigla;
-            newFunzioneDaRegolare.descrizione = funzioneDellaCroce.descrizione;
-            newFunzioneDaRegolare.icona = funzioneDellaCroce.icona;
-            grid.setItems(((Servizio) currentItem).funzioni);
-        }// end of if cycle
+//        Funzione newFunzioneDaRegolare = ((Servizio) currentItem).funzioni.get(((Servizio) currentItem).funzioni.size() - 1);
+//        Funzione funzioneDellaCroce = funzioneService.findByKeyUnica(code);
+//
+//        if (funzioneDellaCroce != null) {
+//            newFunzioneDaRegolare.id = funzioneDellaCroce.id;
+//            newFunzioneDaRegolare.code = funzioneDellaCroce.code;
+//            newFunzioneDaRegolare.sigla = funzioneDellaCroce.sigla;
+//            newFunzioneDaRegolare.descrizione = funzioneDellaCroce.descrizione;
+//            newFunzioneDaRegolare.icona = funzioneDellaCroce.icona;
+//            grid.setItems(((Servizio) currentItem).funzioni);
+//        }// end of if cycle
     }// end of method
 
 
@@ -459,16 +456,17 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      * Elimina la funzione selezionata
      */
     private void deleteFunzione() {
-        ArrayList funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
-
-        if (grid.getSelectedItems().size() == 1) {
-            Funzione funz = (Funzione) grid.getSelectedItems().toArray()[0];
-            if (funzioniAttualmenteVisualizzate != null && funz != null && funzioniAttualmenteVisualizzate.contains(funz)) {
-                funzioniAttualmenteVisualizzate.remove(funz);
-                ((Servizio) currentItem).funzioni = funzioniAttualmenteVisualizzate;
-                grid.setItems(funzioniAttualmenteVisualizzate);
-            }// end of if cycle
-        }// end of if cycle
+        //@todo POPPOPPOP
+//        ArrayList funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
+//
+//        if (grid.getSelectedItems().size() == 1) {
+//            Funzione funz = (Funzione) grid.getSelectedItems().toArray()[0];
+//            if (funzioniAttualmenteVisualizzate != null && funz != null && funzioniAttualmenteVisualizzate.contains(funz)) {
+//                funzioniAttualmenteVisualizzate.remove(funz);
+//                ((Servizio) currentItem).funzioni = funzioniAttualmenteVisualizzate;
+//                grid.setItems(funzioniAttualmenteVisualizzate);
+//            }// end of if cycle
+//        }// end of if cycle
 
         sincroAddButton();
     }// end of method

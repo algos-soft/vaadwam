@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
@@ -144,7 +145,7 @@ public class MiliteService extends WamService implements IUtenteService {
             String telefono,
             String userName,
             String passwordInChiaro,
-            List<Role> ruoli,
+            Set<Role> ruoli,
             String mail,
             boolean enabled,
             boolean admin,
@@ -189,7 +190,7 @@ public class MiliteService extends WamService implements IUtenteService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Milite newEntity(Croce croce, String nome, String cognome, String userName, String passwordInChiaro) {
-        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (List<Role>) null, "", false, false, false, false, (List<Funzione>) null, true);
+        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (Set<Role>) null, "", false, false, false, false, (List<Funzione>) null, true);
     }// end of method
 
 
@@ -230,7 +231,7 @@ public class MiliteService extends WamService implements IUtenteService {
             Address indirizzo,
             String userName,
             String passwordInChiaro,
-            List<Role> ruoli,
+            Set<Role> ruoli,
             String mail,
             boolean enabled,
             boolean admin,
@@ -409,7 +410,7 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     @Override
     public boolean importa() {
-        return migration.importMiliti();
+        return migration.importMiliti(getCroce());
     }// end of method
 
 

@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadflow <br>
@@ -159,7 +160,7 @@ public class Utente extends ACEntity implements UserDetails {
     @Field("role")
     @AIField(type = EAFieldType.multicombo, required = true, serviceClazz = RoleService.class)
     @AIColumn(name = "ruolo")
-    public List<Role> ruoli;
+    public Set<Role> ruoli;
 
 
     /**
@@ -211,7 +212,7 @@ public class Utente extends ACEntity implements UserDetails {
      */
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> listAuthority = new ArrayList<>();
-        List<Role> ruoli = this.ruoli;
+        Set<Role> ruoli = this.ruoli;
         GrantedAuthority authority;
 
         if (ruoli != null && ruoli.size() > 0) {

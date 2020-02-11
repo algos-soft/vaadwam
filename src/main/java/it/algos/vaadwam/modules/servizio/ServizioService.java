@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_SER;
 
@@ -95,7 +96,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
+            Set<Funzione> funzioni) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
@@ -115,7 +116,7 @@ public class ServizioService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Servizio newEntity() {
-        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (List<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null);
     }// end of method
 
 
@@ -145,7 +146,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
+            Set<Funzione> funzioni) {
         return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, funzioni);
     }// end of method
 
@@ -179,7 +180,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
+            Set<Funzione> funzioni) {
         Servizio entity = Servizio.builderServizio()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
                 .code(text.isValid(code) ? code : null)
@@ -221,7 +222,7 @@ public class ServizioService extends WamService {
 //        entity.durataTeorica = getDurata(entity);
 
         //--elimina informazioni inutili dalla lista (embedded) di funzioni dipendenti
-        if (array.isValid(entity.funzioni)) {
+        if (entity.funzioni != null) {
             for (Funzione funz : entity.funzioni) {
                 funz.croce = null;
                 funz.dipendenti = null;
@@ -333,6 +334,7 @@ public class ServizioService extends WamService {
         return repository.findAll();
     }// end of method
 
+
     /**
      * Returns instances of the company <br>
      * Lista ordinata <br>
@@ -360,10 +362,10 @@ public class ServizioService extends WamService {
 
     private AEntity riordinaFunzioni(AEntity entityBean) {
         Servizio servizio = (Servizio) entityBean;
-        List<Funzione> funzioni = servizio.getFunzioni();
+        Set<Funzione> funzioni = servizio.getFunzioni();
         int pos = 0;
 
-        if (array.isValid(funzioni)) {
+        if (funzioni != null) {
             for (Funzione funz : funzioni) {
                 pos++;
                 funz.setOrdine(pos);
@@ -475,7 +477,7 @@ public class ServizioService extends WamService {
     @Deprecated
     public List<String> getSigleFunzioni(Servizio entityBean) {
         List<String> sigleFunzioni = new ArrayList<>();
-        List<Funzione> funzioni = entityBean.getFunzioni();
+        Set<Funzione> funzioni = entityBean.getFunzioni();
 
         for (Funzione funz : funzioni) {
             sigleFunzioni.add(funz.getCode());

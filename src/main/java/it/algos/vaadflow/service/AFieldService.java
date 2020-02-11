@@ -5,7 +5,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
@@ -17,6 +17,7 @@ import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.converter.AConverterComboBox;
 import it.algos.vaadflow.enumeration.EAFieldType;
+import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.ui.fields.*;
 import it.algos.vaadflow.validator.AIntegerZeroValidator;
 import it.algos.vaadflow.validator.ALongZeroValidator;
@@ -30,7 +31,9 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Project it.algos.vaadflow
@@ -252,6 +255,14 @@ public class AFieldService extends AbstractService {
                     }// end of if/else cycle
                 }// end of if cycle
                 break;
+            case password:
+                field = new PasswordField(caption);
+                ((PasswordField)field).setPlaceholder("Enter password");
+                if (binder != null) {
+                    binder.forField(field).bind(fieldName);
+                }// end of if cycle
+                field.setReadOnly(false);
+                break;
             case textarea:
                 field = new ATextArea(caption);
                 if (binder != null) {
@@ -260,18 +271,12 @@ public class AFieldService extends AbstractService {
                 field.setReadOnly(false);
                 break;
             case integer:
-                mess = fieldName + intMessage;
-                message = text.isValid(message) ? message : mess;
-                integerConverter = new StringToIntegerConverter(0, message);
-                field = new AIntegerField(caption);
+                 field = new IntegerField(caption);
                 if (binder != null) {
-                    binder.forField(field)
-                            .withConverter(integerConverter)
-                            .withValidator(integerZeroValidator)
-                            .bind(fieldName);
+                    binder.forField(field).bind(fieldName);
                 }// end of if cycle
                 if (focus) {
-                    ((AIntegerField) field).focus();
+                    ((IntegerField) field).focus();
                 }// end of if cycle
                 break;
             case lungo:
@@ -293,18 +298,23 @@ public class AFieldService extends AbstractService {
                 field = new MultiselectComboBox();
                 ((MultiselectComboBox) field).setLabel(caption);
 
-//                if (clazz != null) {
-//                    IAService service = (IAService) StaticContextAccessor.getBean(clazz);
-//                    List items = ((IAService) service).findAll();
-//                    if (items != null) {
-//                        ((MultiselectComboBox) field).setItems(items);
-//                    }// end of if cycle
-//                }// end of if cycle
+                if (clazz != null) {
+                    IAService service = (IAService) StaticContextAccessor.getBean(clazz);
+                    List items = ((IAService) service).findAll();
+                    if (items != null) {
+                        Set<Role> hSet = new HashSet<Role>(items);
+                        hSet.addAll(items);
+
+                        ((MultiselectComboBox) field).setItems(hSet);
+                    }// end of if cycle
+                }// end of if cycle
+                field.setReadOnly(false);
 
                 if (binder != null) {
-                    binder.forField(field)
-                            .withConverter(new AConverterComboBox())
-                            .bind(fieldName);
+                    binder.forField(field).bind(fieldName);
+//                    binder.forField(field)
+//                            .withConverter(new AConverterComboBox())
+//                            .bind(fieldName);
                 }// end of if cycle
                 break;
             case combo:
@@ -317,6 +327,7 @@ public class AFieldService extends AbstractService {
                     }// end of if cycle
                 }// end of if cycle
                 field.setReadOnly(false);
+
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);
                 }// end of if cycle
@@ -375,15 +386,17 @@ public class AFieldService extends AbstractService {
                 }// end of if cycle
                 break;
             case localdatetime:
-                //@todo andrà modificato quando ci sarà un DatePicker che accetti i LocalDateTime
-                field = new ADatePicker(caption);
-//                field = new ATextField(caption);
-//                binder.forField(field).bind(fieldName);
+                field = new ADateTimePicker(caption);
+                if (binder != null) {
+                    binder.forField(field).bind(fieldName);
+                }// end of if cycle
                 break;
             case localtime:
-                field = new TimePicker(caption);
-                ((TimePicker) field).setStep(Duration.ofHours(1)); //standard
-                binder.forField(field).bind(fieldName);
+                field = new ATimePicker(caption);
+                ((ATimePicker) field).setStep(Duration.ofMinutes(15)); //standard
+                if (binder != null) {
+                    binder.forField(field).bind(fieldName);
+                }// end of if cycle
                 break;
             case vaadinIcon:
                 if (serviceClazz != null) {

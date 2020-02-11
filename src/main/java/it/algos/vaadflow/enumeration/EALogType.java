@@ -13,15 +13,24 @@ import java.util.List;
  * Time: 07:39
  */
 public enum EALogType {
-    setup(FlowCost.LOG_SETUP),
-    nuovo(FlowCost.LOG_NEW),
-    edit(FlowCost.LOG_EDIT),
-    delete(FlowCost.LOG_DELETE),
-    debug(FlowCost.LOG_DEBUG),
-    info(FlowCost.LOG_INFO),
-    warn(FlowCost.LOG_WARN),
-    error(FlowCost.LOG_ERROR),
-    importo(FlowCost.LOG_IMPORT);
+    system("system"),
+    setup("setup"),
+    nuovo("new"),
+    edit("edit"),
+    delete("delete"),
+    debug("debug"),
+    info("info"),
+    warn("warn"),
+    error("error"),
+    importo("import"),
+    download("download"),
+    update("update"),
+    elabora("elabora"),
+    upload("upload"),
+    reset("reset"),
+    utente("utente"),
+    password("password");
+
 
     private String tag;
 

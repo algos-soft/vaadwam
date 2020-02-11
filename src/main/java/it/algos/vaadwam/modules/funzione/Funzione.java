@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadwam <br>
@@ -123,7 +123,7 @@ public class Funzione extends WamEntity {
     @Size(min = 2, max = 20)
     @Field("sigla")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 9)
-    @AIColumn()
+    @AIColumn(widthEM = 8)
     public String sigla;
 
 
@@ -134,7 +134,7 @@ public class Funzione extends WamEntity {
     @Size(min = 2, max = 50)
     @Field("desc")
     @AIField(type = EAFieldType.text, firstCapital = true)
-    @AIColumn(flexGrow = true, widthEM = 15)
+    @AIColumn(flexGrow = true, widthEM = 16)
     public String descrizione;
 
 
@@ -156,9 +156,9 @@ public class Funzione extends WamEntity {
      * riferimento statico SENZA @DBRef (embedded)
      */
     @Field("dip")
-    @AIField(type = EAFieldType.multicombo, name = "funzioni dipendenti")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, name = "funzioni dipendenti")
     @AIColumn(name = "funzioni dipendenti", flexGrow = true, widthEM = 20)
-    public List<Funzione> dipendenti;
+    public Set<Funzione> dipendenti;
 
 
     /**

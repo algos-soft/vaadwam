@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Scope;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
@@ -134,7 +135,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Crea (o ricrea dopo una clonazione) il componente base
      */
     public Grid creaGrid() {
-        List<Funzione> items;
+        Set<Funzione> items;
         String widthA = "4em";
         String widthB = "6em";
         String widthC = "12em";
@@ -166,8 +167,8 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         //--aggiunge una colonna calcolata
         Grid.Column colonnaFunzioneObbligatoria = grid.addComponentColumn(funzione -> {
             ACheckBox box = new ACheckBox("");
-            List<Funzione> funzioniDelServizio = servizio.funzioni;
-            if (array.isValid(funzioniDelServizio)) {
+            Set<Funzione> funzioniDelServizio = servizio.funzioni;
+            if (funzioniDelServizio!=null) {
                 for (Funzione funzServizio : funzioniDelServizio) {
                     if (funzServizio.code.equals(((Funzione) funzione).code)) {
                         box.setValue(funzServizio.obbligatoria);

@@ -1,6 +1,6 @@
 package it.algos.vaadflow.ui.fields;
 
-import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 
 /**
  * Project it.algos.vaadflow
@@ -20,45 +21,39 @@ import java.time.LocalDateTime;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
-public class ADatePicker extends DatePicker implements IAField {
+public class ADatePicker extends CustomField<LocalDate> {
+
+    private final DatePicker datePicker = new DatePicker();
+
+
+    /**
+     * Costruttore base senza parametri <br>
+     */
+    public ADatePicker() {
+        this("Data");
+    }// end of constructor
 
 
 
-    public ADatePicker(String label) {
-        super(label);
-    }// end of Spring constructor
+    /**
+     * Costruttore con parametri <br>
+     */
+    public ADatePicker(String caption) {
+        setLabel(caption);
+        add(datePicker);
+    }// end of constructor
+
 
     @Override
-    protected void setSynchronizedEvent(String synchronizedEvent) {
-        super.setSynchronizedEvent(synchronizedEvent);
-    }
+    protected LocalDate generateModelValue() {
+        return datePicker.getValue();
+    }// end of method
+
 
     @Override
     protected void setPresentationValue(LocalDate newPresentationValue) {
-        super.setPresentationValue(newPresentationValue);
-    }
-
-    @Override
-    public void setValue(LocalDate value) {
-        super.setValue(value);
-    }
-    public void setValue(LocalDateTime value) {
-        super.setValue(null);
-    }
-
-    @Override
-    public LocalDate getValue() {
-        return super.getValue();
-    }
-
-    @Override
-    public AbstractField getField() {
-        return null;
+        datePicker.setValue(newPresentationValue);
     }// end of method
 
-    @Override
-    public String getValore() {
-        return getValue().toString();
-    }// end of method
 
 }// end of class

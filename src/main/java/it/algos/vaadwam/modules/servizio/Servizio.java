@@ -5,6 +5,7 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
@@ -17,7 +18,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadwam <br>
@@ -56,9 +57,9 @@ import java.util.List;
  * -The property name (i.e. 'descrizione') would be used as the field key if this annotation was not included.
  * -Remember that field keys are repeated for every document so using a smaller key name will reduce the required space.
  * Le property non primitive, di default sono EMBEDDED con un riferimento statico
- *      (EAFieldType.link e XxxPresenter.class)
+ * (EAFieldType.link e XxxPresenter.class)
  * Le singole property possono essere annotate con @DBRef per un riferimento DINAMICO (not embedded)
- *      (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
+ * (EAFieldType.combo e XXService.class, con inserimento automatico nel ViewDialog)
  * Una (e una sola) property deve avere @AIColumn(flexGrow = true) per fissare la larghezza della Grid <br>
  */
 @Entity
@@ -110,7 +111,7 @@ public class Servizio extends WamEntity {
     @NotNull(message = "La descrizione è obbligatoria")
     @Size(min = 2, max = 50)
     @Field("desc")
-    @AIField(type = EAFieldType.text, required = true,firstCapital = true, widthEM = 24)
+    @AIField(type = EAFieldType.text, required = true, firstCapital = true, widthEM = 24)
     @AIColumn(widthEM = 18)
     public String descrizione;
 
@@ -128,7 +129,7 @@ public class Servizio extends WamEntity {
      * Orario previsto (ore e minuti) per l'inizio del turno (obbligatorio, se orarioDefinito è true)
      */
     @Field("ini")
-    @AIField(type = EAFieldType.localtime, name = "Inizio servizio")
+    @AIField(type = EAFieldType.localtime, name = "Inizio servizio  (previsto)")
     @AIColumn(headerIcon = VaadinIcon.FORWARD, headerIconColor = "green")
     public LocalTime inizio;
 
@@ -186,9 +187,9 @@ public class Servizio extends WamEntity {
      * riferimento statico SENZA @DBRef (embedded)
      */
     @Field("funz")
-    @AIField(type = EAFieldType.multicombo, widthEM = 20, name = "Funzioni previste per espletare il servizio")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni previste per espletare il servizio")
     @AIColumn(name = "funzioni del servizio", flexGrow = true)
-    public List<Funzione> funzioni;
+    public Set<Funzione> funzioni;
 
 
     /**

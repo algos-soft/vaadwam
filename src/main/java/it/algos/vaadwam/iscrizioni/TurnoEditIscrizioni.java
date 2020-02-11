@@ -1,16 +1,14 @@
 package it.algos.vaadwam.iscrizioni;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Viewport;
-import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
@@ -25,19 +23,17 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.tabellone.TabelloneService;
 import it.algos.vaadwam.wam.WamService;
-import lombok.extern.slf4j.Slf4j;
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
-import static it.algos.vaadwam.application.WamCost.KEY_MAP_SERVIZIO;
 
 /**
  * Project vaadwam
@@ -52,7 +48,7 @@ import static it.algos.vaadwam.application.WamCost.KEY_MAP_SERVIZIO;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Viewport("width=device-width")
-public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implements HasUrlParameter<String> {
+public class TurnoEditIscrizioni extends PolymerTemplate<TurnoEditIscrizioni.ServizioModel> implements HasUrlParameter<String> {
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -102,6 +98,17 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implemen
 //    @Id("fine")
 //    public TimePicker fine;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
+
+    //--property bean
+    protected Turno turno = null;
 
     /**
      * Turno di questa iscrizione <br>
@@ -188,18 +195,8 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implemen
     @Autowired
     private TabelloneService tabelloneService;
 
-
-    /**
-     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
-    @Autowired
-    protected TurnoService turnoService;
-
-    //--property bean
-    protected Turno turno = null;
+    //--modello dati interno
+    private ServizioModel modello =getModel();
 
 
     /**
@@ -235,8 +232,9 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implemen
             return;
         }// end of if cycle
 
-//        layoutPolymer();
+        layoutPolymer();
     }// end of method
+
 
     /**
      * Recupera il turno arrivato come parametro nella chiamata del browser effettuata da @Route <br>
@@ -287,18 +285,20 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implemen
         turno.id = null;
     }// end of method
 
+
     /**
      * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
      * Metodo invocato da una sottoclasse di TurnoEditIscrizioniPolymer <br>
      */
-    public void inizia(Turno turno, int posizioneIscrizione, ButtonsBar bottoniPolymer) {
+//    @PostConstruct
+    public void layoutPolymer() {
         this.turnoEntity = turno;
-        this.iscrizioneEntity = turnoEntity.iscrizioni.get(posizioneIscrizione - 1);
-        this.funzioneEntity = iscrizioneEntity.getFunzione();
-        this.militeEntity = iscrizioneEntity.getMilite();
-        this.militeLoggato = wamService.getMilite();
-        this.bottoniPolymer = bottoniPolymer;
+//        this.funzioneEntity = iscrizioneEntity.getFunzione();
+//        this.militeEntity = iscrizioneEntity.getMilite();
+//        this.militeLoggato = wamService.getMilite();
+//        this.bottoniPolymer = bottoniPolymer;
 
+        inizia(turno);
 //        fixAbilitazione();
 //        fixColor();
 //        fixIcona();
@@ -310,5 +310,71 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TemplateModel> implemen
 //        fixFine();
 
     }// end of method
+
+
+    /**
+     * Regola i dati da presentare in base al turno selezionato <br>
+     * Il turno arriva come parametro di @Route alla classe TurnoEditIscrizioniPolymer <br>
+     * Invocato dal metodo TurnoEditIscrizioniPolymer.setParameter() della sottoclasse <br>
+     */
+    public void inizia(Turno turno) {
+        fixData(turno.getGiorno());
+        fixOrario(turno.getServizio());
+        fixServizio(turno.getServizio());
+    }// end of method
+
+
+    /**
+     * Data completa (estesa) del giorno di esecuzione del turno <br>
+     */
+    private void fixData(LocalDate giorno) {
+        String data = "";
+
+        if (giorno != null) {
+            data = dateService.get(giorno, EATime.completa);
+            modello.setData(data);
+        }// end of if cycle
+
+    }// end of method
+
+
+    /**
+     * Orario (eventuale) del turno <br>
+     */
+    private void fixOrario(Servizio servizio) {
+        String orario = "";
+
+        if (servizio != null) {
+            if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
+                orario = servizioService.getOrario(servizio);
+                modello.setOrario(orario);
+            }// end of if cycle
+        }// end of if cycle
+
+    }// end of method
+
+
+    /**
+     * Descrizione del servizio <br>
+     */
+    private void fixServizio(Servizio servizio) {
+        if (servizio != null) {
+            modello.setServizio(servizio.descrizione);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Modello dati per collegare questa classe java col polymer
+     */
+    public interface ServizioModel extends TemplateModel {
+
+        void setData(String data);
+
+        void setOrario(String orario);
+
+        void setServizio(String servizio);
+
+    }// end of interface
 
 }// end of class

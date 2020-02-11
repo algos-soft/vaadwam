@@ -77,6 +77,9 @@ public abstract class APrefViewList extends AViewList {
         //--Flag di preferenza per usare il placeholder di informazioni specifiche sopra la Grid. Normalmente false.
         usaTopAlert = false;
 
+        //--Flag di preferenza per usare la seconda riga di menu sopra la Grid. Normalmente false. <br>
+        usaSecondTopPlaceholder = false;
+
         //--Flag di preferenza per la Label nell'header della Grid grid. Normalmente true.
         usaHaederGrid = true;
 
