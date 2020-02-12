@@ -348,7 +348,7 @@ public class Tabellone extends AGridViewList {
 
         if (items != null) {
             grid.setItems(items);
-        }
+        }// end of if cycle
     }// end of method
 
 

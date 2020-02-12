@@ -1,5 +1,6 @@
 package it.algos.vaadwam.modules.funzione;
 
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -17,8 +18,10 @@ import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.vaadin.klaudeta.PaginatedGrid;
 
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import java.util.ArrayList;
+
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -93,6 +96,18 @@ public class FunzioneList extends WamViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Funzione>();
+    }// end of method
+
+    /**
      * Le preferenze standard
      * Può essere sovrascritto, per aggiungere informazioni
      * Invocare PRIMA il metodo della superclasse
@@ -102,9 +117,11 @@ public class FunzioneList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        this.lastImport = VUOTA;
-        this.durataLastImport = VUOTA;
-        this.eaTempoTypeImport = EATempo.nessuno;
+        super.usaPagination = true;
+
+        this.lastImport = LAST_IMPORT_FUNZIONI;
+        this.durataLastImport = DURATA_IMPORT_FUNZIONI;
+        this.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
 
@@ -116,23 +133,13 @@ public class FunzioneList extends WamViewList {
      */
     @Override
     protected void creaAlertLayout() {
-        super.creaAlertLayout();
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
-        boolean isUser = !isDeveloper && !isAdmin;
+        fixPreferenze();
 
-        alertPlacehorder.add(getLabelUser("Funzioni di servizio specifiche dell'associazione. Attribuibili singolarmente ad ogni milite."));
-        if (isUser) {
-            alertPlacehorder.add(getLabelUser("Solo in visione. Le modifiche vengono effettuate da un admin."));
-        } else {
-            alertPlacehorder.add(getLabelAdmin("Quando un milite viene abilitato per una funzione, gli vengono abilitate anche le funzioni dipendenti."));
-            alertPlacehorder.add(getLabelAdmin("Successivamente le funzioni dipendenti possono essere singolarmente disabilitate."));
-            alertPlacehorder.add(getLabelAdmin("Come admin si possono aggiungere, modificare e cancellare le funzioni. Gli utenti normali possono solo vederle."));
-            if (isDeveloper) {
-                alertPlacehorder.add(getLabelDev("Come developer si possono importare le funzioni dal vecchio programma"));
-                alertPlacehorder.add(getInfoImport(task, USA_DAEMON_FUNZIONI, LAST_IMPORT_FUNZIONI));
-            }// end of if cycle
-        }// end of if/else cycle
+        alertUser.add("Funzioni di servizio specifiche dell'associazione. Attribuibili singolarmente ad ogni milite");
+        alertAdmin.add("Quando un milite viene abilitato per una funzione, gli vengono abilitate anche le funzioni dipendenti.");
+        alertAdmin.add("Successivamente le funzioni dipendenti possono essere singolarmente disabilitate.");
+
+        super.creaAlertLayout();
     }// end of method
 
 

@@ -33,7 +33,11 @@ public enum EATempo {
         long durata = getLong(inizio);
 
         if (durata > delta) {
-            tempo = (int) durata / delta;
+            if (delta > 0) {
+                tempo = (int) durata / delta;
+            } else {
+                tempo = (int) durata;
+            }// end of if/else cycle
         }// end of if cycle
 
         return tempo;

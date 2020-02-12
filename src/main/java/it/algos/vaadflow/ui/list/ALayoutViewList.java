@@ -251,7 +251,7 @@ public abstract class ALayoutViewList extends APrefViewList {
         //--eventuale filtro sulla company
         if (usaCompany) {
             creaCompanyFiltro();
-            if (filtroCompany != null && login.isDeveloper()) {
+            if (filtroCompany != null && login.isDeveloper() && mostraFiltroCompany) {
                 topPlaceholder.add(filtroCompany);
             }// end of if cycle
         }// end of if cycle

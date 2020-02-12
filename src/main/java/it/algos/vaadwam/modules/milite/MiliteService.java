@@ -430,13 +430,24 @@ public class MiliteService extends WamService implements IUtenteService {
      * Returns instances of the company <br>
      * Lista ordinata <br>
      *
-     * @param croce di appartenenza (obbligatoria)
-     *
      * @return lista ordinata di tutte le entities
      */
-    public List<Milite> findAllByCroce(Croce croce) {
-        return repository.findAllByCroceOrderByOrdineAsc(croce);
+    public List<Milite> findAll() {
+        List<Milite> items = null;
+        Croce croce = getCroce();
+        wamLogin = getWamLogin();
+
+        if (croce != null) {
+            items = findAllByCroce(croce);
+        } else {
+            if (wamLogin != null && wamLogin.isDeveloper()) {
+                items = findAllCroci();
+            }// end of if cycle
+        }// end of if/else cycle
+
+        return items;
     }// end of method
+
 
     /**
      * Returns instances of the company <br>
@@ -447,6 +458,20 @@ public class MiliteService extends WamService implements IUtenteService {
     public List<Milite> findAllCroci() {
         return repository.findAll();
     }// end of method
+
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @param croce di appartenenza (obbligatoria)
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Milite> findAllByCroce(Croce croce) {
+        return repository.findAllByCroceOrderByOrdineAsc(croce);
+    }// end of method
+
 
     /**
      * Returns all enabled <br>
@@ -678,6 +703,26 @@ public class MiliteService extends WamService implements IUtenteService {
     @Override
     public List<String> getSearchPropertyNamesList(AContext context) {
         return Arrays.asList("nome", "cognome", "username");
+    }// end of method
+
+
+    /**
+     * Deletes all entities of the collection.
+     */
+    @Override
+    public boolean deleteAll() {
+        Croce croce = getCroce();
+
+        if (croce != null) {
+            super.deleteByProperty(entityClass, "croce", croce);
+        } else {
+            if (wamLogin != null && wamLogin.isDeveloper()) {
+                mongo.drop(entityClass);
+            }// end of if cycle
+            super.deleteByProperty(entityClass, "croce", croce);
+        }// end of if/else cycle
+
+        return false;
     }// end of method
 
 

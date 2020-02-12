@@ -91,81 +91,32 @@ public class WamCost {
     public final static String USA_DAEMON_TURNI = "usaDaemonTurni";
 
 
-    public final static String LAST_IMPORT_FUNZIONI_GAPS = "lastImportFunzioniGaps";
-
-    public final static String LAST_IMPORT_FUNZIONI_CRF = "lastImportFunzioniCrf";
-
-    public final static String LAST_IMPORT_FUNZIONI_CRPT = "lastImportFunzioniCrpt";
-
-    public final static String LAST_IMPORT_FUNZIONI_PAP = "lastImportFunzioniPap";
-
-    public final static String LAST_IMPORT_SERVIZI_GAPS = "lastImportServiziGaps";
-
-    public final static String LAST_IMPORT_SERVIZI_CRF = "lastImportServiziCrf";
-
-    public final static String LAST_IMPORT_SERVIZI_CRPT = "lastImportServiziCrpt";
-
-    public final static String LAST_IMPORT_SERVIZI_PAP = "lastImportServiziPap";
-
-    public final static String LAST_IMPORT_MILITI_GAPS = "lastImportMilitiGaps";
-
-    public final static String LAST_IMPORT_MILITI_CRF = "lastImportMilitiCrf";
-
-    public final static String LAST_IMPORT_MILITI_CRPT = "lastImportMilitiCrpt";
-
-    public final static String LAST_IMPORT_MILITI_PAP = "lastImportMilitiPap";
-
-    public final static String LAST_IMPORT_TURNI_GAPS = "lastImportTurniGaps";
-
-    public final static String LAST_IMPORT_TURNI_CRF = "lastImportTurniCrf";
-
-    public final static String LAST_IMPORT_TURNI_CRPT = "lastImportTurniCrpt";
-
-    public final static String LAST_IMPORT_TURNI_PAP = "lastImportTurniPap";
+    public final static String LAST_IMPORT_FUNZIONI = "lastImportFunzioni";
 
 
-    public final static String DURATA_IMPORT_FUNZIONI_GAPS = "durataImportFunzioniGaps";
+    public final static String LAST_IMPORT_SERVIZI = "lastImportServizi";
 
-    public final static String DURATA_IMPORT_FUNZIONI_CRF = "durataImportFunzioniCrf";
 
-    public final static String DURATA_IMPORT_FUNZIONI_CRPT = "durataImportFunzioniCrpt";
+    public final static String LAST_IMPORT_MILITI = "lastImportMiliti";
 
-    public final static String DURATA_IMPORT_FUNZIONI_PAP = "durataImportFunzioniPap";
 
-    public final static String DURATA_IMPORT_SERVIZI_GAPS = "durataImportServiziGaps";
+    public final static String LAST_IMPORT_TURNI = "lastImportTurni";
 
-    public final static String DURATA_IMPORT_SERVIZI_CRF = "durataImportServiziCrf";
 
-    public final static String DURATA_IMPORT_SERVIZI_CRPT = "durataImportServiziCrpt";
+    public final static String DURATA_IMPORT_FUNZIONI = "durataImportFunzioni";
 
-    public final static String DURATA_IMPORT_SERVIZI_PAP = "durataImportServiziPap";
 
-    public final static String DURATA_IMPORT_MILITI_GAPS = "durataImportMilitiGaps";
+    public final static String DURATA_IMPORT_SERVIZI = "durataImportServizi";
 
-    public final static String DURATA_IMPORT_MILITI_CRF = "durataImportMilitiCrf";
 
-    public final static String DURATA_IMPORT_MILITI_CRPT = "durataImportMilitiCrpt";
+    public final static String DURATA_IMPORT_MILITI = "durataImportMiliti";
 
-    public final static String DURATA_IMPORT_MILITI_PAP = "durataImportMilitiPap";
 
-    public final static String DURATA_IMPORT_TURNI_GAPS = "durataImportTurniGaps";
-
-    public final static String DURATA_IMPORT_TURNI_CRF = "durataImportTurniCrf";
-
-    public final static String DURATA_IMPORT_TURNI_CRPT = "durataImportTurniCrpt";
-
-    public final static String DURATA_IMPORT_TURNI_PAP = "durataImportTurniPap";
+    public final static String DURATA_IMPORT_TURNI = "durataImportTurni";
 
 
     public final static String LAST_IMPORT_CROCI = "lastImportCroci";
 
-    public final static String LAST_IMPORT_FUNZIONI = "lastImportFunzioni";
-
-    public final static String LAST_IMPORT_SERVIZI = "lastImportServizi";
-
-    public final static String LAST_IMPORT_MILITI = "lastImportMiliti";
-
-    public final static String LAST_IMPORT_TURNI = "lastImportTurni";
 
     public final static String TASK_CRO = "taskCroci";
 

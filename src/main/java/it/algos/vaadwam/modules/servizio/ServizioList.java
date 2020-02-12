@@ -1,6 +1,6 @@
 package it.algos.vaadwam.modules.servizio;
 
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -8,14 +8,17 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.vaadin.klaudeta.PaginatedGrid;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -82,6 +85,37 @@ public class ServizioList extends WamViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Servizio>();
+    }// end of method
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.usaPagination = true;
+
+        this.lastImport = LAST_IMPORT_SERVIZI;
+        this.durataLastImport = DURATA_IMPORT_SERVIZI;
+        this.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
+
+
+    /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
      * Normalmente ad uso esclusivo del developer
      * Può essere sovrascritto, per aggiungere informazioni
@@ -89,24 +123,15 @@ public class ServizioList extends WamViewList {
      */
     @Override
     protected void creaAlertLayout() {
-        super.creaAlertLayout();
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
-        boolean isUser = !isDeveloper && !isAdmin;
+        fixPreferenze();
 
-        alertPlacehorder.add(getLabelUser("Servizi specifici dell'associazione. Caratterizzano ogni singolo turno."));
-        if (isUser) {
-            alertPlacehorder.add(getLabelUser("Solo in visione. Le modifiche vengono effettuate da un admin."));
-        } else {
-            alertPlacehorder.add(getLabelAdmin("Ogni servizio prevede un gruppo di funzioni che possono essere obbligatorie o facoltative."));
-            alertPlacehorder.add(getLabelAdmin("Un servizio può avere un orario predefinito ed uguale ogni giorno oppure da stabilirsi di volta in volta."));
-            alertPlacehorder.add(getLabelAdmin("Un servizio non più utilizzato può venire disabilitato per non visualizzarlo nel tabellone."));
-            alertPlacehorder.add(getLabelAdmin("Ogni servizio prevede un colore per un raggruppamento logico nel tabellone."));
-            if (isDeveloper) {
-                alertPlacehorder.add(getLabelDev("Come developer si possono importare i servizi dal vecchio programma"));
-                alertPlacehorder.add(getInfoImport(task, USA_DAEMON_SERVIZI, LAST_IMPORT_SERVIZI));
-            }// end of if cycle
-        }// end of if/else cycle
+        alertUser.add("Servizi specifici dell'associazione. Caratterizzano ogni singolo turno");
+        alertAdmin.add("Ogni servizio prevede un gruppo di funzioni che possono essere obbligatorie o facoltative.");
+        alertAdmin.add("Un servizio può avere un orario predefinito ed uguale ogni giorno oppure da stabilirsi di volta in volta.");
+        alertAdmin.add("Un servizio non più utilizzato può venire disabilitato per non visualizzarlo nel tabellone.");
+        alertAdmin.add("Ogni servizio prevede un colore per un raggruppamento logico nel tabellone.");
+
+        super.creaAlertLayout();
     }// end of method
 
 

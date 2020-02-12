@@ -297,8 +297,19 @@ public class FunzioneService extends WamService {
      * @return lista ordinata di tutte le entities
      */
     public List<Funzione> findAll() {
+        List<Funzione> items = null;
         Croce croce = getCroce();
-        return findAllByCroce(croce);
+        wamLogin = getWamLogin();
+
+        if (croce != null) {
+            items = findAllByCroce(croce);
+        } else {
+            if (wamLogin != null && wamLogin.isDeveloper()) {
+                items = findAllCroci();
+            }// end of if cycle
+        }// end of if/else cycle
+
+        return items;
     }// end of method
 
 

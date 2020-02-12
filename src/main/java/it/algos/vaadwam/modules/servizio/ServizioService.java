@@ -311,7 +311,6 @@ public class ServizioService extends WamService {
         return migration.importServizi(getCroce());
     }// end of method
 
-
     /**
      * Returns instances of the company <br>
      * Lista ordinata <br>
@@ -319,8 +318,19 @@ public class ServizioService extends WamService {
      * @return lista ordinata di tutte le entities
      */
     public List<Servizio> findAll() {
+        List<Servizio> items = null;
         Croce croce = getCroce();
-        return findAllByCroce(croce);
+        wamLogin = getWamLogin();
+
+        if (croce != null) {
+            items = findAllByCroce(croce);
+        } else {
+            if (wamLogin != null && wamLogin.isDeveloper()) {
+                items = findAllCroci();
+            }// end of if cycle
+        }// end of if/else cycle
+
+        return items;
     }// end of method
 
 

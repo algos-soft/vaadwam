@@ -14,8 +14,6 @@ import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
@@ -29,7 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +108,6 @@ public class MiliteList extends WamViewList {
      * <p>
      * Può essere Grid oppure PaginatedGrid <br>
      * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
-     * DEVE poi invocare il metodo della superclasse per le regolazioni base della PaginatedGrid <br>
      * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
      */
     @Override
@@ -129,6 +125,8 @@ public class MiliteList extends WamViewList {
     @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
+
+        super.usaPagination = true;
 
         super.isEntityModificabile = true;
         if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
@@ -149,26 +147,15 @@ public class MiliteList extends WamViewList {
      */
     @Override
     protected void creaAlertLayout() {
+        fixPreferenze();
+
+        alertUser.add("Militi dell'associazione");
+        alertUser.add("Puoi modificare alcuni dati della tua scheda, senza cancellarla");
+        alertUser.add("Le funzioni vengono modificate solo da un admin");
+        alertAdmin.add("Seleziona i militi attivi o lo storico o admin/dipendente/infermiere.");
+        alertAdmin.add("I militi non si possono cancellare. Se non effettuano più turni, disabilitare il flag 'attivo' per spostarli nello 'storico.");
+
         super.creaAlertLayout();
-
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
-
-        alertPlacehorder.add(new Label("Militi dell'associazione."));
-        if (isDeveloper) {
-            alertPlacehorder.add(new Label("Come developer si possono importare i militi dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_MILITI, LAST_IMPORT_MILITI));
-        } else {
-            if (isAdmin) {
-                alertPlacehorder.add(new Label("Seleziona i militi attivi o lo storico o admin/dipendente/infermiere."));
-                alertPlacehorder.add(new Label("Lista visibile solo perché sei collegato come admin. Gli utenti normali vedono solo il loro nome."));
-                alertPlacehorder.add(new Label("Come admin si possono aggiungere e modificare i militi. Gli utenti normali possono modificare solo il proprio nome"));
-                alertPlacehorder.add(new Label("I militi non si possono cancellare. Se non effettuano più turni, disabilitare il flag 'attivo' per spostarli nello 'storico'"));
-            } else {
-                alertPlacehorder.add(new Label("Puoi modificare alcuni dati della tua scheda, senza cancellarla."));
-                alertPlacehorder.add(new Label("Le funzioni vengono modificate solo da un admin."));
-            }// end of if/else cycle
-        }// end of if/else cycle
     }// end of method
 
 

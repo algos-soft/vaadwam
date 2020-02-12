@@ -7,16 +7,20 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+
 /**
  * Componente che mostra il nome della company e l'utente loggato
  */
 public class TopbarComponent extends HorizontalLayout {
 
     Image image;
+
     private Label label;
+
     private MenuItem itemUser;
 
     private LogoutListener logoutListener;
+
     private ProfileListener profileListener;
 
 
@@ -36,10 +40,14 @@ public class TopbarComponent extends HorizontalLayout {
 
         SubMenu projectSubMenu = itemUser.getSubMenu();
         MenuItem profile = projectSubMenu.addItem("Profilo", menuItemClickEvent -> {
-            if(profileListener!=null){profileListener.profile();}
+            if (profileListener != null) {
+                profileListener.profile();
+            }
         });
-        MenuItem logout = projectSubMenu.addItem("Logout", menuItemClickEvent ->{
-            if(logoutListener!=null){logoutListener.logout();}
+        MenuItem logout = projectSubMenu.addItem("Logout", menuItemClickEvent -> {
+            if (logoutListener != null) {
+                logoutListener.logout();
+            }
         });
 
         // immagine di default
@@ -54,34 +62,44 @@ public class TopbarComponent extends HorizontalLayout {
 
     }
 
-    public void setImage(Image image){
-        this.image=image;
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
-    public void setLabel(String text){
+
+    public void setLabel(String text) {
         label.setText(text);
     }
 
-    public void setUsername(String username){
+
+    public void setUsername(String username) {
         itemUser.setText(username);
     }
 
-    public interface LogoutListener{
+
+    public void setLogoutListener(LogoutListener listener) {
+        this.logoutListener = listener;
+    }
+
+
+    public void setProfileListener(ProfileListener listener) {
+        this.profileListener = listener;
+    }
+
+
+    public interface LogoutListener {
+
         void logout();
+
     }
 
-    public interface ProfileListener{
+
+    public interface ProfileListener {
+
         void profile();
-    }
 
-    public void setLogoutListener(LogoutListener listener){
-        this.logoutListener=listener;
     }
-
-    public void setProfileListener(ProfileListener listener){
-        this.profileListener=listener;
-    }
-
 
 
 }

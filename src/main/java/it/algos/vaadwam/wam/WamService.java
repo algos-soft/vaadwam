@@ -401,6 +401,7 @@ public abstract class WamService extends AService {
         return null;
     }// end of method
 
+
     /**
      * Ordine di presentazione (obbligatorio, unico all'interno della croce), <br>
      * Viene calcolato in automatico alla creazione della entity <br>
@@ -445,6 +446,28 @@ public abstract class WamService extends AService {
      * @return true se sono stati importati correttamente
      */
     public boolean importa() {
+        return false;
+    }// end of method
+
+
+    /**
+     * Deletes all entities of the collection.
+     */
+    @Override
+    public boolean deleteAll() {
+        Croce croce = getCroce();
+
+        if (WamEntity.class.isAssignableFrom(entityClass)) {
+            if (croce != null) {
+                super.deleteByProperty(entityClass, "croce", croce);
+            } else {
+                if (wamLogin != null && wamLogin.isDeveloper()) {
+                    mongo.drop(entityClass);
+                }// end of if cycle
+                super.deleteByProperty(entityClass, "croce", croce);
+            }// end of if/else cycle
+        }// end of if cycle
+
         return false;
     }// end of method
 

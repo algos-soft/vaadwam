@@ -160,6 +160,9 @@ public abstract class APrefViewList extends AViewList {
         //--nel metodo postPreferenze() vengono comunque controllati i 'permessi'
         usaFiltroCompany = usaCompany && annotation.getCompanyRequired(entityClazz) != EACompanyRequired.nonUsata;
 
+        //--flag di preferenza per mostrare il popup di filtro. Normalmente false. <br>
+        mostraFiltroCompany = false;
+
     }// end of method
 
 

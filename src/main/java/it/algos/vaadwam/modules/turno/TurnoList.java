@@ -142,7 +142,7 @@ public class TurnoList extends WamViewList {
 
         if (isDeveloper) {
             alertPlacehorder.add(new Label("Come developer si possono importare i Turni dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_TURNI, LAST_IMPORT_TURNI));
+            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_TURNI, LAST_IMPORT_TURNI,""));
         }// end of if cycle
     }// end of method
 

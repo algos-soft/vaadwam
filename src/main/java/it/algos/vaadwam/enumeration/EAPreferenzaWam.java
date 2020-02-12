@@ -5,10 +5,8 @@ import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.enumeration.IAEnum;
 import it.algos.vaadflow.modules.preferenza.IAPreferenza;
 import it.algos.vaadflow.modules.role.EARole;
-import it.algos.vaadwam.tabellone.EACancellazione;
 
 import static it.algos.vaadwam.application.WamCost.*;
-import static it.algos.vaadwam.application.WamCost.DURATA_IMPORT_FUNZIONI_CRPT;
 
 /**
  * Project it.algos.vaadflow
@@ -36,46 +34,16 @@ public enum EAPreferenzaWam implements IAPreferenza {
     usaDaemonTurni(USA_DAEMON_TURNI, "Crono (deprecated) per download turni", EAPrefType.bool, EARole.developer, false, true),
 
     //--cronologia degli import
-    lastImportFunzioniGAPS(LAST_IMPORT_FUNZIONI_GAPS, "Data ultimo import funzioni della croce GAPS", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportFunzioniCRF(LAST_IMPORT_FUNZIONI_CRF, "Data ultimo import funzioni della croce CRF", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportFunzioniCRPT(LAST_IMPORT_FUNZIONI_CRPT, "Data ultimo import funzioni della croce CRPT", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportFunzioniPAP(LAST_IMPORT_FUNZIONI_PAP, "Data ultimo import funzioni della croce PAP", EAPrefType.localdatetime, EARole.developer, false, null),
-
-    lastImportServiziGAPS(LAST_IMPORT_SERVIZI_GAPS, "Data ultimo import servizi della croce GAPS", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportServiziCRF(LAST_IMPORT_SERVIZI_CRF, "Data ultimo import servizi della croce CRF", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportServiziCRPT(LAST_IMPORT_SERVIZI_CRPT, "Data ultimo import servizi della croce CRPT", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportServiziPAP(LAST_IMPORT_SERVIZI_PAP, "Data ultimo import servizi della croce PAP", EAPrefType.localdatetime, EARole.developer, false, null),
-
-    lastImportMilitiGAPS(LAST_IMPORT_MILITI_GAPS, "Data ultimo import militi della croce GAPS", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportMilitiCRF(LAST_IMPORT_MILITI_CRF, "Data ultimo import militi della croce CRF", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportMilitiCRPT(LAST_IMPORT_MILITI_CRPT, "Data ultimo import militi della croce CRPT", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportMilitiPAP(LAST_IMPORT_MILITI_PAP, "Data ultimo import militi della croce PAP", EAPrefType.localdatetime, EARole.developer, false, null),
-
-    lastImportTurniGAPS(LAST_IMPORT_TURNI_GAPS, "Data ultimo import turni della croce GAPS", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportTurniCRF(LAST_IMPORT_TURNI_CRF, "Data ultimo import turni della croce CRF", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportTurniCRPT(LAST_IMPORT_TURNI_CRPT, "Data ultimo import turni della croce CRPT", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastImportTurniPAP(LAST_IMPORT_TURNI_PAP, "Data ultimo import turni della croce PAP", EAPrefType.localdatetime, EARole.developer, false, null),
+    lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, EARole.developer, true, null),
+    lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, EARole.developer, true, null),
+    lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, EARole.developer, true, null),
+    lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, EARole.developer, true, null),
 
 
-    durataImportFunzioniGAPS(DURATA_IMPORT_FUNZIONI_GAPS, "Durata ultimo import funzioni della croce GAPS", EAPrefType.integer, 0),
-    durataImportFunzioniCRF(DURATA_IMPORT_FUNZIONI_CRF, "Durata ultimo import funzioni della croce CRF", EAPrefType.integer, 0),
-    durataImportFunzioniCRPT(DURATA_IMPORT_FUNZIONI_CRPT, "Durata ultimo import funzioni della croce CRPT", EAPrefType.integer, 0),
-    durataImportFunzioniPAP(DURATA_IMPORT_FUNZIONI_PAP, "Durata ultimo import funzioni della croce PAP", EAPrefType.integer, 0),
-
-    durataImportServiziGAPS(DURATA_IMPORT_SERVIZI_GAPS, "Durata ultimo import servizi della croce GAPS", EAPrefType.integer, 0),
-    durataImportServiziCRF(DURATA_IMPORT_SERVIZI_CRF, "Durata ultimo import servizi della croce CRF", EAPrefType.integer, 0),
-    durataImportServiziCRPT(DURATA_IMPORT_SERVIZI_CRPT, "Durata ultimo import servizi della croce CRPT", EAPrefType.integer, 0),
-    durataImportServiziPAP(DURATA_IMPORT_SERVIZI_PAP, "Durata ultimo import servizi della croce PAP", EAPrefType.integer, 0),
-
-    durataImportMilitiGAPS(DURATA_IMPORT_MILITI_GAPS, "Durata ultimo import militi della croce GAPS", EAPrefType.integer, 0),
-    durataImportMilitiCRF(DURATA_IMPORT_MILITI_CRF, "Durata ultimo import militi della croce CRF", EAPrefType.integer, 0),
-    durataImportMilitiCRPT(DURATA_IMPORT_MILITI_CRPT, "Durata ultimo import militi della croce CRPT", EAPrefType.integer, 0),
-    durataImportMilitiPAP(DURATA_IMPORT_MILITI_PAP, "Durata ultimo import militi della croce PAP", EAPrefType.integer, 0),
-
-    durataImportTurniGAPS(DURATA_IMPORT_TURNI_GAPS, "Durata ultimo import turni della croce GAPS", EAPrefType.integer, 0),
-    durataImportTurniCRF(DURATA_IMPORT_TURNI_CRF, "Durata ultimo import turni della croce CRF", EAPrefType.integer, 0),
-    durataImportTurniCRPT(DURATA_IMPORT_TURNI_CRPT, "Durata ultimo import turni della croce CRPT", EAPrefType.integer, 0),
-    durataImportTurniPAP(DURATA_IMPORT_TURNI_PAP, "Durata ultimo import turni della croce PAP", EAPrefType.integer, 0),
+    durataImportFunzioni(DURATA_IMPORT_FUNZIONI, "Durata ultimo import funzioni della croce, in secondi", EAPrefType.integer, 0),
+    durataImportServizi(DURATA_IMPORT_SERVIZI, "Durata ultimo import servizi della croce, in secondi", EAPrefType.integer, 0),
+    durataImportMiliti(DURATA_IMPORT_MILITI, "Durata ultimo import militi della croce, in secondi", EAPrefType.integer, 0),
+    durataImportTurni(DURATA_IMPORT_TURNI, "Durata ultimo import turni della croce, in secondi", EAPrefType.integer, 0),
 
 
     //--cronologia degli import-old
@@ -89,7 +57,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
     usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false),
     usaFieldsEnabledInShow(USA_FIELDS_ENABLED_IN_SHOW, "Mostra i fields abilitati anche nel Form per gli Users", EAPrefType.bool, EARole.developer, false, true),
     usaCheckFunzioniMilite(USA_CHECK_FUNZIONI_MILITE, "Mostra le funzioni abilitate di un Milite tramite checkbox", EAPrefType.bool, EARole.developer, false, false),
-//    tipoCancellazione(TIPO_CANCELLAZIONE, "Modalità di cancellazione possibili", EAPrefType.enumeration, EARole.developer, false, EACancellazione.getValuesStandard()),
+    //    tipoCancellazione(TIPO_CANCELLAZIONE, "Modalità di cancellazione possibili", EAPrefType.enumeration, EARole.developer, false, EACancellazione.getValuesStandard()),
     mostraOrarioServizio(MOSTRA_ORARIO_SERVIZIO, "Mostra l'orario del servizio nel dialogo di iscrizione al turno", EAPrefType.bool, EARole.admin, false, true),
     mostraLegenda(MOSTRA_LEGENDA_TABELLONE, "Mostra la legenda in calce al tabellone", EAPrefType.bool, EARole.admin, true, true),
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "L'utente può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, true),
@@ -116,8 +84,11 @@ public enum EAPreferenzaWam implements IAPreferenza {
         this.setCode(code);
         this.setDesc(desc);
         this.setType(type);
+        this.setCompanySpecifica(true);
         this.setValue(value);
     }// fine del costruttore
+
+
     EAPreferenzaWam(String code, String desc, EAPrefType type, EARole show, boolean companySpecifica, Object value) {
         this.setCode(code);
         this.setDesc(desc);

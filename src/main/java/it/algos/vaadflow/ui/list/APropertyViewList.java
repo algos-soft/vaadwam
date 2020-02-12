@@ -419,9 +419,14 @@ public abstract class APropertyViewList extends VerticalLayout {
     protected boolean usaRefresh;
 
     /**
-     * Flag di preferenza per filtrare la mcompany. Normalmente true. Elaborato in APrefViewList.postPreferenze() <br>
+     * Flag di preferenza per filtrare la company. Normalmente true. Elaborato in APrefViewList.postPreferenze() <br>
      */
     protected boolean usaFiltroCompany;
+
+    /**
+     * Flag di preferenza per mostrare il popup di filtro. Normalmente false. Elaborato in APrefViewList.postPreferenze() <br>
+     */
+    protected boolean mostraFiltroCompany;
 
     /**
      * Flag di preferenza per selezionare il numero di righe visibili della Grid. <br>

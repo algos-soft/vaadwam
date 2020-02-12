@@ -273,7 +273,11 @@ public class MigrationService {
      * @param croceNew di waadwam
      */
     public boolean importFunzioni(Croce croceNew) {
-        return importFunzioni(getCroce(croceNew), croceNew);
+        if (croceNew != null) {
+            return importFunzioni(getCroce(croceNew), croceNew);
+        } else {
+            return false;
+        }// end of if/else cycle
     }// end of method
 
 

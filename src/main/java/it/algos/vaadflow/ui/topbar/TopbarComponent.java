@@ -31,7 +31,7 @@ public class TopbarComponent extends HorizontalLayout {
 
     private MenuItem itemUser;
 
-    private MenuBar menuUser;
+    public MenuBar menuUser;
 
     private LogoutListener logoutListener;
 
@@ -48,6 +48,7 @@ public class TopbarComponent extends HorizontalLayout {
 
     private AMenuService menuService;
 
+    public SubMenu projectSubMenu;
 
     /**
      * Costruttore base con i parametri obbligatori <br>
@@ -90,7 +91,6 @@ public class TopbarComponent extends HorizontalLayout {
      * Creazione dei componenti grafici <br>
      */
     protected void initView() {
-        SubMenu projectSubMenu;
         Tab tab;
         setWidth("100%");
         setDefaultVerticalComponentAlignment(Alignment.CENTER);

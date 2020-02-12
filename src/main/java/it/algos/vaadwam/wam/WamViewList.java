@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
@@ -31,6 +33,21 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 @Slf4j
 public abstract class WamViewList extends AGridViewList {
 
+    protected static String USER_VISIONE = "Solo in visione. Le modifiche vengono effettuate da un admin.";
+
+    protected static String ADMIN_VISIONE = "Come admin si possono aggiungere, modificare e cancellare i record. Gli utenti normali possono solo vederli.";
+
+    protected static String ADMIN_DELETE = "I record utilizzati nei turni già effettuati, non possono essere cancellati.";
+
+    protected static String DEVELOPER_DELETE = "Come developer si possono cancellare i record della croce corrente.";
+
+    protected static String DEVELOPER_IMPORT = "Come developer si possono importare i record dal vecchio programma.";
+
+    protected static String DEVELOPER_MOSTRA_ALL = "Non ci sono croci selezionate. Vengono mostrati tutti i record di tutte le croci.";
+
+    protected static String DEVELOPER_DELETE_ALL = "Delete cancella TUTTI i record di TUTTE le croci.";
+
+
     protected Button genericFieldValue;
 
     protected Button deleteButton;
@@ -43,11 +60,13 @@ public abstract class WamViewList extends AGridViewList {
 
     protected EATempo eaTempoTypeImport;
 
-//    /**
-//     * La injection viene fatta da SpringBoot in automatico <br>
-//     */
-//    @Autowired
-//    protected AMailService mailService;
+    protected List<String> alertUser;
+
+    protected List<String> alertAdmin;
+
+    protected List<String> alertDev;
+
+    protected List<String> alertDevAll;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -126,6 +145,57 @@ public abstract class WamViewList extends AGridViewList {
         this.lastImport = VUOTA;
         this.durataLastImport = VUOTA;
         this.eaTempoTypeImport = EATempo.nessuno;
+
+        alertUser = new ArrayList<>();
+        alertAdmin = new ArrayList<>();
+        alertDev = new ArrayList<>();
+        alertDevAll = new ArrayList<>();
+    }// end of method
+
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
+     * Normalmente ad uso esclusivo del developer
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     */
+    @Override
+    protected void creaAlertLayout() {
+        super.creaAlertLayout();
+
+        boolean isDeveloper = login.isDeveloper();
+        boolean isAdmin = login.isAdmin();
+        boolean isUser = !isDeveloper && !isAdmin;
+        alertUser.add(USER_VISIONE);
+        alertAdmin.add(ADMIN_VISIONE);
+        alertAdmin.add(ADMIN_DELETE);
+        alertDev.add(DEVELOPER_DELETE);
+        alertDev.add(DEVELOPER_IMPORT);
+        alertDevAll.add(DEVELOPER_MOSTRA_ALL);
+        alertDevAll.add(DEVELOPER_DELETE_ALL);
+
+        alertPlacehorder.add(getLabelUser(alertUser.get(0)));
+        if (isUser) {
+            for (int k = 1; k < alertUser.size(); k++) {
+                alertPlacehorder.add(getLabelUser(alertUser.get(k)));
+            }// end of for cycle
+        } else {
+            for (String alert : alertAdmin) {
+                alertPlacehorder.add(getLabelAdmin(alert));
+            }// end of for cycle
+            if (isDeveloper) {
+                if (wamLogin != null && wamLogin.getCroce() != null) {
+                    for (String alert : alertDev) {
+                        alertPlacehorder.add(getLabelDev(alert));
+                    }// end of for cycle
+                    alertPlacehorder.add(getInfoImport(null, "", lastImport, durataLastImport));
+                } else {
+                    for (String alert : alertDevAll) {
+                        alertPlacehorder.add(getLabelDev(alert));
+                    }// end of for cycle
+                }// end of if/else cycle
+            }// end of if cycle
+        }// end of if/else cycle
     }// end of method
 
 
@@ -148,7 +218,7 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        if (wamLogin.isDeveloper()) {
+        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
             importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
@@ -173,11 +243,13 @@ public abstract class WamViewList extends AGridViewList {
     protected void importa() {
         long inizio = System.currentTimeMillis();
 
-        ((WamService) service).importa();
+        if (wamLogin != null && wamLogin.getCroce() != null) {
+            ((WamService) service).importa();
+            log.info("Import effettuato in " + date.deltaText(inizio));
+            setLastImport(inizio);
+            UI.getCurrent().getPage().reload();
+        }// end of if cycle
 
-        log.info("Import effettuato in " + date.deltaText(inizio));
-        setLastImport(inizio);
-        UI.getCurrent().getPage().reload();
     }// end of method
 
 
@@ -194,14 +266,15 @@ public abstract class WamViewList extends AGridViewList {
     /**
      * Eventuale caption sopra la grid
      */
-    protected Label getInfoImport(ATask task, String flagDaemon, String flagLastDownload) {
+    protected Label getInfoImport(ATask task, String flagDaemon, String flagLastImport, String flagDurataLastImport) {
         Label label = null;
         String testo = "";
         String tag = "Import automatico: ";
-        String nota = task.getSchedule().getNota();
+        String nota = task != null ? task.getSchedule().getNota() : VUOTA;
+        int durata = pref.getInt(flagDurataLastImport);
 
         if (login.isDeveloper()) {
-            LocalDateTime lastDownload = pref.getDateTime(flagLastDownload);
+            LocalDateTime lastImport = pref.getDateTime(flagLastImport);
             testo = tag;
 
             if (pref.isBool(flagDaemon)) {
@@ -210,8 +283,8 @@ public abstract class WamViewList extends AGridViewList {
                 testo += "disattivato.";
             }// end of if/else cycle
 
-            if (lastDownload != null) {
-                label = getLabelDev(testo + " Ultimo import il " + date.getTime(lastDownload));
+            if (lastImport != null) {
+                label = getLabelDev(testo + " Ultimo import il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
             } else {
                 if (pref.isBool(flagDaemon)) {
                     label = getLabelDev(tag + nota + " Non ancora effettuato.");
