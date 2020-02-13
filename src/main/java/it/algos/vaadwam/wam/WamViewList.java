@@ -140,7 +140,7 @@ public abstract class WamViewList extends AGridViewList {
             super.isEntityModificabile = false;
         }// end of if/else cycle
 
-        super.usaPagination = false;
+        super.usaPagination = true;
 
         this.lastImport = VUOTA;
         this.durataLastImport = VUOTA;
@@ -166,33 +166,52 @@ public abstract class WamViewList extends AGridViewList {
         boolean isDeveloper = login.isDeveloper();
         boolean isAdmin = login.isAdmin();
         boolean isUser = !isDeveloper && !isAdmin;
-        alertUser.add(USER_VISIONE);
-        alertAdmin.add(ADMIN_VISIONE);
-        alertAdmin.add(ADMIN_DELETE);
-        alertDev.add(DEVELOPER_DELETE);
-        alertDev.add(DEVELOPER_IMPORT);
-        alertDevAll.add(DEVELOPER_MOSTRA_ALL);
-        alertDevAll.add(DEVELOPER_DELETE_ALL);
 
-        alertPlacehorder.add(getLabelUser(alertUser.get(0)));
+        if (alertUser != null) {
+            alertUser.add(USER_VISIONE);
+        }// end of if cycle
+        if (alertAdmin != null) {
+            alertAdmin.add(ADMIN_VISIONE);
+            alertAdmin.add(ADMIN_DELETE);
+        }// end of if cycle
+        if (alertDev != null) {
+            alertDev.add(DEVELOPER_DELETE);
+            alertDev.add(DEVELOPER_IMPORT);
+        }// end of if cycle
+        if (alertDevAll != null) {
+            alertDevAll.add(DEVELOPER_MOSTRA_ALL);
+            alertDevAll.add(DEVELOPER_DELETE_ALL);
+        }// end of if cycle
+
+        if (alertUser != null) {
+            alertPlacehorder.add(getLabelUser(alertUser.get(0)));
+        }// end of if cycle
         if (isUser) {
-            for (int k = 1; k < alertUser.size(); k++) {
-                alertPlacehorder.add(getLabelUser(alertUser.get(k)));
-            }// end of for cycle
+            if (alertUser != null) {
+                for (int k = 1; k < alertUser.size(); k++) {
+                    alertPlacehorder.add(getLabelUser(alertUser.get(k)));
+                }// end of for cycle
+            }// end of if cycle
         } else {
-            for (String alert : alertAdmin) {
-                alertPlacehorder.add(getLabelAdmin(alert));
-            }// end of for cycle
+            if (alertAdmin != null) {
+                for (String alert : alertAdmin) {
+                    alertPlacehorder.add(getLabelAdmin(alert));
+                }// end of for cycle
+            }// end of if cycle
             if (isDeveloper) {
                 if (wamLogin != null && wamLogin.getCroce() != null) {
-                    for (String alert : alertDev) {
-                        alertPlacehorder.add(getLabelDev(alert));
-                    }// end of for cycle
-                    alertPlacehorder.add(getInfoImport(null, "", lastImport, durataLastImport));
+                    if (alertDev != null) {
+                        for (String alert : alertDev) {
+                            alertPlacehorder.add(getLabelDev(alert));
+                        }// end of for cycle
+                        alertPlacehorder.add(getInfoImport(null, "", lastImport, durataLastImport));
+                    }// end of if cycle
                 } else {
-                    for (String alert : alertDevAll) {
-                        alertPlacehorder.add(getLabelDev(alert));
-                    }// end of for cycle
+                    if (alertDevAll != null) {
+                        for (String alert : alertDevAll) {
+                            alertPlacehorder.add(getLabelDev(alert));
+                        }// end of for cycle
+                    }// end of if cycle
                 }// end of if/else cycle
             }// end of if cycle
         }// end of if/else cycle

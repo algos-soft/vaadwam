@@ -12,20 +12,20 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout;
-import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDate;
@@ -33,7 +33,8 @@ import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.SPAZIO;
 import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_TUR;
+import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 
 /**
  * Project vaadwam <br>
@@ -62,7 +63,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_TUR)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "turni", menuIcon = VaadinIcon.SITEMAP,  roleTypeVisibility = EARoleType.developer)
+@AIView(vaadflow = false, menuName = "turni", menuIcon = VaadinIcon.SITEMAP, roleTypeVisibility = EARoleType.developer)
 public class TurnoList extends WamViewList {
 
 
@@ -95,7 +96,6 @@ public class TurnoList extends WamViewList {
     private ATask task;
 
 
-
     /**
      * Costruttore @Autowired <br>
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
@@ -110,6 +110,20 @@ public class TurnoList extends WamViewList {
         super(service, Turno.class);
     }// end of Vaadin/@Route constructor
 
+
+    /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Turno>();
+    }// end of method
+
+
     /**
      * Le preferenze standard <br>
      * Le preferenze specifiche della sottoclasse <br>
@@ -120,13 +134,13 @@ public class TurnoList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        super.searchType = EASearch.nonUsata;
+
         if (wamLogin.isDeveloper() || login.isAdmin()) {
             super.usaPopupFiltro = true;
         } else {
             super.usaPopupFiltro = false;
         }// end of if/else cycle
-
-        super.grid = new PaginatedGrid<Turno>();
     }// end of method
 
 
@@ -137,13 +151,13 @@ public class TurnoList extends WamViewList {
      * Invocare PRIMA il metodo della superclasse
      */
     protected void creaAlertLayout() {
-        super.creaAlertLayout();
-        boolean isDeveloper = login.isDeveloper();
+        fixPreferenze();
 
-        if (isDeveloper) {
-            alertPlacehorder.add(new Label("Come developer si possono importare i Turni dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_TURNI, LAST_IMPORT_TURNI,""));
-        }// end of if cycle
+        alertUser = null;
+        alertAdmin = null;
+        alertDev.add("Turni visualizzati nel tabellone");
+
+        super.creaAlertLayout();
     }// end of method
 
 
@@ -160,8 +174,12 @@ public class TurnoList extends WamViewList {
         super.creaTopLayout();
 
         String tagCroce = wamLogin.getCroce().code;
-        if (wamLogin.isDeveloper()) {
-            importButton.setText("Import all");
+        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+            Button importAllButton = new Button("Import storico", new Icon(VaadinIcon.ARROW_DOWN));
+            importAllButton.getElement().setAttribute("theme", "error");
+            importAllButton.addClassName("view-toolbar__button");
+            importAllButton.addClickListener(e -> importStorico(wamLogin.getCroce()));
+            topPlaceholder.add(importAllButton);
         }// end of if cycle
     }// end of method
 
@@ -218,32 +236,36 @@ public class TurnoList extends WamViewList {
     }// end of method
 
 
-//    /**
-//     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
-//     */
-//    protected void importAnno() {
-//        if (migration.importTurniAnno(wamLogin.getCroce(), date.getAnnoCorrente())) {
-//            fixInfoImport();
-//        }// end of if cycle
-//        UI.getCurrent().getPage().reload();
-//    }// end of method
+    /**
+     * Importa la collezione di turni di questa croce per tutti gli anni <br>
+     */
+    protected void importStorico(Croce croce) {
+        migration.importTurniStorico(croce);
+        UI.getCurrent().getPage().reload();
+    }// end of method
 
 
-//    /**
-//     * Importa la collezione di turni di questa croce solo per l'anno in corso <br>
-//     */
-//    protected void importDebug() {
-//        long inizio = System.currentTimeMillis();
-//
-//        if (migration.importTurniAnno()) {
-//            fixInfoImport();
-//        }// end of if cycle
-//
-//        log.info("Import turni effettuato in " + date.deltaText(inizio));
-//        UI.getCurrent().getPage().reload();
-//    }// end of method
+    public void updateFiltri() {
+        super.updateFiltri();
 
+        EAFiltroTurno filtro = null;
+        int anno;
+        int annoCorrente = LocalDate.now().getYear();
+        LocalDate inizio;
+        LocalDate fine;
 
+        if (filtroComboBox != null) {
+            filtro = (EAFiltroTurno) filtroComboBox.getValue();
+            if (filtro != null) {
+                anno = annoCorrente - filtro.delta;
+                inizio = date.primoGennaio(anno);
+                fine = date.trentunDicembre(anno);
+
+                filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine)));
+            }// end of if cycle
+        }// end of if cycle
+
+    }// end of method
 
 
     public void updateItems() {
@@ -261,6 +283,7 @@ public class TurnoList extends WamViewList {
         }// end of if cycle
 
     }// end of method
+
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>

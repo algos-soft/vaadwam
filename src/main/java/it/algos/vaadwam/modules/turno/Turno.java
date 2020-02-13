@@ -94,8 +94,8 @@ public class Turno extends WamEntity {
      */
     @NotNull
     @Field("giorno")
-    @AIField(type = EAFieldType.localdate)
-    @AIColumn()
+    @AIField(type = EAFieldType.localdate,widthEM = 8)
+    @AIColumn(widthEM = 8)
     public LocalDate giorno;
 
 
@@ -107,7 +107,7 @@ public class Turno extends WamEntity {
     @DBRef
     @Field("serv")
     @AIField(type = EAFieldType.combo, serviceClazz = ServizioService.class)
-    @AIColumn(widthEM = 8)
+    @AIColumn(widthEM = 7)
     public Servizio servizio;
 
 

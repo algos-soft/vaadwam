@@ -117,8 +117,6 @@ public class FunzioneList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaPagination = true;
-
         this.lastImport = LAST_IMPORT_FUNZIONI;
         this.durataLastImport = DURATA_IMPORT_FUNZIONI;
         this.eaTempoTypeImport = EATempo.secondi;

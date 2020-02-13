@@ -578,6 +578,21 @@ public class MigrationService {
 
 
     /**
+     * Importa da webambulanze i turni di una sola croce <br>
+     *
+     * @param croceNew di waadwam
+     */
+    public boolean importTurniStorico(Croce croceNew) {
+
+        for (Integer anno : ANNI) {
+            importTurniAnno(croceNew, anno);
+        }// end of for cycle
+
+        return false;
+    }// end of method
+
+
+    /**
      * Importa da webambulanze tutti i turni di una sola croce <br>
      *
      * @param croceOld esistente su webambulanze

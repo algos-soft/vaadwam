@@ -5,6 +5,10 @@ import it.algos.vaadflow.annotation.AIScript;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Project vaadwam
  * Created by Algos
@@ -170,5 +174,6 @@ public class WamCost {
 
     public final static String KEY_MAP_GIORNI_DURATA = "giorniDurata";
 
+    public final static List<Integer> ANNI = new ArrayList<Integer>(Arrays.asList(2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020));
 
 }// end of static class

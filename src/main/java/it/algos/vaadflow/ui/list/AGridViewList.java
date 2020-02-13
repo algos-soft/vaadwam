@@ -317,7 +317,7 @@ public abstract class AGridViewList extends ALayoutViewList {
         int intValue;
 
         //--ricerca iniziale
-        if (searchType == EASearch.editField && searchField != null) {
+        if (searchType == EASearch.editField && searchField != null&&text.isValid(searchProperty)) {
             type = annotation.getFormType(entityClazz, searchProperty);
 
             switch (type) {

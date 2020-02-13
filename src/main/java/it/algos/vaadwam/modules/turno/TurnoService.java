@@ -390,6 +390,19 @@ public class TurnoService extends WamService {
 
 
     /**
+     * Returns all instances of the selected Croce <br>
+     *
+     * @return lista ordinata di tutte le entities della croce
+     */
+    public List<Turno> findAllByYear(Croce croce, int anno) {
+        LocalDate inizio = date.primoGennaio(anno);
+        LocalDate fine = date.trentunDicembre(anno);
+
+        return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
+    }// end of method
+
+
+    /**
      * Returns instances of the current Croce <br>
      * Selected for Servizio and for starting/ending date <br>
      * Le date inizioie e fine sono comprensive degli estremi, mentre il metodo della repository no <br>
@@ -460,7 +473,7 @@ public class TurnoService extends WamService {
             durata = servizioService.getDurata(servizio);
         }// end of if cycle
 
-        if (funzioni!=null) {
+        if (funzioni != null) {
             for (Funzione funz : funzioni) {
                 items.add(Iscrizione.builderIscrizione().funzione(funz).durataEffettiva(durata).build());
             }// end of for cycle

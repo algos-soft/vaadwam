@@ -107,8 +107,6 @@ public class ServizioList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaPagination = true;
-
         this.lastImport = LAST_IMPORT_SERVIZI;
         this.durataLastImport = DURATA_IMPORT_SERVIZI;
         this.eaTempoTypeImport = EATempo.secondi;

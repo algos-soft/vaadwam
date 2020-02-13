@@ -260,6 +260,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         //--aggiunge tutti i listeners ai bottoni della barra/menu
         this.addListeners();
 
+        updateFiltri();
         this.updateGrid();
     }// end of method
 
