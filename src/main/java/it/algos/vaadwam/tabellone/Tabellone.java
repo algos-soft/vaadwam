@@ -51,6 +51,9 @@ import static it.algos.vaadwam.application.WamCost.*;
  * User: gac
  * Date: Fri, 28-Jun-2019
  * Time: 20:31
+ * <p>
+ * La griglia è composta di oggetti 'Riga' <br>
+ * La griglia è composta di oggetti 'TurnoCellPolymer' <br>
  */
 @UIScope
 @Route(value = TAG_TAB_LIST, layout = WamLayout.class)
@@ -416,7 +419,7 @@ public class Tabellone extends AGridViewList {
         column.setSortable(false);
         column.setResizable(false);
 
-    }
+    }// end of method
 
 
     /**

@@ -289,24 +289,24 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     private void handleClickTurnoEsistente() {
         //@todo qui occorre differenziare secondo il numero di funzioni del turno
         int numIscr = turno.iscrizioni.size();
-        getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
+//        getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
 
-//        switch (numIscr) {
-//            case 1:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO + "/" + turno));
-//                break;
-//            case 2:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE + "/" + turno));
-//                break;
-//            case 3:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE + "/" + turno));
-//                break;
-//            case 4:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO + "/" + turno));
-//                break;
-//            default:
-//                break;
-//        } // end of switch statement
+        switch (numIscr) {
+            case 1:
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO + "/" + turno));
+                break;
+            case 2:
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE + "/" + turno));
+                break;
+            case 3:
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE + "/" + turno));
+                break;
+            case 4:
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO + "/" + turno));
+                break;
+            default:
+                break;
+        } // end of switch statement
     }// end of method
 
 
