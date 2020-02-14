@@ -254,7 +254,12 @@ public class StatisticaService extends WamService {
 
 
     public void elaboraSingoloMilite(Croce croce, Milite milite) {
-        List<Turno> listaTurniCroce = turnoService.findAllByYear(2019);
+        elaboraSingoloMilite(croce, milite, date.getAnnoCorrente());
+    }// end of method
+
+
+    public void elaboraSingoloMilite(Croce croce, Milite milite, int anno) {
+        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
         Milite militeIscritto;
         Turno turno;
         List<Turno> listaTurniMilite = new ArrayList<>();

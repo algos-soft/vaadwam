@@ -1,6 +1,7 @@
 package it.algos.vaadwam.modules.statistica;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -11,7 +12,6 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.TurnoService;
@@ -139,6 +139,19 @@ public class StatisticaList extends WamViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Statistica>();
+    }// end of method
+
+
+    /**
      * Preferenze standard <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
@@ -151,11 +164,33 @@ public class StatisticaList extends WamViewList {
         if (wamLogin.isAdmin()) {
             super.usaButtonDelete = true;
         }// end of if cycle
+
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
 
-        super.grid = new PaginatedGrid<Statistica>();
+    }// end of method
+
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
+     * Normalmente ad uso esclusivo del developer
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     */
+    @Override
+    protected void creaAlertLayout() {
+        fixPreferenze();
+
+        alertUser = null;
+        alertAdmin = null;
+        alertDev = null;
+        alertDevAll = null;
+        super.creaAlertLayout();
+
+        alertPlacehorder.add(getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
+        alertPlacehorder.add(getLabelDev(DEVELOPER_DELETE));
+        alertPlacehorder.add(getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
     }// end of method
 
 
@@ -189,6 +224,7 @@ public class StatisticaList extends WamViewList {
         topPlaceholder.add(elaboraButton);
     }// end of method
 
+
     /**
      * Elabora (nel service) le statistiche <br>
      * Se developer=true, elabora tutte le croci <br>
@@ -196,16 +232,11 @@ public class StatisticaList extends WamViewList {
      * Se user=true, non vede questa lista <br>
      */
     public void elabora() {
-        ((StatisticaService) service).elabora();
-
         if (wamLogin.isDeveloper()) {
-            ((StatisticaService) service).elabora();
-        } else {
-            if (wamLogin.isAdmin()) {
-                ((StatisticaService) service).elabora(wamLogin.getCroce());
-            }// end of if cycle
-        }// end of if/else cycle
+            ((StatisticaService) service).elabora(wamLogin.getCroce());
+        }// end of if cycle
     }// end of method
+
 
     /**
      * Crea un Popup di selezione della company <br>

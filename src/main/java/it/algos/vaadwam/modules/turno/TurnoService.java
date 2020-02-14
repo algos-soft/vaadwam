@@ -401,6 +401,18 @@ public class TurnoService extends WamService {
         return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
     }// end of method
 
+    /**
+     * Returns all instances of the selected Croce <br>
+     *
+     * @return lista ordinata di tutte le entities della croce
+     */
+    public List<Turno> findAllByYearUntilNow(Croce croce, int anno) {
+        LocalDate inizio = date.primoGennaio(anno);
+        LocalDate fine = LocalDate.now();
+
+        return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
+    }// end of method
+
 
     /**
      * Returns instances of the current Croce <br>
