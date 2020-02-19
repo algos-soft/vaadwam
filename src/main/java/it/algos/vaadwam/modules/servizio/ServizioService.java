@@ -3,6 +3,7 @@ package it.algos.vaadwam.modules.servizio;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.wam.WamService;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadwam.application.WamCost.TAG_SER;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -71,6 +72,21 @@ public class ServizioService extends WamService {
         this.repository = (ServizioRepository) repository;
     }// end of Spring constructor
 
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_SERVIZI;
+        super.durataLastImport = DURATA_IMPORT_SERVIZI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
     /**
      * Crea una entity solo se non esisteva <br>
@@ -307,8 +323,8 @@ public class ServizioService extends WamService {
      * @return true se sono stati importati correttamente
      */
     @Override
-    public boolean importa() {
-        return migration.importServizi(getCroce());
+    public void importa(Croce croce ) {
+         migration.importServizi(croce);
     }// end of method
 
     /**

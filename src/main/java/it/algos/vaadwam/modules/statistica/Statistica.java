@@ -7,6 +7,7 @@ import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
+import org.bson.types.Decimal128;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -70,8 +71,8 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "statistica", company = EACompanyRequired.obbligatoria)
-@AIList(fields = { "ordine", "milite", "last", "delta", "valido", "turni", "ore"})
-@AIForm(fields = {"croce", "ordine", "last", "delta", "valido", "turni", "ore"})
+@AIList(fields = {"ordine", "milite", "last", "delta", "valido", "turni", "ore","media"})
+@AIForm(fields = {"croce", "ordine", "last", "delta", "valido", "turni", "ore", "media"})
 public class Statistica extends WamEntity {
 
 
@@ -129,7 +130,7 @@ public class Statistica extends WamEntity {
      */
     @Field("val")
     @AIField(type = EAFieldType.yesnobold)
-    @AIColumn(name="OK")
+    @AIColumn(name = "OK")
     public boolean valido;
 
     /**
@@ -151,6 +152,16 @@ public class Statistica extends WamEntity {
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "Φ", widthEM = 5)
     public int ore;
+
+    /**
+     * ore medie per turno <br>
+     */
+    @NotNull
+    @Indexed()
+    @Field("media")
+    @AIField(type = EAFieldType.onedecimal, widthEM = 3)
+    @AIColumn(name = "=", widthEM = 5)
+    public int media;
 
 
     /**

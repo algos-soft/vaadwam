@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,20 +63,74 @@ public abstract class AService extends AbstractService implements IAService {
     //--il modello-dati specifico viene regolato dalla sottoclasse nel costruttore
     public Class<? extends AEntity> entityClass;
 
+    @Autowired
+    public ApplicationContext appContext;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public AAnnotationService annotation;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public AArrayService array;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public ABootService boot;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public AColumnService column;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public ADateService date;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public AFieldService field;
+
     /**
      * Inietta da Spring
      */
     @Autowired
     public AMongoService mongo;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
     @Autowired
-    protected ApplicationContext appContext;
+    public AReflectionService reflection;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected FlowData flow;
+    public AEnumerationService enumService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public FlowData flow;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected ATextService text;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -108,6 +163,32 @@ public abstract class AService extends AbstractService implements IAService {
     public AService(MongoRepository repository) {
         this.repository = repository;
     }// end of Spring constructor
+
+
+    /**
+     * Metodo invocato subito DOPO il costruttore
+     * <p>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, <br>
+     * ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        fixPreferenze();
+    }// end of method
+
+
+    /**
+     * Preferenze specifiche di questo service <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse APrefViewList <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void fixPreferenze() {
+    }// end of method
 
 
     @Override
@@ -1028,9 +1109,9 @@ public abstract class AService extends AbstractService implements IAService {
      * @throws IllegalArgumentException in case the given keyCode is {@literal null}.
      */
     @Override
-    public boolean delete(String keyCode) {
+    public boolean delete(String idKey) {
         boolean status = false;
-        AEntity entityBean = findByKeyUnica(keyCode);
+        AEntity entityBean = findById(idKey);
 
         if (entityBean != null) {
             status = delete(entityBean);

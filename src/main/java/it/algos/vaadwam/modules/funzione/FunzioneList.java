@@ -61,14 +61,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 public class FunzioneList extends WamViewList {
 
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    @Qualifier(TASK_FUN)
-    private ATask task;
 
 
     /**
@@ -117,9 +109,9 @@ public class FunzioneList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        this.lastImport = LAST_IMPORT_FUNZIONI;
-        this.durataLastImport = DURATA_IMPORT_FUNZIONI;
-        this.eaTempoTypeImport = EATempo.secondi;
+//        this.lastImport = LAST_IMPORT_FUNZIONI;
+//        this.durataLastImport = DURATA_IMPORT_FUNZIONI;
+//        this.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
 

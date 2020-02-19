@@ -8,6 +8,7 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.AddressService;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.person.PersonService;
@@ -35,10 +36,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_SECURITY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -56,12 +59,17 @@ public abstract class WamService extends AService {
 
     public final static String FIELD_NAME_CROCE = "croce";
 
+    public String lastImport;
+
+    public String durataLastImport;
+
+    public EATempo eaTempoTypeImport;
+
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     protected AMongoService mongo;
-
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -117,7 +125,6 @@ public abstract class WamService extends AService {
     @Autowired
     protected AVaadinService vaadinService;
 
-
     /**
      * Istanza unica di una classe di servizio: <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
@@ -142,6 +149,20 @@ public abstract class WamService extends AService {
     public WamService(MongoRepository repository) {
         super(repository);
     }// end of Spring constructor
+
+
+    /**
+     * Preferenze specifiche di questo service <br>
+     * <p>
+     * Chiamato da AViewList.initView() e sviluppato nella sottoclasse APrefViewList <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void fixPreferenze() {
+        this.lastImport = VUOTA;
+        this.durataLastImport = VUOTA;
+        this.eaTempoTypeImport = EATempo.nessuno;
+    }// end of method
 
 
     /**
@@ -445,8 +466,43 @@ public abstract class WamService extends AService {
      *
      * @return true se sono stati importati correttamente
      */
-    public boolean importa() {
-        return false;
+    public void importa() {
+        fixWamLogin();
+//        long inizio = System.currentTimeMillis();
+
+        if (wamLogin != null && wamLogin.getCroce() != null) {
+            importa(getCroce());
+//            log.info("Import effettuato in " + date.deltaText(inizio));
+//            setLastImport(inizio);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Importazione di dati <br>
+     *
+     * @return true se sono stati importati correttamente
+     */
+    public void importa(Croce croce) {
+    }// end of method
+
+
+    /**
+     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     */
+    protected void setLastImport(Croce croce, long inizio) {
+        setLastImport(croce, inizio, lastImport, durataLastImport, eaTempoTypeImport);
+    }// end of method
+
+
+    /**
+     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     */
+    protected void setLastImport(Croce croce, long inizio, String lastImport, String durataLastImport, EATempo eaTempoTypeImport) {
+        pref.saveValue(lastImport, LocalDateTime.now(), croce.code);
+        pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio), croce.code);
     }// end of method
 
 

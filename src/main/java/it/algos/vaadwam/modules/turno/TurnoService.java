@@ -274,8 +274,8 @@ public class TurnoService extends WamService {
      * @return true se sono stati importati correttamente
      */
     @Override
-    public boolean importa() {
-        return migration.importTurni(getCroce());
+    public void importa(Croce croce ) {
+         migration.importTurni(croce);
     }// end of method
 
 

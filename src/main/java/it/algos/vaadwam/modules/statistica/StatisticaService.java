@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.algos.vaadwam.application.WamCost.NUMERO_ORE_TURNO_STANDARD;
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 
 /**
@@ -228,6 +229,18 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
+    /**
+     * Returns the number of entities available for the current company
+     *
+     * @param croce di appartenenza (obbligatoria)
+     *
+     * @return the number of entities
+     */
+    public int countByCroce(Croce croce) {
+        return repository.countByCroce(croce);
+    }// end of method
+
+
     public void elabora() {
         super.fixWamLogin();
         if (wamLogin.isDeveloper()) {
@@ -240,7 +253,8 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
-    public void elabora(Croce croce) {
+    public boolean elabora(Croce croce) {
+        boolean status = false;
         List<Milite> militi;
         deleteAllCroce(croce);
 
@@ -249,7 +263,10 @@ public class StatisticaService extends WamService {
             for (Milite milite : militi) {
                 elaboraSingoloMilite(croce, milite);
             }// end of for cycle
+            status = true;
         }// end of if cycle
+
+        return status;
     }// end of method
 
 
@@ -268,6 +285,8 @@ public class StatisticaService extends WamService {
         LocalDate last = null;
         int delta = 0;
         boolean valido;
+        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD);
+        int media;
 
         for (int j = 0; j < listaTurniCroce.size(); j++) {
             turno = listaTurniCroce.get(j);
@@ -276,7 +295,7 @@ public class StatisticaService extends WamService {
                     militeIscritto = turno.iscrizioni.get(k).milite;
                     if (militeIscritto.id.equals(milite.id)) {
                         listaTurniMilite.add(turno);
-                        oreTotali += listaTurniMilite.size() * 7;//@todo no buono
+                        oreTotali += turno.iscrizioni.get(k).durataEffettiva;
                         last = turno.giorno;
                         delta = date.differenza(LocalDate.now(), last);
                     }// end of if cycle
@@ -289,6 +308,8 @@ public class StatisticaService extends WamService {
 
         if (turni > 0) {
             Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turni, oreTotali);
+            media = 10 * oreTotali / turni;
+            statistica.media = media;
             save(statistica);
         }// end of if cycle
     }// end of method

@@ -168,7 +168,6 @@ public class StatisticaList extends WamViewList {
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
-
     }// end of method
 
 

@@ -21,37 +21,19 @@ public enum EAPreferenzaWam implements IAPreferenza {
     redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
 
     //--scheduled task suddivise per croce
-    usaDaemonCroceGAPS(USA_DAEMON_CROCE_GAPS, "Crono per download completo croce GAPS", EAPrefType.bool, EARole.developer, false, false),
-    usaDaemonCroceCRF(USA_DAEMON_CROCE_CRF, "Crono per download completo croce CRF", EAPrefType.bool, EARole.developer, false, false),
-    usaDaemonCroceCRPT(USA_DAEMON_CROCE_CRPT, "Crono per download completo croce CRPT", EAPrefType.bool, EARole.developer, false, false),
-    usaDaemonCrocePAP(USA_DAEMON_CROCE_PAP, "Crono per download completo croce PAP", EAPrefType.bool, EARole.developer, false, false),
+    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, false),
 
-    //--scheduled task-old
-    usaDaemonCroci(USA_DAEMON_CROCI, "Crono (deprecated) per download croci", EAPrefType.bool, EARole.developer, false, false),
-    usaDaemonFunzioni(USA_DAEMON_FUNZIONI, "Crono (deprecated) per download funzioni", EAPrefType.bool, EARole.developer, false, true),
-    usaDaemonServizi(USA_DAEMON_SERVIZI, "Crono (deprecated) per download servizi", EAPrefType.bool, EARole.developer, false, true),
-    usaDaemonMiliti(USA_DAEMON_MILITI, "Crono (deprecated) per download militi", EAPrefType.bool, EARole.developer, false, true),
-    usaDaemonTurni(USA_DAEMON_TURNI, "Crono (deprecated) per download turni", EAPrefType.bool, EARole.developer, false, true),
+//    //--cronologia degli import
+    lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, null),
+    lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, null),
+    lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, null),
+    lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, null),
 
-    //--cronologia degli import
-    lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, EARole.developer, true, null),
-    lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, EARole.developer, true, null),
-    lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, EARole.developer, true, null),
-    lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, EARole.developer, true, null),
-
-
+    //--durata degli import
     durataImportFunzioni(DURATA_IMPORT_FUNZIONI, "Durata ultimo import funzioni della croce, in secondi", EAPrefType.integer, 0),
     durataImportServizi(DURATA_IMPORT_SERVIZI, "Durata ultimo import servizi della croce, in secondi", EAPrefType.integer, 0),
     durataImportMiliti(DURATA_IMPORT_MILITI, "Durata ultimo import militi della croce, in secondi", EAPrefType.integer, 0),
     durataImportTurni(DURATA_IMPORT_TURNI, "Durata ultimo import turni della croce, in secondi", EAPrefType.integer, 0),
-
-
-    //--cronologia degli import-old
-    lastDownloadCroci(LAST_IMPORT_CROCI, "Data ultimo import di croci", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastDownloadFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import di funzioni", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastDownloadServizi(LAST_IMPORT_SERVIZI, "Data ultimo import di servizi", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastDownloadMiliti(LAST_IMPORT_MILITI, "Data ultimo import di militi", EAPrefType.localdatetime, EARole.developer, false, null),
-    lastDownloadTurni(LAST_IMPORT_TURNI, "Data ultimo import di turni", EAPrefType.localdatetime, EARole.developer, false, null),
 
     usaMailImport(USA_MAIL_IMPORT, "Spedisce una mail ad ogni import", EAPrefType.bool, EARole.developer, true, true),
     usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false),
@@ -61,6 +43,9 @@ public enum EAPreferenzaWam implements IAPreferenza {
     mostraOrarioServizio(MOSTRA_ORARIO_SERVIZIO, "Mostra l'orario del servizio nel dialogo di iscrizione al turno", EAPrefType.bool, EARole.admin, false, true),
     mostraLegenda(MOSTRA_LEGENDA_TABELLONE, "Mostra la legenda in calce al tabellone", EAPrefType.bool, EARole.admin, true, true),
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "L'utente può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, true),
+
+    numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per tramutare un turno in ore", EAPrefType.integer, 7),
+
     ;
 
 
@@ -84,6 +69,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
         this.setCode(code);
         this.setDesc(desc);
         this.setType(type);
+        this.setShow(EARole.developer);
         this.setCompanySpecifica(true);
         this.setValue(value);
     }// fine del costruttore

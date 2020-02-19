@@ -84,6 +84,7 @@ public class WamCost {
 
     public final static String USA_DAEMON_CROCE_PAP = "usaDaemonCrocePap";
 
+    public final static String USA_DAEMON_CROCE = "usaDaemonCroce";
     public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
 
     public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
@@ -120,9 +121,11 @@ public class WamCost {
 
 
     public final static String LAST_IMPORT_CROCI = "lastImportCroci";
+    public final static String NUMERO_ORE_TURNO_STANDARD = "numeroOreTurno";
 
 
     public final static String TASK_CRO = "taskCroci";
+    public final static String TASK_CROCE = "taskCroce";
 
     public final static String TASK_FUN = "taskFunzioni";
 

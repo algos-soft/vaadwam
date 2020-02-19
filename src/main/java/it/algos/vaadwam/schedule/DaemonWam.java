@@ -35,6 +35,12 @@ public class DaemonWam extends Scheduler {
     @Autowired
     private TaskCroci croci;
 
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private TaskCroce croce;
+
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
@@ -70,6 +76,7 @@ public class DaemonWam extends Scheduler {
             super.start();
 
             // schedule(croci.getSchedule().getPattern(), croci);
+            schedule(croce.getSchedule().getPattern(), croce);
             schedule(funzioni.getSchedule().getPattern(), funzioni);
             schedule(servizi.getSchedule().getPattern(), servizi);
             schedule(militi.getSchedule().getPattern(), militi);

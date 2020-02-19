@@ -171,6 +171,22 @@ public class AColumnService extends AbstractService {
                     return new Label(testo);
                 }));//end of lambda expressions and anonymous inner class
                 break;
+            case onedecimal:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Field field = reflection.getField(entityClazz, propertyName);
+                    String testo = "";
+                    int value;
+
+                    try { // prova ad eseguire il codice
+                        value = field.getInt(entity);
+                        testo = text.format(value);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    return new Label(testo);
+                }));//end of lambda expressions and anonymous inner class
+                break;
             case checkbox:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Field field = reflection.getField(entityClazz, propertyName);

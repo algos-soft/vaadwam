@@ -5,6 +5,7 @@ import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.log.Log;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
@@ -28,8 +29,10 @@ import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.modules.statistica.StatisticaService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 //import javax.persistence.EntityManager;
@@ -57,9 +61,9 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Time: 19:52
  */
 @Service
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
-public class MigrationService {
+public class MigrationService extends AService {
 
     private final static String PERSISTENCE_UNIT_NAME = "Webambulanzelocal";
 
@@ -140,6 +144,8 @@ public class MigrationService {
 
     @Autowired
     private IscrizioneService iscrizioneService;
+    @Autowired
+    private StatisticaService statisticaService;
 
     @Autowired
     private RoleService roleService;
@@ -194,25 +200,44 @@ public class MigrationService {
 
 
     /**
-     * Importa tutte le companies esistenti in webambulanze
+     * Importa tutte le croci <br>
+     * Controlla il flag di attivazione specifico di ogni croce <br>
      */
     public void importAll() {
         ImportResult result = null;
+//        WamLogin login = (WamLogin) getLogin();
         Croce croceNew;
+//        Company oldCompanyDaRimettere = null;
+//        Croce oldCroceDaRimettere = null;
 
         setup();
 
+//        if (login != null) {
+//            oldCompanyDaRimettere = login.getCompany();
+//            oldCroceDaRimettere = (Croce) login.getCompany();
+//        }// end of if cycle
 
         for (CroceAmb croceOld : crociOld) {
             croceNew = getCroce(croceOld);
 
-            importCroce(croceOld);
-            importFunzioni(croceOld);
-            importServizi(croceOld);
-            importMiliti(croceOld);
+            if (croceNew != null) {
+//                login.setCompany(croceNew);
+//                login.setCroce(croceNew);
+
+                if (pref.isBool(USA_DAEMON_CROCE,croceNew.code)) {
+//                    importCroce(croceOld);
+                    funzioneService.importa(croceNew);
+//                    importServizi(croceNew);
+//                    importMiliti(croceNew);
+//                    importTurni(croceNew);
+                }// end of if cycle
+            }// end of if cycle
         }// end of for cycle
 
-//        importTurniAnno();
+//        if (login != null && oldCompanyDaRimettere != null && oldCroceDaRimettere != null) {
+//            login.setCompany(oldCompanyDaRimettere);
+//            login.setCroce(oldCroceDaRimettere);
+//        }// end of if cycle
     }// end of method
 
 
@@ -696,6 +721,14 @@ public class MigrationService {
         return status;
     }// end of method
 
+    /**
+     * Elabopra le statistiche dei militi <br>
+     *
+     * @param croceNew di waadwam
+     */
+    public boolean elaboraStatistiche(Croce croceNew) {
+        return statisticaService.elabora(croceNew);
+    }// end of method
 
 //    /**
 //     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
@@ -733,16 +766,16 @@ public class MigrationService {
      */
     public boolean importCroce(CroceAmb croceOld) {
         boolean importati = false;
-        Croce croceNew = null;
+        Croce croceNew;
         String codeCroceNew = getCodeNew(croceOld);
         String descrizione;
         String email;
         String telefono;
-        Address indNew = null;
-        Person presNew = null;
-        Person contNew = null;
-        EAOrganizzazione orgNew = null;
-        String note = "";
+        Address indNew;
+        Person presNew;
+        Person contNew;
+        EAOrganizzazione orgNew;
+        String note = VUOTA;
 
         try { // prova ad eseguire il codice
             orgNew = EAOrganizzazione.get(croceOld.getOrganizzazione());

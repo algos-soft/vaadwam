@@ -6,7 +6,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -21,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadflow.application.FlowVar.usaCompany;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam
@@ -54,11 +54,11 @@ public abstract class WamViewList extends AGridViewList {
 
     protected Button importButton;
 
-    protected String lastImport;
-
-    protected String durataLastImport;
-
-    protected EATempo eaTempoTypeImport;
+//    protected String lastImport;
+//
+//    protected String durataLastImport;
+//
+//    protected EATempo eaTempoTypeImport;
 
     protected List<String> alertUser;
 
@@ -91,6 +91,15 @@ public abstract class WamViewList extends AGridViewList {
      * Wam-Login della sessione con i dati del Milite loggato <br>
      */
     protected WamLogin wamLogin;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_CROCE)
+    private ATask taskCroce;
 
 
     /**
@@ -142,14 +151,39 @@ public abstract class WamViewList extends AGridViewList {
 
         super.usaPagination = true;
 
-        this.lastImport = VUOTA;
-        this.durataLastImport = VUOTA;
-        this.eaTempoTypeImport = EATempo.nessuno;
+//        this.lastImport = VUOTA;
+//        this.durataLastImport = VUOTA;
+//        this.eaTempoTypeImport = EATempo.nessuno;
 
         alertUser = new ArrayList<>();
         alertAdmin = new ArrayList<>();
         alertDev = new ArrayList<>();
         alertDevAll = new ArrayList<>();
+    }// end of method
+
+
+    /**
+     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse <br>
+     * <p>
+     * Chiamato da AViewList.initView() DOPO fixPreferenze() e sviluppato nella sottoclasse APrefViewList <br>
+     * Non può essere sovrascritto <br>
+     */
+    @Override
+    protected void postPreferenze() {
+        //--controllo della paginazione
+        if (service != null) {
+            isPaginata = usaPagination && ((WamService) service).count() > limit;
+        } else {
+            isPaginata = false;
+        }// end of if/else cycle
+
+        //--controlla alcune condizioni indispensabili
+        if (usaFiltroCompany) {
+            if (usaCompany) {
+            } else {
+                usaFiltroCompany = false;
+            }// end of if/else cycle
+        }// end of if cycle
     }// end of method
 
 
@@ -204,7 +238,7 @@ public abstract class WamViewList extends AGridViewList {
                         for (String alert : alertDev) {
                             alertPlacehorder.add(getLabelDev(alert));
                         }// end of for cycle
-                        alertPlacehorder.add(getInfoImport(null, "", lastImport, durataLastImport));
+                        alertPlacehorder.add(getInfoImport(((WamService) service).lastImport, ((WamService) service).durataLastImport));
                     }// end of if cycle
                 } else {
                     if (alertDevAll != null) {
@@ -260,43 +294,47 @@ public abstract class WamViewList extends AGridViewList {
      * con il solo metodo update() non venivano aggiornate <br>
      */
     protected void importa() {
-        long inizio = System.currentTimeMillis();
+        ((WamService) service).importa();
+        UI.getCurrent().getPage().reload();
 
-        if (wamLogin != null && wamLogin.getCroce() != null) {
-            ((WamService) service).importa();
-            log.info("Import effettuato in " + date.deltaText(inizio));
-            setLastImport(inizio);
-            UI.getCurrent().getPage().reload();
-        }// end of if cycle
+//        long inizio = System.currentTimeMillis();
+//
+//        if (wamLogin != null && wamLogin.getCroce() != null) {
+//            ((WamService) service).importa();
+//            log.info("Import effettuato in " + date.deltaText(inizio));
+//            setLastImport(inizio);
+//            UI.getCurrent().getPage().reload();
+//        }// end of if cycle
 
     }// end of method
 
 
-    /**
-     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
-     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
-     */
-    protected void setLastImport(long inizio) {
-        pref.saveValue(lastImport, LocalDateTime.now());
-        pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio));
-    }// end of method
+//    /**
+//     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+//     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+//     */
+//    protected void setLastImport(long inizio) {
+//        ((WamService)service).setLastImport(inizio,lastImport,durataLastImport,eaTempoTypeImport);
+//    }// end of method
 
 
     /**
-     * Eventuale caption sopra la grid
+     * Costruisce le info di import <br>
+     * Può essere attivo lo scheduler della croce <br>
      */
-    protected Label getInfoImport(ATask task, String flagDaemon, String flagLastImport, String flagDurataLastImport) {
+    protected Label getInfoImport(String flagLastImport, String flagDurataLastImport) {
         Label label = null;
         String testo = "";
         String tag = "Import automatico: ";
-        String nota = task != null ? task.getSchedule().getNota() : VUOTA;
+        String nota = taskCroce != null ? taskCroce.getSchedule().getNota() : VUOTA;
         int durata = pref.getInt(flagDurataLastImport);
+        boolean importAutomaticoDiQuestaCroce = pref.isBool(USA_DAEMON_CROCE);
 
         if (login.isDeveloper()) {
             LocalDateTime lastImport = pref.getDateTime(flagLastImport);
             testo = tag;
 
-            if (pref.isBool(flagDaemon)) {
+            if (importAutomaticoDiQuestaCroce) {
                 testo += nota;
             } else {
                 testo += "disattivato.";
@@ -305,7 +343,7 @@ public abstract class WamViewList extends AGridViewList {
             if (lastImport != null) {
                 label = getLabelDev(testo + " Ultimo import il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
             } else {
-                if (pref.isBool(flagDaemon)) {
+                if (importAutomaticoDiQuestaCroce) {
                     label = getLabelDev(tag + nota + " Non ancora effettuato.");
                 } else {
                     label = getLabelDev(testo);

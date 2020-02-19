@@ -97,20 +97,20 @@ public class ServizioList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Le preferenze standard
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        this.lastImport = LAST_IMPORT_SERVIZI;
-        this.durataLastImport = DURATA_IMPORT_SERVIZI;
-        this.eaTempoTypeImport = EATempo.secondi;
-    }// end of method
+//    /**
+//     * Le preferenze standard
+//     * Può essere sovrascritto, per aggiungere informazioni
+//     * Invocare PRIMA il metodo della superclasse
+//     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+//     */
+//    @Override
+//    protected void fixPreferenze() {
+//        super.fixPreferenze();
+//
+//        this.lastImport = LAST_IMPORT_SERVIZI;
+//        this.durataLastImport = DURATA_IMPORT_SERVIZI;
+//        this.eaTempoTypeImport = EATempo.secondi;
+//    }// end of method
 
 
     /**

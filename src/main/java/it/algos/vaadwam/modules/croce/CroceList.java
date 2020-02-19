@@ -129,7 +129,7 @@ public class CroceList extends WamViewList {
         if (isDeveloper) {
             alertPlacehorder.add(new Label("Lista visibile solo perché sei collegato come developer. Gli admin vedono SOLO la loro Croce. Gli utenti normali non vedono nulla."));
             alertPlacehorder.add(new Label("Si possono importare le Croci dal vecchio programma"));
-            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_CROCI, LAST_IMPORT_CROCI,""));
+//            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_CROCI, LAST_IMPORT_CROCI,""));
         } else {
             if (isAdmin) {
                 alertPlacehorder.add(new Label("Visibile la Croce di appartenenza solo perché sei collegato come admin. Gli utenti normali non la vedono."));

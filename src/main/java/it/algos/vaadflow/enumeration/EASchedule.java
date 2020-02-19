@@ -77,31 +77,31 @@ public enum EASchedule {
     /**
      * Descrizione: ogni minuto
      */
-    minuto("* * * * *", "ogni minuto"),
+    minuto("* * * * *", "ogni minuto."),
     /**
      * Descrizione: ogni minuto
      */
-    minutoUno("1/3 * * * *", "ogni minuto"),
+    minutoUno("1/3 * * * *", "ogni minuto."),
     /**
      * Descrizione: ogni minuto
      */
-    minutoDue("2/3 * * * *", "ogni minuto"),
+    minutoDue("2/3 * * * *", "ogni minuto."),
     /**
      * Descrizione: ogni minuto
      */
-    minutoTre("3/3 * * * *", "ogni minuto"),
+    minutoTre("3/3 * * * *", "ogni minuto."),
     /**
      * Descrizione: ogni settimana nella notte tra domenica e lunedi
      */
-    settimanaLunedi("0 0 * * 1", "ogni settimana nella notte tra domenica e lunedi"),
+    settimanaLunedi("0 0 * * 1", "ogni settimana nella notte tra domenica e lunedi."),
     /**
      * Descrizione: il primo ed il 15 di ogni mese alle ore 4 di notte
      */
-    biMensile("0 4 1,15 * *", "il primo ed il 15 di ogni mese alle ore 4 di notte"),
+    biMensile("0 4 1,15 * *", "il primo ed il 15 di ogni mese alle ore 4 di notte."),
     /**
      * Descrizione: ogni giorno alle ore 4 di notte, escluso l'1 ed il 15
      */
-    oreQuattroEscluso("0 4 2-14,16-31 * *", "ogni giorno alle ore 4 di notte, escluso l'1 ed il 15"),
+    oreQuattroEscluso("0 4 2-14,16-31 * *", "ogni giorno alle ore 4 di notte, escluso l'1 ed il 15."),
     /**
      * Descrizione: ogni giorno alle ore 4 di notte, escluso l'1 ed il 15
      */
