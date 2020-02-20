@@ -224,9 +224,9 @@ public class MigrationService extends AService {
      */
     public void importCroce(Croce croceNew) {
         funzioneService.importa(croceNew);
-//                    importServizi(croceNew);
-//                    importMiliti(croceNew);
-//                    importTurni(croceNew);
+        servizioService.importa(croceNew);
+        militeService.importa(croceNew);
+        turnoService.importa(croceNew);
     }// end of method
 
 
@@ -1428,10 +1428,12 @@ public class MigrationService extends AService {
                 localitaExtra);
 
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
-        for (Iscrizione iscr : iscrizioni) {
-            iscr.inizio = inizioNew;
-            iscr.fine = fineNew;
-        }// end of for cycle
+        if (iscrizioni!=null) {
+            for (Iscrizione iscr : iscrizioni) {
+                iscr.inizio = inizioNew;
+                iscr.fine = fineNew;
+            }// end of for cycle
+        }// end of if cycle
 
         turnoService.save(turnoNew);
         return status;

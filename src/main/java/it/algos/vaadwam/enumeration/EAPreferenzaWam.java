@@ -21,19 +21,22 @@ public enum EAPreferenzaWam implements IAPreferenza {
     redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
 
     //--scheduled task suddivise per croce
-    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, false),
+    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, true),
+    usaDaemonElabora(USA_DAEMON_ELABORA, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true),
 
-//    //--cronologia degli import
+    //    //--cronologia degli import
     lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, null),
     lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, null),
     lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, null),
     lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, null),
+    lastElabora(LAST_ELABORA, "Data ultima elaborazione delle statistiche della croce", EAPrefType.localdatetime, null),
 
     //--durata degli import
     durataImportFunzioni(DURATA_IMPORT_FUNZIONI, "Durata ultimo import funzioni della croce, in secondi", EAPrefType.integer, 0),
     durataImportServizi(DURATA_IMPORT_SERVIZI, "Durata ultimo import servizi della croce, in secondi", EAPrefType.integer, 0),
     durataImportMiliti(DURATA_IMPORT_MILITI, "Durata ultimo import militi della croce, in secondi", EAPrefType.integer, 0),
     durataImportTurni(DURATA_IMPORT_TURNI, "Durata ultimo import turni della croce, in secondi", EAPrefType.integer, 0),
+    durataElabora(DURATA_ELABORA, "Durata ultima elaborazione delle statistiche della croce, in secondi", EAPrefType.integer, 0),
 
     usaMailImport(USA_MAIL_IMPORT, "Spedisce una mail ad ogni import", EAPrefType.bool, EARole.developer, true, true),
     usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false),

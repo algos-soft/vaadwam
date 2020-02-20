@@ -47,18 +47,11 @@ public abstract class WamViewList extends AGridViewList {
 
     protected static String DEVELOPER_DELETE_ALL = "Delete cancella TUTTI i record di TUTTE le croci.";
 
-
     protected Button genericFieldValue;
 
     protected Button deleteButton;
 
     protected Button importButton;
-
-//    protected String lastImport;
-//
-//    protected String durataLastImport;
-//
-//    protected EATempo eaTempoTypeImport;
 
     protected List<String> alertUser;
 
@@ -150,10 +143,6 @@ public abstract class WamViewList extends AGridViewList {
         }// end of if/else cycle
 
         super.usaPagination = true;
-
-//        this.lastImport = VUOTA;
-//        this.durataLastImport = VUOTA;
-//        this.eaTempoTypeImport = EATempo.nessuno;
 
         alertUser = new ArrayList<>();
         alertAdmin = new ArrayList<>();
@@ -296,26 +285,8 @@ public abstract class WamViewList extends AGridViewList {
     protected void importa() {
         ((WamService) service).importa();
         UI.getCurrent().getPage().reload();
-
-//        long inizio = System.currentTimeMillis();
-//
-//        if (wamLogin != null && wamLogin.getCroce() != null) {
-//            ((WamService) service).importa();
-//            log.info("Import effettuato in " + date.deltaText(inizio));
-//            setLastImport(inizio);
-//            UI.getCurrent().getPage().reload();
-//        }// end of if cycle
-
     }// end of method
 
-
-//    /**
-//     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
-//     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
-//     */
-//    protected void setLastImport(long inizio) {
-//        ((WamService)service).setLastImport(inizio,lastImport,durataLastImport,eaTempoTypeImport);
-//    }// end of method
 
 
     /**

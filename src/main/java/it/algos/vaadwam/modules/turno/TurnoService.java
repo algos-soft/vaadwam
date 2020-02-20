@@ -286,13 +286,14 @@ public class TurnoService extends WamService {
 
     /**
      * Importazione di dati <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
     public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
         migration.importTurni(croce);
+        setLastImport(croce, inizio);
     }// end of method
 
 

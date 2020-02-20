@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.statistica;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -15,13 +16,18 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.schedule.ATask;
+import it.algos.vaadwam.wam.WamService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import static it.algos.vaadwam.application.WamCost.TAG_STA;
+import java.time.LocalDateTime;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -121,6 +127,14 @@ public class StatisticaList extends WamViewList {
     @Autowired
     protected TurnoService turnoService;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_STATISTICA)
+    private ATask taskStatistica;
 
     /**
      * Costruttore @Autowired <br>
@@ -190,6 +204,7 @@ public class StatisticaList extends WamViewList {
         alertPlacehorder.add(getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
         alertPlacehorder.add(getLabelDev(DEVELOPER_DELETE));
         alertPlacehorder.add(getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
+        alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
     }// end of method
 
 
@@ -249,21 +264,6 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-//    /**
-//     * Crea la GridPaginata <br>
-//     * Per usare una GridPaginata occorre:
-//     * 1) la view xxxList deve estendere APaginatedGridViewList anziche AGridViewList <br>
-//     * 2) deve essere sovrascritto questo metodo nella classe xxxList <br>
-//     * 3) nel metodo sovrascritto va creata la PaginatedGrid 'tipizzata' con la entityClazz (Collection) specifica <br>
-//     * 4) il metodo sovrascritto deve invocare DOPO questo stesso superMetodo in APaginatedGridViewList <br>
-//     */
-//    @Override
-//    protected void creaGridPaginata() {
-//        paginatedGrid = new PaginatedGrid<Statistica>();
-//        super.creaGridPaginata();
-//    }// end of method
-
-
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
      * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
@@ -279,6 +279,44 @@ public class StatisticaList extends WamViewList {
     @Override
     protected void openDialog(AEntity entityBean) {
         appContext.getBean(StatisticaDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+    }// end of method
+
+
+    /**
+     * Costruisce le info di import <br>
+     * Può essere attivo lo scheduler della croce <br>
+     */
+    protected Label getInfoElabora(String flagLastImport, String flagDurataLastImport) {
+        Label label = null;
+        String testo = "";
+        String tag = "Elaborazione automatica statistiche: ";
+        String nota = taskStatistica != null ? taskStatistica.getSchedule().getNota() : VUOTA;
+        int durata = pref.getInt(flagDurataLastImport);
+        boolean elaborazioneAutomaticaDiQuestaCroce = pref.isBool(USA_DAEMON_ELABORA);
+
+        if (login.isDeveloper()) {
+            LocalDateTime lastImport = pref.getDateTime(flagLastImport);
+            testo = tag;
+
+            if (elaborazioneAutomaticaDiQuestaCroce) {
+                testo += nota;
+            } else {
+                testo += "disattivato.";
+            }// end of if/else cycle
+
+            if (lastImport != null) {
+                label = getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
+            } else {
+                if (elaborazioneAutomaticaDiQuestaCroce) {
+                    label = getLabelDev(tag + nota + " Non ancora effettuata.");
+                } else {
+                    label = getLabelDev(testo);
+                }// end of if/else cycle
+            }// end of if/else cycle
+
+        }// end of if cycle
+
+        return label;
     }// end of method
 
 }// end of class

@@ -61,7 +61,7 @@ public enum EASchedule {
     /**
      * Descrizione: ogni ora, al minuto 2
      */
-    oraSecondoMinuto("2 * * * *", "ogni ora, al minuto 2"),
+    oraSecondoMinuto("2 * * * *", "ogni ora, al minuto 2."),
     /**
      * Descrizione: ogni ora, al minuto 3
      */
@@ -74,6 +74,10 @@ public enum EASchedule {
      * Descrizione: ogni ora, al minuto 5
      */
     oraQuintoMinuto("5 * * * *", "ogni ora, al minuto 5"),
+    /**
+     * Descrizione: ogni ora, al minuto 5
+     */
+    oraTrentesimoMinuto("30 * * * *", "ogni ora, al minuto 30."),
     /**
      * Descrizione: ogni minuto
      */

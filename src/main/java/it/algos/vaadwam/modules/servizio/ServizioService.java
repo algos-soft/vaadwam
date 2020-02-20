@@ -320,12 +320,15 @@ public class ServizioService extends WamService {
     /**
      * Importazione di dati <br>
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce ) {
-         migration.importServizi(croce);
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importServizi(croce);
+        setLastImport(croce, inizio);
     }// end of method
+
 
     /**
      * Returns instances of the company <br>

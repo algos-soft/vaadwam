@@ -468,12 +468,9 @@ public abstract class WamService extends AService {
      */
     public void importa() {
         fixWamLogin();
-//        long inizio = System.currentTimeMillis();
 
         if (wamLogin != null && wamLogin.getCroce() != null) {
             importa(getCroce());
-//            log.info("Import effettuato in " + date.deltaText(inizio));
-//            setLastImport(inizio);
         }// end of if cycle
     }// end of method
 

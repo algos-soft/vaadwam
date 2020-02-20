@@ -132,6 +132,7 @@ public class MiliteService extends WamService implements IUtenteService {
         super.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
+
     /**
      * Crea una entity solo se non esisteva <br>
      *
@@ -422,11 +423,13 @@ public class MiliteService extends WamService implements IUtenteService {
     /**
      * Importazione di dati <br>
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce ) {
-         migration.importMiliti(croce);
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importMiliti(croce);
+        setLastImport(croce, inizio);
     }// end of method
 
 

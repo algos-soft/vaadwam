@@ -3,6 +3,7 @@ package it.algos.vaadwam.modules.statistica;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
@@ -17,11 +18,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadwam.application.WamCost.NUMERO_ORE_TURNO_STANDARD;
-import static it.algos.vaadwam.application.WamCost.TAG_STA;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -83,6 +84,21 @@ public class StatisticaService extends WamService {
         this.repository = (StatisticaRepository) repository;
     }// end of Spring constructor
 
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_ELABORA;
+        super.durataLastImport = DURATA_ELABORA;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
     /**
      * Ricerca di una entity (la crea se non la trova) <br>
@@ -245,7 +261,13 @@ public class StatisticaService extends WamService {
         super.fixWamLogin();
         if (wamLogin.isDeveloper()) {
             for (Croce croce : croceService.findAll()) {
-                elabora(croce);
+
+                if (croce != null) {
+                    if (pref.isBool(USA_DAEMON_ELABORA, croce.code)) {
+                        elabora(croce);
+                    }// end of if cycle
+                }// end of if cycle
+
             }// end of for cycle
         } else {
             elabora(wamLogin.getCroce());
@@ -255,6 +277,7 @@ public class StatisticaService extends WamService {
 
     public boolean elabora(Croce croce) {
         boolean status = false;
+        long inizio = System.currentTimeMillis();
         List<Milite> militi;
         deleteAllCroce(croce);
 
@@ -265,6 +288,8 @@ public class StatisticaService extends WamService {
             }// end of for cycle
             status = true;
         }// end of if cycle
+
+        setLastElabora(croce, inizio);
 
         return status;
     }// end of method
@@ -328,6 +353,24 @@ public class StatisticaService extends WamService {
         int turniRichiesti = numTurniMinimiMese * meseCorrente;
 
         return numTurni > turniRichiesti;
+    }// end of method
+
+    /**
+     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     */
+    protected void setLastElabora(Croce croce, long inizio) {
+        setLastElabora(croce, inizio, lastImport, durataLastImport, eaTempoTypeImport);
+    }// end of method
+
+
+    /**
+     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     */
+    protected void setLastElabora(Croce croce, long inizio, String lastImport, String durataLastImport, EATempo eaTempoTypeImport) {
+        pref.saveValue(lastImport, LocalDateTime.now(), croce.code);
+        pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio), croce.code);
     }// end of method
 
 }// end of class
