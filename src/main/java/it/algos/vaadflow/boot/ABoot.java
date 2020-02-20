@@ -78,7 +78,6 @@ public abstract class ABoot implements ServletContextListener {
     @Autowired
     private FlowData flowData;
 
-
     /**
      * Executed on container startup
      * Setup non-UI logic here

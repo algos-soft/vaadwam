@@ -482,9 +482,43 @@ public class ADateService extends AbstractService {
      * @return la data sotto forma di stringa
      */
     public String getShort(LocalDateTime localDateTime) {
-        SimpleDateFormat format = new SimpleDateFormat();
-        format.applyPattern("dd-mm-yy");
-        return format.format(localDateTimeToDate(localDateTime));
+        return getShort(localDateTime.toLocalDate());
+    }// end of method
+
+
+    /**
+     * Restituisce la data (senza tempo) in forma breve
+     * <p>
+     * 05-04-14
+     * <p>
+     * Returns a string representation of the date <br>
+     * Not using leading zeroes in day <br>
+     * Two numbers for year <b>
+     *
+     * @param localDateTime da rappresentare
+     *
+     * @return la data sotto forma di stringa
+     */
+    public String getShort(LocalDate localDate) {
+        String testo = VUOTA;
+        String sep = "-";
+        String giorno = VUOTA;
+        String mese = VUOTA;
+        String anno = VUOTA;
+
+        giorno = VUOTA + localDate.getDayOfMonth();
+        testo += giorno;
+        testo += sep;
+
+        mese = VUOTA + localDate.getMonthValue();
+        testo += mese;
+        testo += sep;
+
+        anno = VUOTA + localDate.getYear();
+        anno = anno.substring(2);
+        testo += anno;
+
+        return testo;
     }// end of method
 
 
@@ -562,7 +596,7 @@ public class ADateService extends AbstractService {
      * @return la data sotto forma di stringa
      */
     public String getDateTime(LocalDateTime localDateTime) {
-        return localDateTime != null ? getDate(localDateTime) + SPAZIO + getOrario(localDateTime) : VUOTA;
+        return localDateTime != null ? getShort(localDateTime.toLocalDate()) + SPAZIO + getOrario(localDateTime.toLocalTime()) : VUOTA;
     }// end of method
 
 
@@ -1496,7 +1530,7 @@ public class ADateService extends AbstractService {
     public boolean isValid(LocalDateTime localDateTime) {
         boolean status = false;
         int result = 0;
-        LocalDateTime primoDateTimeValida = LocalDateTime.of(1970, 1, 1,0,0);
+        LocalDateTime primoDateTimeValida = LocalDateTime.of(1970, 1, 1, 0, 0);
 
         if (localDateTime != null) {
             result = localDateTime.compareTo(primoDateTimeValida);

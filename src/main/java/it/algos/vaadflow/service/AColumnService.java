@@ -529,15 +529,15 @@ public class AColumnService extends AbstractService {
                             break;
                         case localdate:
                             label.getStyle().set("color", "fuchsia");
-                            message = date.get((LocalDate) value);
+                            message = value != null ? date.get((LocalDate) value) : VUOTA;
                             break;
                         case localdatetime:
                             label.getStyle().set("color", "fuchsia");
-                            message = date.getDateTime((LocalDateTime) value);
+                            message = value != null ? date.getDateTime((LocalDateTime) value) : VUOTA;
                             break;
                         case localtime:
                             label.getStyle().set("color", "fuchsia");
-                            message = date.getOrario((LocalTime) value);
+                            message = value != null ? date.getOrario((LocalTime) value) : VUOTA;
                             break;
                         case email:
                             label.getStyle().set("color", "lime");
@@ -674,6 +674,7 @@ public class AColumnService extends AbstractService {
             case link:
                 break;
             case pref:
+                width = "10em";
                 break;
             case calculated:
                 break;

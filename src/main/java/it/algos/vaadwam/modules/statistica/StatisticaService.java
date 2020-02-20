@@ -100,6 +100,7 @@ public class StatisticaService extends WamService {
         super.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
+
     /**
      * Ricerca di una entity (la crea se non la trova) <br>
      *
@@ -258,20 +259,13 @@ public class StatisticaService extends WamService {
 
 
     public void elabora() {
-        super.fixWamLogin();
-        if (wamLogin.isDeveloper()) {
-            for (Croce croce : croceService.findAll()) {
-
-                if (croce != null) {
-                    if (pref.isBool(USA_DAEMON_ELABORA, croce.code)) {
-                        elabora(croce);
-                    }// end of if cycle
+        for (Croce croce : croceService.findAll()) {
+            if (croce != null) {
+                if (pref.isBool(USA_DAEMON_ELABORA, croce.code)) {
+                    elabora(croce);
                 }// end of if cycle
-
-            }// end of for cycle
-        } else {
-            elabora(wamLogin.getCroce());
-        }// end of if/else cycle
+            }// end of if cycle
+        }// end of for cycle
     }// end of method
 
 
@@ -310,7 +304,7 @@ public class StatisticaService extends WamService {
         LocalDate last = null;
         int delta = 0;
         boolean valido;
-        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD);
+        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD,croce.code);
         int media;
 
         for (int j = 0; j < listaTurniCroce.size(); j++) {
@@ -354,6 +348,7 @@ public class StatisticaService extends WamService {
 
         return numTurni > turniRichiesti;
     }// end of method
+
 
     /**
      * Registra nelle preferenze la data dell'ultimo import effettuato <br>

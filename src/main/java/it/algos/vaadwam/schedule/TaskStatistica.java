@@ -43,8 +43,7 @@ public class TaskStatistica extends ATask {
 
     @PostConstruct
     public void inizia() {
-//        super.schedule = EASchedule.oreQuattro;
-        super.schedule = EASchedule.oraSecondoMinuto;
+        super.schedule = EASchedule.oreQuattro;
     }// end of method
 
 

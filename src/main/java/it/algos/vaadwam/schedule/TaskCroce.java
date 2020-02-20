@@ -30,8 +30,7 @@ public class TaskCroce extends ATask {
 
     @PostConstruct
     public void inizia() {
-//        super.schedule = EASchedule.giornoSecondoMinuto;
-        super.schedule = EASchedule.oraTrentesimoMinuto;
+        super.schedule = EASchedule.giornoSecondoMinuto;
     }// end of method
 
 
