@@ -5,7 +5,6 @@ import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.log.Log;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
@@ -32,13 +31,10 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.statistica.StatisticaService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
-import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -144,6 +140,7 @@ public class MigrationService extends AService {
 
     @Autowired
     private IscrizioneService iscrizioneService;
+
     @Autowired
     private StatisticaService statisticaService;
 
@@ -205,39 +202,31 @@ public class MigrationService extends AService {
      */
     public void importAll() {
         ImportResult result = null;
-//        WamLogin login = (WamLogin) getLogin();
         Croce croceNew;
-//        Company oldCompanyDaRimettere = null;
-//        Croce oldCroceDaRimettere = null;
 
         setup();
-
-//        if (login != null) {
-//            oldCompanyDaRimettere = login.getCompany();
-//            oldCroceDaRimettere = (Croce) login.getCompany();
-//        }// end of if cycle
 
         for (CroceAmb croceOld : crociOld) {
             croceNew = getCroce(croceOld);
 
             if (croceNew != null) {
-//                login.setCompany(croceNew);
-//                login.setCroce(croceNew);
-
-                if (pref.isBool(USA_DAEMON_CROCE,croceNew.code)) {
-//                    importCroce(croceOld);
-                    funzioneService.importa(croceNew);
-//                    importServizi(croceNew);
-//                    importMiliti(croceNew);
-//                    importTurni(croceNew);
+                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
+                    importCroce(croceNew);
                 }// end of if cycle
             }// end of if cycle
         }// end of for cycle
+    }// end of method
 
-//        if (login != null && oldCompanyDaRimettere != null && oldCroceDaRimettere != null) {
-//            login.setCompany(oldCompanyDaRimettere);
-//            login.setCroce(oldCroceDaRimettere);
-//        }// end of if cycle
+
+    /**
+     * Importa tutte le croci <br>
+     * Controlla il flag di attivazione specifico di ogni croce <br>
+     */
+    public void importCroce(Croce croceNew) {
+        funzioneService.importa(croceNew);
+//                    importServizi(croceNew);
+//                    importMiliti(croceNew);
+//                    importTurni(croceNew);
     }// end of method
 
 
@@ -720,6 +709,7 @@ public class MigrationService extends AService {
 
         return status;
     }// end of method
+
 
     /**
      * Elabopra le statistiche dei militi <br>

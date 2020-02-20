@@ -6,6 +6,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadwam.application.WamCost.TAG_TUR;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -111,6 +112,22 @@ public class TurnoService extends WamService {
         super.entityClass = Turno.class;
         this.repository = (TurnoRepository) repository;
     }// end of Spring constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_TURNI;
+        super.durataLastImport = DURATA_IMPORT_TURNI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
 
     /**
@@ -274,8 +291,8 @@ public class TurnoService extends WamService {
      * @return true se sono stati importati correttamente
      */
     @Override
-    public void importa(Croce croce ) {
-         migration.importTurni(croce);
+    public void importa(Croce croce) {
+        migration.importTurni(croce);
     }// end of method
 
 
@@ -400,6 +417,7 @@ public class TurnoService extends WamService {
 
         return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
     }// end of method
+
 
     /**
      * Returns all instances of the selected Croce <br>

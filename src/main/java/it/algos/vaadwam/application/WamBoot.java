@@ -200,7 +200,6 @@ public class WamBoot extends ABoot {
         int numPref = super.creaPreferenze();
         List<? extends Company> listaCroci = croceService.findAll();
 
-        Object alfa=EAPreferenzaWam.values();
         for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
             //--se è companySpecifica=true, crea una preferenza per ogni company
             if (eaPref.isCompanySpecifica()) {

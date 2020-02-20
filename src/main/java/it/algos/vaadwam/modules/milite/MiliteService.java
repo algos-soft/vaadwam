@@ -7,6 +7,7 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
@@ -33,7 +34,7 @@ import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
-import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -115,6 +116,21 @@ public class MiliteService extends WamService implements IUtenteService {
         this.repository = (MiliteRepository) repository;
     }// end of Spring constructor
 
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_MILITI;
+        super.durataLastImport = DURATA_IMPORT_MILITI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
     /**
      * Crea una entity solo se non esisteva <br>
