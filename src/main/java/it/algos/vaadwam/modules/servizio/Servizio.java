@@ -201,23 +201,6 @@ public class Servizio extends WamEntity {
     public String colore;
 
 
-//    /**
-//     * colore del servizio di un gruppo di servizi 'analoghi'
-//     * usa uno dei colori X11
-//     */
-//    @Field("color")
-//    public String color = "#5F9EA0";
-//
-//    /**
-//     * colore del servizio (facoltativo)
-//     */
-//    @AIField(
-//            type = EAFieldType.integer,
-//            name = "Colore distintivo per il tabellone",
-//            widthEM = 3)
-//    @AIColumn(name = "Colore", widthEM = 40)
-//    private int colore = new Color(128, 128, 128).getRGB();
-
 
     /**
      * @return a string representation of the object.

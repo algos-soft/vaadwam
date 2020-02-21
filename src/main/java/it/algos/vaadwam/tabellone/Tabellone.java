@@ -106,15 +106,6 @@ public class Tabellone extends AGridViewList {
     @Qualifier(TAG_CRO)
     private WamService wamService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
-//    @Autowired
-//    private LegendaPolymer legenda;
-    // @todo Non riesco ad usarlo come SCOPE_SINGLETON e quindi lo creo con appContext.getBean(LegendaPolymer.class)
 
     /**
      * Mantiene una property globale del tabellone <br>
@@ -243,35 +234,6 @@ public class Tabellone extends AGridViewList {
     }// end of method
 
 
-//    @Override
-//    public void updateView() {
-//        refreshGrid();
-//    }// end of method
-
-
-//    /**
-//     * Crea una nuova grid in base allo stato attuale
-//     * e la sostituisce nella vista
-//     */
-//    private void refreshGrid() {
-//
-//        if (grid != null) {
-////            gridPlaceholder.remove(grid);
-//            gridPlaceholder.removeAll();
-//        }
-//
-//        if (gridPlaceholder != null) {
-//            grid = buildGrid();
-//            gridPlaceholder.add(grid);
-////            gridPlaceholder.add(bottomPlacehorder);
-//
-//            FlexLayout layout = new FlexLayout();
-//            layout.setFlexGrow(1, grid);
-//            this.setFlexGrow(1, layout);
-//        }// end of if cycle
-//    }// end of method
-
-
     /**
      * Crea la grid <br>
      * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
@@ -314,7 +276,7 @@ public class Tabellone extends AGridViewList {
         // costruisce le colonne dei turni
         for (int i = 0; i < numDays; i++) {
             addColumnsTurni(grid, startDay.plusDays(i));
-        }
+        }// end of for cycle
 
     }// end of method
 
@@ -366,7 +328,6 @@ public class Tabellone extends AGridViewList {
 
             String currentType = "";
 
-
             @Override
             public Object apply(Object obj) {
                 ServizioCellPolymer servizioCell = null;
@@ -380,7 +341,7 @@ public class Tabellone extends AGridViewList {
                     lastInType = lastInType && !servizio.orarioDefinito;
                     servizioCell = appContext.getBean(ServizioCellPolymer.class, servizio, lastInType);
                     currentType = servizio.getCode();
-                }
+                }// end of if cycle
 
                 return servizioCell != null ? servizioCell : new Label("Manca");
             }
@@ -395,7 +356,7 @@ public class Tabellone extends AGridViewList {
         column.setResizable(false);
         column.setFrozen(true);
 
-    }
+    }// end of method
 
 
     /**
