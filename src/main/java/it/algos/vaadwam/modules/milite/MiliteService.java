@@ -12,7 +12,9 @@ import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.role.Role;
+import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadwam.migration.MigrationService;
@@ -95,6 +97,12 @@ public class MiliteService extends WamService implements IUtenteService {
     private MigrationService migration;
 
     /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private RoleService roleService;
+
+    /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
      * Spring costruisce una implementazione concreta dell'interfaccia MongoRepository (come previsto dal @Qualifier) <br>
      * Qui si una una interfaccia locale (col casting nel costruttore) per usare i metodi specifici <br>
@@ -130,6 +138,33 @@ public class MiliteService extends WamService implements IUtenteService {
         super.lastImport = LAST_IMPORT_MILITI;
         super.durataLastImport = DURATA_IMPORT_MILITI;
         super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
+
+
+    /**
+     * Crea una entity solo se non esisteva <br>
+     *
+     * @param croce            di appartenenza (obbligatoria, se manca viene recuperata dal login)
+     * @param nome:            (obbligatorio, non unico)
+     * @param cognome:         (obbligatorio, non unico)
+     * @param userName         userName o nickName (obbligatorio, unico)
+     * @param passwordInChiaro password in chiaro (obbligatoria, non unica)
+     *                         con inserimento automatico (prima del 'save') se è nulla
+     * @param ruoli            ruoli attribuiti a questo utente (lista di valori obbligatoria)
+     *                         con inserimento del solo ruolo 'user' (prima del 'save') se la lista è nulla
+     *                         lista modificabile solo da developer ed admin
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean creaIfNotExist(
+            Croce croce,
+            String nome,
+            String cognome,
+            String userName,
+            String passwordInChiaro,
+            Set<Role> ruoli) {
+
+        return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (List<Funzione>) null);
     }// end of method
 
 
@@ -775,6 +810,41 @@ public class MiliteService extends WamService implements IUtenteService {
     @Override
     public boolean isAdmin(Utente utente) {
         return ((Milite) utente).admin;
+    }// end of method
+
+
+    /**
+     * Restituisce il massimo ruolo abilitatao <br>
+     * <p>
+     * L'ordine è:
+     * developer
+     * admin
+     * user
+     * guest
+     *
+     * @return ruolo massimo abilitato
+     */
+    public EARoleType getRoleType(Utente utente) {
+        EARoleType roleType = null;
+        Set<Role> ruoli = utente.ruoli;
+
+        if (ruoli != null) {
+            if (ruoli.contains(roleService.getDeveloper())) {
+                return EARoleType.developer;
+            } else {
+                if (ruoli.contains(roleService.getAdmin())) {
+                    return EARoleType.admin;
+                } else {
+                    if (ruoli.contains(roleService.getUser())) {
+                        return EARoleType.user;
+                    } else {
+                        return EARoleType.guest;
+                    }// end of if/else cycle
+                }// end of if/else cycle
+            }// end of if/else cycle
+        }// end of if cycle
+
+        return roleType;
     }// end of method
 
 }// end of class

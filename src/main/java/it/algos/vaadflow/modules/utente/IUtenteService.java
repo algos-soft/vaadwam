@@ -1,6 +1,7 @@
 package it.algos.vaadflow.modules.utente;
 
 import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.role.EARoleType;
 
 /**
  * Project vaadwam
@@ -23,5 +24,18 @@ public interface IUtenteService {
     public Company getCompany();
 
     public boolean isAdmin(Utente utente);
+
+    /**
+     * Restituisce il massimo ruolo abilitatao <br>
+     * <p>
+     * L'ordine è:
+     * developer
+     * admin
+     * user
+     * guest
+     *
+     * @return ruolo massimo abilitato
+     */
+    public EARoleType getRoleType(Utente utente);
 
 }// end of interface

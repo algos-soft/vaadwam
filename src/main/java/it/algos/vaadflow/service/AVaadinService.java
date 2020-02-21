@@ -128,7 +128,7 @@ public class AVaadinService {
 
                     if (utente != null) {
                         if (roleType == null) {
-                            roleType = service.isAdmin(utente) ? EARoleType.admin : EARoleType.user;
+                            roleType = service.getRoleType(utente);
                         }// end of if cycle
                         login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
                         context = appContext.getBean(AContext.class, login);
