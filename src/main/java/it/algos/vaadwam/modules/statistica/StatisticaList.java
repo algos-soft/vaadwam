@@ -204,7 +204,11 @@ public class StatisticaList extends WamViewList {
         alertPlacehorder.add(getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
         alertPlacehorder.add(getLabelDev(DEVELOPER_DELETE));
         alertPlacehorder.add(getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
-        alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
+        try { // prova ad eseguire il codice
+            alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
+        } catch (Exception unErrore) { // intercetta l'errore
+            log.error(unErrore.toString());
+        }// fine del blocco try-catch
     }// end of method
 
 
