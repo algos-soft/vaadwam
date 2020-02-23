@@ -1310,7 +1310,10 @@ public class MigrationService extends AService {
         if (funzioniOld != null && funzioniOld.size() > 0) {
             funzioni = new ArrayList<>();
             for (FunzioneAmb funzAmb : funzioniOld) {
-                funzioni.add(funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla()));
+                if (militeOld.getCognome().equals("Ceresa") && (funzAmb.getSigla().equals("tut") || funzAmb.getSigla().equals("tir"))) {
+                } else {
+                    funzioni.add(funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla()));
+                }// end of if/else cycle
             }// end of for cycle
         }// end of if cycle
 

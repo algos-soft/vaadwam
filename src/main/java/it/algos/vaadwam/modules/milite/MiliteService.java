@@ -20,6 +20,7 @@ import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,12 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     @Autowired
     private LogService logger;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private FunzioneService funzioneService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -814,7 +821,45 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     /**
-     * Restituisce il massimo ruolo abilitatao <br>
+     * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
+     */
+    public List<Funzione> getListaFunzioni(Milite milite) {
+        List<Funzione> lista = null;
+        Funzione funz = null;
+
+        if (milite != null) {
+            if (milite.funzioni != null) {
+                lista = new ArrayList<>();
+                for (Funzione funzione : milite.funzioni) {
+                    funz = funzioneService.findById(funzione.id);
+                    lista.add(funz);
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        return lista;
+    }// end of method
+    /**
+     * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
+     */
+    public List<String> getListaIDFunzioni(Milite milite) {
+        List<String> lista = null;
+
+        if (milite != null) {
+            if (milite.funzioni != null) {
+                lista = new ArrayList<>();
+                for (Funzione funz : milite.funzioni) {
+                    lista.add(funz.id);
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        return lista;
+    }// end of method
+
+
+    /**
+     * Restituisce il massimo ruolo abilitato <br>
      * <p>
      * L'ordine è:
      * developer

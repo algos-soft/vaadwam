@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +107,8 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     //--property bean
     protected Turno turno = null;
 
+    protected boolean abilitata;
+
     /**
      * Milite loggato al momento <br>
      */
@@ -114,7 +117,12 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     /**
      * Lista delle funzioni abilitate per il milite loggato al momento <br>
      */
-    protected List<Funzione> listaFunzioniAbilitate;
+    protected List<String> listaIDFunzioniAbilitate;
+
+    /**
+     * Lista delle iscrizioni abilitate per il turno <br>
+     */
+    protected Map<Iscrizione, Boolean> mappaIscrizioniAbilitate;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -252,8 +260,70 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
      * Funzioni per cui è abilitato
      */
     protected void iniziaIscrizione() {
+        regolaAbilitazioneIscrizioni();
+    }// end of method
+
+
+    /**
+     * Regola la visibilità di tutte le iscrizioni <br>
+     * Controlla se siamo loggati come developer, come admin o come user <br>
+     * Recupera le funzioni abilitate del milite loggato
+     * Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre <br>
+     * Disabilita le iscrizioni che hanno già un milite segnato <br>
+     * Disabilita le iscrizioni che hanno una funzione non abilitata per il milite loggato <br>
+     * Abilita le iscrizioni rimanenti <br>
+     */
+    protected void regolaAbilitazioneIscrizioni() {
+        List<Iscrizione> listaIscrizioni;
+        Milite militeIsc;
+        boolean militeGiaSegnato = false;
+        mappaIscrizioniAbilitate = new HashMap<>();
+        Iscrizione iscrizioneSegnata = null;
+        Funzione funz;
+
+        // @todo Controlla se siamo loggati come developer, come admin o come user <br>
+
+        //--Recupera le funzioni abilitate del milite loggato
         this.militeLoggato = wamService.getMilite();
-//        this.listaFunzioniAbilitate = militeLoggato.funzioni;
+        this.listaIDFunzioniAbilitate = militeLoggato != null ? militeService.getListaIDFunzioni(militeLoggato) : null;
+
+        // @todo per adesso
+        if (militeLoggato == null) {
+            return;
+        }// end of if cycle
+
+        //--Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre
+        listaIscrizioni = turno.iscrizioni;
+        for (Iscrizione isc : listaIscrizioni) {
+            militeIsc = isc.milite;
+            if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
+                militeGiaSegnato = true;
+                iscrizioneSegnata = isc;
+            }// end of if cycle
+        }// end of for cycle
+
+        if (militeGiaSegnato) {
+            for (Iscrizione isc : listaIscrizioni) {
+                if (isc.equals(iscrizioneSegnata)) {
+                    mappaIscrizioniAbilitate.put(isc, true);
+                } else {
+                    mappaIscrizioniAbilitate.put(isc, false);
+                }// end of if/else cycle
+            }// end of for cycle
+        } else {
+            for (Iscrizione isc : listaIscrizioni) {
+                if (isc.milite != null) {
+                    mappaIscrizioniAbilitate.put(isc, false);
+                } else {
+                    funz = isc.funzione;
+                    if (listaIDFunzioniAbilitate.contains(funz.id)) {
+                        mappaIscrizioniAbilitate.put(isc, true);
+                    } else {
+                        mappaIscrizioniAbilitate.put(isc, false);
+                    }// end of if/else cycle
+                }// end of if/else cycle
+            }// end of for cycle
+        }// end of if/else cycle
     }// end of method
 
 
@@ -306,5 +376,6 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
 
         return false;
     }// end of method
+
 
 }// end of class

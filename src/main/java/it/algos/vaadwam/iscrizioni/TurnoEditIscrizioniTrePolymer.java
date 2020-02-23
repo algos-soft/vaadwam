@@ -43,7 +43,8 @@ public class TurnoEditIscrizioniTrePolymer extends TurnoEditIscrizioniDuePolymer
     @Override
     protected void iniziaIscrizione() {
         super.iniziaIscrizione();
-        terza.inizia(turno, 3, bottoniPolymer);
+        boolean abilitata = mappaIscrizioniAbilitate.get(turno.iscrizioni.get(2));
+        terza.inizia(turno, turno.iscrizioni.get(2), abilitata, bottoniPolymer);
     }// end of method
 
 

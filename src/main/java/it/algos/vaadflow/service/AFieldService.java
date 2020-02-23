@@ -15,6 +15,7 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.converter.AConverterComboBox;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.role.Role;
@@ -302,7 +303,7 @@ public class AFieldService extends AbstractService {
                     IAService service = (IAService) StaticContextAccessor.getBean(clazz);
                     List items = ((IAService) service).findAll();
                     if (items != null) {
-                        Set<Role> hSet = new HashSet<Role>(items);
+                        Set<AEntity> hSet = new HashSet<AEntity>(items);
                         hSet.addAll(items);
 
                         ((MultiselectComboBox) field).setItems(hSet);

@@ -43,7 +43,7 @@ public class TurnoEditIscrizioniQuattroPolymer extends TurnoEditIscrizioniTrePol
     @Override
     protected void iniziaIscrizione() {
         super.iniziaIscrizione();
-        quarta.inizia(turno, 4, bottoniPolymer);
+        quarta.inizia(turno, turno.iscrizioni.get(3), abilitata, bottoniPolymer);
     }// end of method
 
 

@@ -9,7 +9,6 @@ import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
-import it.algos.vaadwam.modules.funzione.FunzioneService;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
@@ -71,7 +70,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "funzioni", "noteWam"})
-@AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo",  "role", "locked", "admin", "dipendente", "infermiere", "enabled", "noteWam"})
+@AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "role", "locked", "admin", "dipendente", "infermiere", "enabled", "funzioni", "noteWam"})
 @AIScript(sovrascrivibile = false)
 public class Milite extends Person {
 

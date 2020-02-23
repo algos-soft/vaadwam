@@ -74,6 +74,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     @Id("fine")
     public TimePicker fine;
 
+    protected boolean abilitata;
 
     /**
      * Turno di questa iscrizione <br>
@@ -168,12 +169,13 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
      * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
      * Metodo invocato da una sottoclasse di TurnoEditIscrizioniPolymer <br>
      */
-    public void inizia(Turno turno, int posizioneIscrizione, ButtonsBar bottoniPolymer) {
+    public void inizia(Turno turno, Iscrizione iscrizione, boolean abilitata, ButtonsBar bottoniPolymer) {
         this.turnoEntity = turno;
-        this.iscrizioneEntity = turnoEntity.iscrizioni.get(posizioneIscrizione - 1);
+        this.iscrizioneEntity = iscrizione;
         this.funzioneEntity = iscrizioneEntity.getFunzione();
         this.militeEntity = iscrizioneEntity.getMilite();
         this.militeLoggato = wamService.getMilite();
+        this.abilitata = abilitata;
         this.bottoniPolymer = bottoniPolymer;
 
         fixAbilitazione();
@@ -195,23 +197,27 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     private void fixAbilitazione() {
         boolean isMiliteLoggatoSegnatoNelTurno = isMiliteLoggatoSegnatoNelTurno(turnoEntity);
 
-        if (isMiliteLoggatoSegnatoNelTurno) {
-            if (militeEntity != null && militeEntity.getSigla().equals(militeLoggato.getSigla())) {
-                funzioneButton.setEnabled(true);
-                militeButton.setEnabled(true);
-            } else {
-                funzioneButton.setEnabled(false);
-                militeButton.setEnabled(false);
-            }// end of if/else cycle
-        } else {
-            if (militeEntity == null && militeService.isAbilitato(militeLoggato, funzioneEntity)) {
-                funzioneButton.setEnabled(true);
-                militeButton.setEnabled(true);
-            } else {
-                funzioneButton.setEnabled(false);
-                militeButton.setEnabled(false);
-            }// end of if/else cycle
-        }// end of if/else cycle
+        funzioneButton.setEnabled(abilitata);
+        militeButton.setEnabled(abilitata);
+
+
+//        if (isMiliteLoggatoSegnatoNelTurno) {
+//            if (militeEntity != null && militeEntity.getSigla().equals(militeLoggato.getSigla())) {
+//                funzioneButton.setEnabled(true);
+//                militeButton.setEnabled(true);
+//            } else {
+//                funzioneButton.setEnabled(false);
+//                militeButton.setEnabled(false);
+//            }// end of if/else cycle
+//        } else {
+//            if (militeEntity == null && militeService.isAbilitato(militeLoggato, funzioneEntity)) {
+//                funzioneButton.setEnabled(true);
+//                militeButton.setEnabled(true);
+//            } else {
+//                funzioneButton.setEnabled(false);
+//                militeButton.setEnabled(false);
+//            }// end of if/else cycle
+//        }// end of if/else cycle
     }// end of method
 
 
