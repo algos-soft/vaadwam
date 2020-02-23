@@ -73,11 +73,6 @@ public class WamBoot extends ABoot {
     @Autowired
     public MigrationService migration;
 
-    /**
-     * Inietta da Spring come 'singleton'
-     */
-//    @Autowired
-//    public WamScheduler scheduler;
 
     /**
      * Service (@Scope = 'singleton') iniettato da Spring <br>
