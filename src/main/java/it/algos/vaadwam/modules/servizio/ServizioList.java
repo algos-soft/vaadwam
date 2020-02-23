@@ -8,11 +8,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
-import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_SER;
+import static it.algos.vaadwam.application.WamCost.TASK_SER;
 
 /**
  * Project vaadwam <br>
@@ -55,7 +54,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_SER)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "servizi", menuIcon = VaadinIcon.DASHBOARD, searchProperty = "code", roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "servizi", menuIcon = VaadinIcon.DASHBOARD, searchProperty = "code", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
 public class ServizioList extends WamViewList {
 
 
@@ -95,7 +94,6 @@ public class ServizioList extends WamViewList {
     protected Grid creaGridComponent() {
         return new PaginatedGrid<Servizio>();
     }// end of method
-
 
 
     /**

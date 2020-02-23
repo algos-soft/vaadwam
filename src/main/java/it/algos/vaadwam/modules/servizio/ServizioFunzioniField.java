@@ -145,15 +145,15 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
 
 
     public void deleteFunz(Funzione entityBean) {
-        Set<Funzione> items = null;
-        Set<Funzione> lista = null;
+        List<Funzione> items = null;
+        List<Funzione> lista = null;
 
         if (entityBean != null) {
             items = servizio.getFunzioni();
         }// end of if cycle
 
         if (items != null && items.contains(entityBean)) {
-            lista = new HashSet<>();
+            lista = new ArrayList<>();
             for (Funzione funz : items) {
                 if (funz != entityBean) {
                     lista.add(funz);
@@ -173,7 +173,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
 
 
     private void setItems(Servizio entityBean) {
-        Set<Funzione> items = entityBean.getFunzioni();
+        List<Funzione> items = entityBean.getFunzioni();
         if (items != null && items.size() > 0) {
             grid.setItems(items);
         }// end of if cycle
@@ -199,8 +199,8 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
     }// end of method
 
     public void addFunz(Funzione newFunz) {
-        Set<Funzione> items = null;
-        Set<Funzione> lista = new HashSet<>();
+        List<Funzione> items = null;
+        List<Funzione> lista = new ArrayList<>();
 
         if (newFunz != null) {
             items = servizio.getFunzioni();

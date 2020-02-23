@@ -112,7 +112,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
@@ -132,7 +132,7 @@ public class ServizioService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Servizio newEntity() {
-        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (List<Funzione>) null);
     }// end of method
 
 
@@ -162,7 +162,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, funzioni);
     }// end of method
 
@@ -196,7 +196,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         Servizio entity = Servizio.builderServizio()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
                 .code(text.isValid(code) ? code : null)
@@ -391,7 +391,7 @@ public class ServizioService extends WamService {
 
     private AEntity riordinaFunzioni(AEntity entityBean) {
         Servizio servizio = (Servizio) entityBean;
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
         int pos = 0;
 
         if (funzioni != null) {
@@ -506,7 +506,7 @@ public class ServizioService extends WamService {
     @Deprecated
     public List<String> getSigleFunzioni(Servizio entityBean) {
         List<String> sigleFunzioni = new ArrayList<>();
-        Set<Funzione> funzioni = entityBean.getFunzioni();
+        List<Funzione> funzioni = entityBean.getFunzioni();
 
         for (Funzione funz : funzioni) {
             sigleFunzioni.add(funz.getCode());

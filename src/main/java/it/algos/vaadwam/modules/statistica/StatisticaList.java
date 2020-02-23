@@ -109,7 +109,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Slf4j
 //@Secured("admin")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, sortProperty = "ordine", roleTypeVisibility = EARoleType.admin)
 public class StatisticaList extends WamViewList {
 
 
@@ -135,6 +135,7 @@ public class StatisticaList extends WamViewList {
     @Autowired
     @Qualifier(TASK_STATISTICA)
     private ATask taskStatistica;
+
 
     /**
      * Costruttore @Autowired <br>

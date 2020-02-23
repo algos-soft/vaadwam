@@ -24,6 +24,8 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -118,6 +120,12 @@ public abstract class WamService extends AService {
      */
     @Autowired
     protected UtenteService utenteService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -543,6 +551,26 @@ public abstract class WamService extends AService {
     public void deleteAllCroce(Croce croce) {
         if (WamEntity.class.isAssignableFrom(entityClass) || Milite.class.isAssignableFrom(entityClass)) {
             super.deleteByProperty(entityClass, "croce", croce);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Deletes a given entity.
+     *
+     * @param croce di appartenenza (obbligatoria)
+     * @param anno  di riferimento (obbligatorio)
+     *
+     * @throws IllegalArgumentException in case the given entity is {@literal null}.
+     */
+    public void deleteAllCroceAnno(Croce croce, int anno) {
+        List<Turno> listaTurniAnno;
+
+        if (WamEntity.class.isAssignableFrom(entityClass) || Milite.class.isAssignableFrom(entityClass)) {
+            if (croce != null && anno > 0) {
+                listaTurniAnno = turnoService.findAllByYear(croce, anno);
+                super.delete(listaTurniAnno, entityClass);
+            }// end of if cycle
         }// end of if cycle
     }// end of method
 

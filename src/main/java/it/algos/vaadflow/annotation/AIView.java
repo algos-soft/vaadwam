@@ -40,6 +40,16 @@ public @interface AIView {
     String searchProperty() default "";
 
     /**
+     * (Optional) Property per l'ordinamento
+     */
+    String sortProperty() default "";
+
+    /**
+     * (Optional) Direzione per l'ordinamento
+     */
+    String sortDirection() default "ASC";
+
+    /**
      * (Optional) Appartenenza al progetto Base VaadFlow
      */
     boolean vaadflow() default false;

@@ -11,6 +11,7 @@ import it.algos.vaadflow.ui.IAView;
 import it.algos.vaadflow.ui.list.AViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 
 /**
  * Project springvaadin
@@ -215,12 +218,12 @@ public class AAnnotationService extends AbstractService {
      * Get the specific annotation of the class.
      * Entity class
      *
-     * @param entityClazz the entity class
+     * @param viewClazz the view class
      *
      * @return the Annotation for the specific class
      */
-    public AIView getAIView(final Class<? extends IAView> entityClazz) {
-        return entityClazz.getAnnotation(AIView.class);
+    public AIView getAIView(final Class<? extends IAView> viewClazz) {
+        return viewClazz.getAnnotation(AIView.class);
     }// end of method
 
 
@@ -228,12 +231,12 @@ public class AAnnotationService extends AbstractService {
      * Get the specific annotation of the class.
      * View class
      *
-     * @param entityClazz the entity class
+     * @param viewClazz the view class
      *
      * @return the Annotation for the specific class
      */
-    public Route getRoute(final Class<? extends IAView> entityClazz) {
-        return entityClazz.getAnnotation(Route.class);
+    public Route getRoute(final Class<? extends IAView> viewClazz) {
+        return viewClazz.getAnnotation(Route.class);
     }// end of method
 
 
@@ -603,10 +606,10 @@ public class AAnnotationService extends AbstractService {
      * @return nomi dei fields, oppure null se non esiste l'Annotation specifica @AIForm() nella Entity
      */
     @SuppressWarnings("all")
-    public ArrayList<String> getFormFieldsName(final Class<? extends AEntity> clazz) {
+    public ArrayList<String> getFormFieldsName(final Class<? extends AEntity> entityClazz) {
         ArrayList<String> lista = null;
         String[] fields = null;
-        AIForm annotation = this.getAIForm(clazz);
+        AIForm annotation = this.getAIForm(entityClazz);
 
         if (annotation != null) {
             fields = annotation.fields();
@@ -998,6 +1001,30 @@ public class AAnnotationService extends AbstractService {
         }// end of if cycle
 
         return status;
+    }// end of method
+
+
+    /**
+     * Get the sort for the Grid Columns.
+     *
+     * @param viewClazz the view class
+     *
+     * @return sort
+     */
+    public Sort getSort(Class<? extends IAView> viewClazz) {
+        Sort sort = null;
+        String sortProperty = VUOTA;
+        AIView annotationView = this.getAIView(viewClazz);
+
+        if (annotationView != null) {
+            sortProperty = annotationView.sortProperty();
+        }// end of if cycle
+
+        if (text.isValid(sortProperty)) {
+            sort = new Sort(Sort.DEFAULT_DIRECTION, sortProperty);
+        }// end of if cycle
+
+        return sort;
     }// end of method
 
 

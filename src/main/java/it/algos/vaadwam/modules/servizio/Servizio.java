@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -189,7 +190,7 @@ public class Servizio extends WamEntity {
     @Field("funz")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni previste per espletare il servizio")
     @AIColumn(name = "funzioni del servizio", flexGrow = true)
-    public Set<Funzione> funzioni;
+    public List<Funzione> funzioni;
 
 
     /**

@@ -13,6 +13,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
@@ -159,6 +160,9 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     @Autowired
     private TabelloneService tabelloneService;
 
+    @Autowired
+    private FunzioneService funzioneService;
+
 
     /**
      * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
@@ -239,7 +243,8 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         String iconaTxt = "";
 
         if (funzioneButton != null) {
-            iconaTxt = funzioneEntity.icona.name().toLowerCase();
+            Funzione funzione = funzioneService.findById(funzioneEntity.id);
+            iconaTxt = funzione.icona.name().toLowerCase();
         }// end of if cycle
 
         if (text.isValid(iconaTxt)) {

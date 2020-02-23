@@ -495,7 +495,7 @@ public class TurnoService extends WamService {
      */
     public List<Iscrizione> addIscrizioni(Servizio servizio) {
         List<Iscrizione> items = null;
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
         int durata = 0;
 
         if (servizio != null) {
@@ -528,7 +528,7 @@ public class TurnoService extends WamService {
         List<Iscrizione> iscrizioniEmbeddeTurno = turno.getIscrizioni();
         Servizio servizio = null;
         servizio = turno.getServizio();
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
         boolean trovata;
         Funzione funzione = null;
 
@@ -570,7 +570,7 @@ public class TurnoService extends WamService {
         boolean funzValida = false;
         Servizio servizio = null;
         servizio = turno.getServizio();
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
 
         for (Funzione funz : funzioni) {
             if (funz.obbligatoria) {

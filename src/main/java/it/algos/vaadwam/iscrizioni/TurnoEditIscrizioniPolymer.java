@@ -8,13 +8,17 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -90,8 +94,37 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     @Autowired
     protected TurnoService turnoService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected MiliteService militeService;
+
     //--property bean
     protected Turno turno = null;
+
+    /**
+     * Milite loggato al momento <br>
+     */
+    protected Milite militeLoggato;
+
+    /**
+     * Lista delle funzioni abilitate per il milite loggato al momento <br>
+     */
+    protected List<Funzione> listaFunzioniAbilitate;
+
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(TAG_CRO)
+    private WamService wamService;
 
 
     /**
@@ -212,8 +245,15 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     /**
      * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
      * Invocare SEMPRE anche il metodo della superclasse
+     * <p>
+     * Qui stabilisce le property del turno (tutte le iscrizioni)
+     * <p>
+     * Utente collegato
+     * Funzioni per cui è abilitato
      */
     protected void iniziaIscrizione() {
+        this.militeLoggato = wamService.getMilite();
+//        this.listaFunzioniAbilitate = militeLoggato.funzioni;
     }// end of method
 
 

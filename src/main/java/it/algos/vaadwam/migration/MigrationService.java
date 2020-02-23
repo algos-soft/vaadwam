@@ -637,6 +637,7 @@ public class MigrationService extends AService {
         CroceAmb croceOld = getCroce(croceNew);
         List<TurnoAmb> turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
 
+        turnoService.deleteAllCroceAnno(croceNew, anno);
         for (TurnoAmb turnoOld : turniOld) {
             status = status && creaSingoloTurno(croceNew, turnoOld);
         }// end of for cycle
@@ -987,7 +988,7 @@ public class MigrationService extends AService {
         boolean multiplo = servizioOld.isMultiplo();
         boolean primo = servizioOld.isPrimo();//--non utilizzato
         boolean fineGiornoSuccessivo = servizioOld.isFine_giorno_successivo(); //--non utilizzato
-        Set<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
+        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
         LocalTime inizio = LocalTime.of(oraInizio, minutiInizio);
         LocalTime fine = LocalTime.of(oraFine, minutiFine);
 
@@ -1009,8 +1010,8 @@ public class MigrationService extends AService {
      *
      * @param servizioOld della companyOld
      */
-    private Set<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
-        Set<Funzione> listaFunzioni = new HashSet<>();
+    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
+        List<Funzione> listaFunzioni = new ArrayList<>();
         FunzioneAmb funzAmb = null;
         Funzione funz = null;
         int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
@@ -1428,7 +1429,7 @@ public class MigrationService extends AService {
                 localitaExtra);
 
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
-        if (iscrizioni!=null) {
+        if (iscrizioni != null) {
             for (Iscrizione iscr : iscrizioni) {
                 iscr.inizio = inizioNew;
                 iscr.fine = fineNew;
@@ -1527,7 +1528,7 @@ public class MigrationService extends AService {
     private Funzione recuperaFunzione(long keyID, Servizio servizio) {
         Funzione funzioneNew = null;
         FunzioneAmb funzioneOld = null;
-        Set<Funzione> funzioniEmbeddeNelServizio = null;
+        List<Funzione> funzioniEmbeddeNelServizio = null;
         String siglaOld = "";
         String codeNew = "";
 
