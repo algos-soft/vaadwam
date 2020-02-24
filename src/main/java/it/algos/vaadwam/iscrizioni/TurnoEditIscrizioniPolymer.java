@@ -10,6 +10,7 @@ import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +104,15 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     @Autowired
     protected MiliteService militeService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected IscrizioneService iscrizioneService;
+
     //--property bean
     protected Turno turno = null;
 
@@ -122,7 +131,16 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     /**
      * Lista delle iscrizioni abilitate per il turno <br>
      */
-    protected Map<Iscrizione, Boolean> mappaIscrizioniAbilitate;
+    protected List<EditIscrizionePolymer> listaEditIscrizioniAbilitate;
+
+    /**
+     * Lista di EditIscrizionePolymer <br>
+     * Proxy in modo che siano 'note' a questo livello <br>
+     * Quelle originali le devo dichiarare al livello delle sottoclassi,
+     * perché vengono iniettate nel polymer html con lo stesso ID
+     * e quindi le devo dichiare SOLO se servono <br>
+     */
+    protected List<EditIscrizionePolymer> proxyEditIscrizioni;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -232,6 +250,8 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         //--regolo il componente per il turno indicato
         servizioPolymer.inizia(turno);
 
+        proxyEditIscrizioni = new ArrayList<>();
+
         //--una o più iscrizioni (fino a quattro) a secondo del tipo di servizio previsto per il turno
         iniziaIscrizione();
 
@@ -276,9 +296,10 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     protected void regolaAbilitazioneIscrizioni() {
         List<Iscrizione> listaIscrizioni;
         Milite militeIsc;
-        boolean militeGiaSegnato = false;
-        mappaIscrizioniAbilitate = new HashMap<>();
-        Iscrizione iscrizioneSegnata = null;
+        boolean militeLoggatoGiaSegnato = false;
+        listaEditIscrizioniAbilitate = new ArrayList<>();
+//        Iscrizione iscrizioneSegnata = null;
+        EditIscrizionePolymer editIscrizioneGiaSegnata = null;
         Funzione funz;
 
         // @todo Controlla se siamo loggati come developer, come admin o come user <br>
@@ -293,35 +314,31 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         }// end of if cycle
 
         //--Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre
-        listaIscrizioni = turno.iscrizioni;
-        for (Iscrizione isc : listaIscrizioni) {
-            militeIsc = isc.milite;
+        //--Ragioniamo sulle iscrizioni a video non sul DB
+        for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+            militeIsc = editIsc.getMilite();
             if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
-                militeGiaSegnato = true;
-                iscrizioneSegnata = isc;
+                militeLoggatoGiaSegnato = true;
+                editIscrizioneGiaSegnata = editIsc;
             }// end of if cycle
         }// end of for cycle
 
-        if (militeGiaSegnato) {
-            for (Iscrizione isc : listaIscrizioni) {
-                if (isc.equals(iscrizioneSegnata)) {
-                    mappaIscrizioniAbilitate.put(isc, true);
-                } else {
-                    mappaIscrizioniAbilitate.put(isc, false);
-                }// end of if/else cycle
+        if (militeLoggatoGiaSegnato) {
+            for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+                Object iscCorrente = editIsc.iscrizioneEntity;
+                Object iscLoggata = editIscrizioneGiaSegnata.iscrizioneEntity;
+                editIsc.abilitata = iscCorrente.equals(iscLoggata);
+                listaEditIscrizioniAbilitate.add(editIsc);
             }// end of for cycle
         } else {
-            for (Iscrizione isc : listaIscrizioni) {
-                if (isc.milite != null) {
-                    mappaIscrizioniAbilitate.put(isc, false);
+            for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+                if (editIsc.getMilite() != null) {
+                    editIsc.abilitata = false;
                 } else {
-                    funz = isc.funzione;
-                    if (listaIDFunzioniAbilitate.contains(funz.id)) {
-                        mappaIscrizioniAbilitate.put(isc, true);
-                    } else {
-                        mappaIscrizioniAbilitate.put(isc, false);
-                    }// end of if/else cycle
+                    funz = editIsc.getFunzioneEntity();
+                    editIsc.abilitata = listaIDFunzioniAbilitate.contains(funz.id);
                 }// end of if/else cycle
+                listaEditIscrizioniAbilitate.add(editIsc);
             }// end of for cycle
         }// end of if/else cycle
     }// end of method
@@ -340,6 +357,12 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
             return;
         }// end of if cycle
 
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+//        for (Iscrizione iscrizione : turno.iscrizioni) {
+//            iscrizioneService.setInizio(iscrizione, turno);
+//        }// end of for cycle
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+
         turnoService.save(turno);
         getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
@@ -347,6 +370,7 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
 
     /**
      * Regola l'iscrizione del turno coi valori del componente grafico (UI) <br>
+     * Chiamato dal bottone Conferma <br>
      */
     protected void bind(Turno turno, int pos, EditIscrizionePolymer edit) {
         pos--;

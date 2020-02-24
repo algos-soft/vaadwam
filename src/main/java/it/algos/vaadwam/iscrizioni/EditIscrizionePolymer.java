@@ -28,6 +28,7 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Optional;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_DIFFERENZIATA;
 
@@ -74,17 +75,17 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     @Id("fine")
     public TimePicker fine;
 
+    /**
+     * Iscrizione corrente <br>
+     */
+    public Iscrizione iscrizioneEntity;
+
     protected boolean abilitata;
 
     /**
      * Turno di questa iscrizione <br>
      */
     private Turno turnoEntity;
-
-    /**
-     * Iscrizione corrente <br>
-     */
-    private Iscrizione iscrizioneEntity;
 
     /**
      * Funzione corrente <br>
@@ -169,15 +170,22 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
      * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
      * Metodo invocato da una sottoclasse di TurnoEditIscrizioniPolymer <br>
      */
-    public void inizia(Turno turno, Iscrizione iscrizione, boolean abilitata, ButtonsBar bottoniPolymer) {
+    public void inizia(Turno turno, Iscrizione iscrizione, ButtonsBar bottoniPolymer) {
         this.turnoEntity = turno;
         this.iscrizioneEntity = iscrizione;
         this.funzioneEntity = iscrizioneEntity.getFunzione();
         this.militeEntity = iscrizioneEntity.getMilite();
         this.militeLoggato = wamService.getMilite();
-        this.abilitata = abilitata;
         this.bottoniPolymer = bottoniPolymer;
+    }// end of method
 
+
+    /**
+     * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
+     * Metodo invocato da una sottoclasse di TurnoEditIscrizioniPolymer <br>
+     */
+    public void inizia(boolean abilitata) {
+        this.abilitata = abilitata;
         fixAbilitazione();
         fixColor();
         fixIcona();
@@ -187,7 +195,16 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         fixInizio();
         fixNote();
         fixFine();
+    }// end of method
 
+
+    /**
+     * Regola i dati da presentare in base al turno ed alla iscrizione selezionata <br>
+     * Metodo invocato da una sottoclasse di TurnoEditIscrizioniPolymer <br>
+     */
+    public void inizia(Turno turno, Iscrizione iscrizione, ButtonsBar bottoniPolymer, boolean abilitata) {
+        inizia(turno, iscrizione, bottoniPolymer);
+        inizia(abilitata);
     }// end of method
 
 
@@ -321,27 +338,8 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
 
 
     /**
-     * Azione lanciata dai bottoni funzione o milite <br>
-     */
-    private void cancellaMilite() {
-        militeEntity = null;
-        militeButton.setText("");
-        bottoniPolymer.setConfermaEnabled(true);
-    }// end of method
-
-
-    /**
-     * Azione lanciata dai bottoni funzione o milite <br>
-     */
-    private void segnaMilite() {
-        militeEntity = militeLoggato;
-        militeButton.setText(militeEntity.getSigla());
-        bottoniPolymer.setConfermaEnabled(true);
-    }// end of method
-
-
-    /**
      * Orario di inizio turno specifico di questa iscrizione (indipendentemente da quello del servizio) <br>
+     * Se c'è un milite segnato, mostra l'orario
      */
     private void fixInizio() {
         LocalTime time = iscrizioneEntity.inizio != null ? iscrizioneEntity.inizio : LocalTime.MIDNIGHT;
@@ -353,8 +351,10 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         }// end of if cycle
 
         if (inizio != null) {
-            inizio.addValueChangeListener(e -> syncCode());
+            inizio.addValueChangeListener(e -> confermaOK());
         }// end of if cycle
+
+        inizio.setEnabled(abilitata && iscrizioneEntity.milite != null);
     }// end of method
 
 
@@ -371,8 +371,10 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         }// end of if cycle
 
         if (note != null) {
-            note.addValueChangeListener(e -> syncCode());
+            note.addValueChangeListener(e -> confermaOK());
         }// end of if cycle
+
+        note.setEnabled(abilitata && iscrizioneEntity.milite != null);
     }// end of method
 
 
@@ -388,9 +390,39 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
             fine.setLocale(Locale.ITALIAN);
         }// end of if cycle
 
-        if (inizio != null) {
-            inizio.addValueChangeListener(e -> syncCode());
+        if (fine != null) {
+            fine.addValueChangeListener(e -> confermaOK());
         }// end of if cycle
+
+        fine.setEnabled(abilitata && iscrizioneEntity.milite != null);
+    }// end of method
+
+
+    /**
+     * Azione lanciata dai bottoni funzione o milite <br>
+     */
+    private void cancellaMilite() {
+        militeEntity = null;
+        militeButton.setText("");
+        inizio.setValue(LocalTime.MIDNIGHT);
+        note.setValue(VUOTA);
+        fine.setValue(LocalTime.MIDNIGHT);
+        bottoniPolymer.setConfermaEnabled(true);
+    }// end of method
+
+
+    /**
+     * Azione lanciata dai bottoni funzione o milite <br>
+     */
+    private void segnaMilite() {
+        militeEntity = militeLoggato;
+        militeButton.setText(militeEntity.getSigla());
+        inizio.setValue(turnoEntity.inizio);
+        inizio.setEnabled(true);
+        note.setEnabled(true);
+        fine.setValue(turnoEntity.fine);
+        fine.setEnabled(true);
+        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
@@ -425,6 +457,16 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
      */
     public void setMilite(Milite milite) {
         militeEntity = milite;
+    }// end of method
+
+
+    public Funzione getFunzioneEntity() {
+        return funzioneEntity;
+    }// end of method
+
+
+    public void setFunzioneEntity(Funzione funzioneEntity) {
+        this.funzioneEntity = funzioneEntity;
     }// end of method
 
 
@@ -466,6 +508,13 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     /**
      * Controlla il bottone 'registra' <br>
      */
+    public void confermaOK() {
+        bottoniPolymer.setConfermaEnabled(true);
+    }// end of method
+
+    /**
+     * Controlla il bottone 'registra' <br>
+     */
     public void syncCode() {
         boolean status = false;
 
@@ -473,7 +522,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
             status = true;
         }// end of if cycle
 
-        bottoniPolymer.setConfermaEnabled(status);
+//        bottoniPolymer.setConfermaEnabled(status);
     }// end of method
 
 }// end of class

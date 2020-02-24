@@ -5,7 +5,6 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.milite.Milite;
-import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.turno.Turno;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
@@ -203,6 +202,33 @@ public class IscrizioneService extends AService {
         }// end of if cycle
 
         return status;
+    }// end of method
+
+
+    public void setInizio(Iscrizione iscrizione, Turno turno) {
+        if (iscrizione != null && turno != null) {
+            setInizio(iscrizione, turno.getInizio());
+        }// end of if cycle
+    }// end of method
+
+
+    public void setInizio(Iscrizione iscrizione, LocalTime time) {
+        if (iscrizione != null) {
+            iscrizione.setInizio(time);
+        }// end of if cycle
+    }// end of method
+
+    public void setFine(Iscrizione iscrizione, Turno turno) {
+        if (iscrizione != null && turno != null) {
+            setFine(iscrizione, turno.getFine());
+        }// end of if cycle
+    }// end of method
+
+
+    public void setFine(Iscrizione iscrizione, LocalTime time) {
+        if (iscrizione != null) {
+            iscrizione.setFine(time);
+        }// end of if cycle
     }// end of method
 
 }// end of class
