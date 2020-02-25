@@ -349,7 +349,10 @@ public class Tabellone extends AGridViewList {
 
         Grid.Column column = grid.addComponentColumn(componentProvider);
 
-        column.setHeader(periodoHeader());
+        // provare a sostituire questo componente con un Menu
+        Component component=periodoHeader();
+
+        column.setHeader(component);
         column.setFlexGrow(0);
         column.setWidth("7em");
         column.setSortable(false);
@@ -394,7 +397,6 @@ public class Tabellone extends AGridViewList {
         comboPeriodi.setItems(EAPeriodo.values());
         comboPeriodi.setValue(currentPeriodValue);
         comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));
-
         return comboPeriodi;
     }// end of method
 

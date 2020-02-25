@@ -25,7 +25,7 @@
             #right {
                 width: 30%;
                 /*font-size: small;*/
-                font-size: 80%;
+                /*font-size: 80%;*/
                 display: flex;
                 flex-direction: column;
             }
@@ -81,15 +81,7 @@
             <div id="right">
                 <template is="dom-repeat" items="[[icone]]">
                     <div id="ruolo">
-                        <style is="custom-style">
-                            .big {
-                                --iron-icon-height: 32px;
-                                --iron-icon-width: 32px;
-                                /*--iron-icon-fill-color:"red"*/
-                            }
-                        </style>
-                        <iron-icon icon="vaadin:{{item}}"  style="fill:dodgerblue"></iron-icon>
-<!--                            <iron-icon icon="vaadin:{{item}}"  style="fill:coral"></iron-icon>-->
+                        <iron-icon icon="vaadin:{{item}}"  style="height:4mm; fill:dodgerblue"></iron-icon>
                     </div>
                 </template>
             </div>

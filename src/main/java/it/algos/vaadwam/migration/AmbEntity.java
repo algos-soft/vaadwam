@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +113,7 @@ public class AmbEntity {
 //    }// end of method
 
 
-    public List findAll(String dbName, String whereText, String orderText) {
+    public List findAll(String dbName, String whereText, String orderText)  {
         List lista = new ArrayList<>();
         String where = whereText.equals("") ? "" : " WHERE " + whereText;
         String order = orderText.equals("") ? "" : " ORDER BY " + orderText;
@@ -134,8 +131,7 @@ public class AmbEntity {
             statement.close();
             connection.close();
         } catch (Exception unErrore) { // intercetta l'errore
-            System.out.println(unErrore);
-            log.error(unErrore.toString());
+            log.error("errore di connessione",unErrore);
         }// fine del blocco try-catch
 
         return lista;
