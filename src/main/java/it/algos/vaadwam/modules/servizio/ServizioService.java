@@ -3,6 +3,7 @@ package it.algos.vaadwam.modules.servizio;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.wam.WamService;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadwam.application.WamCost.TAG_SER;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -73,6 +74,21 @@ public class ServizioService extends WamService {
 
 
     /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_SERVIZI;
+        super.durataLastImport = DURATA_IMPORT_SERVIZI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
+
+    /**
      * Crea una entity solo se non esisteva <br>
      *
      * @param croce          di appartenenza (obbligatoria, se manca viene recuperata dal login)
@@ -96,7 +112,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
@@ -116,7 +132,7 @@ public class ServizioService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Servizio newEntity() {
-        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (List<Funzione>) null);
     }// end of method
 
 
@@ -146,7 +162,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, funzioni);
     }// end of method
 
@@ -180,7 +196,7 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            Set<Funzione> funzioni) {
+            List<Funzione> funzioni) {
         Servizio entity = Servizio.builderServizio()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
                 .code(text.isValid(code) ? code : null)
@@ -304,12 +320,15 @@ public class ServizioService extends WamService {
     /**
      * Importazione di dati <br>
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
-    public boolean importa() {
-        return migration.importServizi(getCroce());
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importServizi(croce);
+        setLastImport(croce, inizio);
     }// end of method
+
 
     /**
      * Returns instances of the company <br>
@@ -372,7 +391,7 @@ public class ServizioService extends WamService {
 
     private AEntity riordinaFunzioni(AEntity entityBean) {
         Servizio servizio = (Servizio) entityBean;
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
         int pos = 0;
 
         if (funzioni != null) {
@@ -487,7 +506,7 @@ public class ServizioService extends WamService {
     @Deprecated
     public List<String> getSigleFunzioni(Servizio entityBean) {
         List<String> sigleFunzioni = new ArrayList<>();
-        Set<Funzione> funzioni = entityBean.getFunzioni();
+        List<Funzione> funzioni = entityBean.getFunzioni();
 
         for (Funzione funz : funzioni) {
             sigleFunzioni.add(funz.getCode());

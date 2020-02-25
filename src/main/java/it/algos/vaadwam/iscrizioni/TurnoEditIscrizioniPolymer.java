@@ -8,13 +8,18 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -90,8 +95,62 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     @Autowired
     protected TurnoService turnoService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected MiliteService militeService;
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected IscrizioneService iscrizioneService;
+
     //--property bean
     protected Turno turno = null;
+
+    protected boolean abilitata;
+
+    /**
+     * Milite loggato al momento <br>
+     */
+    protected Milite militeLoggato;
+
+    /**
+     * Lista delle funzioni abilitate per il milite loggato al momento <br>
+     */
+    protected List<String> listaIDFunzioniAbilitate;
+
+    /**
+     * Lista delle iscrizioni abilitate per il turno <br>
+     */
+    protected List<EditIscrizionePolymer> listaEditIscrizioniAbilitate;
+
+    /**
+     * Lista di EditIscrizionePolymer <br>
+     * Proxy in modo che siano 'note' a questo livello <br>
+     * Quelle originali le devo dichiarare al livello delle sottoclassi,
+     * perché vengono iniettate nel polymer html con lo stesso ID
+     * e quindi le devo dichiare SOLO se servono <br>
+     */
+    protected List<EditIscrizionePolymer> proxyEditIscrizioni;
+
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(TAG_CRO)
+    private WamService wamService;
 
 
     /**
@@ -191,6 +250,8 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         //--regolo il componente per il turno indicato
         servizioPolymer.inizia(turno);
 
+        proxyEditIscrizioni = new ArrayList<>();
+
         //--una o più iscrizioni (fino a quattro) a secondo del tipo di servizio previsto per il turno
         iniziaIscrizione();
 
@@ -212,8 +273,74 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     /**
      * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
      * Invocare SEMPRE anche il metodo della superclasse
+     * <p>
+     * Qui stabilisce le property del turno (tutte le iscrizioni)
+     * <p>
+     * Utente collegato
+     * Funzioni per cui è abilitato
      */
     protected void iniziaIscrizione() {
+        regolaAbilitazioneIscrizioni();
+    }// end of method
+
+
+    /**
+     * Regola la visibilità di tutte le iscrizioni <br>
+     * Controlla se siamo loggati come developer, come admin o come user <br>
+     * Recupera le funzioni abilitate del milite loggato
+     * Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre <br>
+     * Disabilita le iscrizioni che hanno già un milite segnato <br>
+     * Disabilita le iscrizioni che hanno una funzione non abilitata per il milite loggato <br>
+     * Abilita le iscrizioni rimanenti <br>
+     */
+    protected void regolaAbilitazioneIscrizioni() {
+        List<Iscrizione> listaIscrizioni;
+        Milite militeIsc;
+        boolean militeLoggatoGiaSegnato = false;
+        listaEditIscrizioniAbilitate = new ArrayList<>();
+//        Iscrizione iscrizioneSegnata = null;
+        EditIscrizionePolymer editIscrizioneGiaSegnata = null;
+        Funzione funz;
+
+        // @todo Controlla se siamo loggati come developer, come admin o come user <br>
+
+        //--Recupera le funzioni abilitate del milite loggato
+        this.militeLoggato = wamService.getMilite();
+        this.listaIDFunzioniAbilitate = militeLoggato != null ? militeService.getListaIDFunzioni(militeLoggato) : null;
+
+        // @todo per adesso
+        if (militeLoggato == null) {
+            return;
+        }// end of if cycle
+
+        //--Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre
+        //--Ragioniamo sulle iscrizioni a video non sul DB
+        for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+            militeIsc = editIsc.getMilite();
+            if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
+                militeLoggatoGiaSegnato = true;
+                editIscrizioneGiaSegnata = editIsc;
+            }// end of if cycle
+        }// end of for cycle
+
+        if (militeLoggatoGiaSegnato) {
+            for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+                Object iscCorrente = editIsc.iscrizioneEntity;
+                Object iscLoggata = editIscrizioneGiaSegnata.iscrizioneEntity;
+                editIsc.abilitata = iscCorrente.equals(iscLoggata);
+                listaEditIscrizioniAbilitate.add(editIsc);
+            }// end of for cycle
+        } else {
+            for (EditIscrizionePolymer editIsc : proxyEditIscrizioni) {
+                if (editIsc.getMilite() != null) {
+                    editIsc.abilitata = false;
+                } else {
+                    funz = editIsc.getFunzioneEntity();
+                    editIsc.abilitata = listaIDFunzioniAbilitate.contains(funz.id);
+                }// end of if/else cycle
+                listaEditIscrizioniAbilitate.add(editIsc);
+            }// end of for cycle
+        }// end of if/else cycle
     }// end of method
 
 
@@ -230,6 +357,12 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
             return;
         }// end of if cycle
 
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+//        for (Iscrizione iscrizione : turno.iscrizioni) {
+//            iscrizioneService.setInizio(iscrizione, turno);
+//        }// end of for cycle
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+
         turnoService.save(turno);
         getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
@@ -237,6 +370,7 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
 
     /**
      * Regola l'iscrizione del turno coi valori del componente grafico (UI) <br>
+     * Chiamato dal bottone Conferma <br>
      */
     protected void bind(Turno turno, int pos, EditIscrizionePolymer edit) {
         pos--;
@@ -266,5 +400,6 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
 
         return false;
     }// end of method
+
 
 }// end of class

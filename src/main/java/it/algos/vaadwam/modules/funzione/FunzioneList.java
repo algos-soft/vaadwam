@@ -8,21 +8,17 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import java.util.ArrayList;
-
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 
 /**
  * Project vaadwam <br>
@@ -57,18 +53,8 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_FUN)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "funzioni", menuIcon = VaadinIcon.LIST_OL, searchProperty = "code", roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "funzioni", menuIcon = VaadinIcon.LIST_OL, searchProperty = "code", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
 public class FunzioneList extends WamViewList {
-
-
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    @Qualifier(TASK_FUN)
-    private ATask task;
 
 
     /**
@@ -105,21 +91,6 @@ public class FunzioneList extends WamViewList {
     @Override
     protected Grid creaGridComponent() {
         return new PaginatedGrid<Funzione>();
-    }// end of method
-
-    /**
-     * Le preferenze standard
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        this.lastImport = LAST_IMPORT_FUNZIONI;
-        this.durataLastImport = DURATA_IMPORT_FUNZIONI;
-        this.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
 

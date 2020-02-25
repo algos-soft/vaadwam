@@ -636,6 +636,31 @@ public class ATextService extends AbstractService {
 
 
     /**
+     * Formattazione di un intero con un decimale.
+     * <p>
+     * Il numero è stato moltiplicato per 10 e memorizzato come intero <br>
+     * Va diviso per 10 ed inserita la virgola <br>
+     *
+     * @param value da formattare (intero * 10)
+     *
+     * @return stringa formattata
+     */
+    public String formatOneDecimal(int value) {
+        String sep = VIRGOLA;
+        String formattato = VUOTA;
+        String valueTxt = VUOTA + value;
+        int pos = valueTxt.length() - 1;
+
+        formattato += valueTxt.substring(0, pos);
+        formattato += sep;
+        formattato += valueTxt.substring( pos);
+
+        // valore di ritorno
+        return formattato;
+    }// end of method
+
+
+    /**
      * Formattazione di un numero giustificato a due cifre.
      * <p>
      * Il numero può arrivare come stringa, intero o double

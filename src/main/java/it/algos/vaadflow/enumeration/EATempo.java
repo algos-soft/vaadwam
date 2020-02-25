@@ -43,7 +43,6 @@ public enum EATempo {
         return tempo;
     }// end of method
 
-
     public String getTxt(int durata) {
         String testo = " in ";
 //        durata = (int) durata / delta;

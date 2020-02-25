@@ -81,7 +81,15 @@
             <div id="right">
                 <template is="dom-repeat" items="[[icone]]">
                     <div id="ruolo">
-                        <iron-icon icon="vaadin:{{item}}" style="height:4.5mm"></iron-icon>
+                        <style is="custom-style">
+                            .big {
+                                --iron-icon-height: 32px;
+                                --iron-icon-width: 32px;
+                                /*--iron-icon-fill-color:"red"*/
+                            }
+                        </style>
+                        <iron-icon icon="vaadin:{{item}}"  style="fill:dodgerblue"></iron-icon>
+<!--                            <iron-icon icon="vaadin:{{item}}"  style="fill:coral"></iron-icon>-->
                     </div>
                 </template>
             </div>

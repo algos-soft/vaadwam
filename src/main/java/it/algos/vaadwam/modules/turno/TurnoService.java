@@ -6,6 +6,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadwam.application.WamCost.TAG_TUR;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -111,6 +112,22 @@ public class TurnoService extends WamService {
         super.entityClass = Turno.class;
         this.repository = (TurnoRepository) repository;
     }// end of Spring constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_TURNI;
+        super.durataLastImport = DURATA_IMPORT_TURNI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
 
     /**
@@ -269,13 +286,14 @@ public class TurnoService extends WamService {
 
     /**
      * Importazione di dati <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
-    public boolean importa() {
-        return migration.importTurni(getCroce());
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importTurni(croce);
+        setLastImport(croce, inizio);
     }// end of method
 
 
@@ -403,6 +421,19 @@ public class TurnoService extends WamService {
 
 
     /**
+     * Returns all instances of the selected Croce <br>
+     *
+     * @return lista ordinata di tutte le entities della croce
+     */
+    public List<Turno> findAllByYearUntilNow(Croce croce, int anno) {
+        LocalDate inizio = date.primoGennaio(anno);
+        LocalDate fine = LocalDate.now();
+
+        return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
+    }// end of method
+
+
+    /**
      * Returns instances of the current Croce <br>
      * Selected for Servizio and for starting/ending date <br>
      * Le date inizioie e fine sono comprensive degli estremi, mentre il metodo della repository no <br>
@@ -464,7 +495,7 @@ public class TurnoService extends WamService {
      */
     public List<Iscrizione> addIscrizioni(Servizio servizio) {
         List<Iscrizione> items = null;
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
         int durata = 0;
 
         if (servizio != null) {
@@ -497,7 +528,7 @@ public class TurnoService extends WamService {
         List<Iscrizione> iscrizioniEmbeddeTurno = turno.getIscrizioni();
         Servizio servizio = null;
         servizio = turno.getServizio();
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
         boolean trovata;
         Funzione funzione = null;
 
@@ -539,7 +570,7 @@ public class TurnoService extends WamService {
         boolean funzValida = false;
         Servizio servizio = null;
         servizio = turno.getServizio();
-        Set<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizio.getFunzioni();
 
         for (Funzione funz : funzioni) {
             if (funz.obbligatoria) {

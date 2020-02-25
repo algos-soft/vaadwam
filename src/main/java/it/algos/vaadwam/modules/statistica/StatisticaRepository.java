@@ -37,4 +37,6 @@ public interface StatisticaRepository extends MongoRepository<Statistica, String
 
 	public List<Statistica> findAllByCroceOrderByOrdineAsc(Croce croce);
 
+    public int countByCroce(Croce croce);
+
 }// end of interface

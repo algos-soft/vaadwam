@@ -28,7 +28,10 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -38,6 +41,11 @@ import static it.algos.vaadwam.application.WamCost.*;
  * User: gac
  * Date: mar, 05-mar-2019
  * Time: 14:48
+ * <p>
+ * Singola cella del tabellone <br>
+ * 1.Icona
+ * 2.Nome del milite
+ * 3.Colore
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -127,7 +135,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         boolean differenziata = pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore;
@@ -144,14 +152,15 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         }// end of if cycle
 
         if (funzioni != null) {
-            for (Funzione funz : funzioni) {
-                icona = "vaadin:" + funz.icona.name().toLowerCase();
+            for (Funzione funzServ : funzioni) {
+                Funzione funzione = funzioneService.findById(funzServ.id);
+                icona = "vaadin:" + funzione.icona.name().toLowerCase();
                 if (iscrizioni != null) {
                     for (Iscrizione iscr : iscrizioni) {
                         if (differenziata) {
                             colore = tabelloneService.getColoreIscrizione(turno, iscr).getEsadecimale();
                         }// end of if cycle
-                        if (iscr.funzione.code.equals(funz.code)) {
+                        if (iscr.funzione.code.equals(funzServ.code)) {
                             if (iscr.milite != null) {
                                 if (iscr.note != null && iscr.note.length() > 0) {
                                     righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla(), true));
@@ -176,7 +185,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     private void colorazioneUnica() {
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore;
@@ -218,7 +227,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     private void colorazioneDifferenziata() {
         List<Iscrizione> iscrizioni = null;
         Servizio servizio = riga.servizio;
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         String colore = "";

@@ -28,14 +28,13 @@ import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.modules.statistica.StatisticaService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 //import javax.persistence.EntityManager;
@@ -57,9 +57,9 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Time: 19:52
  */
 @Service
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
-public class MigrationService {
+public class MigrationService extends AService {
 
     private final static String PERSISTENCE_UNIT_NAME = "Webambulanzelocal";
 
@@ -142,6 +142,9 @@ public class MigrationService {
     private IscrizioneService iscrizioneService;
 
     @Autowired
+    private StatisticaService statisticaService;
+
+    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -194,7 +197,8 @@ public class MigrationService {
 
 
     /**
-     * Importa tutte le companies esistenti in webambulanze
+     * Importa tutte le croci <br>
+     * Controlla il flag di attivazione specifico di ogni croce <br>
      */
     public void importAll() {
         ImportResult result = null;
@@ -202,17 +206,27 @@ public class MigrationService {
 
         setup();
 
-
         for (CroceAmb croceOld : crociOld) {
             croceNew = getCroce(croceOld);
 
-            importCroce(croceOld);
-            importFunzioni(croceOld);
-            importServizi(croceOld);
-            importMiliti(croceOld);
+            if (croceNew != null) {
+                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
+                    importCroce(croceNew);
+                }// end of if cycle
+            }// end of if cycle
         }// end of for cycle
+    }// end of method
 
-//        importTurniAnno();
+
+    /**
+     * Importa tutte le croci <br>
+     * Controlla il flag di attivazione specifico di ogni croce <br>
+     */
+    public void importCroce(Croce croceNew) {
+        funzioneService.importa(croceNew);
+        servizioService.importa(croceNew);
+        militeService.importa(croceNew);
+        turnoService.importa(croceNew);
     }// end of method
 
 
@@ -623,6 +637,7 @@ public class MigrationService {
         CroceAmb croceOld = getCroce(croceNew);
         List<TurnoAmb> turniOld = turnoAmb.findAll((int) croceOld.getId(), anno);
 
+        turnoService.deleteAllCroceAnno(croceNew, anno);
         for (TurnoAmb turnoOld : turniOld) {
             status = status && creaSingoloTurno(croceNew, turnoOld);
         }// end of for cycle
@@ -697,6 +712,15 @@ public class MigrationService {
     }// end of method
 
 
+    /**
+     * Elabopra le statistiche dei militi <br>
+     *
+     * @param croceNew di waadwam
+     */
+    public boolean elaboraStatistiche(Croce croceNew) {
+        return statisticaService.elabora(croceNew);
+    }// end of method
+
 //    /**
 //     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
 //     *
@@ -733,16 +757,16 @@ public class MigrationService {
      */
     public boolean importCroce(CroceAmb croceOld) {
         boolean importati = false;
-        Croce croceNew = null;
+        Croce croceNew;
         String codeCroceNew = getCodeNew(croceOld);
         String descrizione;
         String email;
         String telefono;
-        Address indNew = null;
-        Person presNew = null;
-        Person contNew = null;
-        EAOrganizzazione orgNew = null;
-        String note = "";
+        Address indNew;
+        Person presNew;
+        Person contNew;
+        EAOrganizzazione orgNew;
+        String note = VUOTA;
 
         try { // prova ad eseguire il codice
             orgNew = EAOrganizzazione.get(croceOld.getOrganizzazione());
@@ -964,7 +988,7 @@ public class MigrationService {
         boolean multiplo = servizioOld.isMultiplo();
         boolean primo = servizioOld.isPrimo();//--non utilizzato
         boolean fineGiornoSuccessivo = servizioOld.isFine_giorno_successivo(); //--non utilizzato
-        Set<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
+        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
         LocalTime inizio = LocalTime.of(oraInizio, minutiInizio);
         LocalTime fine = LocalTime.of(oraFine, minutiFine);
 
@@ -986,8 +1010,8 @@ public class MigrationService {
      *
      * @param servizioOld della companyOld
      */
-    private Set<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
-        Set<Funzione> listaFunzioni = new HashSet<>();
+    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
+        List<Funzione> listaFunzioni = new ArrayList<>();
         FunzioneAmb funzAmb = null;
         Funzione funz = null;
         int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
@@ -1286,7 +1310,10 @@ public class MigrationService {
         if (funzioniOld != null && funzioniOld.size() > 0) {
             funzioni = new ArrayList<>();
             for (FunzioneAmb funzAmb : funzioniOld) {
-                funzioni.add(funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla()));
+                if (militeOld.getCognome().equals("Ceresa") && (funzAmb.getSigla().equals("tut") || funzAmb.getSigla().equals("tir"))) {
+                } else {
+                    funzioni.add(funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla()));
+                }// end of if/else cycle
             }// end of for cycle
         }// end of if cycle
 
@@ -1405,10 +1432,12 @@ public class MigrationService {
                 localitaExtra);
 
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
-        for (Iscrizione iscr : iscrizioni) {
-            iscr.inizio = inizioNew;
-            iscr.fine = fineNew;
-        }// end of for cycle
+        if (iscrizioni != null) {
+            for (Iscrizione iscr : iscrizioni) {
+                iscr.inizio = inizioNew;
+                iscr.fine = fineNew;
+            }// end of for cycle
+        }// end of if cycle
 
         turnoService.save(turnoNew);
         return status;
@@ -1502,7 +1531,7 @@ public class MigrationService {
     private Funzione recuperaFunzione(long keyID, Servizio servizio) {
         Funzione funzioneNew = null;
         FunzioneAmb funzioneOld = null;
-        Set<Funzione> funzioniEmbeddeNelServizio = null;
+        List<Funzione> funzioniEmbeddeNelServizio = null;
         String siglaOld = "";
         String codeNew = "";
 

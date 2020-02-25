@@ -27,5 +27,6 @@ public interface ServizioCellModel extends TemplateModel {
     void setLastInType(boolean lastInType);
 
     void setColore(String colore);
+    void setGreenColor(boolean greenColor);
 
 }// end of interface

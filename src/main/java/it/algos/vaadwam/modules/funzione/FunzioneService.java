@@ -5,6 +5,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadwam.application.WamCost.TAG_FUN;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -69,6 +70,22 @@ public class FunzioneService extends WamService {
         super.entityClass = Funzione.class;
         this.repository = (FunzioneRepository) repository;
     }// end of Spring constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_FUNZIONI;
+        super.durataLastImport = DURATA_IMPORT_FUNZIONI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
 
     /**
@@ -285,8 +302,10 @@ public class FunzioneService extends WamService {
      * @return informazioni sul risultato
      */
     @Override
-    public boolean importa() {
-        return migration.importFunzioni(getCroce());
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importFunzioni(croce);
+        setLastImport(croce, inizio);
     }// end of method
 
 

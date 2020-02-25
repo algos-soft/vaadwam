@@ -135,7 +135,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Crea (o ricrea dopo una clonazione) il componente base
      */
     public Grid creaGrid() {
-        Set<Funzione> items;
+        List<Funzione> items;
         String widthA = "4em";
         String widthB = "6em";
         String widthC = "12em";
@@ -167,7 +167,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         //--aggiunge una colonna calcolata
         Grid.Column colonnaFunzioneObbligatoria = grid.addComponentColumn(funzione -> {
             ACheckBox box = new ACheckBox("");
-            Set<Funzione> funzioniDelServizio = servizio.funzioni;
+            List<Funzione> funzioniDelServizio = servizio.funzioni;
             if (funzioniDelServizio!=null) {
                 for (Funzione funzServizio : funzioniDelServizio) {
                     if (funzServizio.code.equals(((Funzione) funzione).code)) {

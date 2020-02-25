@@ -1,6 +1,8 @@
 package it.algos.vaadwam.modules.statistica;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
@@ -11,17 +13,21 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.schedule.ATask;
+import it.algos.vaadwam.wam.WamService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import static it.algos.vaadwam.application.WamCost.TAG_STA;
+import java.time.LocalDateTime;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -103,7 +109,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_STA;
 @Slf4j
 //@Secured("admin")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, sortProperty = "ordine", roleTypeVisibility = EARoleType.admin)
 public class StatisticaList extends WamViewList {
 
 
@@ -120,6 +126,15 @@ public class StatisticaList extends WamViewList {
      */
     @Autowired
     protected TurnoService turnoService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
+     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
+     */
+    @Autowired
+    @Qualifier(TASK_STATISTICA)
+    private ATask taskStatistica;
 
 
     /**
@@ -139,6 +154,19 @@ public class StatisticaList extends WamViewList {
 
 
     /**
+     * Crea effettivamente il Component Grid <br>
+     * <p>
+     * Può essere Grid oppure PaginatedGrid <br>
+     * DEVE essere sovrascritto nella sottoclasse con la PaginatedGrid specifica della Collection <br>
+     * Oppure queste possono essere fatte nella sottoclasse, se non sono standard <br>
+     */
+    @Override
+    protected Grid creaGridComponent() {
+        return new PaginatedGrid<Statistica>();
+    }// end of method
+
+
+    /**
      * Preferenze standard <br>
      * Può essere sovrascritto, per aggiungere informazioni <br>
      * Invocare PRIMA il metodo della superclasse <br>
@@ -151,11 +179,37 @@ public class StatisticaList extends WamViewList {
         if (wamLogin.isAdmin()) {
             super.usaButtonDelete = true;
         }// end of if cycle
+
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
+    }// end of method
 
-        super.grid = new PaginatedGrid<Statistica>();
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive alla grid ed alla lista di elementi
+     * Normalmente ad uso esclusivo del developer
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     */
+    @Override
+    protected void creaAlertLayout() {
+        fixPreferenze();
+
+        alertUser = null;
+        alertAdmin = null;
+        alertDev = null;
+        alertDevAll = null;
+        super.creaAlertLayout();
+
+        alertPlacehorder.add(getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
+        alertPlacehorder.add(getLabelDev(DEVELOPER_DELETE));
+        alertPlacehorder.add(getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
+        try { // prova ad eseguire il codice
+            alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
+        } catch (Exception unErrore) { // intercetta l'errore
+            log.error(unErrore.toString());
+        }// fine del blocco try-catch
     }// end of method
 
 
@@ -189,6 +243,7 @@ public class StatisticaList extends WamViewList {
         topPlaceholder.add(elaboraButton);
     }// end of method
 
+
     /**
      * Elabora (nel service) le statistiche <br>
      * Se developer=true, elabora tutte le croci <br>
@@ -196,16 +251,11 @@ public class StatisticaList extends WamViewList {
      * Se user=true, non vede questa lista <br>
      */
     public void elabora() {
-        ((StatisticaService) service).elabora();
-
         if (wamLogin.isDeveloper()) {
-            ((StatisticaService) service).elabora();
-        } else {
-            if (wamLogin.isAdmin()) {
-                ((StatisticaService) service).elabora(wamLogin.getCroce());
-            }// end of if cycle
-        }// end of if/else cycle
+            ((StatisticaService) service).elabora(wamLogin.getCroce());
+        }// end of if cycle
     }// end of method
+
 
     /**
      * Crea un Popup di selezione della company <br>
@@ -217,21 +267,6 @@ public class StatisticaList extends WamViewList {
             super.creaCompanyFiltro();
         }// end of if cycle
     }// end of method
-
-
-//    /**
-//     * Crea la GridPaginata <br>
-//     * Per usare una GridPaginata occorre:
-//     * 1) la view xxxList deve estendere APaginatedGridViewList anziche AGridViewList <br>
-//     * 2) deve essere sovrascritto questo metodo nella classe xxxList <br>
-//     * 3) nel metodo sovrascritto va creata la PaginatedGrid 'tipizzata' con la entityClazz (Collection) specifica <br>
-//     * 4) il metodo sovrascritto deve invocare DOPO questo stesso superMetodo in APaginatedGridViewList <br>
-//     */
-//    @Override
-//    protected void creaGridPaginata() {
-//        paginatedGrid = new PaginatedGrid<Statistica>();
-//        super.creaGridPaginata();
-//    }// end of method
 
 
     /**
@@ -249,6 +284,44 @@ public class StatisticaList extends WamViewList {
     @Override
     protected void openDialog(AEntity entityBean) {
         appContext.getBean(StatisticaDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+    }// end of method
+
+
+    /**
+     * Costruisce le info di import <br>
+     * Può essere attivo lo scheduler della croce <br>
+     */
+    protected Label getInfoElabora(String flagLastImport, String flagDurataLastImport) {
+        Label label = null;
+        String testo = "";
+        String tag = "Elaborazione automatica statistiche: ";
+        String nota = taskStatistica != null ? taskStatistica.getSchedule().getNota() : VUOTA;
+        int durata = pref.getInt(flagDurataLastImport);
+        boolean elaborazioneAutomaticaDiQuestaCroce = pref.isBool(USA_DAEMON_ELABORA);
+
+        if (login.isDeveloper()) {
+            LocalDateTime lastImport = pref.getDateTime(flagLastImport);
+            testo = tag;
+
+            if (elaborazioneAutomaticaDiQuestaCroce) {
+                testo += nota;
+            } else {
+                testo += "disattivato.";
+            }// end of if/else cycle
+
+            if (lastImport != null) {
+                label = getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
+            } else {
+                if (elaborazioneAutomaticaDiQuestaCroce) {
+                    label = getLabelDev(tag + nota + " Non ancora effettuata.");
+                } else {
+                    label = getLabelDev(testo);
+                }// end of if/else cycle
+            }// end of if/else cycle
+
+        }// end of if cycle
+
+        return label;
     }// end of method
 
 }// end of class

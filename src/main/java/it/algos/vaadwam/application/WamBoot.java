@@ -63,9 +63,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 2.1;
+    private final static double PROJECT_VERSION = 2.5;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 2, 14);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 2, 23);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -73,11 +73,6 @@ public class WamBoot extends ABoot {
     @Autowired
     public MigrationService migration;
 
-    /**
-     * Inietta da Spring come 'singleton'
-     */
-//    @Autowired
-//    public WamScheduler scheduler;
 
     /**
      * Service (@Scope = 'singleton') iniettato da Spring <br>
@@ -200,7 +195,6 @@ public class WamBoot extends ABoot {
         int numPref = super.creaPreferenze();
         List<? extends Company> listaCroci = croceService.findAll();
 
-        Object alfa=EAPreferenzaWam.values();
         for (EAPreferenzaWam eaPref : EAPreferenzaWam.values()) {
             //--se è companySpecifica=true, crea una preferenza per ogni company
             if (eaPref.isCompanySpecifica()) {
@@ -391,6 +385,7 @@ public class WamBoot extends ABoot {
 
         //--patch di accesso
         utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+        militeService.creaIfNotExist(croceService.getGAPS(), "gac", "gac", "Guido", "fulvia", roleService.getRoles(EARole.developer));
 //        utenteService.creaIfNotExist(croceService.getGAPS(), "Guido Ceresa", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
 //        utenteService.creaIfNotExist(croceService.getGAPS(), "Rino Olivieri", "rino123", roleService.getRoles(EARole.admin), "gac@algos.it");
 //        utenteService.creaIfNotExist(croceService.getGAPS(), "Enrico Delfanti", "enrico123", roleService.getRoles(EARole.user), "gac@algos.it");

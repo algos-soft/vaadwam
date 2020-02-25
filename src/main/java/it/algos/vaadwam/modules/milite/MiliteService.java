@@ -7,16 +7,20 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.role.Role;
+import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +37,7 @@ import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
-import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -91,7 +95,19 @@ public class MiliteService extends WamService implements IUtenteService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
+    private FunzioneService funzioneService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
     private MigrationService migration;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private RoleService roleService;
 
     /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
@@ -114,6 +130,49 @@ public class MiliteService extends WamService implements IUtenteService {
         super.entityClass = Milite.class;
         this.repository = (MiliteRepository) repository;
     }// end of Spring constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.lastImport = LAST_IMPORT_MILITI;
+        super.durataLastImport = DURATA_IMPORT_MILITI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
+
+
+    /**
+     * Crea una entity solo se non esisteva <br>
+     *
+     * @param croce            di appartenenza (obbligatoria, se manca viene recuperata dal login)
+     * @param nome:            (obbligatorio, non unico)
+     * @param cognome:         (obbligatorio, non unico)
+     * @param userName         userName o nickName (obbligatorio, unico)
+     * @param passwordInChiaro password in chiaro (obbligatoria, non unica)
+     *                         con inserimento automatico (prima del 'save') se è nulla
+     * @param ruoli            ruoli attribuiti a questo utente (lista di valori obbligatoria)
+     *                         con inserimento del solo ruolo 'user' (prima del 'save') se la lista è nulla
+     *                         lista modificabile solo da developer ed admin
+     *
+     * @return true se la entity è stata creata
+     */
+    public boolean creaIfNotExist(
+            Croce croce,
+            String nome,
+            String cognome,
+            String userName,
+            String passwordInChiaro,
+            Set<Role> ruoli) {
+
+        return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (List<Funzione>) null);
+    }// end of method
 
 
     /**
@@ -406,11 +465,13 @@ public class MiliteService extends WamService implements IUtenteService {
     /**
      * Importazione di dati <br>
      *
-     * @return true se sono stati importati correttamente
+     * @return informazioni sul risultato
      */
     @Override
-    public boolean importa() {
-        return migration.importMiliti(getCroce());
+    public void importa(Croce croce) {
+        long inizio = System.currentTimeMillis();
+        migration.importMiliti(croce);
+        setLastImport(croce, inizio);
     }// end of method
 
 
@@ -756,6 +817,79 @@ public class MiliteService extends WamService implements IUtenteService {
     @Override
     public boolean isAdmin(Utente utente) {
         return ((Milite) utente).admin;
+    }// end of method
+
+
+    /**
+     * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
+     */
+    public List<Funzione> getListaFunzioni(Milite milite) {
+        List<Funzione> lista = null;
+        Funzione funz = null;
+
+        if (milite != null) {
+            if (milite.funzioni != null) {
+                lista = new ArrayList<>();
+                for (Funzione funzione : milite.funzioni) {
+                    funz = funzioneService.findById(funzione.id);
+                    lista.add(funz);
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        return lista;
+    }// end of method
+    /**
+     * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
+     */
+    public List<String> getListaIDFunzioni(Milite milite) {
+        List<String> lista = null;
+
+        if (milite != null) {
+            if (milite.funzioni != null) {
+                lista = new ArrayList<>();
+                for (Funzione funz : milite.funzioni) {
+                    lista.add(funz.id);
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        return lista;
+    }// end of method
+
+
+    /**
+     * Restituisce il massimo ruolo abilitato <br>
+     * <p>
+     * L'ordine è:
+     * developer
+     * admin
+     * user
+     * guest
+     *
+     * @return ruolo massimo abilitato
+     */
+    public EARoleType getRoleType(Utente utente) {
+        EARoleType roleType = null;
+        Set<Role> ruoli = utente.ruoli;
+
+        if (ruoli != null) {
+            if (ruoli.contains(roleService.getDeveloper())) {
+                return EARoleType.developer;
+            } else {
+                if (ruoli.contains(roleService.getAdmin())) {
+                    return EARoleType.admin;
+                } else {
+                    if (ruoli.contains(roleService.getUser())) {
+                        return EARoleType.user;
+                    } else {
+                        return EARoleType.guest;
+                    }// end of if/else cycle
+                }// end of if/else cycle
+            }// end of if/else cycle
+        }// end of if cycle
+
+        return roleType;
     }// end of method
 
 }// end of class

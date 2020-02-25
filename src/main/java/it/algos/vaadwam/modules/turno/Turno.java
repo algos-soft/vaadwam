@@ -128,13 +128,13 @@ public class Turno extends WamEntity {
     @AIColumn(headerIcon = VaadinIcon.BACKWARDS, headerIconColor = "red")
     public LocalTime fine;
 
-//    /**
-//     * Durata effettiva (in minuti) del turno (obbligatoria, calcolata in automatico prima del Save)
-//     * Informazione ridondante ma comoda per le successive elaborazioni (tabellone, iscrizioni, statistiche)
-//     */
-//    @Field("dur")
-//    @AIField(type = EAFieldType.integer, name = "Durata")
-//    public int durataEffettiva;
+    /**
+     * Durata effettiva (in minuti) del turno (obbligatoria, calcolata in automatico prima del Save)
+     * Informazione ridondante ma comoda per le successive elaborazioni (tabellone, iscrizioni, statistiche)
+     */
+    @Field("dur")
+    @AIField(type = EAFieldType.integer, name = "Durata")
+    public int durataEffettiva;
 
     /**
      * iscrizioni dei volontari a questo turno (obbligatorio per un turno valido)

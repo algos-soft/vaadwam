@@ -42,8 +42,11 @@ public class TurnoEditIscrizioniUnoPolymer extends TurnoEditIscrizioniPolymer {
      */
     @Override
     protected void iniziaIscrizione() {
+        prima.inizia(turno, turno.iscrizioni.get(0), bottoniPolymer);
+        proxyEditIscrizioni.add(0, prima);
         super.iniziaIscrizione();
-        prima.inizia(turno, 1, bottoniPolymer);
+        boolean abilitata = listaEditIscrizioniAbilitate.contains(prima) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(prima)).abilitata;
+        prima.inizia(abilitata);
     }// end of method
 
 

@@ -39,6 +39,8 @@ public interface PreferenzaRepository extends MongoRepository<Preferenza, String
 
     public Preferenza findFirstByCode(String code);
 
+    public List<Preferenza> findAllByCode(String code);
+
     public List<Preferenza> findAllByOrderByCodeAsc();
 
     public Preferenza findByDescrizione(String descrizione);

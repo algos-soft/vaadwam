@@ -232,6 +232,19 @@ public class AMongoService extends AbstractService {
      * @return entity
      */
     public List<AEntity> findAllByProperty(Class<? extends AEntity> clazz, List<AFiltro> listaFiltri) {
+        return findAllByProperty(clazz, listaFiltri, (Sort) null);
+    }// end of method
+
+
+    /**
+     * Returns only the property of the type.
+     *
+     * @param clazz       della collezione
+     * @param listaFiltri per le selezioni di filtro
+     *
+     * @return entity
+     */
+    public List<AEntity> findAllByProperty(Class<? extends AEntity> clazz, List<AFiltro> listaFiltri, Sort sortView) {
         List<AEntity> lista = null;
         String key = "_id";
         Query query = new Query();
@@ -245,14 +258,22 @@ public class AMongoService extends AbstractService {
                     criteria = Criteria.where(key).ne(VUOTA);
                 }// end of if cycle
 
-                if (filtro.getSort() != null) {
-                    sort = filtro.getSort();
+                if (sortView!=null) {
+                    sort = sortView;
                 } else {
-                    sort = new Sort(Sort.Direction.ASC, criteria.getKey());
+                    if (filtro.getSort() != null) {
+                        sort = filtro.getSort();
+                    } else {
+                        sort = new Sort(Sort.Direction.ASC, criteria.getKey());
+                    }// end of if/else cycle
                 }// end of if/else cycle
+
                 query.addCriteria(criteria);
             }// end of for cycle
-            query.with(sort);
+
+            if (sort != null) {
+                query.with(sort);
+            }// end of if cycle
 
             lista = (List<AEntity>) mongoOp.find(query, clazz);
         }// end of if cycle

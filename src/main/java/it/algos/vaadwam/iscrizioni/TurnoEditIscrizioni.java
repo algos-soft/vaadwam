@@ -41,6 +41,17 @@ import static it.algos.vaadwam.application.WamCost.*;
  * User: gac
  * Date: ven, 20-dic-2019
  * Time: 07:17
+ * Edit iscrizioni <br>
+ * Contiene:
+ * 1.Data
+ * 2.Descrizione del servizio
+ * 3.Orario inizio e fine previsti
+ * 4.Lista di iscrizioni:
+ * 4.1.Nome funzione ed icona
+ * 4.2.Nome del milite
+ * 4.3.Orario iniziale
+ * 4.4.Nota iscrizione
+ * 4.5.Orario finale
  */
 @Route(value = TAG_TURNO_EDIT)
 @Tag("turno-edit-iscrizioni")

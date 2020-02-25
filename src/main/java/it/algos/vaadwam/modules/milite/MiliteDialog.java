@@ -5,7 +5,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
@@ -111,7 +110,9 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             }// end of if cycle
 
             //--disabilita il comboBox funzioni
-            comboField.setEnabled(false);
+            if (comboField != null) {
+                comboField.setEnabled(false);
+            }// end of if cycle
 
             //--disabilita i campi admin, dipendente e infermiere
             disabilita(FIELD_ATTIVO);
@@ -127,7 +128,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         Object field;
         field = fieldMap.get(fieldName);
 
-        if (field!=null) {
+        if (field != null) {
             ((AbstractField) field).setEnabled(false);
         }// end of if cycle
 
@@ -259,6 +260,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 
         return listaFunzioniAbilitateMilite;
     }// end of method
+
 
     /**
      * Primo ingresso dopo il click sul bottone <br>

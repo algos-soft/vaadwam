@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -189,7 +190,7 @@ public class Servizio extends WamEntity {
     @Field("funz")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni previste per espletare il servizio")
     @AIColumn(name = "funzioni del servizio", flexGrow = true)
-    public Set<Funzione> funzioni;
+    public List<Funzione> funzioni;
 
 
     /**
@@ -200,23 +201,6 @@ public class Servizio extends WamEntity {
     @AIColumn()
     public String colore;
 
-
-//    /**
-//     * colore del servizio di un gruppo di servizi 'analoghi'
-//     * usa uno dei colori X11
-//     */
-//    @Field("color")
-//    public String color = "#5F9EA0";
-//
-//    /**
-//     * colore del servizio (facoltativo)
-//     */
-//    @AIField(
-//            type = EAFieldType.integer,
-//            name = "Colore distintivo per il tabellone",
-//            widthEM = 3)
-//    @AIColumn(name = "Colore", widthEM = 40)
-//    private int colore = new Color(128, 128, 128).getRGB();
 
 
     /**

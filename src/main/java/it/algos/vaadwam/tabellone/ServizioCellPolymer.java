@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Scope;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Project vaadwam
@@ -25,6 +24,12 @@ import java.util.Set;
  * User: gac
  * Date: mar, 05-mar-2019
  * Time: 14:48
+ * <p>
+ * Colonna di sinistra del tabellone <br>
+ * Contiene:
+ * 1.Orario
+ * 2.Nome della servizio
+ * 3.Icona della funzione
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -75,7 +80,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
     private void inizia() {
         String colore = "";
         String orario = "";
-        Set<Funzione> funzioni = null;
+        List<Funzione> funzioni = null;
 
         if (servizio != null) {
             if (servizioService != null) {
@@ -115,15 +120,21 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
     }// end of method
 
 
-    public void setIcone(Set<Funzione> funzioni) {
-        if (funzioni != null) {
-            List<String> icone = new ArrayList<>();
-            for (Funzione funzione : funzioni) {
+    public void setIcone(List<Funzione> funzioniEmbeddedServizio) {
+        List<String> listaIcone = null;
+        Funzione funzione;
+
+        if (funzioniEmbeddedServizio != null) {
+            listaIcone = new ArrayList<>();
+            for (Funzione funzServ : funzioniEmbeddedServizio) {
+                funzione = funzioneService.findById(funzServ.id);
                 if (funzione.icona != null) {
-                    icone.add(funzione.icona.name().toLowerCase());
+                    listaIcone.add(funzione.icona.name().toLowerCase());
                 }// end of if cycle
             }// end of for cycle
-            getModel().setIcone(icone);
+            getModel().setIcone(listaIcone);
+//            getModel().setGreenColor(true);
+
         }// end of if cycle
     }// end of method
 

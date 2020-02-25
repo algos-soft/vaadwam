@@ -29,39 +29,45 @@ public class DaemonWam extends Scheduler {
     @Autowired
     protected PreferenzaService pref;
 
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private TaskCroci croci;
-
-
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private TaskFunzioni funzioni;
-
+//    /**
+//     * La injection viene fatta da SpringBoot in automatico <br>
+//     */
+//    @Autowired
+//    private TaskCroci croci;
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
-    private TaskServizi servizi;
+    private TaskCroce croce;
+
+
+//    /**
+//     * La injection viene fatta da SpringBoot in automatico <br>
+//     */
+//    @Autowired
+//    private TaskFunzioni funzioni;
+
+
+//    /**
+//     * La injection viene fatta da SpringBoot in automatico <br>
+//     */
+//    @Autowired
+//    private TaskServizi servizi;
+
+
+//    /**
+//     * La injection viene fatta da SpringBoot in automatico <br>
+//     */
+//    @Autowired
+//    private TaskMiliti militi;
 
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
-    private TaskMiliti militi;
-
-
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private TaskTurni turni;
+    private TaskStatistica statistica;
 
 
     @PostConstruct
@@ -70,10 +76,8 @@ public class DaemonWam extends Scheduler {
             super.start();
 
             // schedule(croci.getSchedule().getPattern(), croci);
-            schedule(funzioni.getSchedule().getPattern(), funzioni);
-            schedule(servizi.getSchedule().getPattern(), servizi);
-            schedule(militi.getSchedule().getPattern(), militi);
-            schedule(turni.getSchedule().getPattern(), turni);
+            schedule(croce.getSchedule().getPattern(), croce);
+            schedule(statistica.getSchedule().getPattern(), statistica);
 
         }// fine del blocco if
     }// end of method

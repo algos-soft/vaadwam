@@ -286,8 +286,8 @@ public class CroceService extends WamService {
      * @return true se sono stati importati correttamente
      */
     @Override
-    public boolean importa() {
-        return super.importa();
+    public void importa() {
+         super.importa();
 //        return migration.importOnlyCroci();
 // @todo RIMETTERE
 //        return null;
