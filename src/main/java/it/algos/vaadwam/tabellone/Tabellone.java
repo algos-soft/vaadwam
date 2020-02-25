@@ -371,7 +371,7 @@ public class Tabellone extends AGridViewList {
 
             @Override
             public Object apply(Object obj) {
-                return appContext.getBean(TurnoCellPolymer.class, (Riga) obj, day);
+                return appContext.getBean(TurnoCellPolymer.class, (Riga) obj, alfa);
             }
         };//end of lambda expressions and anonymous inner class
 

@@ -148,4 +148,5 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
         getModel().setLastInType(lastInType);
     }// end of method
 
+
 }// end of class

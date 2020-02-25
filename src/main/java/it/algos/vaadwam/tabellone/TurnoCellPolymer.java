@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -330,14 +331,12 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         Map<String, List<String>> mappa = null;
         List<String> lista;
         Servizio servizio = riga.servizio;
-        int giorni = 0;
 
         if (pref.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {
             mappa = new HashMap<String, List<String>>();
 
             lista = new ArrayList<>();
-            giorni = giorno.compareTo(LocalDate.now());
-            lista.add(giorni + "");
+            lista.add(giorno.format(DateTimeFormatter.ISO_DATE));
             mappa.put(KEY_MAP_GIORNO, lista);
 
             lista = new ArrayList<>();

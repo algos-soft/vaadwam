@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -209,18 +210,18 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
      */
     private void elaboraParameter(Map<String, List<String>> parametersMap) {
         List<String> listaGiorni;
-        String numGiorniDelta = "";
         LocalDate giorno = null;
         List<String> listaServizi;
         String servizioKey = "";
         Servizio servizio = null;
+        String giornoTxt = VUOTA;
 
         listaGiorni = parametersMap.get(KEY_MAP_GIORNO);
         if (array.isValid(listaGiorni) && listaGiorni.size() == 1) {
-            numGiorniDelta = listaGiorni.get(0);
+            giornoTxt = listaGiorni.get(0);
         }// end of if cycle
-        if (text.isValid(numGiorniDelta)) {
-            giorno = dateService.getGiornoDelta(numGiorniDelta);
+        if (text.isValid(giornoTxt)) {
+            giorno = LocalDate.parse(giornoTxt);
         }// end of if cycle
 
         listaServizi = parametersMap.get(KEY_MAP_SERVIZIO);
