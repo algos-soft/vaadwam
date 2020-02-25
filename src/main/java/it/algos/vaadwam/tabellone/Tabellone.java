@@ -2,9 +2,12 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEvent;
@@ -328,6 +331,7 @@ public class Tabellone extends AGridViewList {
 
             String currentType = "";
 
+
             @Override
             public Object apply(Object obj) {
                 ServizioCellPolymer servizioCell = null;
@@ -350,7 +354,7 @@ public class Tabellone extends AGridViewList {
         Grid.Column column = grid.addComponentColumn(componentProvider);
 
         // provare a sostituire questo componente con un Menu
-        Component component=periodoHeader();
+        Component component = periodoHeader();
 
         column.setHeader(component);
         column.setFlexGrow(0);
@@ -391,19 +395,99 @@ public class Tabellone extends AGridViewList {
      * Contiene un listener per modificare i giorni visualizzati nel tabellonesuperato <br>
      */
     private Component periodoHeader() {
-        comboPeriodi = new AComboBox();
-        comboPeriodi.setWidth("12em");
-        comboPeriodi.setClearButtonVisible(false);
-        comboPeriodi.setItems(EAPeriodo.values());
-        comboPeriodi.setValue(currentPeriodValue);
-        comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));
-        return comboPeriodi;
+//        comboPeriodi = new AComboBox();
+//        comboPeriodi.setWidth("12em");
+//        comboPeriodi.setClearButtonVisible(false);
+//        comboPeriodi.setItems(EAPeriodo.values());
+//        comboPeriodi.setValue(currentPeriodValue);
+//        comboPeriodi.addValueChangeListener(event -> sincroPeriodi(event));
+//        return comboPeriodi;
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.setWidth("20em");
+//        Text selected = new Text("");
+//        Div message = new Div(new Text("Selected: "), selected);
+
+        MenuItem periodoMenu = menuBar.addItem("Periodo");
+        SubMenu periodoSubMenu = periodoMenu.getSubMenu();
+
+        for (EAPeriodo periodo : EAPeriodo.values()) {
+            periodoSubMenu.addItem(periodo.getTag(), event -> sincroPeriodi(event.getSource()));
+        }// end of for cycle
+
+//        MenuItem account = periodoSubMenu.addItem("Account");
+//        MenuItem account2 = periodoSubMenu.addItem("Pippoz");
+//        MenuItem account3 = periodoSubMenu.addItem("Forse");
+
+        //        MenuItem account = menuBar.addItem("Account");
+//        menuBar.addItem("Sign Out", e -> selected.setText("Sign Out"));
+
+//        SubMenu projectSubMenu = project.getSubMenu();
+//        MenuItem users = menuBar.addItem("Users");
+//        MenuItem billing = menuBar.addItem("Billing");
+
+//        SubMenu usersSubMenu = users.getSubMenu();
+//        usersSubMenu.addItem("List", e -> selected.setText("List"));
+//        usersSubMenu.addItem("Add", e -> selected.setText("Add"));
+//
+//        SubMenu billingSubMenu = billing.getSubMenu();
+//        billingSubMenu.addItem("Invoices", e -> selected.setText("Invoices"));
+//        billingSubMenu.addItem("Balance Events",
+//                e -> selected.setText("Balance Events"));
+
+//        account.getSubMenu().addItem("Edit Profile",
+//                e -> selected.setText("Edit Profile"));
+//        account.getSubMenu().addItem("Privacy Settings",
+//                e -> selected.setText("Privacy Settings"));
+
+        return menuBar;
     }// end of method
 
 
     /**
      * Modifica i giorni visualizzati nel tabellonesuperato <br>
      */
+    private void sincroPeriodi(MenuItem itemEvent) {
+        String periodoTxt = itemEvent.getText();
+        EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
+
+        switch (eaPeriodo) {
+            case oggi:
+                startDay = LocalDate.now();
+                break;
+            case lunedi:
+                startDay = date.getFirstLunedì(LocalDate.now());
+                break;
+            case giornoPrecedente:
+                startDay = startDay.minusDays(1);
+                break;
+            case giornoSuccessivo:
+                startDay = startDay.plusDays(1);
+                break;
+            case settimanaPrecedente:
+                startDay = startDay.minusDays(GIORNI_STANDARD);
+                break;
+            case settimanaSuccessiva:
+                startDay = startDay.plusDays(GIORNI_STANDARD);
+                break;
+            case selezione:
+                apreSelezione();
+                break;
+            default:
+                log.warn("Switch - caso non definito");
+                break;
+        } // end of switch statement
+
+        numDays = GIORNI_STANDARD;
+
+        routeToTabellone(startDay, numDays);
+    }// end of method
+
+
+    /**
+     * Modifica i giorni visualizzati nel tabellonesuperato <br>
+     */
+    @Deprecated
     private void sincroPeriodi(HasValue.ValueChangeEvent event) {
         EAPeriodo oldValue = (EAPeriodo) event.getOldValue();//@todo per ora non serve, ma non si sa mai...
         EAPeriodo newValue = (EAPeriodo) event.getValue();
@@ -411,31 +495,31 @@ public class Tabellone extends AGridViewList {
         if (newValue != null) {
 
             switch (newValue) {
-                case vuoto:
-                    break;
+//                case vuoto:
+//                    break;
                 case oggi:
                     startDay = LocalDate.now();
-                    currentPeriodValue = EAPeriodo.oggi;
+//                    currentPeriodValue = EAPeriodo.oggi;
                     break;
                 case lunedi:
                     startDay = date.getFirstLunedì(LocalDate.now());
-                    currentPeriodValue = EAPeriodo.lunedi;
+//                    currentPeriodValue = EAPeriodo.lunedi;
                     break;
                 case giornoPrecedente:
                     startDay = startDay.minusDays(1);
-                    currentPeriodValue = EAPeriodo.vuoto;
+//                    currentPeriodValue = EAPeriodo.vuoto;
                     break;
                 case giornoSuccessivo:
                     startDay = startDay.plusDays(1);
-                    currentPeriodValue = EAPeriodo.vuoto;
+//                    currentPeriodValue = EAPeriodo.vuoto;
                     break;
                 case settimanaPrecedente:
                     startDay = startDay.minusDays(GIORNI_STANDARD);
-                    currentPeriodValue = EAPeriodo.vuoto;
+//                    currentPeriodValue = EAPeriodo.vuoto;
                     break;
                 case settimanaSuccessiva:
                     startDay = startDay.plusDays(GIORNI_STANDARD);
-                    currentPeriodValue = EAPeriodo.vuoto;
+//                    currentPeriodValue = EAPeriodo.vuoto;
                     break;
                 case selezione:
                     apreSelezione();

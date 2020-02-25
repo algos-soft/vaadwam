@@ -8,7 +8,7 @@ package it.algos.vaadwam.tabellone;
  * Time: 06:13
  */
 public enum EAPeriodo {
-    vuoto("", "Data corrente"),
+    //    vuoto("", "Data corrente"),
     oggi("Da oggi", "Settimana a partire da oggi"),
     lunedi("Da lunedì", "Settimana a partire da lunedì"),
     giornoPrecedente("Giorno prima", "Un giorno in meno"),
@@ -26,6 +26,21 @@ public enum EAPeriodo {
         this.tag = tag;
         this.legenda = legenda;
     }// end of constructor
+
+
+    public static EAPeriodo get(String tag) {
+        EAPeriodo eAPeriodo = null;
+
+        if (tag != null && tag.length() > 0) {
+            for (EAPeriodo periodo : EAPeriodo.values()) {
+                if (periodo.getTag().equals(tag)) {
+                    eAPeriodo = periodo;
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        return eAPeriodo;
+    }// end of method
 
 
     public String getTag() {
