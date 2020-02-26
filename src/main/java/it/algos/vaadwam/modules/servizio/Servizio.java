@@ -113,7 +113,7 @@ public class Servizio extends WamEntity {
     @Size(min = 2, max = 50)
     @Field("desc")
     @AIField(type = EAFieldType.text, required = true, firstCapital = true, widthEM = 24)
-    @AIColumn(widthEM = 18)
+    @AIColumn(widthEM = 18, flexGrow = true)
     public String descrizione;
 
     /**
@@ -196,23 +196,25 @@ public class Servizio extends WamEntity {
     /**
      * Funzioni obbligatorie previste per espletare il servizio
      * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
-     * viene poi resa disponibile da FunzioneService come List (ordinata) per comodità d'uso
+     * viene poi resa disponibile da ServizioService come List (ordinata) per comodità d'uso
+     * riferimento dinamico CON @DBRef
      */
     @DBRef
     @Field("obb")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni obbligatorie")
-    @AIColumn(name = "Obbligatorie", flexGrow = true)
+    @AIColumn(name = "Funz. obbligatorie", widthEM = 12)
     public Set<Funzione> obbligatorie;
 
     /**
      * Funzioni facoltative previste per espletare il servizio
      * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
-     * viene poi resa disponibile da FunzioneService come List (ordinata) per comodità d'uso
+     * viene poi resa disponibile da ServizioService come List (ordinata) per comodità d'uso
+     * riferimento dinamico CON @DBRef
      */
     @DBRef
     @Field("fac")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni facoltative")
-    @AIColumn(name = "Facoltative", flexGrow = true)
+    @AIColumn(name = "Funz. facoltative", widthEM = 12)
     public Set<Funzione> facoltative;
 
     /**

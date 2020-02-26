@@ -6,6 +6,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,9 @@ public class ServizioService extends WamService {
      * Qui si una una interfaccia locale (col casting nel costruttore) per usare i metodi specifici <br>
      */
     private ServizioRepository repository;
+
+    @Autowired
+    private FunzioneService funzioneService;
 
 
     /**
@@ -119,7 +123,7 @@ public class ServizioService extends WamService {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie,facoltative));
+            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie, facoltative));
             creata = entity != null;
         }// end of if cycle
 
@@ -490,6 +494,28 @@ public class ServizioService extends WamService {
     }// end of method
 
 
+    /**
+     * @return lista di code
+     */
+    public List<String> findAllCode() {
+        return findAllCode(getCroce());
+    }// end of method
+
+
+    /**
+     * @return lista di code
+     */
+    public List<String> findAllCode(Croce croce) {
+        List lista = new ArrayList();
+        List<Servizio> listaServ = findAllByCroce(croce);
+
+        for (Servizio serv : listaServ) {
+            lista.add(serv.getCode());
+        }// end of for cycle
+
+        return lista;
+    }// end of method
+
 //    /**
 //     * Orario completo del servizio (inizio e fine) <br>
 //     * Nella forma 'ore 8:00 - 12:30' <br>
@@ -530,5 +556,127 @@ public class ServizioService extends WamService {
     public String durata(AEntity entityBean) {
         return "" + date.differenza(((Servizio) entityBean).fine, ((Servizio) entityBean).inizio);
     }// end of method
+
+
+    /**
+     * Costruisce una lista ordinata di funzioni obbligatorie <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * Le funzioni non sono embedded nel servizio ma sono un riferimento dinamico CON @DBRef <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni obbligatorie
+     */
+    public List<Funzione> getObbligatorie(Servizio servizio) {
+        List<Funzione> listaFunzioni = null;
+
+        if (servizio != null) {
+            listaFunzioni = getFunzioni(servizio, servizio.obbligatorie);
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista ordinata di funzioni facoltative <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * Le funzioni non sono embedded nel servizio ma sono un riferimento dinamico CON @DBRef <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni facoltative
+     */
+    public List<Funzione> getFacoltative(Servizio servizio) {
+        List<Funzione> listaFunzioni = null;
+
+        if (servizio != null) {
+            listaFunzioni = getFunzioni(servizio, servizio.facoltative);
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista ordinata di funzioni <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * Le funzioni non sono embedded nel servizio ma sono un riferimento dinamico CON @DBRef <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni
+     */
+    public List<Funzione> getFunzioni(Servizio servizio, Set<Funzione> set) {
+        List<Funzione> listaFacoltative = null;
+        List<Funzione> listaAll = null;
+        List<String> listaIdFunzioni = null;
+        Croce croce = null;
+
+        if (servizio != null) {
+            croce = servizio.getCroce();
+        }// end of if cycle
+
+        if (croce != null) {
+            listaAll = funzioneService.findAllByCroce(croce);
+        }// end of if cycle
+
+        if (listaAll != null && set != null) {
+            listaIdFunzioni = funzioneService.getIdsFunzioni(set);
+            listaFacoltative = new ArrayList<>();
+
+            for (Funzione funz : listaAll) {
+                if (listaIdFunzioni.contains(funz.id)) {
+                    listaFacoltative.add(funz);
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaFacoltative;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista ordinata di TUTTE le funzioni del servizio <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * Le funzioni non sono embedded nel servizio ma sono un riferimento dinamico CON @DBRef <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni facoltative
+     */
+    public List<Funzione> getFunzioniAll(Servizio servizio) {
+        List<Funzione> listaFunzioni = null;
+        List<Funzione> listaFunzioniObbligatorie = null;
+        List<Funzione> listaFunzioniFacoltative = null;
+
+        if (servizio != null) {
+            listaFunzioni = new ArrayList<>();
+
+            listaFunzioniObbligatorie = getObbligatorie(servizio);
+            listaFunzioniFacoltative = getFacoltative(servizio);
+
+            listaFunzioni.addAll(listaFunzioniObbligatorie);
+            listaFunzioni.addAll(listaFunzioniFacoltative);
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+//    /**
+//     * Lista di ID dei servizi di un set <br>
+//     * NON ordinati <br>
+//     *
+//     * @return lista IDs dei servizi del set
+//     */
+//    public List<String> getIdsServizi(Set<Funzione> set) {
+//        List<String> listaIdsServizi = null;
+//
+//        if (set != null && set.size() > 0) {
+//            listaIdsServizi = new ArrayList<>();
+//
+//            for (Funzione funz : set) {
+//                listaIdsServizi.add(funz.id);
+//            }// end of for cycle
+//        }// end of if cycle
+//
+//        return listaIdsServizi;
+//    }// end of method
 
 }// end of class

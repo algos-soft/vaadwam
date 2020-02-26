@@ -16,9 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -360,8 +358,16 @@ public class FunzioneService extends WamService {
      * @return lista di code
      */
     public List<String> findAllCode() {
+        return findAllCode(getCroce());
+    }// end of method
+
+
+    /**
+     * @return lista di code
+     */
+    public List<String> findAllCode(Croce croce) {
         List lista = new ArrayList();
-        List<Funzione> listaFunz = findAllByCroce(getCroce());
+        List<Funzione> listaFunz = findAllByCroce(croce);
 
         for (Funzione funz : listaFunz) {
             lista.add(funz.getCode());
@@ -382,5 +388,76 @@ public class FunzioneService extends WamService {
         return repository.countByCroce(croce);
     }// end of method
 
+
+    /**
+     * Costruisce una lista ordinata di funzioni dipendenti <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * La lista risultante è composta dalle funzioni originarie e non da quelle embedded nella funzione stessa <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni dipendenti
+     */
+    public List<Funzione> getDipendenti(Funzione funzione) {
+        List<Funzione> listaDipendenti = null;
+        List<Funzione> listaAll = null;
+        Set<Funzione> set;
+        Croce croce;
+        List<String> listaIdFunzioni = null;
+
+        if (funzione != null) {
+            croce = funzione.getCroce();
+            set = funzione.dipendenti;
+
+            if (croce != null) {
+                listaAll = findAllByCroce(croce);
+            }// end of if cycle
+
+            if (array.isValid(listaAll) && set != null) {
+                listaIdFunzioni = getIdsFunzioni(set);
+                listaDipendenti = new ArrayList<>();
+
+                for (Funzione funz : listaAll) {
+                    if (listaIdFunzioni.contains(funz.id)) {
+                        listaDipendenti.add(funz);
+                    }// end of if cycle
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        return listaDipendenti;
+    }// end of method
+
+
+    /**
+     * Trasforma un Set in una List (ordinata) <br>
+     * Lista di ID ordinati (secondo il parametro 'ordine' della Funzione) delle funzioni di un set <br>
+     *
+     * @return lista IDs delle funzioni del set
+     */
+    public List<String> getIdsFunzioni(Set<Funzione> set) {
+        List<String> listaIdsFunzioni = null;
+        HashMap<Integer, String> mappa = null;
+        List<Integer> lista;
+
+        if (set != null && set.size() > 0) {
+            mappa = new HashMap<>();
+
+            for (Funzione funz : set) {
+                mappa.put(funz.ordine, funz.id);
+            }// end of for cycle
+        }// end of if cycle
+
+        if (mappa != null) {
+            listaIdsFunzioni = new ArrayList<>();
+            lista = new ArrayList<Integer>(mappa.keySet());
+            Collections.sort(lista);
+
+            for (Integer key : lista) {
+                listaIdsFunzioni.add(mappa.get(key));
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaIdsFunzioni;
+    }// end of method
 
 }// end of class

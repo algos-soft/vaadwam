@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Project vaadwam <br>
@@ -121,11 +122,11 @@ public class Milite extends Person {
 
     /**
      * Funzioni per le quali il milite è abilitato
-     * Siccome sono 'embedded' in servizio, non serve @OneToMany() o @ManyToOne()
-     * Usando la caratteristica 'embedded', la funzione viene ricopiata dentro milite come si trova al momento.
-     * Se modifico successivamente all'interno del milite la copia della funzione, le modifiche rimangono circostritte a questo singolo milite
-     * Se modifico successivamente la funzione originaria, le modifiche NON si estendono alla funzione 'congelata' nel milite
+     * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
+     * viene poi resa disponibile da MiliteService come List (ordinata) per comodità d'uso
+     * riferimento dinamico CON @DBRef
      */
+    @DBRef
     @Field("funz")
     @AIField(type = EAFieldType.multicombo, serviceClazz = MiliteService.class, widthEM = 20, name = "Funzioni per le quali il milite è abilitato")
     @AIColumn(flexGrow = true)
