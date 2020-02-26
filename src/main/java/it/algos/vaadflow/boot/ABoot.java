@@ -78,6 +78,7 @@ public abstract class ABoot implements ServletContextListener {
     @Autowired
     private FlowData flowData;
 
+
     /**
      * Executed on container startup
      * Setup non-UI logic here
@@ -106,6 +107,7 @@ public abstract class ABoot implements ServletContextListener {
         this.iniziaVersioni();
         this.regolaInfo();
         this.regolaRiferimenti();
+        this.iniziaDataPreliminari();
         this.creaPreferenze();
         this.fixPreferenze();
         this.iniziaDataStandard();
@@ -212,6 +214,14 @@ public abstract class ABoot implements ServletContextListener {
      * Regola alcune informazioni dell'applicazione
      */
     protected void regolaInfo() {
+    }// end of method
+
+
+    /**
+     * Inizializzazione dei dati di alcune collections essenziali per la partenza <br>
+     * Sovrascritto
+     */
+    protected void iniziaDataPreliminari() {
     }// end of method
 
 

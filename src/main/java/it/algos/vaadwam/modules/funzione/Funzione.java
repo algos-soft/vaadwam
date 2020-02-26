@@ -8,6 +8,7 @@ import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -138,25 +139,28 @@ public class Funzione extends WamEntity {
     public String descrizione;
 
 
-    /**
-     * funzione obbligatoria o facoltativa per uno specifico servizio (ha senso solo per il servizio in cui è 'embedded')
-     * Il flag NON viene usato direttamente da questa funzione.
-     * Quando un servizio usa una funzione, ne effettua una 'copia' e la mantiene al suo interno per uso esclusivo.
-     * Se modifico successivamente all'interno del servizio la copia della funzione, le modifiche rimangono circostritte a quello specifico servizio
-     * Se modifico successivamente questa funzione, le modifiche NON si estendono alle funzioni 'congelata' nei singoli servizi
-     * Possono esserci decine di copie di questa funzione, 'embedded' nei servizi ed ognuna avere property diverse tra di loro, se sono state modifcate all'interno del singolo servizio
-     */
+//    /**
+//     * funzione obbligatoria o facoltativa per uno specifico servizio (ha senso solo per il servizio in cui è 'embedded')
+//     * Il flag NON viene usato direttamente da questa funzione.
+//     * Quando un servizio usa una funzione, ne effettua una 'copia' e la mantiene al suo interno per uso esclusivo.
+//     * Se modifico successivamente all'interno del servizio la copia della funzione, le modifiche rimangono circostritte a quello specifico servizio
+//     * Se modifico successivamente questa funzione, le modifiche NON si estendono alle funzioni 'congelata' nei singoli servizi
+//     * Possono esserci decine di copie di questa funzione, 'embedded' nei servizi ed ognuna avere property diverse tra di loro, se sono state modifcate all'interno del singolo servizio
+//     */
+    @Deprecated
     @Field("obb")
     @AIField(type = EAFieldType.checkbox)
     @AIColumn()
     public boolean obbligatoria;
 
     /**
-     * funzioni dipendenti che vengono automaticamente abilitate quando il militi è abilitato per questa funzione
+     * funzioni dipendenti che vengono automaticamente abilitate quando il milite è abilitato per questa funzione
      * riferimento statico SENZA @DBRef (embedded)
+     * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
+     * viene poi resa disponibile da FunzioneService come List (ordinata) per comodità d'uso
      */
     @Field("dip")
-    @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, name = "funzioni dipendenti")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, name = "funzioni dipendenti, abilitate automaticamente insieme a questa")
     @AIColumn(name = "funzioni dipendenti", flexGrow = true, widthEM = 20)
     public Set<Funzione> dipendenti;
 

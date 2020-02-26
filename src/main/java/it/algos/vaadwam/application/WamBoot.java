@@ -183,6 +183,19 @@ public class WamBoot extends ABoot {
 
 
     /**
+     * Inizializzazione dei dati di alcune collections essenziali per la partenza <br>
+     * Sovrascritto
+     */
+    @Override
+    protected void iniziaDataPreliminari() {
+        //--importazioni dal vecchio webambulanze
+        if (croceService.isVuoto()) {
+            migration.importOnlyCroci();
+        }// end of if cycle
+    }// end of method
+
+
+    /**
      * Crea le preferenze standard <br>
      * Se non esistono, le crea <br>
      * Se esistono, NON modifica i valori esistenti <br>
@@ -365,10 +378,10 @@ public class WamBoot extends ABoot {
 //                quattro((EACompany) null, "anonymous", "anonymous", EARole.user, ""),
 //                cinque(EACompany.test, "Addabbo Andrea", "addabbo123", EARole.user, "");
 
-        //--importazioni dal vecchio webambulanze
-        if (croceService.isVuoto()) {
-            migration.importOnlyCroci();
-        }// end of if cycle
+//        //--importazioni dal vecchio webambulanze
+//        if (croceService.isVuoto()) {
+//            migration.importOnlyCroci();
+//        }// end of if cycle
 
         if (funzioneService.isVuoto()) {
 //            migration.importFunzioni();

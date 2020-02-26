@@ -5,12 +5,12 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadwam.modules.funzione.Funzione;
-import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -73,8 +73,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "ripetibile", "funzioni", "colore"})
-@AIForm(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "ripetibile", "funzioni"})
+@AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "ripetibile", "obbligatorie", "facoltative", "colore"})
+@AIForm(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "ripetibile", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
@@ -187,11 +187,33 @@ public class Servizio extends WamEntity {
      * Se modifico successivamente la funzione originaria, le modifiche NON si estendono alla funzione 'congelata' nel servizio
      * riferimento statico SENZA @DBRef (embedded)
      */
+    @Deprecated
     @Field("funz")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni previste per espletare il servizio")
     @AIColumn(name = "funzioni del servizio", flexGrow = true)
     public List<Funzione> funzioni;
 
+    /**
+     * Funzioni obbligatorie previste per espletare il servizio
+     * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
+     * viene poi resa disponibile da FunzioneService come List (ordinata) per comodità d'uso
+     */
+    @DBRef
+    @Field("obb")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni obbligatorie")
+    @AIColumn(name = "Obbligatorie", flexGrow = true)
+    public Set<Funzione> obbligatorie;
+
+    /**
+     * Funzioni facoltative previste per espletare il servizio
+     * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
+     * viene poi resa disponibile da FunzioneService come List (ordinata) per comodità d'uso
+     */
+    @DBRef
+    @Field("fac")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni facoltative")
+    @AIColumn(name = "Facoltative", flexGrow = true)
+    public Set<Funzione> facoltative;
 
     /**
      * colore per un raggruppamento dei servizi (facoltativo) <br>
@@ -200,7 +222,6 @@ public class Servizio extends WamEntity {
     @AIField(type = EAFieldType.color)
     @AIColumn()
     public String colore;
-
 
 
     /**

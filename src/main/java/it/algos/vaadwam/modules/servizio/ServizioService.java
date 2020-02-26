@@ -88,6 +88,7 @@ public class ServizioService extends WamService {
         super.eaTempoTypeImport = EATempo.secondi;
     }// end of method
 
+
     /**
      * Crea una entity solo se non esisteva <br>
      *
@@ -99,7 +100,8 @@ public class ServizioService extends WamService {
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
      * @param ripetibile     nella stessa giornata (facoltativo, default false)
-     * @param funzioni       del servizio (obbligatorio)
+     * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
+     * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return true se la entity è stata creata
      */
@@ -112,11 +114,12 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
+            Set<Funzione> obbligatorie,
+            Set<Funzione> facoltative) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, funzioni));
+            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie,facoltative));
             creata = entity != null;
         }// end of if cycle
 
@@ -132,7 +135,7 @@ public class ServizioService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Servizio newEntity() {
-        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (List<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null, (Set<Funzione>) null);
     }// end of method
 
 
@@ -149,7 +152,8 @@ public class ServizioService extends WamService {
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
      * @param ripetibile     nella stessa giornata (facoltativo, default false)
-     * @param funzioni       del servizio (obbligatorio)
+     * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
+     * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata)
      */
@@ -162,8 +166,9 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
-        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, funzioni);
+            Set<Funzione> obbligatorie,
+            Set<Funzione> facoltative) {
+        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie, facoltative);
     }// end of method
 
 
@@ -182,7 +187,8 @@ public class ServizioService extends WamService {
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
      * @param ripetibile     nella stessa giornata (facoltativo, default false)
-     * @param funzioni       del servizio (obbligatorio)
+     * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
+     * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata)
      */
@@ -196,7 +202,8 @@ public class ServizioService extends WamService {
             LocalTime fine,
             boolean visibile,
             boolean ripetibile,
-            List<Funzione> funzioni) {
+            Set<Funzione> obbligatorie,
+            Set<Funzione> facoltative) {
         Servizio entity = Servizio.builderServizio()
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
                 .code(text.isValid(code) ? code : null)
@@ -206,7 +213,8 @@ public class ServizioService extends WamService {
                 .fine(fine)
                 .visibile(visibile)
                 .ripetibile(ripetibile)
-                .funzioni(funzioni)
+                .obbligatorie(obbligatorie)
+                .facoltative(facoltative)
                 .build();
 
         return (Servizio) super.addCroce(entity, croce);
@@ -389,20 +397,20 @@ public class ServizioService extends WamService {
     }// end of method
 
 
-    private AEntity riordinaFunzioni(AEntity entityBean) {
-        Servizio servizio = (Servizio) entityBean;
-        List<Funzione> funzioni = servizio.getFunzioni();
-        int pos = 0;
-
-        if (funzioni != null) {
-            for (Funzione funz : funzioni) {
-                pos++;
-                funz.setOrdine(pos);
-            }// end of for cycle
-        }// end of if cycle
-
-        return servizio;
-    }// end of method
+//    private AEntity riordinaFunzioni(AEntity entityBean) {
+//        Servizio servizio = (Servizio) entityBean;
+//        List<Funzione> funzioni = servizio.getFunzioni();
+//        int pos = 0;
+//
+//        if (funzioni != null) {
+//            for (Funzione funz : funzioni) {
+//                pos++;
+//                funz.setOrdine(pos);
+//            }// end of for cycle
+//        }// end of if cycle
+//
+//        return servizio;
+//    }// end of method
 
 
     /**

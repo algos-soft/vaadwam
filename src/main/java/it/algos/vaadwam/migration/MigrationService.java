@@ -988,7 +988,9 @@ public class MigrationService extends AService {
         boolean multiplo = servizioOld.isMultiplo();
         boolean primo = servizioOld.isPrimo();//--non utilizzato
         boolean fineGiornoSuccessivo = servizioOld.isFine_giorno_successivo(); //--non utilizzato
-        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
+//        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
+        Set<Funzione> funzioniObbligatorie = getFunzioniObbligatorie(servizioOld, croceNew);
+        Set<Funzione> funzioniFacoltative = getFunzioniFacoltative(servizioOld, croceNew);
         LocalTime inizio = LocalTime.of(oraInizio, minutiInizio);
         LocalTime fine = LocalTime.of(oraFine, minutiFine);
 
@@ -997,7 +999,7 @@ public class MigrationService extends AService {
         }// end of if cycle
 
         try { // prova ad eseguire il codice
-            return servizioService.creaIfNotExist(croceNew, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioni);
+            return servizioService.creaIfNotExist(croceNew, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioniObbligatorie, funzioniFacoltative);
         } catch (Exception unErrore) { // intercetta l'errore
             log.error(unErrore.toString());
             return false;
@@ -1006,10 +1008,112 @@ public class MigrationService extends AService {
 
 
     /**
+     * Recupera le funzioni obbligatorie del servizio
+     *
+     * @param servizioOld della companyOld
+     */
+    private Set<Funzione> getFunzioniObbligatorie(ServizioAmb servizioOld, Croce croceNew) {
+        Set<Funzione> listaFunzioni = new HashSet<>();
+        Funzione funz;
+        int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
+
+        //--comincio dal fondo
+        if (numeroFunzioniObbligatorie > 3) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione4_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie > 2) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione3_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie > 1) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione2_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie > 0) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione1_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+
+    /**
+     * Recupera le funzioni obbligatorie del servizio
+     *
+     * @param servizioOld della companyOld
+     */
+    private Set<Funzione> getFunzioniFacoltative(ServizioAmb servizioOld, Croce croceNew) {
+        Set<Funzione> listaFunzioni = new HashSet<>();
+        Funzione funz;
+        int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
+
+        //--comincio dall'inizio
+        if (numeroFunzioniObbligatorie < 1) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione1_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie < 2) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione2_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie < 3) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione3_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        if (numeroFunzioniObbligatorie < 4 ) {
+            funz = getFunzione(croceNew, servizioOld.getFunzione4_id());
+            if (funz != null) {
+                listaFunzioni.add(funz);
+            }// end of if cycle
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+
+    private Funzione getFunzione(Croce croceNew, long idFunzione) {
+        Funzione funz = null;
+        FunzioneAmb funzAmb = funzioneAmb.findByID(idFunzione);
+
+        if (funzAmb != null) {
+            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
+            if (funz == null) {
+                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
+            }// end of if cycle
+        }// end of if cycle
+
+        return funz;
+    }// end of method
+
+
+    /**
      * Recupera le funzioni del servizio
      *
      * @param servizioOld della companyOld
      */
+    @Deprecated
     private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
         List<Funzione> listaFunzioni = new ArrayList<>();
         FunzioneAmb funzAmb = null;
