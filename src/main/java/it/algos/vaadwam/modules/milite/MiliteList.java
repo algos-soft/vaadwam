@@ -29,6 +29,7 @@ import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -299,10 +300,10 @@ public class MiliteList extends WamViewList {
      */
     private void columnFunzione(Grid gridPaginated, Funzione funzione) {
         Grid.Column colonna = gridPaginated.addComponentColumn(milite -> {
-            List<Funzione> funzioniUtenteAbilitate = ((Milite) milite).getFunzioni();
+            Set<Funzione> funzioniUtenteAbilitate = ((Milite) milite).getFunzioni();
             Icon icon;
 
-            if (array.isValid(funzioniUtenteAbilitate) && contiene(funzioniUtenteAbilitate, funzione)) {
+            if (funzioniUtenteAbilitate!=null && contiene(funzioniUtenteAbilitate, funzione)) {
                 icon = new Icon(VaadinIcon.CHECK);
                 icon.setColor("green");
             } else {
@@ -327,7 +328,7 @@ public class MiliteList extends WamViewList {
     /**
      * Controlla l'esistenza della funzione tra quelle abilitate per l'utente
      */
-    private boolean contiene(List<Funzione> funzioniUtenteAbilitate, Funzione funzione) {
+    private boolean contiene(Set<Funzione> funzioniUtenteAbilitate, Funzione funzione) {
         boolean contiene = false;
 
         for (Funzione funz : funzioniUtenteAbilitate) {

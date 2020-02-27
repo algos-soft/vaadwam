@@ -14,6 +14,8 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import org.junit.Assert;
@@ -163,6 +165,10 @@ public class ATest {
 
     protected static String CODE_AMB = "amb-mat";
 
+    protected static String CODE_CERESA = "Guido Ceresa";
+
+    protected static String CODE_ALLEGRI = "Allegri Riccardo";
+
     private static String SEP1 = ": ";
 
     private static String SEP2 = " -> ";
@@ -178,6 +184,9 @@ public class ATest {
 
     @InjectMocks
     protected AReflectionService reflection;
+
+    @Autowired
+    protected MiliteService militeService;
 
     protected Field reflectionJavaField;
 
@@ -249,7 +258,9 @@ public class ATest {
 
     protected Servizio servizioAmbMat;
 
-    protected Funzione funzione;
+    protected Milite militeCeresa;
+
+    protected Milite militeAllegri;
 
     protected Croce croceGaps;
 
@@ -292,6 +303,7 @@ public class ATest {
         FIELD_CODE = reflection.getField(ROLE_ENTITY_CLASS, NAME_CODE);
         Assert.assertNotNull(funzioneService);
         Assert.assertNotNull(servizioService);
+        Assert.assertNotNull(militeService);
 
         //--recupera una croce esistente
         croceGaps = croceService.getGAPS();
@@ -314,6 +326,10 @@ public class ATest {
         servizioMat = servizioService.findByKeyUnica(croceGaps, CODE_MAT);
         servizioMsaMat = servizioService.findByKeyUnica(croceCrf, CODE_MSA);
         servizioAmbMat = servizioService.findByKeyUnica(croceCrf, CODE_AMB);
+
+        //--recupera un milite esistente
+        militeCeresa = militeService.findByKeyUnica(CODE_CERESA);
+        militeAllegri = militeService.findByKeyUnica(CODE_ALLEGRI);
     }// end of method
 
 

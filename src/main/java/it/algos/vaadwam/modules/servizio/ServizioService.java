@@ -659,24 +659,4 @@ public class ServizioService extends WamService {
         return listaFunzioni;
     }// end of method
 
-//    /**
-//     * Lista di ID dei servizi di un set <br>
-//     * NON ordinati <br>
-//     *
-//     * @return lista IDs dei servizi del set
-//     */
-//    public List<String> getIdsServizi(Set<Funzione> set) {
-//        List<String> listaIdsServizi = null;
-//
-//        if (set != null && set.size() > 0) {
-//            listaIdsServizi = new ArrayList<>();
-//
-//            for (Funzione funz : set) {
-//                listaIdsServizi.add(funz.id);
-//            }// end of for cycle
-//        }// end of if cycle
-//
-//        return listaIdsServizi;
-//    }// end of method
-
 }// end of class

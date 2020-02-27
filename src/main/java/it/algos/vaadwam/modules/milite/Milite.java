@@ -130,7 +130,7 @@ public class Milite extends Person {
     @Field("funz")
     @AIField(type = EAFieldType.multicombo, serviceClazz = MiliteService.class, widthEM = 20, name = "Funzioni per le quali il milite è abilitato")
     @AIColumn(flexGrow = true)
-    public List<Funzione> funzioni;
+    public Set<Funzione> funzioni;
 
     /**
      * note aggiuntive (facoltativo)

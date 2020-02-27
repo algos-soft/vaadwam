@@ -1310,7 +1310,7 @@ public class MigrationService extends AService {
         Role ruoloNew = getRoleNew(ruoloOld);
         Set<Role> ruoliNew = getRuoli(ruoloNew);
 
-        List<Funzione> funzioni = getFunzioniNew(croceNew, militeOld);
+        Set<Funzione> funzioni = getFunzioniNew(croceNew, militeOld);
         String message;
 
         militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni);
@@ -1405,8 +1405,8 @@ public class MigrationService extends AService {
     }// end of method
 
 
-    private List<Funzione> getFunzioniNew(Croce croceNew, MiliteAmb militeOld) {
-        List<Funzione> funzioni = null;
+    private Set<Funzione> getFunzioniNew(Croce croceNew, MiliteAmb militeOld) {
+        Set<Funzione> funzioni = null;
         List<FunzioneAmb> funzioniOld = null;
 
         if (militeOld != null) {
@@ -1414,7 +1414,7 @@ public class MigrationService extends AService {
         }// end of if cycle
 
         if (funzioniOld != null && funzioniOld.size() > 0) {
-            funzioni = new ArrayList<>();
+            funzioni = new HashSet<>();
             for (FunzioneAmb funzAmb : funzioniOld) {
                 if (militeOld.getCognome().equals("Ceresa") && (funzAmb.getSigla().equals("tut") || funzAmb.getSigla().equals("tir"))) {
                 } else {

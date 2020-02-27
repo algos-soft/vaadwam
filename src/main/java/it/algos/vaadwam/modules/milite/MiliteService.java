@@ -171,7 +171,7 @@ public class MiliteService extends WamService implements IUtenteService {
             String passwordInChiaro,
             Set<Role> ruoli) {
 
-        return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (List<Funzione>) null);
+        return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (Set<Funzione>) null);
     }// end of method
 
 
@@ -210,7 +210,7 @@ public class MiliteService extends WamService implements IUtenteService {
             boolean admin,
             boolean dipendente,
             boolean infermiere,
-            List<Funzione> funzioni) {
+            Set<Funzione> funzioni) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(userName)) {
@@ -249,7 +249,7 @@ public class MiliteService extends WamService implements IUtenteService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Milite newEntity(Croce croce, String nome, String cognome, String userName, String passwordInChiaro) {
-        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (Set<Role>) null, "", false, false, false, false, (List<Funzione>) null, true);
+        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (Set<Role>) null, "", false, false, false, false, (Set<Funzione>) null, true);
     }// end of method
 
 
@@ -296,7 +296,7 @@ public class MiliteService extends WamService implements IUtenteService {
             boolean admin,
             boolean dipendente,
             boolean infermiere,
-            List<Funzione> funzioni,
+            Set<Funzione> funzioni,
             boolean usaSuperClasse) {
         Milite entity = null;
         Person entityDellaSuperClassePerson = null;
@@ -625,12 +625,12 @@ public class MiliteService extends WamService implements IUtenteService {
     public List<Milite> findAllByFunzione(Funzione funzione) {
         List<Milite> lista = new ArrayList<>();
         List<Milite> listaAll = repository.findAllByCroceOrderByOrdineAsc(getCroce());
-        List<Funzione> funzioniAbilitatePerIlMilite;
+        Set<Funzione> funzioniAbilitatePerIlMilite;
 
         if (array.isValid(listaAll)) {
             for (Milite milite : listaAll) {
                 funzioniAbilitatePerIlMilite = milite.funzioni;
-                if (array.isValid(funzioniAbilitatePerIlMilite)) {
+                if (funzioniAbilitatePerIlMilite != null) {
                     for (Funzione funz : funzioniAbilitatePerIlMilite) {
                         if (funz.code.equals(funzione.code)) {
                             lista.add(milite);
@@ -797,11 +797,11 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     public boolean isAbilitato(Milite milite, Funzione funzione) {
         boolean status = false;
-        List<Funzione> funzioni;
+        Set<Funzione> funzioni;
 
         if (milite != null && funzione != null) {
             funzioni = milite.getFunzioni();
-            if (array.isValid(funzioni)) {
+            if (funzioni!=null) {
                 for (Funzione funz : milite.getFunzioni()) {
                     if (funzione.code.equals(funz.code)) {
                         status = true;
@@ -823,7 +823,8 @@ public class MiliteService extends WamService implements IUtenteService {
     /**
      * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
      */
-    public List<Funzione> getListaFunzioni(Milite milite) {
+    @Deprecated
+    public List<Funzione> getListaFunzioniOld(Milite milite) {
         List<Funzione> lista = null;
         Funzione funz = null;
 
@@ -839,6 +840,47 @@ public class MiliteService extends WamService implements IUtenteService {
 
         return lista;
     }// end of method
+
+
+    /**
+     * Costruisce una lista ordinata di funzioni <br>
+     * Le funzioni sono memorizzate come Set <br>
+     * Le funzioni non sono embedded nel milite ma sono un riferimento dinamico CON @DBRef <br>
+     * Nella lista risultante, vengono ordinate secondo la property 'ordine' <br>
+     *
+     * @return lista ordinata di funzioni
+     */
+    public List<Funzione> getListaFunzioni(Milite milite) {
+        List<Funzione> listaFunzioni = null;
+        List<Funzione> listaAll = null;
+        Croce croce = null;
+        Set<Funzione> set = null;
+        List<String> listaIdFunzioni = null;
+
+        if (milite != null) {
+            croce = milite.getCroce();
+            set = milite.funzioni;
+        }// end of if cycle
+
+        if (croce != null) {
+            listaAll = funzioneService.findAllByCroce(croce);
+        }// end of if cycle
+
+        if (listaAll != null && set != null) {
+            listaIdFunzioni = funzioneService.getIdsFunzioni(set);
+            listaFunzioni = new ArrayList<>();
+
+            for (Funzione funz : listaAll) {
+                if (listaIdFunzioni.contains(funz.id)) {
+                    listaFunzioni.add(funz);
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaFunzioni;
+    }// end of method
+
+
     /**
      * Restituisce una lista delle funzioni DI RIFERIMENTO e non di quelle embedded <br>
      */
