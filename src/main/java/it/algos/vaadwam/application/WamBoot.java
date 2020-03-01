@@ -102,11 +102,6 @@ public class WamBoot extends ABoot {
     @Autowired
     public MiliteService militeService;
 
-//    /**
-//     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-//     */
-//    @Autowired
-//    protected CroceService companyServiceSovrascritta;
 
     @Autowired
     private UtenteService utenteService;
@@ -114,14 +109,6 @@ public class WamBoot extends ABoot {
     //    @Autowired
     private ALogin login;
 
-//    @Autowired
-//    private CompanyService companyService;
-
-//    @Autowired
-//    private SecurityConfiguration security;
-//
-//    @Autowired
-//    private UserRepository userRepository;
 
     @Autowired
     private RoleService roleService;
@@ -166,6 +153,8 @@ public class WamBoot extends ABoot {
     /**
      * Inizializzazione delle versioni standard di vaadinflow <br>
      * Inizializzazione delle versioni del programma specifico <br>
+     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
     @Override
     protected void iniziaVersioni() {
@@ -183,8 +172,9 @@ public class WamBoot extends ABoot {
 
 
     /**
-     * Inizializzazione dei dati di alcune collections essenziali per la partenza <br>
-     * Sovrascritto
+     * Inizializzazione dei dati di alcune collection essenziali per la partenza <br>
+     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
+     * Invocare PRIMA il metodo della superclasse <br>
      */
     @Override
     protected void iniziaDataPreliminari() {
@@ -270,7 +260,7 @@ public class WamBoot extends ABoot {
 
 
     /**
-     * Regola alcune informazioni dell'applicazione
+     * Regola alcune informazioni dell'applicazione <br>
      */
     protected void regolaInfo() {
         /**

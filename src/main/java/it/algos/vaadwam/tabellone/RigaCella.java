@@ -1,5 +1,9 @@
 package it.algos.vaadwam.tabellone;
 
+import it.algos.vaadflow.enumeration.EAColor;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+
 /**
  * Project vaadwam
  * Created by Algos
@@ -11,69 +15,57 @@ public class RigaCella {
 
     private static String AVVISO = "vaadin:alarm";
 
-    private String colore;
+    private EAWamColore eaColore;
 
-    private String icona;
+    private String nomeIcona;
 
-    private String iconaAvviso;
+    private String nomeIconaAvviso = VUOTA;
 
-    private String milite;
-
-    private boolean aggiungiAvviso;
+    private String nomeMilite;
 
 
-    public RigaCella(String colore, String icona, String milite) {
-        this(colore, icona, milite, false);
+    public RigaCella(EAWamColore eaColore, String icona, String milite) {
+        this(eaColore, icona, milite, false);
     }// end of constructor
 
 
-    public RigaCella(String colore, String icona, String milite, boolean aggiungiAvviso) {
-        this.colore = colore;
-        this.icona = icona;
-        this.milite = milite;
+    public RigaCella(EAWamColore eaColore, String nomeIcona, String nomeMilite, boolean aggiungiAvviso) {
+        this.eaColore = eaColore;
+        this.nomeIcona = nomeIcona;
+        this.nomeMilite = nomeMilite;
         if (aggiungiAvviso) {
-            this.iconaAvviso = AVVISO;
+            this.nomeIconaAvviso = AVVISO;
         }// end of if cycle
     }// end of constructor
 
 
-    public String getColore() {
-        return colore;
+    public String getColoreCella() {
+        return eaColore.getEsadecimale();
     }// end of method
 
 
-    public void setColore(String colore) {
-        this.colore = colore;
+    public String getColoreTesto() {
+        return nomeIconaAvviso.equals(VUOTA) ? EAColor.black.getEsadecimale() : eaColore.getContrasto();
     }// end of method
 
 
-    public String getIcona() {
-        return icona;
+    public String getNomeIcona() {
+        return nomeIcona;
     }// end of method
 
 
-    public void setIcona(String icona) {
-        this.icona = icona;
+    public String getNomeMilite() {
+        return nomeMilite;
     }// end of method
 
 
-    public String getMilite() {
-        return milite;
+    public String getNomeIconaAvviso() {
+        return nomeIconaAvviso;
     }// end of method
 
 
-    public void setMilite(String milite) {
-        this.milite = milite;
-    }// end of method
-
-
-    public String getIconaAvviso() {
-        return iconaAvviso;
-    }// end of method
-
-
-    public void setIconaAvviso(String iconaAvviso) {
-        this.iconaAvviso = iconaAvviso;
+    public String getColoreIconaAvviso() {
+        return eaColore.getContrasto();
     }// end of method
 
 }// end of class

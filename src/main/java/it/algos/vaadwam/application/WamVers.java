@@ -46,7 +46,7 @@ public class WamVers extends AVers {
      * You can initialize servlet context related data here.
      * <p>
      * Tutte le aggiunte, modifiche e patch vengono inserite con una versione <br>
-     * L'ordine di inserimento è FONDAMENTALE
+     * L'ordine di inserimento è FONDAMENTALE <br>
      */
     public int inizia() {
         int k = super.inizia();
@@ -57,7 +57,6 @@ public class WamVers extends AVers {
         if (installa(++k)) {
             crea("Setup", "Installazione iniziale");
         }// fine del blocco if
-
 
         return k;
     }// end of method

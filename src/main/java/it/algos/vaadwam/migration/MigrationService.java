@@ -1637,12 +1637,12 @@ public class MigrationService extends AService {
     private Funzione recuperaFunzione(long keyID, Servizio servizio) {
         Funzione funzioneNew = null;
         FunzioneAmb funzioneOld = null;
-        List<Funzione> funzioniEmbeddeNelServizio = null;
+        List<Funzione> funzioniDelServizio = null;
         String siglaOld = "";
         String codeNew = "";
 
         if (servizio != null) {
-            funzioniEmbeddeNelServizio = servizio.getFunzioni();
+            funzioniDelServizio = servizioService.getFunzioniAll(servizio);
         } else {
             int a = 87;
         }// end of if/else cycle
@@ -1657,8 +1657,8 @@ public class MigrationService extends AService {
         }// end of if cycle
 
         if (text.isValid(codeNew)) {
-            if (funzioniEmbeddeNelServizio != null) {
-                for (Funzione funz : funzioniEmbeddeNelServizio) {
+            if (funzioniDelServizio != null) {
+                for (Funzione funz : funzioniDelServizio) {
                     if (funz.getCode().equals(codeNew)) {
                         funzioneNew = funz;
                     }// end of if cycle

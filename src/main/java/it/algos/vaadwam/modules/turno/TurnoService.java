@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.*;
@@ -500,7 +499,7 @@ public class TurnoService extends WamService {
 
         if (servizio != null) {
             items = new ArrayList<>();
-            funzioni = servizio.getFunzioni();
+            funzioni = servizioService.getFunzioniAll(servizio);
             durata = servizioService.getDurata(servizio);
         }// end of if cycle
 
@@ -528,7 +527,7 @@ public class TurnoService extends WamService {
         List<Iscrizione> iscrizioniEmbeddeTurno = turno.getIscrizioni();
         Servizio servizio = null;
         servizio = turno.getServizio();
-        List<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> funzioni = servizioService.getFunzioniAll(servizio);
         boolean trovata;
         Funzione funzione = null;
 
@@ -567,19 +566,14 @@ public class TurnoService extends WamService {
      */
     public boolean isValido(Turno turno) {
         boolean turnoValido = true;
-        boolean funzValida = false;
         Servizio servizio = null;
         servizio = turno.getServizio();
-        List<Funzione> funzioni = servizio.getFunzioni();
+        List<Funzione> obbligatorie = servizioService.getObbligatorie(servizio);
 
-        for (Funzione funz : funzioni) {
-            if (funz.obbligatoria) {
-                funzValida = iscrizioneService.isValida(turno, funz);
-            } else {
-                funzValida = true;
-            }// end of if/else cycle
-
-            turnoValido = turnoValido ? funzValida : turnoValido;
+        for (Funzione funz : obbligatorie) {
+            if (!iscrizioneService.isValida(turno, funz)) {
+                turnoValido = false;
+            }// end of if cycle
         }// end of for cycle
 
         return turnoValido;

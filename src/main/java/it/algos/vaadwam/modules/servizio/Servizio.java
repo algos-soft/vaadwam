@@ -177,23 +177,6 @@ public class Servizio extends WamEntity {
 
 
     /**
-     * Funzioni previste per espletare il servizio
-     * Ozionali come programma, ma in pratica almeno una è indispensabile
-     * Siccome sono 'embedded' in servizio, non serve @OneToMany() o @ManyToOne()
-     * Possono essere 'obbligatorie' o meno (flag booleano).
-     * Il flag appartiene alla singola funzione di questo servizio ma NON viene usato dalla funzione originaria.
-     * Usando la caratteristica 'embedded', la funzione viene ricopiata dentro servizio come si trova al momento.
-     * Se modifico successivamente all'interno del servizio la copia della funzione, le modifiche rimangono circostritte a questo singolo servizio
-     * Se modifico successivamente la funzione originaria, le modifiche NON si estendono alla funzione 'congelata' nel servizio
-     * riferimento statico SENZA @DBRef (embedded)
-     */
-    @Deprecated
-    @Field("funz")
-    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni previste per espletare il servizio")
-    @AIColumn(name = "funzioni del servizio", flexGrow = true)
-    public List<Funzione> funzioni;
-
-    /**
      * Funzioni obbligatorie previste per espletare il servizio
      * la property viene registrata come Set perché MultiselectComboBox usa un set nel Binder e nel dialogo
      * viene poi resa disponibile da ServizioService come List (ordinata) per comodità d'uso

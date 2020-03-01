@@ -19,6 +19,7 @@ import it.algos.vaadflow.ui.fields.IAField;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -46,6 +47,9 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
     private Dialog dialog;
     private ComboBox<Funzione> comboFunzioni;
     private Button butAggiungi;
+
+    @Autowired
+    private ServizioService servizioService;
 
     public ServizioFunzioniField() {
         inizia();
@@ -149,7 +153,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
         List<Funzione> lista = null;
 
         if (entityBean != null) {
-            items = servizio.getFunzioni();
+          items=  servizioService.getFunzioniAll(servizio);
         }// end of if cycle
 
         if (items != null && items.contains(entityBean)) {
@@ -159,7 +163,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
                     lista.add(funz);
                 }// end of if cycle
             }// end of for cycle
-            servizio.setFunzioni(lista);
+//            servizio.setFunzioni(lista);
             setItems(servizio);
         }// end of if cycle
     }// end of method
@@ -173,7 +177,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
 
 
     private void setItems(Servizio entityBean) {
-        List<Funzione> items = entityBean.getFunzioni();
+        List<Funzione> items = servizioService.getFunzioniAll(servizio);
         if (items != null && items.size() > 0) {
             grid.setItems(items);
         }// end of if cycle
@@ -203,7 +207,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
         List<Funzione> lista = new ArrayList<>();
 
         if (newFunz != null) {
-            items = servizio.getFunzioni();
+            items = servizioService.getFunzioniAll(servizio);
         }// end of if cycle
 
         if (items != null) {
@@ -213,7 +217,7 @@ public class ServizioFunzioniField extends Composite<Div> implements IAField {
         }// end of if cycle
 
         lista.add(newFunz);
-        servizio.setFunzioni(lista);
+//        servizio.setObbligatorie(lista);
         setItems(servizio);
         chiudi();
     }// end of method

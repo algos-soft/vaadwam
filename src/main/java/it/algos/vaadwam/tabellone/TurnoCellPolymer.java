@@ -139,17 +139,17 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         List<Funzione> funzioni = null;
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
-        String colore;
-        turno = rigaService.getTurno(riga, giorno);
+        EAWamColore eaColore = null;
 
-        colore = tabelloneService.getColoreTurno(turno).getEsadecimale();
+        turno = rigaService.getTurno(riga, giorno);
+        eaColore = tabelloneService.getColoreTurno(turno);
 
         if (turno != null) {
             iscrizioni = turno.getIscrizioni();
         }// end of if cycle
 
         if (servizio != null) {
-            funzioni = servizio.funzioni;
+            funzioni = servizioService.getFunzioniAll(servizio);
         }// end of if cycle
 
         if (funzioni != null) {
@@ -159,22 +159,22 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
                 if (iscrizioni != null) {
                     for (Iscrizione iscr : iscrizioni) {
                         if (differenziata) {
-                            colore = tabelloneService.getColoreIscrizione(turno, iscr).getEsadecimale();
+                            eaColore = tabelloneService.getColoreIscrizione(turno, iscr);
                         }// end of if cycle
                         if (iscr.funzione.code.equals(funzServ.code)) {
                             if (iscr.milite != null) {
                                 if (iscr.note != null && iscr.note.length() > 0) {
-                                    righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla(), true));
+                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), true));
                                 } else {
-                                    righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla()));
                                 }// end of if/else cycle
                             } else {
-                                righeCella.add(new RigaCella(colore, icona, ""));
+                                righeCella.add(new RigaCella(eaColore, icona, ""));
                             }// end of if/else cycle
                         }// end of if cycle
                     }// end of for cycle
                 } else {
-                    righeCella.add(new RigaCella(colore, "", ""));
+                    righeCella.add(new RigaCella(eaColore, "", ""));
                 }// end of if/else cycle
             }// end of for cycle
         }// end of if cycle
@@ -183,87 +183,87 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     }// end of method
 
 
-    private void colorazioneUnica() {
-        List<Iscrizione> iscrizioni = null;
-        Servizio servizio = riga.servizio;
-        List<Funzione> funzioni = null;
-        String icona = "";
-        List<RigaCella> righeCella = new ArrayList<>();
-        String colore;
-        turno = rigaService.getTurno(riga, giorno);
+//    private void colorazioneUnica() {
+//        List<Iscrizione> iscrizioni = null;
+//        Servizio servizio = riga.servizio;
+//        List<Funzione> funzioni = null;
+//        String icona = "";
+//        List<RigaCella> righeCella = new ArrayList<>();
+//        String colore;
+//        turno = rigaService.getTurno(riga, giorno);
+//
+//        colore = tabelloneService.getColoreTurno(turno).getEsadecimale();
+//
+//        if (turno != null) {
+//            iscrizioni = turno.getIscrizioni();
+//        }// end of if cycle
+//
+//        if (servizio != null) {
+//            funzioni = servizioService.getFunzioniAll(servizio);
+//        }// end of if cycle
+//
+//        if (funzioni != null) {
+//            for (Funzione funz : funzioni) {
+//                icona = "vaadin:" + funz.icona.name().toLowerCase();
+//                if (iscrizioni != null) {
+//                    for (Iscrizione iscr : iscrizioni) {
+//                        if (iscr.funzione.code.equals(funz.code)) {
+//                            if (iscr.milite != null) {
+//                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+//                            } else {
+//                                righeCella.add(new RigaCella(colore, icona, ""));
+//                            }// end of if/else cycle
+//                        }// end of if cycle
+//                    }// end of for cycle
+//                } else {
+//                    righeCella.add(new RigaCella(colore, "", ""));
+//                }// end of if/else cycle
+//            }// end of for cycle
+//        }// end of if cycle
+//
+//        getModel().setRighecella(righeCella);
+//    }// end of method
 
-        colore = tabelloneService.getColoreTurno(turno).getEsadecimale();
 
-        if (turno != null) {
-            iscrizioni = turno.getIscrizioni();
-        }// end of if cycle
-
-        if (servizio != null) {
-            funzioni = servizio.funzioni;
-        }// end of if cycle
-
-        if (funzioni != null) {
-            for (Funzione funz : funzioni) {
-                icona = "vaadin:" + funz.icona.name().toLowerCase();
-                if (iscrizioni != null) {
-                    for (Iscrizione iscr : iscrizioni) {
-                        if (iscr.funzione.code.equals(funz.code)) {
-                            if (iscr.milite != null) {
-                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
-                            } else {
-                                righeCella.add(new RigaCella(colore, icona, ""));
-                            }// end of if/else cycle
-                        }// end of if cycle
-                    }// end of for cycle
-                } else {
-                    righeCella.add(new RigaCella(colore, "", ""));
-                }// end of if/else cycle
-            }// end of for cycle
-        }// end of if cycle
-
-        getModel().setRighecella(righeCella);
-    }// end of method
-
-
-    private void colorazioneDifferenziata() {
-        List<Iscrizione> iscrizioni = null;
-        Servizio servizio = riga.servizio;
-        List<Funzione> funzioni = null;
-        String icona = "";
-        List<RigaCella> righeCella = new ArrayList<>();
-        String colore = "";
-        turno = rigaService.getTurno(riga, giorno);
-
-        if (turno != null) {
-            iscrizioni = turno.getIscrizioni();
-        }// end of if cycle
-
-        if (servizio != null) {
-            funzioni = servizio.funzioni;
-        }// end of if cycle
-
-        if (funzioni != null) {
-            for (Funzione funz : funzioni) {
-                icona = "vaadin:" + funz.icona.name().toLowerCase();
-                if (iscrizioni != null) {
-                    for (Iscrizione iscr : iscrizioni) {
-                        colore = tabelloneService.getColoreIscrizione(turno, iscr).getEsadecimale();
-                        if (iscr.funzione.code.equals(funz.code)) {
-                            if (iscr.milite != null) {
-                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
-                            } else {
-                                righeCella.add(new RigaCella(colore, icona, ""));
-                            }// end of if/else cycle
-                        }// end of if cycle
-                    }// end of for cycle
-                } else {
-                    righeCella.add(new RigaCella(colore, "", ""));
-                }// end of if/else cycle
-            }// end of for cycle
-        }// end of if cycle
-
-        getModel().setRighecella(righeCella);
-    }// end of method
+//    private void colorazioneDifferenziata() {
+//        List<Iscrizione> iscrizioni = null;
+//        Servizio servizio = riga.servizio;
+//        List<Funzione> funzioni = null;
+//        String icona = "";
+//        List<RigaCella> righeCella = new ArrayList<>();
+//        String colore = "";
+//        turno = rigaService.getTurno(riga, giorno);
+//
+//        if (turno != null) {
+//            iscrizioni = turno.getIscrizioni();
+//        }// end of if cycle
+//
+//        if (servizio != null) {
+//            funzioni = servizioService.getFunzioniAll(servizio);
+//        }// end of if cycle
+//
+//        if (funzioni != null) {
+//            for (Funzione funz : funzioni) {
+//                icona = "vaadin:" + funz.icona.name().toLowerCase();
+//                if (iscrizioni != null) {
+//                    for (Iscrizione iscr : iscrizioni) {
+//                        colore = tabelloneService.getColoreIscrizione(turno, iscr).getEsadecimale();
+//                        if (iscr.funzione.code.equals(funz.code)) {
+//                            if (iscr.milite != null) {
+//                                righeCella.add(new RigaCella(colore, icona, iscr.milite.getSigla()));
+//                            } else {
+//                                righeCella.add(new RigaCella(colore, icona, ""));
+//                            }// end of if/else cycle
+//                        }// end of if cycle
+//                    }// end of for cycle
+//                } else {
+//                    righeCella.add(new RigaCella(colore, "", ""));
+//                }// end of if/else cycle
+//            }// end of for cycle
+//        }// end of if cycle
+//
+//        getModel().setRighecella(righeCella);
+//    }// end of method
 
 
     /**
@@ -346,7 +346,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
             final QueryParameters query = new QueryParameters(mappa);
 
             //@todo qui occorre differenziare secondo il numero di funzioni del servizio
-            int numIscr = servizio.funzioni.size();
+            int numIscr = servizioService.getFunzioniAll(servizio).size();
             switch (numIscr) {
                 case 1:
                     getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO, query));

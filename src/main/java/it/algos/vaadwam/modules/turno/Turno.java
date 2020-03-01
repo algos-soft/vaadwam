@@ -132,6 +132,7 @@ public class Turno extends WamEntity {
      * Durata effettiva (in minuti) del turno (obbligatoria, calcolata in automatico prima del Save)
      * Informazione ridondante ma comoda per le successive elaborazioni (tabellone, iscrizioni, statistiche)
      */
+    @Deprecated
     @Field("dur")
     @AIField(type = EAFieldType.integer, name = "Durata")
     public int durataEffettiva;

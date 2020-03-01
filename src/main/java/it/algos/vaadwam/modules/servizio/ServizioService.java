@@ -250,13 +250,13 @@ public class ServizioService extends WamService {
 //        entity.durataTeorica = getDurata(entity);
 
         //--elimina informazioni inutili dalla lista (embedded) di funzioni dipendenti
-        if (entity.funzioni != null) {
-            for (Funzione funz : entity.funzioni) {
-                funz.croce = null;
-                funz.dipendenti = null;
-                funz.descrizione = null;
-            }// end of for cycle
-        }// end of if cycle
+//        if (entity.funzioni != null) {
+//            for (Funzione funz : entity.funzioni) {
+//                funz.croce = null;
+//                funz.dipendenti = null;
+//                funz.descrizione = null;
+//            }// end of for cycle
+//        }// end of if cycle
 
         if (entity.getCroce() == null) {
             log.warn("Non sono riuscito a registrare il servizio " + entity.code + " perché manca la croce");
@@ -540,7 +540,7 @@ public class ServizioService extends WamService {
     @Deprecated
     public List<String> getSigleFunzioni(Servizio entityBean) {
         List<String> sigleFunzioni = new ArrayList<>();
-        List<Funzione> funzioni = entityBean.getFunzioni();
+        List<Funzione> funzioni = getFunzioniAll(entityBean);
 
         for (Funzione funz : funzioni) {
             sigleFunzioni.add(funz.getCode());
@@ -618,7 +618,7 @@ public class ServizioService extends WamService {
             listaAll = funzioneService.findAllByCroce(croce);
         }// end of if cycle
 
-        if (listaAll != null && set != null) {
+        if (listaAll != null && set != null && set.size() > 0) {
             listaIdFunzioni = funzioneService.getIdsFunzioni(set);
             listaFacoltative = new ArrayList<>();
 
@@ -627,6 +627,7 @@ public class ServizioService extends WamService {
                     listaFacoltative.add(funz);
                 }// end of if cycle
             }// end of for cycle
+
         }// end of if cycle
 
         return listaFacoltative;
@@ -652,8 +653,14 @@ public class ServizioService extends WamService {
             listaFunzioniObbligatorie = getObbligatorie(servizio);
             listaFunzioniFacoltative = getFacoltative(servizio);
 
-            listaFunzioni.addAll(listaFunzioniObbligatorie);
-            listaFunzioni.addAll(listaFunzioniFacoltative);
+            if (array.isValid(listaFunzioniObbligatorie)) {
+                listaFunzioni.addAll(listaFunzioniObbligatorie);
+            }// end of if cycle
+
+             if (array.isValid(listaFunzioniFacoltative)) {
+                listaFunzioni.addAll(listaFunzioniFacoltative);
+            }// end of if cycle
+
         }// end of if cycle
 
         return listaFunzioni;

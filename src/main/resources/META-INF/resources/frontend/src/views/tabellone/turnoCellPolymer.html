@@ -46,11 +46,11 @@
         <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
         <div id="container" on-click="handleClick">
             <template is="dom-repeat" items="[[righecella]]">
-                <button class="button" style="background-color:{{item.colore}}">
+                <button class="button" style="background-color:{{item.coloreCella}}">
                     <div class = "buttondiv">
-                        <iron-icon icon={{item.icona}} style="height:4mm"></iron-icon>
-                        <label>{{item.milite}}</label>
-                        <iron-icon icon={{item.iconaAvviso}} style="height:2.5mm; margin-left: auto;"></iron-icon>
+                        <iron-icon icon={{item.nomeIcona}} style="height:4mm"></iron-icon>
+                        <label style="color:{{item.coloreTesto}}">{{item.nomeMilite}}</label>
+                        <iron-icon icon={{item.nomeIconaAvviso}} style="height:2.5mm; margin-left: auto; fill:{{item.coloreIconaAvviso}}"></iron-icon>
                     </div>
                 </button>
             </template>

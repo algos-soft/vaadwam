@@ -477,11 +477,11 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      */
     private ArrayList<String> findCodeVisualizzate() {
         ArrayList<String> codeRimanenti = new ArrayList<String>();
-        List<Funzione> funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
-
-        for (Funzione funz : funzioniAttualmenteVisualizzate) {
-            codeRimanenti.add(funz.code);
-        }// end of for cycle
+//        List<Funzione> funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
+//
+//        for (Funzione funz : funzioniAttualmenteVisualizzate) {
+//            codeRimanenti.add(funz.code);
+//        }// end of for cycle
 
         return codeRimanenti;
     }// end of method
@@ -491,13 +491,13 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
      * Elenco dei codici delle funzioni già visualizzate <br>
      */
     private void sincroAddButton() {
-        ArrayList<String> codeRimanenti = new ArrayList<String>();
-        List<Funzione> funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
-
-        for (Funzione funz : funzioniAttualmenteVisualizzate) {
-            codeRimanenti.add(funz.code);
-        }// end of for cycle
-        addButton.setEnabled(((Servizio) currentItem).funzioni.size() < funzioneService.count());
+//        ArrayList<String> codeRimanenti = new ArrayList<String>();
+//        List<Funzione> funzioniAttualmenteVisualizzate = new ArrayList(((Servizio) currentItem).funzioni);
+//
+//        for (Funzione funz : funzioniAttualmenteVisualizzate) {
+//            codeRimanenti.add(funz.code);
+//        }// end of for cycle
+//        addButton.setEnabled(((Servizio) currentItem).funzioni.size() < funzioneService.count());
     }// end of method
 
 

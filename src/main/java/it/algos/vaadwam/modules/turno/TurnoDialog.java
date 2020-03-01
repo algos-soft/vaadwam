@@ -1,21 +1,16 @@
 package it.algos.vaadwam.modules.turno;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -24,6 +19,7 @@ import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +29,6 @@ import org.springframework.context.annotation.Scope;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
@@ -78,6 +73,12 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      */
     @Autowired
     protected FunzioneService funzioneService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected ServizioService servizioService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -140,10 +141,10 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         String widthB = "6em";
         String widthC = "12em";
         grid = new Grid(Funzione.class);
-        Servizio servizio = ((Turno)currentItem).servizio;
-        iscrizioniDelTurno = ((Turno)currentItem).iscrizioni;
+        Servizio servizio = ((Turno) currentItem).servizio;
+        iscrizioniDelTurno = ((Turno) currentItem).iscrizioni;
         if (servizio != null) {
-            items = servizio.funzioni;
+            items = servizioService.getFunzioniAll(servizio);
             grid.setItems(items);
         }// end of if cycle
 
@@ -164,74 +165,74 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         colonnaSiglaFunzione.setWidth(widthB);
 
 
-        //--aggiunge una colonna calcolata
-        Grid.Column colonnaFunzioneObbligatoria = grid.addComponentColumn(funzione -> {
-            ACheckBox box = new ACheckBox("");
-            List<Funzione> funzioniDelServizio = servizio.funzioni;
-            if (funzioniDelServizio!=null) {
-                for (Funzione funzServizio : funzioniDelServizio) {
-                    if (funzServizio.code.equals(((Funzione) funzione).code)) {
-                        box.setValue(funzServizio.obbligatoria);
-                    }// end of if cycle
-                }// end of for cycle
-            }// end of if cycle
-            return box;
-        });//end of lambda expressions
-        colonnaFunzioneObbligatoria.setHeader("Must");
-        colonnaFunzioneObbligatoria.setId("must");
-        colonnaFunzioneObbligatoria.setWidth(widthA);
+//        //--aggiunge una colonna calcolata
+//        Grid.Column colonnaFunzioneObbligatoria = grid.addComponentColumn(funzione -> {
+//            ACheckBox box = new ACheckBox("");
+//            List<Funzione> funzioniDelServizio = servizio.funzioni;
+//            if (funzioniDelServizio != null) {
+//                for (Funzione funzServizio : funzioniDelServizio) {
+//                    if (funzServizio.code.equals(((Funzione) funzione).code)) {
+//                        box.setValue(funzServizio.obbligatoria);
+//                    }// end of if cycle
+//                }// end of for cycle
+//            }// end of if cycle
+//            return box;
+//        });//end of lambda expressions
+//        colonnaFunzioneObbligatoria.setHeader("Must");
+//        colonnaFunzioneObbligatoria.setId("must");
+//        colonnaFunzioneObbligatoria.setWidth(widthA);
 
 
-        //--aggiunge una colonna calcolata
-        Grid.Column colonnaMilite = grid.addComponentColumn(funzione -> {
-            Milite milite = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getMilite();
-            if (milite != null) {
-                return new Label(milite.toString());
-            } else {
-                return new Label("Non ancora segnato");
-            }// end of if/else cycle
-        });//end of lambda expressions
-        colonnaMilite.setHeader("Milite");
-        colonnaMilite.setId("milite");
-        colonnaMilite.setWidth(widthB);
+//        //--aggiunge una colonna calcolata
+//        Grid.Column colonnaMilite = grid.addComponentColumn(funzione -> {
+//            Milite milite = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getMilite();
+//            if (milite != null) {
+//                return new Label(milite.toString());
+//            } else {
+//                return new Label("Non ancora segnato");
+//            }// end of if/else cycle
+//        });//end of lambda expressions
+//        colonnaMilite.setHeader("Milite");
+//        colonnaMilite.setId("milite");
+//        colonnaMilite.setWidth(widthB);
 
 
-        //--aggiunge una colonna calcolata
-        Grid.Column colonnaLastModifica = grid.addComponentColumn(funzione -> {
-            LocalDateTime time = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getLastModifica();
-            if (time != null) {
-                return new Label(time.toString());
-            } else {
-                return new Label("Non ancora segnato");
-            }// end of if/else cycle
-        });//end of lambda expressions
-        colonnaLastModifica.setHeader("Time");
-        colonnaLastModifica.setId("last");
-        colonnaLastModifica.setWidth(widthB);
+//        //--aggiunge una colonna calcolata
+//        Grid.Column colonnaLastModifica = grid.addComponentColumn(funzione -> {
+//            LocalDateTime time = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getLastModifica();
+//            if (time != null) {
+//                return new Label(time.toString());
+//            } else {
+//                return new Label("Non ancora segnato");
+//            }// end of if/else cycle
+//        });//end of lambda expressions
+//        colonnaLastModifica.setHeader("Time");
+//        colonnaLastModifica.setId("last");
+//        colonnaLastModifica.setWidth(widthB);
 
 
-        //--aggiunge una colonna calcolata
-        Grid.Column colonnaDurata = grid.addComponentColumn(funzione -> {
-            int durata = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).getDurataEffettiva();
-            if (durata > 0) {
-                return new Label(durata + "");
-            } else {
-                return new Label("0");
-            }// end of if/else cycle
-        });//end of lambda expressions
-        colonnaDurata.setHeader("Ore");
-        colonnaDurata.setId("durata");
-        colonnaDurata.setWidth(widthA);
+//        //--aggiunge una colonna calcolata
+//        Grid.Column colonnaDurata = grid.addComponentColumn(funzione -> {
+//            int durata = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getDurataEffettiva();
+//            if (durata > 0) {
+//                return new Label(durata + "");
+//            } else {
+//                return new Label("0");
+//            }// end of if/else cycle
+//        });//end of lambda expressions
+//        colonnaDurata.setHeader("Ore");
+//        colonnaDurata.setId("durata");
+//        colonnaDurata.setWidth(widthA);
 
 
-        //--aggiunge una colonna calcolata
-        Grid.Column colonnaEsisteProblema = grid.addComponentColumn(funzione -> {
-            boolean status = iscrizioneService.getByTurnoAndFunzione(((Turno)currentItem), funzione).isEsisteProblema();
-            return new ACheckBox("", status);
-        });//end of lambda expressions
-        colonnaEsisteProblema.setHeader("Prob");
-        colonnaEsisteProblema.setId("problema");
-        colonnaEsisteProblema.setWidth(widthA);
+//        //--aggiunge una colonna calcolata
+//        Grid.Column colonnaEsisteProblema = grid.addComponentColumn(funzione -> {
+//            boolean status = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).isEsisteProblema();
+//            return new ACheckBox("", status);
+//        });//end of lambda expressions
+//        colonnaEsisteProblema.setHeader("Prob");
+//        colonnaEsisteProblema.setId("problema");
+//        colonnaEsisteProblema.setWidth(widthA);
 
 
         //--aggiunge una colonna calcolata
@@ -268,8 +269,6 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         HeaderRow.HeaderCell informationCell = topRow.join(matrix);
         informationCell.setComponent(comp);
     }// end of method
-
-
 
 
 }// end of class
