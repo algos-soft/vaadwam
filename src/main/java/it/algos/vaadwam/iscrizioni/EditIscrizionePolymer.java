@@ -351,12 +351,16 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         }// end of if cycle
 
         if (inizio != null) {
-            inizio.addValueChangeListener(e -> confermaOK());
+            inizio.addValueChangeListener(e -> pippoz());
         }// end of if cycle
 
         inizio.setEnabled(abilitata && iscrizioneEntity.milite != null);
     }// end of method
 
+    private void pippoz() {
+//        Object alfa= inizio.getValue();
+//        int a=87;
+    }// end of method
 
     /**
      * Note di questa iscrizione <br>

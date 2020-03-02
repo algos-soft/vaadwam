@@ -17,7 +17,9 @@
 
             <!--seconda riga-->
             <div style="display: flex; flex-direction:row; align-items: center;">
-                <vaadin-time-picker id="inizio" style="width: 6em"></vaadin-time-picker>
+                <vaadin-time-picker id="inizio" style="width: 6em"  value="[[valore]]" ></vaadin-time-picker>
+<!--                <vaadin-time-picker id="inizio" style="width: 6em" label="Arrival hour (hh:mm)" value="{{item.inizio.hour}}:{{item.inizio.minute}}"></vaadin-time-picker>-->
+<!--                <vaadin-time-picker id="inizio" style="width: 6em"></vaadin-time-picker>-->
                 <vaadin-text-field id="note" style="width: 7em"></vaadin-text-field>
                 <vaadin-time-picker id="fine" style="width: 6em"></vaadin-time-picker>
                 </vaadin-time-picker>
