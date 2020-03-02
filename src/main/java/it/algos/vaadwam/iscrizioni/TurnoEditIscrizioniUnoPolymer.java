@@ -18,7 +18,13 @@ import static it.algos.vaadwam.application.WamCost.TAG_TURNO_EDIT_UNO;
  * Date: sab, 10-ago-2019
  * Time: 15:55
  * <p>
- * Java wrapper of the polymer element `turno-edit-iscrizioni-una`
+ * Java wrapper of the polymer element `turno-edit-iscrizioni-una` <br>
+ * <p>
+ * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
+ * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
+ * È una sottoclasse di TurnoEditIscrizioniPolymer e serve unicamente per dichiarare il componente @Id("prima") <br>
+ * Il componente è legato al polymer <edit-iscrizione id="prima"></edit-iscrizione> <br>
+ * Non può quindi essere creato all'interno di un ciclo 'if' <br>
  */
 @Route(value = TAG_TURNO_EDIT_UNO)
 @Tag("turno-edit-iscrizioni-uno")
@@ -37,17 +43,29 @@ public class TurnoEditIscrizioniUnoPolymer extends TurnoEditIscrizioniPolymer {
 
 
     /**
-     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
-     * Invocare SEMPRE anche il metodo della superclasse
+     * Metodo chiamato da @BeforeEvent alla creazione della view nel metodo setParameter();
+     * Nella sottoclasse aggiunge a listaEditIscrizioni il Component specifico iniettato da @Id("xxx") <br>
+     * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
      */
-    @Override
-    protected void iniziaIscrizione() {
-        prima.inizia(turno, turno.iscrizioni.get(0), bottoniPolymer);
-        proxyEditIscrizioni.add(0, prima);
-        super.iniziaIscrizione();
-        boolean abilitata = listaEditIscrizioniAbilitate.contains(prima) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(prima)).abilitata;
-        prima.inizia(abilitata);
+    protected void addEditIscrizionePolimer() {
+        listaEditIscrizioni.add(0, prima);
+        super.addEditIscrizionePolimer();
     }// end of method
+
+
+//    /**
+//     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
+//     * Invocare SEMPRE anche il metodo della superclasse
+//     */
+//    @Override
+//    protected void iniziaIscrizione() {
+//        listaEditIscrizioni.add(0, prima);
+//        prima.inizia(turno, turno.iscrizioni.get(0), bottoniPolymer);
+//        proxyEditIscrizioni.add(0, prima);
+//        super.iniziaIscrizione();
+//        boolean abilitata = listaEditIscrizioniAbilitate.contains(prima) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(prima)).abilitata;
+//        prima.inizia(abilitata);
+//    }// end of method
 
 
     /**

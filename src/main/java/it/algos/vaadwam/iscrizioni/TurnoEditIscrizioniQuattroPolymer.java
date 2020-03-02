@@ -19,6 +19,12 @@ import static it.algos.vaadwam.application.WamCost.TAG_TURNO_EDIT_QUATTRO;
  * Time: 15:55
  * <p>
  * Java wrapper of the polymer element `turno-edit-iscrizioni-quattro`
+ * <p>
+ * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
+ * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
+ * È una sottoclasse di TurnoEditIscrizioniPolymer e serve unicamente per dichiarare il componente @Id("quarta") <br>
+ * Il componente è legato al polymer <edit-iscrizione id="quarta"></edit-iscrizione> <br>
+ * Non può quindi essere creato all'interno di un ciclo 'if' <br>
  */
 @Route(value = TAG_TURNO_EDIT_QUATTRO)
 @Tag("turno-edit-iscrizioni-quattro")
@@ -35,16 +41,26 @@ public class TurnoEditIscrizioniQuattroPolymer extends TurnoEditIscrizioniTrePol
     @Id("quarta")
     public EditIscrizionePolymer quarta;
 
-
     /**
-     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
-     * Invocare SEMPRE anche il metodo della superclasse
+     * Metodo chiamato da @BeforeEvent alla creazione della view nel metodo setParameter();
+     * Nella sottoclasse aggiunge a listaEditIscrizioni il Component specifico iniettato da @Id("xxx") <br>
+     * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
      */
-    @Override
-    protected void iniziaIscrizione() {
-        super.iniziaIscrizione();
-        quarta.inizia(turno, turno.iscrizioni.get(3), bottoniPolymer, abilitata);
+    protected void addEditIscrizionePolimer() {
+        listaEditIscrizioni.add(0, quarta);
+        super.addEditIscrizionePolimer();
     }// end of method
+
+
+//    /**
+//     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
+//     * Invocare SEMPRE anche il metodo della superclasse
+//     */
+//    @Override
+//    protected void iniziaIscrizione() {
+//        super.iniziaIscrizione();
+//        quarta.inizia(turno, turno.iscrizioni.get(3), bottoniPolymer, abilitata);
+//    }// end of method
 
 
     /**

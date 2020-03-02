@@ -140,6 +140,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         String icona = "";
         List<RigaCella> righeCella = new ArrayList<>();
         EAWamColore eaColore = null;
+        boolean aggiungeAvviso;
 
         turno = rigaService.getTurno(riga, giorno);
         eaColore = tabelloneService.getColoreTurno(turno);
@@ -154,8 +155,8 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
 
         if (funzioni != null) {
             for (Funzione funzServ : funzioni) {
-                Funzione funzione = funzioneService.findById(funzServ.id);
-                icona = "vaadin:" + funzione.icona.name().toLowerCase();
+//                Funzione funzione = funzioneService.findById(funzServ.id);
+                icona = "vaadin:" + funzServ.icona.name().toLowerCase();
                 if (iscrizioni != null) {
                     for (Iscrizione iscr : iscrizioni) {
                         if (differenziata) {
@@ -163,11 +164,13 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
                         }// end of if cycle
                         if (iscr.funzione.code.equals(funzServ.code)) {
                             if (iscr.milite != null) {
-                                if (iscr.note != null && iscr.note.length() > 0) {
-                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), true));
-                                } else {
-                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla()));
-                                }// end of if/else cycle
+                                aggiungeAvviso = aggiungeAvviso(iscr);
+                                righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), aggiungeAvviso));
+//                                if (iscr.note != null && iscr.note.length() > 0) {
+//                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), true));
+//                                } else {
+//                                    righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla()));
+//                                }// end of if/else cycle
                             } else {
                                 righeCella.add(new RigaCella(eaColore, icona, ""));
                             }// end of if/else cycle
@@ -182,6 +185,22 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         getModel().setRighecella(righeCella);
     }// end of method
 
+
+    private boolean aggiungeAvviso(Iscrizione iscr) {
+        boolean status = false;
+
+        if (iscr.note != null && iscr.note.length() > 0) {
+            status = true;
+        }// end of if cycle
+        if (iscr.inizio != turno.inizio) {
+            status = true;
+        }// end of if cycle
+        if (iscr.fine != turno.fine) {
+            status = true;
+        }// end of if cycle
+
+        return status;
+    }// end of method
 
 //    private void colorazioneUnica() {
 //        List<Iscrizione> iscrizioni = null;

@@ -1110,68 +1110,68 @@ public class MigrationService extends AService {
     }// end of method
 
 
-    /**
-     * Recupera le funzioni del servizio
-     *
-     * @param servizioOld della companyOld
-     */
-    @Deprecated
-    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
-        List<Funzione> listaFunzioni = new ArrayList<>();
-        FunzioneAmb funzAmb = null;
-        Funzione funz = null;
-        int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
-        long idFunzione1 = servizioOld.getFunzione1_id();
-        long idFunzione2 = servizioOld.getFunzione2_id();
-        long idFunzione3 = servizioOld.getFunzione3_id();
-        long idFunzione4 = servizioOld.getFunzione4_id();
-
-        funzAmb = funzioneAmb.findByID(idFunzione1);
-        if (funzAmb != null) {
-            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-            if (funz != null) {
-                funz.setObbligatoria(numeroFunzioniObbligatorie > 0);
-                listaFunzioni.add(funz);
-            } else {
-                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-            }// end of if/else cycle
-        }// end of if cycle
-
-        funzAmb = funzioneAmb.findByID(idFunzione2);
-        if (funzAmb != null) {
-            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-            if (funz != null) {
-                funz.setObbligatoria(numeroFunzioniObbligatorie > 1);
-                listaFunzioni.add(funz);
-            } else {
-                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-            }// end of if/else cycle
-        }// end of if cycle
-
-        funzAmb = funzioneAmb.findByID(idFunzione3);
-        if (funzAmb != null) {
-            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-            if (funz != null) {
-                funz.setObbligatoria(numeroFunzioniObbligatorie > 2);
-                listaFunzioni.add(funz);
-            } else {
-                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-            }// end of if/else cycle
-        }// end of if cycle
-
-        funzAmb = funzioneAmb.findByID(idFunzione4);
-        if (funzAmb != null) {
-            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-            if (funz != null) {
-                funz.setObbligatoria(numeroFunzioniObbligatorie > 3);
-                listaFunzioni.add(funz);
-            } else {
-                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-            }// end of if/else cycle
-        }// end of if cycle
-
-        return listaFunzioni;
-    }// end of method
+//    /**
+//     * Recupera le funzioni del servizio
+//     *
+//     * @param servizioOld della companyOld
+//     */
+//    @Deprecated
+//    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
+//        List<Funzione> listaFunzioni = new ArrayList<>();
+//        FunzioneAmb funzAmb = null;
+//        Funzione funz = null;
+//        int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
+//        long idFunzione1 = servizioOld.getFunzione1_id();
+//        long idFunzione2 = servizioOld.getFunzione2_id();
+//        long idFunzione3 = servizioOld.getFunzione3_id();
+//        long idFunzione4 = servizioOld.getFunzione4_id();
+//
+//        funzAmb = funzioneAmb.findByID(idFunzione1);
+//        if (funzAmb != null) {
+//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
+//            if (funz != null) {
+//                funz.setObbligatoria(numeroFunzioniObbligatorie > 0);
+//                listaFunzioni.add(funz);
+//            } else {
+//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
+//            }// end of if/else cycle
+//        }// end of if cycle
+//
+//        funzAmb = funzioneAmb.findByID(idFunzione2);
+//        if (funzAmb != null) {
+//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
+//            if (funz != null) {
+//                funz.setObbligatoria(numeroFunzioniObbligatorie > 1);
+//                listaFunzioni.add(funz);
+//            } else {
+//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
+//            }// end of if/else cycle
+//        }// end of if cycle
+//
+//        funzAmb = funzioneAmb.findByID(idFunzione3);
+//        if (funzAmb != null) {
+//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
+//            if (funz != null) {
+//                funz.setObbligatoria(numeroFunzioniObbligatorie > 2);
+//                listaFunzioni.add(funz);
+//            } else {
+//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
+//            }// end of if/else cycle
+//        }// end of if cycle
+//
+//        funzAmb = funzioneAmb.findByID(idFunzione4);
+//        if (funzAmb != null) {
+//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
+//            if (funz != null) {
+//                funz.setObbligatoria(numeroFunzioniObbligatorie > 3);
+//                listaFunzioni.add(funz);
+//            } else {
+//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
+//            }// end of if/else cycle
+//        }// end of if cycle
+//
+//        return listaFunzioni;
+//    }// end of method
 
 
     private void creaColoreGruppoServizi(Croce croceNew) {

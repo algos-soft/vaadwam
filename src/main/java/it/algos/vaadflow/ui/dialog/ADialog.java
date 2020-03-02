@@ -482,7 +482,7 @@ public class ADialog extends Dialog implements IADialog {
             confirmHandler.run();
         }// end of if cycle
         close();
-    }// end of method
+     }// end of method
 
 
 //    /**

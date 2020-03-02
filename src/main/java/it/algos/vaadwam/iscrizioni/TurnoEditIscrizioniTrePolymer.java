@@ -19,6 +19,12 @@ import static it.algos.vaadwam.application.WamCost.TAG_TURNO_EDIT_TRE;
  * Time: 15:55
  * <p>
  * Java wrapper of the polymer element `turno-edit-iscrizioni-tre`
+ * <p>
+ * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
+ * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
+ * È una sottoclasse di TurnoEditIscrizioniPolymer e serve unicamente per dichiarare il componente @Id("terza") <br>
+ * Il componente è legato al polymer <edit-iscrizione id="terza"></edit-iscrizione> <br>
+ * Non può quindi essere creato all'interno di un ciclo 'if' <br>
  */
 @Route(value = TAG_TURNO_EDIT_TRE)
 @Tag("turno-edit-iscrizioni-tre")
@@ -35,19 +41,29 @@ public class TurnoEditIscrizioniTrePolymer extends TurnoEditIscrizioniDuePolymer
     @Id("terza")
     public EditIscrizionePolymer terza;
 
-
     /**
-     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
-     * Invocare SEMPRE anche il metodo della superclasse
+     * Metodo chiamato da @BeforeEvent alla creazione della view nel metodo setParameter();
+     * Nella sottoclasse aggiunge a listaEditIscrizioni il Component specifico iniettato da @Id("xxx") <br>
+     * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
      */
-    @Override
-    protected void iniziaIscrizione() {
-        terza.inizia(turno, turno.iscrizioni.get(2), bottoniPolymer);
-        proxyEditIscrizioni.add(0 , terza);
-        super.iniziaIscrizione();
-        boolean abilitata = listaEditIscrizioniAbilitate.contains(terza) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(terza)).abilitata;
-        terza.inizia(abilitata);
+    protected void addEditIscrizionePolimer() {
+        listaEditIscrizioni.add(0, terza);
+        super.addEditIscrizionePolimer();
     }// end of method
+
+
+//    /**
+//     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
+//     * Invocare SEMPRE anche il metodo della superclasse
+//     */
+//    @Override
+//    protected void iniziaIscrizione() {
+//        terza.inizia(turno, turno.iscrizioni.get(2), bottoniPolymer);
+//        proxyEditIscrizioni.add(0, terza);
+//        super.iniziaIscrizione();
+//        boolean abilitata = listaEditIscrizioniAbilitate.contains(terza) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(terza)).abilitata;
+//        terza.inizia(abilitata);
+//    }// end of method
 
 
     /**
