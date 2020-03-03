@@ -16,12 +16,12 @@ import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.tabellone.TabelloneService;
 import it.algos.vaadwam.wam.WamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +114,9 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
     @Autowired
     protected IscrizioneService iscrizioneService;
 
+    @Autowired
+    protected TabelloneService tabelloneService;
+
     //--property bean
     protected Turno turno = null;
 
@@ -139,15 +142,6 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
      */
     protected List<EditIscrizionePolymer> listaEditIscrizioni;
 
-    /**
-     * Lista di EditIscrizionePolymer <br>
-     * Proxy in modo che siano 'note' a questo livello <br>
-     * Quelle originali le devo dichiarare al livello delle sottoclassi,
-     * perché vengono iniettate nel polymer html con lo stesso ID
-     * e quindi le devo dichiare SOLO se servono <br>
-     */
-    @Deprecated
-    protected List<EditIscrizionePolymer> proxyEditIscrizioni;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -258,7 +252,6 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         servizioPolymer.inizia(turno);
 
         listaEditIscrizioni = new ArrayList<>();
-        proxyEditIscrizioni = new ArrayList<>();
 
         //--Nella sottoclasse aggiunge a listaEditIscrizioni il Component specifico iniettato da @Id("xxx") <br>
         addEditIscrizionePolimer();
@@ -331,6 +324,16 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
 
         // @todo per adesso
         if (militeLoggato == null) {
+            return;
+        }// end of if cycle
+
+        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        if (tabelloneService.isStorico(turno)) {
+            if (array.isValid(listaEditIscrizioni)) {
+                for (EditIscrizionePolymer editIscrizione : listaEditIscrizioni) {
+                    editIscrizione.abilita(false);
+                }// end of for cycle
+            }// end of if cycle
             return;
         }// end of if cycle
 
@@ -424,6 +427,7 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         return false;
     }// end of method
 
+
     /**
      * Azione lanciata dal listener dei bottoni funzione o milite <br>
      */
@@ -431,24 +435,21 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
         editIscrizione.iscrizioneEntity.milite = militeLoggato;
         editIscrizione.militeButton.setText(editIscrizione.iscrizioneEntity.getMilite().getSigla());
         editIscrizione.inizio.setValue(turno.inizio);
-        editIscrizione.note.setValue(editIscrizione.iscrizioneEntity.getNote());
+        editIscrizione.note.setValue(editIscrizione.iscrizioneEntity.getNote() != null ? editIscrizione.iscrizioneEntity.getNote() : VUOTA);
         editIscrizione.fine.setValue(turno.fine);
         bottoniPolymer.setConfermaEnabled(true);
         regolaAbilitazioneIscrizioni();
     }// end of method
+
 
     /**
      * Azione lanciata dal listener dei bottoni funzione o milite <br>
      */
     public void cancellaMilite(EditIscrizionePolymer editIscrizione) {
         editIscrizione.iscrizioneEntity.milite = null;
-//        editIscrizione.militeButton.setText("");
-        editIscrizione.iscrizioneEntity.setInizio(LocalTime.MIDNIGHT);
-//        editIscrizione.inizio.setValue(LocalTime.MIDNIGHT);
-        editIscrizione.iscrizioneEntity.note=VUOTA;
-//        editIscrizione.note.setValue(VUOTA);
-        editIscrizione.iscrizioneEntity.setFine(LocalTime.MIDNIGHT);
-//        editIscrizione.fine.setValue(LocalTime.MIDNIGHT);
+        editIscrizione.iscrizioneEntity.inizio = turno.inizio;
+        editIscrizione.iscrizioneEntity.note = VUOTA;
+        editIscrizione.iscrizioneEntity.fine = turno.fine;
         bottoniPolymer.setConfermaEnabled(true);
         regolaAbilitazioneIscrizioni();
     }// end of method

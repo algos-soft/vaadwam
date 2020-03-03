@@ -360,7 +360,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         }// end of if cycle
 
         if (note != null) {
-            note.addValueChangeListener(e -> confermaOK());
+            note.addInputListener(e-> confermaOK());
         }// end of if cycle
 
         note.setEnabled(abilitata && iscrizioneEntity.milite != null);
@@ -400,6 +400,15 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
      */
     private void cancellaMilite() {
         handler.cancellaMilite(this);
+    }// end of method
+
+
+    /**
+     * Azione lanciata dal listener dei TimePicker inizio e fine e dal campo testo Note <br>
+     * Controlla il bottone 'registra' <br>
+     */
+    public void confermaOK() {
+        bottoniPolymer.setConfermaEnabled(true);
     }// end of method
 
 
@@ -482,12 +491,6 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
     }// end of method
 
 
-    /**
-     * Controlla il bottone 'registra' <br>
-     */
-    public void confermaOK() {
-        bottoniPolymer.setConfermaEnabled(true);
-    }// end of method
 
 
     /**
