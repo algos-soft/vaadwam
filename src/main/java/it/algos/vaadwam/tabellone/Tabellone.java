@@ -272,6 +272,7 @@ public class Tabellone extends AGridViewList {
      * Crea e aggiunge le colonne
      */
     public void setColumns(Grid grid) {
+//        long inizio = System.currentTimeMillis();
 
         // costruisce la colonna dei servizi
         addColumnServizio(grid);
@@ -280,6 +281,7 @@ public class Tabellone extends AGridViewList {
         for (int i = 0; i < numDays; i++) {
             addColumnsTurni(grid, startDay.plusDays(i));
         }// end of for cycle
+//        log.info("Costruzione tabellone in " + (System.currentTimeMillis()-inizio));
 
     }// end of method
 
@@ -342,7 +344,8 @@ public class Tabellone extends AGridViewList {
 
                 if (servizio != null) {
                     lastInType = (!servizio.getCode().equals(currentType));
-                    lastInType = lastInType && !servizio.orarioDefinito;
+                    lastInType = lastInType && servizio.ripetibile;
+                    lastInType = false; //@todo PROVVISORIO
                     servizioCell = appContext.getBean(ServizioCellPolymer.class, servizio, lastInType);
                     currentType = servizio.getCode();
                 }// end of if cycle
@@ -387,6 +390,7 @@ public class Tabellone extends AGridViewList {
         column.setSortable(false);
         column.setResizable(false);
     }// end of method
+
 
     /**
      * Crea l'header della colonna servizi <br>

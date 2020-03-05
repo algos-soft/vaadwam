@@ -149,8 +149,10 @@ public class MiliteList extends WamViewList {
         fixPreferenze();
 
         alertUser.add("Militi dell'associazione");
-        alertUser.add("Puoi modificare alcuni dati della tua scheda, senza cancellarla");
+        alertUser.add("Nome e cognome sono quelli che appaiono nel tabellone. Il nickname è quello di selezione al login");
+        alertUser.add("Non puoi cancellare la scheda ma puoi modificare nome, cognome, password, telefono, mail e indirizzo");
         alertUser.add("Le funzioni vengono modificate solo da un admin");
+        alertUser.add("Il nickname non può mai essere modificato");
         alertAdmin.add("Seleziona i militi attivi o lo storico o admin/dipendente/infermiere.");
         alertAdmin.add("I militi non si possono cancellare. Se non effettuano più turni, disabilitare il flag 'attivo' per spostarli nello 'storico.");
 

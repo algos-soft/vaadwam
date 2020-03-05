@@ -343,7 +343,7 @@ public class ServizioService extends WamService {
 
 
     /**
-     * Returns instances of the company <br>
+     * Returns instances <br>
      * Lista ordinata <br>
      *
      * @return lista ordinata di tutte le entities
@@ -360,6 +360,29 @@ public class ServizioService extends WamService {
                 items = findAllCroci();
             }// end of if cycle
         }// end of if/else cycle
+
+        return items;
+    }// end of method
+
+
+    /**
+     * Returns instances <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata
+     */
+    public List<Servizio> findAllVisibili() {
+        List<Servizio> items = null;
+        List<Servizio> tuttiServizi = findAll();
+
+        if (array.isValid(tuttiServizi)) {
+            items = new ArrayList<>();
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isVisibile()) {
+                    items.add(serv);
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
 
         return items;
     }// end of method
@@ -657,7 +680,7 @@ public class ServizioService extends WamService {
                 listaFunzioni.addAll(listaFunzioniObbligatorie);
             }// end of if cycle
 
-             if (array.isValid(listaFunzioniFacoltative)) {
+            if (array.isValid(listaFunzioniFacoltative)) {
                 listaFunzioni.addAll(listaFunzioniFacoltative);
             }// end of if cycle
 

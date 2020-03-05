@@ -135,7 +135,7 @@ public class TabelloneService extends AService {
 
 
     /**
-     * Costruisce una lista di righe da visualizzare nella grid. Una per ogni servizio <br>
+     * Costruisce una lista di righe da visualizzare nella grid. Una per ogni servizio visibile <br>
      *
      * @param giornoIniziale     del tabellonesuperato
      * @param giorniVisualizzati nel tabellonesuperato
@@ -144,19 +144,12 @@ public class TabelloneService extends AService {
         List<Riga> gridRigheList = null;
         Riga riga;
         LocalDate giornoFinale = giornoIniziale.plusDays(giorniVisualizzati - 1);
-        List<Servizio> servizi = servizioService.findAll();
+        List<Servizio> servizi = servizioService.findAllVisibili();
         List<Turno> turni;
-        Turno turno;
 
         gridRigheList = new ArrayList<>();
 
         for (Servizio servizio : servizi) {
-//            turni = new ArrayList<>();
-//            for (int k = 0; k < giorniVisualizzati; k++) {
-//                turno = turnoService.newEntity(giornoIniziale.plusDays(k), servizio);
-//                turni.add(turno);
-//            }// end of for cycle
-
             turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
             riga = rigaService.newEntity(giornoIniziale, servizio, turni);
             gridRigheList.add(riga);
