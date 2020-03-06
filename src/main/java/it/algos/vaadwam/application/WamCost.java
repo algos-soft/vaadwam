@@ -38,6 +38,7 @@ public class WamCost {
     public final static String KEY_WAM_CONTEXT = "wamcontext";
 
     public final static String TAG_TURNO_EDIT = "turnoedit";
+    public final static String TAG_TURNO_EDIT_OLD = "turnoeditold";
 
     public final static String TAG_TURNO_EDIT_UNO = TAG_TURNO_EDIT + "uno";
 

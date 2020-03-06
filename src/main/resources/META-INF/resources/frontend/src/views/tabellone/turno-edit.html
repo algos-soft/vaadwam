@@ -1,0 +1,62 @@
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html">
+
+<!--Doppia quadra è 'One way binding' mentre doppia graffa è 'Two way binding'-->
+<dom-module id="turno-edit">
+    <template>
+
+        <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+        <div style="display: flex; flex-direction:column; align-items: center;margin-top: 1em;">
+            <div style="font-size: 120%; display: flex; flex-direction:row; align-items: initial">
+                [[giorno]]
+            </div>
+            <div style="font-size: 120%; font-weight: bold">[[servizio]]</div>
+        </div>
+
+        <template is="dom-if" if=[[usaOrario]]>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
+                [[orario]]
+            </div>
+        </template>
+        <template is="dom-if" if=[[notUsaOrario]]>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker id="inizioExtraID" on-value-changed="handleClickInizioExtra"
+                                        value="{{inizioExtra}}"
+                                        style="width: 7em">{{inizioExtra}}
+                    </vaadin-time-picker>
+                    <vaadin-text-field id="spazioVuoto" style="width: 2em;" disabled></vaadin-text-field>
+                    <vaadin-time-picker id="fineExtraID" on-value-changed="handleClickFineExtra" value="{{fineExtra}}"
+                                        style="width: 7em"></vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+
+        <!--area dei bottoni-->
+        <!--questi vengono costruiti completamente nel wrapper TurnoEditPolymer.java-->
+        <!--e collegati tramite @Id("annulla") e @Id("conferma")-->
+        <!--le regolazioni ed i listener degli eventi rimangono esclusivamente sul server-->
+        <!--qui rimane solamente la parte grafica (senza logica)-->
+        <div style="display: flex; flex-direction:row; align-items: center;  justify-content: center; margin-top:1em">
+            <vaadin-button id="annulla" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised secondary"></vaadin-button>
+            <vaadin-button id="conferma" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised primary"></vaadin-button>
+        </div>
+
+    </template>
+
+    <script>
+        class TurnoEditClass extends Polymer.Element {
+            static get is() {
+                return 'turno-edit'
+            }
+        }
+
+        customElements.define(TurnoEditClass.is, TurnoEditClass);
+    </script>
+
+
+</dom-module>
