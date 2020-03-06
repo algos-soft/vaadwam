@@ -52,17 +52,6 @@ public class TurnoEditIscrizioniQuattroPolymer extends TurnoEditIscrizioniTrePol
     }// end of method
 
 
-//    /**
-//     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
-//     * Invocare SEMPRE anche il metodo della superclasse
-//     */
-//    @Override
-//    protected void iniziaIscrizione() {
-//        super.iniziaIscrizione();
-//        quarta.inizia(turno, turno.iscrizioni.get(3), bottoniPolymer, abilitata);
-//    }// end of method
-
-
     /**
      * Evento lanciato dal bottone Conferma della ButtonsBar <br>
      * Recupera i dati di tutte le iscrizioni presenti <br>

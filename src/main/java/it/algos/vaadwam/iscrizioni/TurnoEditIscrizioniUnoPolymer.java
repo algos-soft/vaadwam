@@ -53,21 +53,6 @@ public class TurnoEditIscrizioniUnoPolymer extends TurnoEditIscrizioniPolymer {
     }// end of method
 
 
-//    /**
-//     * Regola (nella sottoclasse) i componenti iniettati nel polymer html <br>
-//     * Invocare SEMPRE anche il metodo della superclasse
-//     */
-//    @Override
-//    protected void iniziaIscrizione() {
-//        listaEditIscrizioni.add(0, prima);
-//        prima.inizia(turno, turno.iscrizioni.get(0), bottoniPolymer);
-//        proxyEditIscrizioni.add(0, prima);
-//        super.iniziaIscrizione();
-//        boolean abilitata = listaEditIscrizioniAbilitate.contains(prima) && listaEditIscrizioniAbilitate.get(listaEditIscrizioniAbilitate.indexOf(prima)).abilitata;
-//        prima.inizia(abilitata);
-//    }// end of method
-
-
     /**
      * Evento lanciato dal bottone Conferma della ButtonsBar <br>
      * Recupera i dati di tutte le iscrizioni presenti <br>
