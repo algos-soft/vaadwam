@@ -13,6 +13,7 @@ import it.algos.vaadwam.modules.turno.Turno;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
 
@@ -30,6 +31,7 @@ import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
 @Tag("turno-show-servizio")
 @HtmlImport("src/views/iscrizioni/turno-show-servizio.html")
 public class TurnoShowServizioPolymer extends PolymerTemplate<TurnoShowServizioPolymer.ServizioModel> {
+
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -100,9 +102,17 @@ public class TurnoShowServizioPolymer extends PolymerTemplate<TurnoShowServizioP
                 modello.setOrario(orario);
             }// end of if cycle
         }// end of if cycle
-
+        ;
+        modello.setUsaOrario(servizio.isOrarioDefinito());
+        modello.setNotUsaOrario(!servizio.isOrarioDefinito());
+        modello.setInizioExtra(LocalTime.MIDNIGHT.toString());
+        modello.setFineExtra(LocalTime.MIDNIGHT.toString());
     }// end of method
 
+    private void handleClickInizioExtra() {
+    }// end of method
+    private void handleClickInizioExtra(Object alfa) {
+    }// end of method
 
     /**
      * Desxcrizione del servizio <br>
@@ -124,6 +134,18 @@ public class TurnoShowServizioPolymer extends PolymerTemplate<TurnoShowServizioP
         void setOrario(String orario);
 
         void setServizio(String servizio);
+
+        String getInizioExtra();
+
+        void setInizioExtra(String inizioExtra);
+
+        String getFineExtra();
+
+        void setFineExtra(String fineExtra);
+
+        void setUsaOrario(boolean usaOrario);
+
+        void setNotUsaOrario(boolean notUsaOrario);
 
     }// end of interface
 

@@ -67,6 +67,14 @@
                 border-bottom: 0.05em solid;
             }
 
+            #nuovo {
+                display: flex;
+                justify-content: center;
+                height: 8mm;
+                width: 8mm;
+                color:orangered;
+                background-color: gainsboro;
+            }
         </style>
 
         <div id="container">
@@ -77,9 +85,9 @@
                 <div id="servizioservizio">{{servizio.code}}</div>
                 <template is="dom-if" if={{lastInType}}>
                     <div style="flex-grow:1"></div>
-                    <div style="display: flex; justify-content: center;">
-                        <button>Aggiungi...</button>
-                    </div>
+                        <vaadin-button id="nuovo">
+                            <iron-icon icon="lumo:plus"></iron-icon><span></span>
+                        </vaadin-button>
                 </template>
             </div>
 

@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -207,7 +206,7 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TurnoEditIscrizioni.Ser
     private TabelloneService tabelloneService;
 
     //--modello dati interno
-    private ServizioModel modello =getModel();
+    private ServizioModel modello = getModel();
 
 
     /**
@@ -304,22 +303,7 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TurnoEditIscrizioni.Ser
 //    @PostConstruct
     public void layoutPolymer() {
         this.turnoEntity = turno;
-//        this.funzioneEntity = iscrizioneEntity.getFunzione();
-//        this.militeEntity = iscrizioneEntity.getMilite();
-//        this.militeLoggato = wamService.getMilite();
-//        this.bottoniPolymer = bottoniPolymer;
-
         inizia(turno);
-//        fixAbilitazione();
-//        fixColor();
-//        fixIcona();
-//        fixFunzCode();
-//        fixMilite();
-//        fixListener();
-//        fixInizio();
-//        fixNote();
-//        fixFine();
-
     }// end of method
 
 

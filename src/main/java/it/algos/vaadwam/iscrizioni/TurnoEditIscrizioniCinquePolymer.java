@@ -9,37 +9,36 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import static it.algos.vaadwam.application.WamCost.TAG_TURNO_EDIT_TRE;
+import static it.algos.vaadwam.application.WamCost.TAG_TURNO_EDIT_CINQUE;
 
 /**
  * Project vaadwam
  * Created by Algos
  * User: gac
- * Date: sab, 10-ago-2019
- * Time: 15:55
+ * Date: lun, 02-mar-2020
+ * Time: 08:19
  * <p>
- * Java wrapper of the polymer element `turno-edit-iscrizioni-tre`
+ * Java wrapper of the polymer element `turno-edit-iscrizioni-cinque` <br>
  * <p>
  * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
  * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
- * È una sottoclasse di TurnoEditIscrizioniPolymer e serve unicamente per dichiarare il componente @Id("terza") <br>
- * Il componente è legato al polymer <edit-iscrizione id="terza"></edit-iscrizione> <br>
+ * È una sottoclasse di TurnoEditIscrizioniPolymer e serve unicamente per dichiarare il componente @Id("quinta") <br>
+ * Il componente è legato al polymer <edit-iscrizione id="quinta"></edit-iscrizione> <br>
  * Non può quindi essere creato all'interno di un ciclo 'if' <br>
  */
-@Route(value = TAG_TURNO_EDIT_TRE)
-@Tag("turno-edit-iscrizioni-tre")
-@HtmlImport("src/views/iscrizioni/turno-edit-iscrizioni-tre.html")
+@Route(value = TAG_TURNO_EDIT_CINQUE)
+@Tag("turno-edit-iscrizioni-cinque")
+@HtmlImport("src/views/iscrizioni/turno-edit-iscrizioni-cinque.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Viewport("width=device-width")
-public class TurnoEditIscrizioniTrePolymer extends TurnoEditIscrizioniDuePolymer {
-
+public class TurnoEditIscrizioniCinquePolymer extends TurnoEditIscrizioniQuattroPolymer {
 
     /**
      * Component iniettato nel polymer html con lo stesso ID <br>
      */
-    @Id("terza")
-    public EditIscrizionePolymer terza;
+    @Id("quinta")
+    public EditIscrizionePolymer quinta;
 
     /**
      * Metodo chiamato da @BeforeEvent alla creazione della view nel metodo setParameter();
@@ -47,22 +46,8 @@ public class TurnoEditIscrizioniTrePolymer extends TurnoEditIscrizioniDuePolymer
      * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
      */
     protected void addEditIscrizionePolimer() {
-        listaEditIscrizioni.add(0, terza);
+        listaEditIscrizioni.add(0, quinta);
         super.addEditIscrizionePolimer();
-    }// end of method
-
-
-    /**
-     * Evento lanciato dal bottone Conferma della ButtonsBar <br>
-     * Recupera i dati di tutte le iscrizioni presenti <br>
-     * Controlla che il milite non sia già segnato nel turno <br>
-     * Controlla che il milite non sia già segnato in un altro turno della stessa giornata <br>
-     * Metodo sovrascritto. Invocare DOPO il metodo della superclasse <br>
-     */
-    @Override
-    protected void conferma() {
-        bind(turno, 3, terza);
-        super.conferma();
     }// end of method
 
 }// end of class
