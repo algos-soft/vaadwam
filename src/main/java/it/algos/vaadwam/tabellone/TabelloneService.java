@@ -149,11 +149,13 @@ public class TabelloneService extends AService {
 
         gridRigheList = new ArrayList<>();
 
-        for (Servizio servizio : servizi) {
-            turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
-            riga = rigaService.newEntity(giornoIniziale, servizio, turni);
-            gridRigheList.add(riga);
-        }// end of for cycle
+        if (servizi!=null) {
+            for (Servizio servizio : servizi) {
+                turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
+                riga = rigaService.newEntity(giornoIniziale, servizio, turni);
+                gridRigheList.add(riga);
+            }// end of for cycle
+        }// end of if cycle
 
         return gridRigheList;
     }// end of method
