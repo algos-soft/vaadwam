@@ -99,6 +99,7 @@ public class TabelloneService extends AService {
     @Autowired
     protected CroceService croceService;
 
+
     /**
      * Costruttore @Autowired <br>
      * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
@@ -149,7 +150,7 @@ public class TabelloneService extends AService {
 
         gridRigheList = new ArrayList<>();
 
-        if (servizi!=null) {
+        if (servizi != null) {
             for (Servizio servizio : servizi) {
                 turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
                 riga = rigaService.newEntity(giornoIniziale, servizio, turni);
@@ -238,7 +239,7 @@ public class TabelloneService extends AService {
      * Colore della iscrizione in funzione della data corrente <br>
      * I periodi di colore cambiano da Croce a Croce <br>
      */
-    public EAWamColore getColoreIscrizione(Turno turno,Iscrizione iscrizione) {
+    public EAWamColore getColoreIscrizione(Turno turno, Iscrizione iscrizione) {
         EAWamColore colore = EAWamColore.creabile;
         int critico = 2; //@todo valori diversi per ogni croce. Leggere da preferenze
         int semicritico = 4;//@todo valori diversi per ogni croce. Leggere da preferenze
@@ -303,7 +304,6 @@ public class TabelloneService extends AService {
 
         return colore;
     }// end of method
-
 
 
     /**
