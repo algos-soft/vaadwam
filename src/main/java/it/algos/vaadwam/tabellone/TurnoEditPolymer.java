@@ -60,17 +60,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Viewport("width=device-width")
 public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements HasUrlParameter<String> {
 
-//    /**
-//     * Component iniettato nel polymer html con lo stesso ID <br>
-//     */
-//    @Id("giorno")
-//    public Span giorno;
-//
-//    /**
-//     * Component iniettato nel polymer html con lo stesso ID <br>
-//     */
-//    @Id("servizio")
-//    public Span servizio;
 
     /**
      * Component iniettato nel polymer html con lo stesso ID <br>
@@ -103,28 +92,30 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
-    protected TurnoService turnoService;
+    private TurnoService turnoService;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
      * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
-    protected ServizioService servizioService;
+    private ServizioService servizioService;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
      * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
-    protected ADateService dateService;
+    private ADateService dateService;
 
     //--property bean
-    protected Turno turno = null;
+    private Turno turno = null;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -187,7 +178,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      *
      * @param turnoKey per recuperare l'istanza di Turno
      */
-    protected void elaboraParameter(String turnoKey) {
+    private void elaboraParameter(String turnoKey) {
         if (text.isValid(turnoKey)) {
             turno = turnoService.findById(turnoKey);
         }// end of if cycle
@@ -237,7 +228,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Il turno arriva come parametro di @Route alla classe TurnoEditIscrizioniPolymer <br>
      * Invocato dal metodo TurnoEditIscrizioniPolymer.setParameter() della sottoclasse <br>
      */
-    public void layoutPolymer() {
+    private void layoutPolymer() {
         fixGiorno();
         fixServizio();
         fixOrario();
@@ -331,46 +322,46 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     }// end of method
 
 
-    public void setAnnullaText(String annullaText) {
+    private void setAnnullaText(String annullaText) {
         annulla.setText(annullaText != null ? annullaText : "");
     }// end of method
 
 
-    public void setConfermaText(String confermaText) {
+    private void setConfermaText(String confermaText) {
         conferma.setText(confermaText != null ? confermaText : "");
     }// end of method
 
 
-    public void setAnnullaIcon(VaadinIcon annullaIcon) {
+    private void setAnnullaIcon(VaadinIcon annullaIcon) {
         if (annullaIcon != null) {
             annulla.setIcon(new Icon(annullaIcon));
         }// end of if cycle
     }// end of method
 
 
-    public void setConfermaIcon(VaadinIcon confermaIcon) {
+    private void setConfermaIcon(VaadinIcon confermaIcon) {
         if (confermaIcon != null) {
             conferma.setIcon(new Icon(confermaIcon));
         }// end of if cycle
     }// end of method
 
 
-    public void setAnnullaEnabled(boolean annullaEnabled) {
+    private void setAnnullaEnabled(boolean annullaEnabled) {
         annulla.setEnabled(annullaEnabled);
     }// end of method
 
 
-    public void setConfermaEnabled(boolean confermaEnabled) {
+    private void setConfermaEnabled(boolean confermaEnabled) {
         conferma.setEnabled(confermaEnabled);
     }// end of method
 
 
-    public void setAnnullaTooltips(String toolTips) {
+    private void setAnnullaTooltips(String toolTips) {
         annulla.getElement().setAttribute("title", toolTips);
     }// end of method
 
 
-    public void setConfermaTooltips(String toolTips) {
+    private void setConfermaTooltips(String toolTips) {
         conferma.getElement().setAttribute("title", toolTips);
     }// end of method
 
