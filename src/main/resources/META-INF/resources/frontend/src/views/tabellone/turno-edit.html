@@ -6,7 +6,6 @@
 <!--Doppia quadra è 'One way binding' mentre doppia graffa è 'Two way binding'-->
 <dom-module id="turno-edit">
     <template>
-
         <!--form centrato orizzontalmente nella pagina, contiene tutto-->
         <div style="display: flex; flex-direction:column; align-items: center;margin-top: 1em;">
             <div style="font-size: 120%; display: flex; flex-direction:row; align-items: initial">
@@ -23,12 +22,15 @@
         <template is="dom-if" if=[[notUsaOrario]]>
             <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
                 <div style="display: flex; flex-direction:row; align-items: center;">
-                    <vaadin-time-picker id="inizioExtraID" on-value-changed="handleClickInizioExtra"
+                    <vaadin-time-picker on-value-changed="handleChangeInizioExtra"
                                         value="{{inizioExtra}}"
+                                        step="900"
                                         style="width: 7em">{{inizioExtra}}
                     </vaadin-time-picker>
                     <vaadin-text-field id="spazioVuoto" style="width: 2em;" disabled></vaadin-text-field>
-                    <vaadin-time-picker id="fineExtraID" on-value-changed="handleClickFineExtra" value="{{fineExtra}}"
+                    <vaadin-time-picker on-value-changed="handleChangeFineExtra"
+                                        value="{{fineExtra}}"
+                                        step="900"
                                         style="width: 7em"></vaadin-time-picker>
                 </div>
             </div>
@@ -45,8 +47,8 @@
             <vaadin-button id="conferma" style="width:140px; margin-left:1em; margin-right:1em"
                            theme="raised primary"></vaadin-button>
         </div>
-
     </template>
+
 
     <script>
         class TurnoEditClass extends Polymer.Element {

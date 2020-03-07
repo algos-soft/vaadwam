@@ -1084,7 +1084,7 @@ public class MigrationService extends AService {
             }// end of if cycle
         }// end of if cycle
 
-        if (numeroFunzioniObbligatorie < 4 ) {
+        if (numeroFunzioniObbligatorie < 4) {
             funz = getFunzione(croceNew, servizioOld.getFunzione4_id());
             if (funz != null) {
                 listaFunzioni.add(funz);
@@ -1527,15 +1527,19 @@ public class MigrationService extends AService {
         //--cominciamo a cercare se c'è
         turnoNew = (Turno) turnoService.findById(croceNew.code + turnoService.getPropertyUnica(giornoNew, servizio));
 
-        turnoNew = turnoService.newEntity(
-                croceNew,
-                giornoNew,
-                servizio,
-                inizioNew,
-                fineNew,
-                iscrizioni,
-                titoloExtra,
-                localitaExtra);
+        if (turnoNew == null) {
+            turnoNew = turnoService.newEntity(
+                    croceNew,
+                    giornoNew,
+                    servizio,
+                    inizioNew,
+                    fineNew,
+                    iscrizioni,
+                    titoloExtra,
+                    localitaExtra);
+        } else {
+            return status;
+        }// end of if/else cycle
 
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
         if (iscrizioni != null) {

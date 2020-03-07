@@ -1,30 +1,23 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Viewport;
+import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.templatemodel.TemplateModel;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
-import it.algos.vaadwam.iscrizioni.ButtonsBar;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
@@ -271,6 +264,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         }// end of if cycle
     }// end of method
 
+
     /**
      * Orario (eventuale) del turno <br>
      */
@@ -284,15 +278,20 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
         if (servizio != null) {
             if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-                orario = servizioService.getOrario(servizio);
-                getModel().setOrario(orario);
+                if (servizio.isOrarioDefinito()) {
+                    orario = servizioService.getOrarioLungo(servizio);
+                    getModel().setOrario(orario);
+                    getModel().setUsaOrario(true);
+                    getModel().setNotUsaOrario(false);
+                } else {
+                    getModel().setInizioExtra(LocalTime.of(4, 35).toString());
+                    getModel().setFineExtra(LocalTime.of(21, 44).toString());
+                    getModel().setUsaOrario(false);
+                    getModel().setNotUsaOrario(true);
+                }// end of if/else cycle
             }// end of if cycle
         }// end of if cycle
 
-        getModel().setUsaOrario(servizio != null && servizio.isOrarioDefinito());
-        getModel().setNotUsaOrario(servizio != null && !servizio.isOrarioDefinito());
-        getModel().setInizioExtra(LocalTime.MIDNIGHT.toString());
-        getModel().setFineExtra(LocalTime.MIDNIGHT.toString());
     }// end of method
 
 
@@ -301,13 +300,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Possono essere singolarmente modificate anche esternamente <br>
      */
     private void fixAnnulla() {
-        setAnnullaText("Annulla");
-        setAnnullaIcon(VaadinIcon.ARROW_LEFT);
+        annulla.setText("Annulla");
+        annulla.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             annulla.addClickShortcut(Key.ARROW_LEFT);
         }// end of if cycle
-        annulla.addClickListener(e -> ritorno());
-        this.setAnnullaTooltips("Ritorno al tabellone");
+        annulla.addClickListener(e -> annulla());
+        annulla.getElement().setAttribute("title", "Ritorno al tabellone");
     }// end of method
 
 
@@ -316,81 +315,95 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Possono essere singolarmente modificate anche esternamente <br>
      */
     private void fixConferma() {
-        setConfermaText("Conferma");
-        setConfermaIcon(VaadinIcon.CHECK);
-        setConfermaEnabled(false);
-    }// end of method
-
-
-    private void setAnnullaText(String annullaText) {
-        annulla.setText(annullaText != null ? annullaText : "");
-    }// end of method
-
-
-    private void setConfermaText(String confermaText) {
-        conferma.setText(confermaText != null ? confermaText : "");
-    }// end of method
-
-
-    private void setAnnullaIcon(VaadinIcon annullaIcon) {
-        if (annullaIcon != null) {
-            annulla.setIcon(new Icon(annullaIcon));
+        conferma.setText("Conferma");
+        conferma.setIcon(new Icon(VaadinIcon.CHECK));
+        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+            conferma.addClickShortcut(Key.ARROW_RIGHT);
         }// end of if cycle
+        conferma.addClickListener(e -> conferma());
+        conferma.setEnabled(false);
     }// end of method
 
 
-    private void setConfermaIcon(VaadinIcon confermaIcon) {
-        if (confermaIcon != null) {
-            conferma.setIcon(new Icon(confermaIcon));
-        }// end of if cycle
-    }// end of method
+//    public Registration addAnnullalListener(ComponentEventListener<TurnoEditPolymer.AnnullaEvent> listener) {
+//        return annulla.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.AnnullaEvent(this, true)));
+//    }// end of method
+//
+//
+//    public Registration addConfermaListener(ComponentEventListener<TurnoEditPolymer.ConfermaEvent> listener) {
+//        return conferma.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.ConfermaEvent(this, true)));
+//    }// end of method
 
 
-    private void setAnnullaEnabled(boolean annullaEnabled) {
-        annulla.setEnabled(annullaEnabled);
-    }// end of method
-
-
-    private void setConfermaEnabled(boolean confermaEnabled) {
-        conferma.setEnabled(confermaEnabled);
-    }// end of method
-
-
-    private void setAnnullaTooltips(String toolTips) {
-        annulla.getElement().setAttribute("title", toolTips);
-    }// end of method
-
-
-    private void setConfermaTooltips(String toolTips) {
-        conferma.getElement().setAttribute("title", toolTips);
-    }// end of method
-
-
-    public Registration addAnnullalListener(ComponentEventListener<TurnoEditPolymer.AnnullaEvent> listener) {
-        return annulla.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.AnnullaEvent(this, true)));
-    }// end of method
-
-
-    public Registration addConfermaListener(ComponentEventListener<TurnoEditPolymer.ConfermaEvent> listener) {
-        return conferma.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.ConfermaEvent(this, true)));
-    }// end of method
-
-    private void ritorno() {
+    private void annulla() {
         getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
 
 
-    public static class AnnullaEvent extends ComponentEvent<TurnoEditPolymer> {
-        public AnnullaEvent(TurnoEditPolymer source, boolean fromClient) {
-            super(source, fromClient);
-        }// end of constructor
+    private void conferma() {
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
 
 
-    public static class ConfermaEvent extends ComponentEvent<TurnoEditPolymer> {
-        public ConfermaEvent(TurnoEditPolymer source, boolean fromClient) {
-            super(source, fromClient);
-        }// end of constructor
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * <p>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     */
+    @EventHandler
+    public void handleChangeInizioExtra() {
+        String inizioText = getModel().getInizioExtra();
+
+        turno.inizio = LocalTime.parse(inizioText);
+        conferma.setEnabled(true);
     }// end of method
+
+
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * <p>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     */
+    @EventHandler
+    public void handleChangeFineExtra() {
+        String fineText = getModel().getFineExtra();
+
+        turno.fine = LocalTime.parse(fineText);
+        conferma.setEnabled(true);
+    }// end of method
+
+
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     */
+//    @EventHandler
+//    void handleClickMilite(@ModelItem IscrizioneModel iscrizione) {
+//    }// end of method
+//
+//
+//    public static class AnnullaEvent extends ComponentEvent<TurnoEditPolymer> {
+//
+//        public AnnullaEvent(TurnoEditPolymer source, boolean fromClient) {
+//            super(source, fromClient);
+//        }// end of constructor
+//
+//    }// end of method
+//
+//
+//    public static class ConfermaEvent extends ComponentEvent<TurnoEditPolymer> {
+//
+//        public ConfermaEvent(TurnoEditPolymer source, boolean fromClient) {
+//            super(source, fromClient);
+//        }// end of constructor
+//
+//    }// end of method
 
 }// end of class

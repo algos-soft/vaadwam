@@ -341,7 +341,7 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TurnoEditIscrizioni.Ser
 
         if (servizio != null) {
             if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-                orario = servizioService.getOrario(servizio);
+                orario = servizioService.getOrarioBreve(servizio);
                 modello.setOrario(orario);
             }// end of if cycle
         }// end of if cycle
