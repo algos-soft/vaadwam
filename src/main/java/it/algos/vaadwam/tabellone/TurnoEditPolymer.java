@@ -18,6 +18,8 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
@@ -44,6 +46,8 @@ import static it.algos.vaadwam.application.WamCost.*;
  * <p>
  * Java wrapper of the polymer element `turno-edit` <br>
  * <p>
+ * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
+ * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
  */
 @Route(value = TAG_TURNO_EDIT)
 @Tag("turno-edit")
@@ -218,13 +222,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     /**
      * Regola i dati da presentare in base al turno selezionato <br>
-     * Il turno arriva come parametro di @Route alla classe TurnoEditIscrizioniPolymer <br>
-     * Invocato dal metodo TurnoEditIscrizioniPolymer.setParameter() della sottoclasse <br>
+     * Il turno arriva come parametro di @Route a questa classe <br>
+     * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
      */
     private void layoutPolymer() {
         fixGiorno();
         fixServizio();
         fixOrario();
+        fixIscrizioni();
         fixAnnulla();
         fixConferma();
     }// end of method
@@ -250,7 +255,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Descrizione del servizio <br>
+     * Descrizione estesa del servizio <br>
      */
     private void fixServizio() {
         Servizio servizio = null;
@@ -267,6 +272,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     /**
      * Orario (eventuale) del turno <br>
+     * Se il servizio ha un orario definito, lo presenta in html come 'div' <br>
+     * Se il servizio non ha un orario definito, lo presenta in html come due 'time-picker' <br>
      */
     private void fixOrario() {
         String orario = "";
@@ -281,17 +288,46 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                 if (servizio.isOrarioDefinito()) {
                     orario = servizioService.getOrarioLungo(servizio);
                     getModel().setOrario(orario);
-                    getModel().setUsaOrario(true);
-                    getModel().setNotUsaOrario(false);
+                    getModel().setUsaOrarioLabel(true);
+                    getModel().setUsaOrarioPicker(false);
                 } else {
-                    getModel().setInizioExtra(LocalTime.of(4, 35).toString());
-                    getModel().setFineExtra(LocalTime.of(21, 44).toString());
-                    getModel().setUsaOrario(false);
-                    getModel().setNotUsaOrario(true);
+                    getModel().setInizioExtra(servizio.getInizio().toString());
+                    getModel().setFineExtra(servizio.getFine().toString());
+                    getModel().setUsaOrarioLabel(false);
+                    getModel().setUsaOrarioPicker(true);
                 }// end of if/else cycle
             }// end of if cycle
         }// end of if cycle
 
+    }// end of method
+
+
+    /**
+     * Regolazione delle iscrizioni <br>
+     * Possono essere da 1 a 5 <br>
+     * Ogni iscrizione (su due righe) ha:
+     * funzione (bottone)
+     * milite (bottone)
+     * inizio (picker)
+     * note (text)
+     * fine (picker)
+     */
+    private void fixIscrizioni() {
+        List<Iscrizione> iscrizioni = turno != null ? turno.iscrizioni : null;
+        Iscrizione prima = iscrizioni != null && iscrizioni.size() > 0 ? iscrizioni.get(0) : null;
+        LocalTime inizio = prima != null ? prima.inizio : null;
+        LocalTime fine = prima != null ? prima.fine : null;
+        Servizio servizio = turno != null ? turno.getServizio() : null;
+        Milite milite = prima != null ? prima.milite : null;
+
+        getModel().setPrimaIscrizione(true);
+
+        getModel().setIconaPrima("");
+        getModel().setMilitePrima(milite != null ? milite.username : VUOTA);
+
+        getModel().setInizioPrima(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
+        getModel().setNotePrima(prima != null ? prima.note : VUOTA);
+        getModel().setFinePrima(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
     }// end of method
 
 
@@ -318,30 +354,10 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         conferma.setText("Conferma");
         conferma.setIcon(new Icon(VaadinIcon.CHECK));
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-            conferma.addClickShortcut(Key.ARROW_RIGHT);
+            conferma.addClickShortcut(Key.ENTER);
         }// end of if cycle
         conferma.addClickListener(e -> conferma());
         conferma.setEnabled(false);
-    }// end of method
-
-
-//    public Registration addAnnullalListener(ComponentEventListener<TurnoEditPolymer.AnnullaEvent> listener) {
-//        return annulla.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.AnnullaEvent(this, true)));
-//    }// end of method
-//
-//
-//    public Registration addConfermaListener(ComponentEventListener<TurnoEditPolymer.ConfermaEvent> listener) {
-//        return conferma.addClickListener(e -> listener.onComponentEvent(new TurnoEditPolymer.ConfermaEvent(this, true)));
-//    }// end of method
-
-
-    private void annulla() {
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-    }// end of method
-
-
-    private void conferma() {
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
 
 
@@ -351,6 +367,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
      * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
      * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     * <p>
+     * Presente solo se il servizio è senza orario fisso <br>
      */
     @EventHandler
     public void handleChangeInizioExtra() {
@@ -367,6 +385,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
      * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
      * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     * <p>
+     * Presente solo se il servizio è senza orario fisso <br>
      */
     @EventHandler
     public void handleChangeFineExtra() {
@@ -377,33 +397,59 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     }// end of method
 
 
-//    /**
-//     * Java event handler on the server, run asynchronously <br>
-//     * <p>
-//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-//     */
-//    @EventHandler
-//    void handleClickMilite(@ModelItem IscrizioneModel iscrizione) {
-//    }// end of method
-//
-//
-//    public static class AnnullaEvent extends ComponentEvent<TurnoEditPolymer> {
-//
-//        public AnnullaEvent(TurnoEditPolymer source, boolean fromClient) {
-//            super(source, fromClient);
-//        }// end of constructor
-//
-//    }// end of method
-//
-//
-//    public static class ConfermaEvent extends ComponentEvent<TurnoEditPolymer> {
-//
-//        public ConfermaEvent(TurnoEditPolymer source, boolean fromClient) {
-//            super(source, fromClient);
-//        }// end of constructor
-//
-//    }// end of method
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * <p>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     */
+    @EventHandler
+    public void handleChangePrima() {
+        String inizioText = getModel().getInizioPrima();
+        String noteText = getModel().getNotePrima();
+        String fineText = getModel().getFinePrima();
+        List<Iscrizione> iscrizioni = turno != null ? turno.iscrizioni : null;
+        Iscrizione prima = iscrizioni != null && iscrizioni.size() > 0 ? iscrizioni.get(0) : null;
+
+        if (prima != null) {
+            prima.inizio = LocalTime.parse(inizioText);
+            prima.note = noteText;
+            prima.fine = LocalTime.parse(fineText);
+            conferma.setEnabled(true);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Evento lanciato dal bottone Annulla <br>
+     * <p>
+     * Torna al tabellone <br>
+     */
+    public void annulla() {
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+    }// end of method
+
+
+    /**
+     * Evento lanciato dal bottone Conferma <br>
+     * <p>
+     * Recupera i dati di tutte le iscrizioni presenti <br>
+     * Controlla che il milite non sia già segnato nel turno <br>
+     * Controlla che il milite non sia già segnato in un altro turno della stessa giornata <br>
+     * Registra le modifiche (eventuali) al turno <br>
+     * Torna al tabellone <br>
+     */
+    public void conferma() {
+
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+//        for (Iscrizione iscrizione : turno.iscrizioni) {
+//            iscrizioneService.setInizio(iscrizione, turno);
+//        }// end of for cycle
+        //@todo dovrebbero arrivare già regolati dal click sul nome
+
+        turnoService.save(turno);
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+    }// end of method
 
 }// end of class

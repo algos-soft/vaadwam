@@ -6,6 +6,8 @@
 <!--Doppia quadra è 'One way binding' mentre doppia graffa è 'Two way binding'-->
 <dom-module id="turno-edit">
     <template>
+
+        <!--servizio-->
         <!--form centrato orizzontalmente nella pagina, contiene tutto-->
         <div style="display: flex; flex-direction:column; align-items: center;margin-top: 1em;">
             <div style="font-size: 120%; display: flex; flex-direction:row; align-items: initial">
@@ -14,12 +16,13 @@
             <div style="font-size: 120%; font-weight: bold">[[servizio]]</div>
         </div>
 
-        <template is="dom-if" if=[[usaOrario]]>
+        <template is="dom-if" if=[[usaOrarioLabel]]>
             <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
                 [[orario]]
             </div>
         </template>
-        <template is="dom-if" if=[[notUsaOrario]]>
+
+        <template is="dom-if" if=[[usaOrarioPicker]]>
             <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
                 <div style="display: flex; flex-direction:row; align-items: center;">
                     <vaadin-time-picker on-value-changed="handleChangeInizioExtra"
@@ -35,6 +38,45 @@
                 </div>
             </div>
         </template>
+        <!--end servizio-->
+
+        <!--prima iscrizione-->
+        <template is="dom-if" if=[[primaIscrizione]]>
+            <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em">
+
+                <!--prima riga-->
+                <div style="display: flex; flex-direction:row; align-items: center; ">
+                    <vaadin-button on-click="handleClickMilite"
+                                   value="{{iconaPrima}}"
+                                   style="width: 8em;">
+                    </vaadin-button>
+                    <vaadin-button on-click="handleClickMilite"
+                                   value="{{militePrima}}"
+                                   style="width: 11em;">{{militePrima}}
+                    </vaadin-button>
+                </div>
+
+                <!--seconda riga-->
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        value="{{inizioPrima}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                    <vaadin-text-field on-value-changed="handleChangePrima"
+                                       value="{{notePrima}}"
+                                       style="width: 7em">
+                    </vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        value="{{finePrima}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end prima iscrizione-->
 
         <!--area dei bottoni-->
         <!--questi vengono costruiti completamente nel wrapper TurnoEditPolymer.java-->
@@ -47,8 +89,9 @@
             <vaadin-button id="conferma" style="width:140px; margin-left:1em; margin-right:1em"
                            theme="raised primary"></vaadin-button>
         </div>
-    </template>
+        <!--end bottoni-->
 
+    </template>
 
     <script>
         class TurnoEditClass extends Polymer.Element {
