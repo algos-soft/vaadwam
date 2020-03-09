@@ -18,6 +18,8 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -59,6 +61,16 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected TabelloneService tabelloneService;
+
+    /**
      * Component iniettato nel polymer html con lo stesso ID <br>
      */
     @Id("annulla")
@@ -69,7 +81,6 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     @Id("conferma")
     private Button conferma;
-
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -109,10 +120,20 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
+    private FunzioneService funzioneService;
+
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
     private ADateService dateService;
 
     //--property bean
-    private Turno turno = null;
+    private Turno turnoEntity = null;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -161,7 +182,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
             }// end of if/else cycle
         }// end of if/else cycle
 
-        if (turno == null) {
+        if (turnoEntity == null) {
             Notification.show("Errore: non esiste il turno indicato", 2000, Notification.Position.MIDDLE);
             return;
         }// end of if cycle
@@ -177,7 +198,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     private void elaboraParameter(String turnoKey) {
         if (text.isValid(turnoKey)) {
-            turno = turnoService.findById(turnoKey);
+            turnoEntity = turnoService.findById(turnoKey);
         }// end of if cycle
     }// end of method
 
@@ -211,12 +232,12 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
             servizio = servizioService.findById(servizioKey);
         }// end of if cycle
 
-        turno = turnoService.newEntity(giorno, servizio);
+        turnoEntity = turnoService.newEntity(giorno, servizio);
 
         //--elimino l'ID del turno, per poterlo distinguere da un turno esistente e già nel mongoDB
         //--l'ID viene costruioto automaticamente con newEntity() per averlo (di norma) subito disponibile
         //--ma viene in ogni caso ri-creato da beforeSave()
-        turno.id = null;
+        turnoEntity.id = null;
     }// end of method
 
 
@@ -242,8 +263,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         String data;
         LocalDate giorno = null;
 
-        if (turno != null) {
-            giorno = turno.getGiorno();
+        if (turnoEntity != null) {
+            giorno = turnoEntity.getGiorno();
         }// end of if cycle
 
         if (giorno != null) {
@@ -260,8 +281,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     private void fixServizio() {
         Servizio servizio = null;
 
-        if (turno != null) {
-            servizio = turno.getServizio();
+        if (turnoEntity != null) {
+            servizio = turnoEntity.getServizio();
         }// end of if cycle
 
         if (servizio != null) {
@@ -279,8 +300,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         String orario = "";
         Servizio servizio = null;
 
-        if (turno != null) {
-            servizio = turno.getServizio();
+        if (turnoEntity != null) {
+            servizio = turnoEntity.getServizio();
         }// end of if cycle
 
         if (servizio != null) {
@@ -313,11 +334,21 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * fine (picker)
      */
     private void fixIscrizioni() {
-        List<Iscrizione> iscrizioni = turno != null ? turno.iscrizioni : null;
+        fixIscrizionePrima();
+        fixIscrizioneSeconda();
+        fixIscrizioneTerza();
+        fixIscrizioneQuarta();
+    }// end of method
+
+    private void fixIscrizionePrima() {
+        String colore = VUOTA;
+        String iconaTxt = VUOTA;
+        String funzioneTxt = VUOTA;
+        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
         Iscrizione prima = iscrizioni != null && iscrizioni.size() > 0 ? iscrizioni.get(0) : null;
         LocalTime inizio = prima != null ? prima.inizio : null;
         LocalTime fine = prima != null ? prima.fine : null;
-        Servizio servizio = turno != null ? turno.getServizio() : null;
+        Servizio servizio = turnoEntity != null ? turnoEntity.getServizio() : null;
         Milite milite = prima != null ? prima.milite : null;
 
         getModel().setPrimaIscrizione(true);
@@ -328,6 +359,141 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         getModel().setInizioPrima(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
         getModel().setNotePrima(prima != null ? prima.note : VUOTA);
         getModel().setFinePrima(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
+
+        colore = fixColor(prima);
+        getModel().setColorePrima(colore);
+
+        iconaTxt = fixIcona(prima);
+        getModel().setIconaPrima(iconaTxt);
+
+        funzioneTxt = prima != null ? prima.funzione.code : VUOTA;
+        getModel().setFunzionePrima(funzioneTxt);
+    }// end of method
+
+    private void fixIscrizioneSeconda() {
+        String colore = VUOTA;
+        String iconaTxt = VUOTA;
+        String funzioneTxt = VUOTA;
+        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
+        Iscrizione seconda = iscrizioni != null && iscrizioni.size() > 1 ? iscrizioni.get(1) : null;
+        LocalTime inizio = seconda != null ? seconda.inizio : null;
+        LocalTime fine = seconda != null ? seconda.fine : null;
+        Servizio servizio = turnoEntity != null ? turnoEntity.getServizio() : null;
+        Milite milite = seconda != null ? seconda.milite : null;
+
+        getModel().setSecondaIscrizione(true);
+
+        getModel().setIconaSeconda("");
+        getModel().setMiliteSeconda(milite != null ? milite.username : VUOTA);
+
+        getModel().setInizioSeconda(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
+        getModel().setNoteSeconda(seconda != null ? seconda.note : VUOTA);
+        getModel().setFineSeconda(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
+
+        colore = fixColor(seconda);
+        getModel().setColoreSeconda(colore);
+
+        iconaTxt = fixIcona(seconda);
+        getModel().setIconaSeconda(iconaTxt);
+
+        funzioneTxt = seconda != null ? seconda.funzione.code : VUOTA;
+        getModel().setFunzioneSeconda(funzioneTxt);
+    }// end of method
+
+    private void fixIscrizioneTerza() {
+        String colore = VUOTA;
+        String iconaTxt = VUOTA;
+        String funzioneTxt = VUOTA;
+        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
+        Iscrizione terza = iscrizioni != null && iscrizioni.size() > 2 ? iscrizioni.get(2) : null;
+        LocalTime inizio = terza != null ? terza.inizio : null;
+        LocalTime fine = terza != null ? terza.fine : null;
+        Servizio servizio = turnoEntity != null ? turnoEntity.getServizio() : null;
+        Milite milite = terza != null ? terza.milite : null;
+
+        getModel().setTerzaIscrizione(true);
+
+        getModel().setIconaTerza("");
+        getModel().setMiliteTerza(milite != null ? milite.username : VUOTA);
+
+        getModel().setInizioTerza(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
+        getModel().setNoteTerza(terza != null ? terza.note : VUOTA);
+        getModel().setFineTerza(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
+
+        colore = fixColor(terza);
+        getModel().setColoreTerza(colore);
+
+        iconaTxt = fixIcona(terza);
+        getModel().setIconaTerza(iconaTxt);
+
+        funzioneTxt = terza != null ? terza.funzione.code : VUOTA;
+        getModel().setFunzioneTerza(funzioneTxt);
+    }// end of method
+
+    private void fixIscrizioneQuarta() {
+        String colore = VUOTA;
+        String iconaTxt = VUOTA;
+        String funzioneTxt = VUOTA;
+        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
+        Iscrizione quarta = iscrizioni != null && iscrizioni.size() > 3 ? iscrizioni.get(3) : null;
+        LocalTime inizio = quarta != null ? quarta.inizio : null;
+        LocalTime fine = quarta != null ? quarta.fine : null;
+        Servizio servizio = turnoEntity != null ? turnoEntity.getServizio() : null;
+        Milite milite = quarta != null ? quarta.milite : null;
+
+        getModel().setQuartaIscrizione(true);
+
+        getModel().setIconaQuarta("");
+        getModel().setMiliteQuarta(milite != null ? milite.username : VUOTA);
+
+        getModel().setInizioQuarta(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
+        getModel().setNoteQuarta(quarta != null ? quarta.note : VUOTA);
+        getModel().setFineQuarta(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
+
+        colore = fixColor(quarta);
+        getModel().setColoreQuarta(colore);
+
+        iconaTxt = fixIcona(quarta);
+        getModel().setIconaQuarta(iconaTxt);
+
+        funzioneTxt = quarta != null ? quarta.funzione.code : VUOTA;
+        getModel().setFunzioneQuarta(funzioneTxt);
+    }// end of method
+
+    /**
+     * Colore dei due bottoni della prima riga (funzione e milite) di ogni iscrizione <br>
+     */
+    private String fixColor(Iscrizione iscrizioneEntity) {
+        String colore = "";
+
+        if (pref.isBool(USA_COLORAZIONE_TURNI)) {
+            if (pref.isBool(USA_COLORAZIONE_DIFFERENZIATA)) {
+                colore = tabelloneService.getColoreIscrizione(turnoEntity, iscrizioneEntity).getTag().toLowerCase();
+            } else {
+                colore = tabelloneService.getColoreTurno(turnoEntity).getTag().toLowerCase();
+            }// end of if/else cycle
+        } else {
+            colore = VUOTA;
+        }// end of if/else cycle
+
+        return colore;
+    }// end of method
+
+
+    /**
+     * Icona della funzione di questa iscrizione <br>
+     */
+    private String fixIcona(Iscrizione iscrizioneEntity) {
+        String iconaTxt = "";
+        String tag = "vaadin:";
+        Funzione funzione;
+
+        if (iscrizioneEntity != null) {
+            funzione= iscrizioneEntity.funzione;
+            iconaTxt = tag+funzione.icona.name().toLowerCase();
+        }// end of if cycle
+
+        return iconaTxt;
     }// end of method
 
 
@@ -374,7 +540,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     public void handleChangeInizioExtra() {
         String inizioText = getModel().getInizioExtra();
 
-        turno.inizio = LocalTime.parse(inizioText);
+        turnoEntity.inizio = LocalTime.parse(inizioText);
         conferma.setEnabled(true);
     }// end of method
 
@@ -392,8 +558,20 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     public void handleChangeFineExtra() {
         String fineText = getModel().getFineExtra();
 
-        turno.fine = LocalTime.parse(fineText);
+        turnoEntity.fine = LocalTime.parse(fineText);
         conferma.setEnabled(true);
+    }// end of method
+
+
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * <p>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+     */
+    @EventHandler
+    public void handleClickPrima() {
     }// end of method
 
 
@@ -409,7 +587,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         String inizioText = getModel().getInizioPrima();
         String noteText = getModel().getNotePrima();
         String fineText = getModel().getFinePrima();
-        List<Iscrizione> iscrizioni = turno != null ? turno.iscrizioni : null;
+        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
         Iscrizione prima = iscrizioni != null && iscrizioni.size() > 0 ? iscrizioni.get(0) : null;
 
         if (prima != null) {
@@ -448,7 +626,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 //        }// end of for cycle
         //@todo dovrebbero arrivare già regolati dal click sul nome
 
-        turnoService.save(turno);
+        turnoService.save(turnoEntity);
         getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
     }// end of method
 

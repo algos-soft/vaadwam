@@ -39,7 +39,8 @@ public enum EAPreferenzaWam implements IAPreferenza {
     durataElabora(DURATA_ELABORA, "Durata ultima elaborazione delle statistiche della croce, in secondi", EAPrefType.integer, 0),
 
     usaMailImport(USA_MAIL_IMPORT, "Spedisce una mail ad ogni import", EAPrefType.bool, EARole.developer, true, true),
-    usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false),
+    usaColorazioneTurni(USA_COLORAZIONE_TURNI, "Nel form di edit del turno, colori differenziati per le singole iscrizioni", EAPrefType.bool, EARole.admin, true, true),
+    usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone, colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false),
     usaFieldsEnabledInShow(USA_FIELDS_ENABLED_IN_SHOW, "Mostra i fields abilitati anche nel Form per gli Users", EAPrefType.bool, EARole.developer, false, true),
     usaCheckFunzioniMilite(USA_CHECK_FUNZIONI_MILITE, "Mostra le funzioni abilitate di un Milite tramite checkbox", EAPrefType.bool, EARole.developer, false, false),
     //    tipoCancellazione(TIPO_CANCELLAZIONE, "Modalità di cancellazione possibili", EAPrefType.enumeration, EARole.developer, false, EACancellazione.getValuesStandard()),
