@@ -251,6 +251,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         fixServizio();
         fixOrario();
         fixIscrizioni();
+        fixAbilitazione();
         fixAnnulla();
         fixConferma();
     }// end of method
@@ -340,6 +341,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         fixIscrizioneQuarta();
     }// end of method
 
+
     private void fixIscrizionePrima() {
         String colore = VUOTA;
         String iconaTxt = VUOTA;
@@ -369,6 +371,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         funzioneTxt = prima != null ? prima.funzione.code : VUOTA;
         getModel().setFunzionePrima(funzioneTxt);
     }// end of method
+
 
     private void fixIscrizioneSeconda() {
         String colore = VUOTA;
@@ -400,6 +403,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         getModel().setFunzioneSeconda(funzioneTxt);
     }// end of method
 
+
     private void fixIscrizioneTerza() {
         String colore = VUOTA;
         String iconaTxt = VUOTA;
@@ -429,6 +433,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         funzioneTxt = terza != null ? terza.funzione.code : VUOTA;
         getModel().setFunzioneTerza(funzioneTxt);
     }// end of method
+
 
     private void fixIscrizioneQuarta() {
         String colore = VUOTA;
@@ -460,6 +465,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         getModel().setFunzioneQuarta(funzioneTxt);
     }// end of method
 
+
     /**
      * Colore dei due bottoni della prima riga (funzione e milite) di ogni iscrizione <br>
      */
@@ -481,6 +487,24 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
+     * Regola l'bilitazione di tutte le iscrizioni previste <br>
+     */
+    private void fixAbilitazione() {
+        getModel().setAbilitataPrima(false);
+        getModel().setAbilitataPickerPrima(false);
+
+        getModel().setAbilitataSeconda(true);
+        getModel().setAbilitataPickerSeconda(false);
+
+        getModel().setAbilitataTerza(true);
+        getModel().setAbilitataPickerTerza(false);
+
+        getModel().setAbilitataQuarta(false);
+        getModel().setAbilitataPickerQuarta(false);
+    }// end of method
+
+
+    /**
      * Icona della funzione di questa iscrizione <br>
      */
     private String fixIcona(Iscrizione iscrizioneEntity) {
@@ -489,8 +513,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         Funzione funzione;
 
         if (iscrizioneEntity != null) {
-            funzione= iscrizioneEntity.funzione;
-            iconaTxt = tag+funzione.icona.name().toLowerCase();
+            funzione = iscrizioneEntity.funzione;
+            iconaTxt = tag + funzione.icona.name().toLowerCase();
         }// end of if cycle
 
         return iconaTxt;

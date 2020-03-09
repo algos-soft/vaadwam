@@ -11,13 +11,14 @@
                 width: 100%;
                 height: 8mm;
                 text-align: left;
-                font-size:3.5mm;
+                font-size: 3.5mm;
                 font-weight: bold;
-                border-style:solid;
-                border-color:rgba(255, 255, 255, 1);
+                border-style: solid;
+                border-color: rgba(255, 255, 255, 1);
                 border-width: 0.2mm;
                 border-radius: 2mm;
             }
+
             .buttondiv {
                 display: flex;
                 flex-direction: row;
@@ -66,15 +67,18 @@
 
                 <!--prima riga-->
                 <div on-click="handleClickPrima" style="display: flex; flex-direction:row; align-items: center; ">
-                    <vaadin-button style="width: 8em; background-color:[[colorePrima]]; color:black">
-                        <div class = "buttondiv">
+                    <vaadin-button
+                            disabled=[[!abilitataPrima]]
+                            style="width: 8em; background-color:[[colorePrima]];">
+                        <div class="buttondiv">
                             <iron-icon icon=[[iconaPrima]] style="height:4mm"></iron-icon>
                             <label>[[funzionePrima]]</label>
                         </div>
                     </vaadin-button>
                     <vaadin-button
+                            disabled=[[!abilitataPrima]]
                             value="[[militePrima]]"
-                            style="width: 11em; background-color:[[colorePrima]]; color:black;">
+                            style="width: 11em; background-color:[[colorePrima]];">
                         [[militePrima]]
                     </vaadin-button>
                 </div>
@@ -82,15 +86,18 @@
                 <!--seconda riga-->
                 <div style="display: flex; flex-direction:row; align-items: center;">
                     <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        disabled=[[!abilitataPickerPrima]]
                                         value="{{inizioPrima}}"
                                         step="900"
                                         style="width: 6em">
                     </vaadin-time-picker>
                     <vaadin-text-field on-value-changed="handleChangePrima"
+                                       disabled=[[!abilitataPickerPrima]]
                                        value="{{notePrima}}"
                                        style="width: 7em">
                     </vaadin-text-field>
                     <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        disabled=[[!abilitataPickerPrima]]
                                         value="{{finePrima}}"
                                         step="900"
                                         style="width: 6em">
@@ -107,15 +114,18 @@
 
                 <!--prima riga-->
                 <div on-click="handleClickSeconda" style="display: flex; flex-direction:row; align-items: center; ">
-                    <vaadin-button style="width: 8em; background-color:[[coloreSeconda]]; color:black">
-                        <div class = "buttondiv">
+                    <vaadin-button
+                            disabled=[[!abilitataSeconda]]
+                            style="width: 8em; background-color:[[coloreSeconda]];">
+                        <div class="buttondiv">
                             <iron-icon icon=[[iconaSeconda]] style="height:4mm"></iron-icon>
                             <label>[[funzioneSeconda]]</label>
                         </div>
                     </vaadin-button>
                     <vaadin-button
+                            disabled=[[!abilitataSeconda]]
                             value="[[militeSeconda]]"
-                            style="width: 11em; background-color:[[coloreSeconda]]; color:black;">
+                            style="width: 11em; background-color:[[coloreSeconda]];">
                         [[militeSeconda]]
                     </vaadin-button>
                 </div>
@@ -123,15 +133,18 @@
                 <!--seconda riga-->
                 <div style="display: flex; flex-direction:row; align-items: center;">
                     <vaadin-time-picker on-value-changed="handleChangeSeconda"
+                                        disabled=[[!abilitataPickerSeconda]]
                                         value="{{inizioSeconda}}"
                                         step="900"
                                         style="width: 6em">
                     </vaadin-time-picker>
                     <vaadin-text-field on-value-changed="handleChangeSeconda"
+                                       disabled=[[!abilitataPickerSeconda]]
                                        value="{{noteSeconda}}"
                                        style="width: 7em">
                     </vaadin-text-field>
                     <vaadin-time-picker on-value-changed="handleChangeSeconda"
+                                        disabled=[[!abilitataPickerSeconda]]
                                         value="{{fineSeconda}}"
                                         step="900"
                                         style="width: 6em">
@@ -144,19 +157,22 @@
         <!--terza iscrizione-->
         <template is="dom-if" if=[[terzaIscrizione]]>
             <!--form centrato orizzontalmente nella pagina, contiene tutto-->
-            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em">
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em;">
 
                 <!--prima riga-->
                 <div on-click="handleClickTerza" style="display: flex; flex-direction:row; align-items: center; ">
-                    <vaadin-button style="width: 8em; background-color:[[coloreTerza]]; color:black">
-                        <div class = "buttondiv">
+                    <vaadin-button
+                            disabled=[[!abilitataTerza]]
+                            style="width: 8em; background-color:[[coloreTerza]];">
+                        <div class="buttondiv">
                             <iron-icon icon=[[iconaTerza]] style="height:4mm"></iron-icon>
                             <label>[[funzioneTerza]]</label>
                         </div>
                     </vaadin-button>
                     <vaadin-button
+                            disabled=[[!abilitataTerza]]
                             value="[[militeTerza]]"
-                            style="width: 11em; background-color:[[coloreTerza]]; color:black;">
+                            style="width: 11em; background-color:[[coloreTerza]];">
                         [[militeTerza]]
                     </vaadin-button>
                 </div>
@@ -164,15 +180,18 @@
                 <!--seconda riga-->
                 <div style="display: flex; flex-direction:row; align-items: center;">
                     <vaadin-time-picker on-value-changed="handleChangeTerza"
+                                        disabled=[[!abilitataPickerTerza]]
                                         value="{{inizioTerza}}"
                                         step="900"
                                         style="width: 6em">
                     </vaadin-time-picker>
                     <vaadin-text-field on-value-changed="handleChangeTerza"
+                                       disabled=[[!abilitataPickerTerza]]
                                        value="{{noteTerza}}"
                                        style="width: 7em">
                     </vaadin-text-field>
                     <vaadin-time-picker on-value-changed="handleChangeTerza"
+                                        disabled=[[!abilitataPickerTerza]]
                                         value="{{fineTerza}}"
                                         step="900"
                                         style="width: 6em">
@@ -189,15 +208,17 @@
 
                 <!--prima riga-->
                 <div on-click="handleClickQuarta" style="display: flex; flex-direction:row; align-items: center; ">
-                    <vaadin-button style="width: 8em; background-color:[[coloreQuarta]]; color:black">
-                        <div class = "buttondiv">
+                    <vaadin-button
+                            disabled=[[!abilitataQuarta]]
+                            style="width: 8em; background-color:[[coloreQuarta]]; ">
+                        <div class="buttondiv">
                             <iron-icon icon=[[iconaQuarta]] style="height:4mm"></iron-icon>
                             <label>[[funzioneQuarta]]</label>
                         </div>
                     </vaadin-button>
                     <vaadin-button
-                            value="[[militeQuarta]]"
-                            style="width: 11em; background-color:[[coloreQuarta]]; color:black;">
+                            disabled=[[!abilitataQuarta]]
+                            style="width: 11em; background-color:[[coloreQuarta]];">
                         [[militeQuarta]]
                     </vaadin-button>
                 </div>
@@ -205,15 +226,18 @@
                 <!--seconda riga-->
                 <div style="display: flex; flex-direction:row; align-items: center;">
                     <vaadin-time-picker on-value-changed="handleChangeQuarta"
+                                        disabled=[[!abilitataPickerQuarta]]
                                         value="{{inizioQuarta}}"
                                         step="900"
                                         style="width: 6em">
                     </vaadin-time-picker>
                     <vaadin-text-field on-value-changed="handleChangeQuarta"
+                                       disabled=[[!abilitataPickerQuarta]]
                                        value="{{noteQuarta}}"
                                        style="width: 7em">
                     </vaadin-text-field>
                     <vaadin-time-picker on-value-changed="handleChangeQuarta"
+                                        disabled=[[!abilitataPickerQuarta]]
                                         value="{{fineQuarta}}"
                                         step="900"
                                         style="width: 6em">

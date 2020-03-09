@@ -127,5 +127,21 @@ public interface TurnoEditModel extends TemplateModel {
 
     void setMiliteQuarta(String militeQuarta);
 
+    void setAbilitataPrima(boolean abilitataPrima);
+
+    void setAbilitataPickerPrima(boolean abilitataPickerPrima);
+
+    void setAbilitataPickerSeconda(boolean abilitataPickerSeconda);
+
+    void setAbilitataPickerTerza(boolean abilitataPickerTerza);
+
+    void setAbilitataPickerQuarta(boolean abilitataPickerQuarta);
+
+    void setAbilitataSeconda(boolean abilitataSeconda);
+
+    void setAbilitataTerza(boolean abilitataTerza);
+
+    void setAbilitataQuarta(boolean abilitataQuarta);
+
 }// end of interface
 
