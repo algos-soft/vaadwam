@@ -22,16 +22,19 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +72,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     @Autowired
     protected TabelloneService tabelloneService;
+
+    /**
+     * Milite loggato al momento <br>
+     */
+    protected Milite militeLoggato;
+
+    @Autowired
+    ApplicationContext appContext;
 
     /**
      * Component iniettato nel polymer html con lo stesso ID <br>
@@ -132,6 +143,16 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     @Autowired
     private ADateService dateService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    private MiliteService militeService;
+
     //--property bean
     private Turno turnoEntity = null;
 
@@ -152,6 +173,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     @Autowired
     private AArrayService array;
+
+    private List<TurnoIscrizione> listaIscrizioni;
 
 
     /**
@@ -251,7 +274,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         fixServizio();
         fixOrario();
         fixIscrizioni();
-        fixAbilitazione();
+        fixAbilitazioneIscrizioni();
         fixAnnulla();
         fixConferma();
     }// end of method
@@ -326,7 +349,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     /**
      * Regolazione delle iscrizioni <br>
-     * Possono essere da 1 a 5 <br>
+     * Possono essere da 1 a 4 (di più non sono previste in 'turno-edit.html') <br>
      * Ogni iscrizione (su due righe) ha:
      * funzione (bottone)
      * milite (bottone)
@@ -335,41 +358,38 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * fine (picker)
      */
     private void fixIscrizioni() {
-        fixIscrizionePrima();
+        int pos = 0;
+        TurnoIscrizione turnoIscrizione;
+
+        if (turnoEntity.getIscrizioni() != null) {
+            listaIscrizioni = new ArrayList<>();
+            for (Iscrizione iscr : turnoEntity.getIscrizioni()) {
+                turnoIscrizione = (TurnoIscrizione) appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, pos++);
+                listaIscrizioni.add(turnoIscrizione);
+            }// end of for cycle
+        }// end of if cycle
+
+        if (listaIscrizioni!=null&&listaIscrizioni.size()>0) {
+            fixIscrizionePrima(listaIscrizioni.get(0));
+        }// end of if cycle
+
         fixIscrizioneSeconda();
         fixIscrizioneTerza();
         fixIscrizioneQuarta();
     }// end of method
 
 
-    private void fixIscrizionePrima() {
-        String colore = VUOTA;
-        String iconaTxt = VUOTA;
-        String funzioneTxt = VUOTA;
-        List<Iscrizione> iscrizioni = turnoEntity != null ? turnoEntity.iscrizioni : null;
-        Iscrizione prima = iscrizioni != null && iscrizioni.size() > 0 ? iscrizioni.get(0) : null;
-        LocalTime inizio = prima != null ? prima.inizio : null;
-        LocalTime fine = prima != null ? prima.fine : null;
-        Servizio servizio = turnoEntity != null ? turnoEntity.getServizio() : null;
-        Milite milite = prima != null ? prima.milite : null;
-
+    private void fixIscrizionePrima(TurnoIscrizione turnoIscrizione) {
         getModel().setPrimaIscrizione(true);
+        getModel().setColorePrima(turnoIscrizione.coloreTxt);
+        getModel().setIconaPrima(turnoIscrizione.iconaTxt);
 
-        getModel().setIconaPrima("");
-        getModel().setMilitePrima(milite != null ? milite.username : VUOTA);
+        getModel().setMilitePrima(turnoIscrizione.militetxt);
+        getModel().setFunzionePrima(turnoIscrizione.funzioneTxt);
 
-        getModel().setInizioPrima(inizio != null ? inizio.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString());
-        getModel().setNotePrima(prima != null ? prima.note : VUOTA);
-        getModel().setFinePrima(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
-
-        colore = fixColor(prima);
-        getModel().setColorePrima(colore);
-
-        iconaTxt = fixIcona(prima);
-        getModel().setIconaPrima(iconaTxt);
-
-        funzioneTxt = prima != null ? prima.funzione.code : VUOTA;
-        getModel().setFunzionePrima(funzioneTxt);
+        getModel().setInizioPrima(turnoIscrizione.inizioTxt);
+        getModel().setNotePrima(turnoIscrizione.noteTxt);
+        getModel().setFinePrima(turnoIscrizione.fineTxt);
     }// end of method
 
 
@@ -393,11 +413,6 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         getModel().setNoteSeconda(seconda != null ? seconda.note : VUOTA);
         getModel().setFineSeconda(fine != null ? fine.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString());
 
-        colore = fixColor(seconda);
-        getModel().setColoreSeconda(colore);
-
-        iconaTxt = fixIcona(seconda);
-        getModel().setIconaSeconda(iconaTxt);
 
         funzioneTxt = seconda != null ? seconda.funzione.code : VUOTA;
         getModel().setFunzioneSeconda(funzioneTxt);
@@ -487,7 +502,79 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Regola l'bilitazione di tutte le iscrizioni previste <br>
+     * Regola la visibilità di tutte le iscrizioni <br>
+     * Controlla se siamo loggati come developer, come admin o come user <br>
+     * Recupera le funzioni abilitate del milite loggato
+     * Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre <br>
+     * Disabilita le iscrizioni che hanno già un milite segnato <br>
+     * Disabilita le iscrizioni che hanno una funzione non abilitata per il milite loggato <br>
+     * Abilita le iscrizioni rimanenti <br>
+     */
+    protected void fixAbilitazioneIscrizioni() {
+        Milite militeIsc;
+        boolean militeLoggatoGiaSegnato = false;
+        Iscrizione iscrizioneGiaSegnata = null;
+        List<String> listaIDFunzioniAbilitate;
+        List<Iscrizione> iscrizioni = turnoEntity.iscrizioni;
+        // @todo Controlla se siamo loggati come developer, come admin o come user <br>
+
+        //--Recupera le funzioni abilitate del milite loggato
+        this.militeLoggato = militeService.getMilite();
+        listaIDFunzioniAbilitate = militeLoggato != null ? militeService.getListaIDFunzioni(militeLoggato) : null;
+
+        // @todo per adesso
+        if (militeLoggato == null) {
+            return;
+        }// end of if cycle
+
+        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        if (tabelloneService.isStorico(turnoEntity)) {
+            disabilitaAllIscrizioni();
+            return;
+        }// end of if cycle
+
+        //--Controlla se il milite loggato è già segnato in una iscrizione.
+        //--Ragioniamo sulle iscrizioni a video non sul DB
+        if (array.isValid(iscrizioni)) {
+            for (Iscrizione iscr : iscrizioni) {
+                militeIsc = iscr.getMilite();
+                if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
+                    militeLoggatoGiaSegnato = true;
+                    iscrizioneGiaSegnata = iscr;
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        //--Se il milite loggato è già segnato in una iscrizione, disabilita tutte le altre
+        if (militeLoggatoGiaSegnato) {
+            disabilitaAllIscrizioni();
+            abilitaIscrizione(iscrizioneGiaSegnata);
+//            if (array.isValid(listaEditIscrizioni)) {
+//                for (EditIscrizionePolymer editIscrizione : listaEditIscrizioni) {
+//                    editIscrizione.abilita(editIscrizione.equals(editIscrizioneGiaSegnata));
+//                }// end of for cycle
+//            }// end of if cycle
+        } else {
+            //--Se il milite loggato non è segnato nel turno
+            //--Abilita le iscrizioni abilitate per il milite loggato e senza un altro milite già segnato
+//            if (array.isValid(listaEditIscrizioni)) {
+//                for (EditIscrizionePolymer editIscrizione : listaEditIscrizioni) {
+//                    boolean iscrizioneAbilitataMiliteLoggato = listaIDFunzioniAbilitate.contains(editIscrizione.getFunzioneEntity().id);
+//                    boolean iscrizioneNonSegnata = editIscrizione.getMilite() == null;
+//                    editIscrizione.abilita(iscrizioneAbilitataMiliteLoggato && iscrizioneNonSegnata);
+//                }// end of for cycle
+//            }// end of if cycle
+        }// end of if/else cycle
+    }// end of method
+
+
+    private void abilitaIscrizione(Iscrizione iscr) {
+
+    }// end of method
+
+
+    /**
+     * Regola l'abilitazione di tutte le iscrizioni previste <br>
      */
     private void fixAbilitazione() {
         getModel().setAbilitataPrima(false);
@@ -500,6 +587,39 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         getModel().setAbilitataPickerTerza(false);
 
         getModel().setAbilitataQuarta(false);
+        getModel().setAbilitataPickerQuarta(false);
+    }// end of method
+
+
+    /**
+     * Disabilita tutte le iscrizioni previste <br>
+     */
+    private void disabilitaAllIscrizioni() {
+        disabilitaAllIscrizioniMilite();
+        disabilitaAllIscrizioniPicker();
+    }// end of method
+
+
+    /**
+     * Disabilita tutte le iscrizioni previste <br>
+     * Solo le funzioni ed il milite <br>
+     */
+    private void disabilitaAllIscrizioniMilite() {
+        getModel().setAbilitataPrima(false);
+        getModel().setAbilitataSeconda(false);
+        getModel().setAbilitataTerza(false);
+        getModel().setAbilitataQuarta(false);
+    }// end of method
+
+
+    /**
+     * Disabilita tutte le iscrizioni previste <br>
+     * Solo i picker e le note <br>
+     */
+    private void disabilitaAllIscrizioniPicker() {
+        getModel().setAbilitataPickerPrima(false);
+        getModel().setAbilitataPickerSeconda(false);
+        getModel().setAbilitataPickerTerza(false);
         getModel().setAbilitataPickerQuarta(false);
     }// end of method
 

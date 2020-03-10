@@ -11,7 +11,6 @@ import com.vaadin.flow.templatemodel.TemplateModel;
  * Modello dati per collegare questa classe java col polymer
  */
 public interface TurnoEditModel extends TemplateModel {
-
     void setGiorno(String giorno);
 
     void setServizio(String servizio);
