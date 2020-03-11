@@ -29,7 +29,11 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_TURNI;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TurnoIscrizione {
 
+    public Iscrizione iscrizione;
+
     public boolean abilitata;
+
+    public boolean abilitataPicker;
 
     public String iconaTxt;
 
@@ -44,6 +48,10 @@ public class TurnoIscrizione {
     public String fineTxt;
 
     public String coloreTxt;
+
+    public Funzione funzioneEntity;
+
+    public Milite militeEntity;
 
     /**
      * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
@@ -122,23 +130,27 @@ public class TurnoIscrizione {
         LocalTime inizioTime = iscrizione != null ? iscrizione.inizio : null;
         LocalTime fineTime = iscrizione != null ? iscrizione.fine : null;
         Servizio servizio = turnoEntity.getServizio();
-        Milite militeEntity = iscrizione != null ? iscrizione.milite : null;
+
+        abilitata = false;
+        abilitataPicker = false;
+
+        funzioneEntity = iscrizione != null ? iscrizione.funzione : null;
+        militeEntity = iscrizione != null ? iscrizione.milite : null;
 
         coloreTxt = fixColor(iscrizione);
         iconaTxt = fixIcona(iscrizione);
 
-        funzioneTxt = iscrizione != null ? iscrizione.funzione.code : VUOTA;
+        funzioneTxt = funzioneEntity != null ? funzioneEntity.code : VUOTA;
         militetxt = militeEntity != null ? militeEntity.username : VUOTA;
 
         inizioTxt = inizioTime != null ? inizioTime.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString();
         noteTxt = iscrizione != null ? iscrizione.note : VUOTA;
         fineTxt = fineTime != null ? fineTime.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString();
-
     }// end of method
 
 
     public void fixIscrizionePrima() {
-        Iscrizione iscrizione = turnoEntity.iscrizioni.get(0);
+        iscrizione = turnoEntity.iscrizioni.get(0);
         fixIscrizioneBase(iscrizione);
 
         modello.setColorePrima(coloreTxt);
@@ -148,13 +160,13 @@ public class TurnoIscrizione {
         modello.setMilitePrima(militetxt);
 
         modello.setInizioPrima(inizioTxt);
-        modello.setNotePrima( VUOTA);
+        modello.setNotePrima(VUOTA);
         modello.setFinePrima(fineTxt);
     }// end of method
 
 
     private void fixIscrizioneSeconda() {
-        Iscrizione iscrizione = turnoEntity.iscrizioni.get(1);
+        iscrizione = turnoEntity.iscrizioni.get(1);
         fixIscrizioneBase(iscrizione);
 
         modello.setColoreSeconda(coloreTxt);
@@ -170,7 +182,7 @@ public class TurnoIscrizione {
 
 
     private void fixIscrizioneTerza() {
-        Iscrizione iscrizione = turnoEntity.iscrizioni.get(2);
+        iscrizione = turnoEntity.iscrizioni.get(2);
         fixIscrizioneBase(iscrizione);
 
         modello.setColoreTerza(coloreTxt);
@@ -186,7 +198,7 @@ public class TurnoIscrizione {
 
 
     private void fixIscrizioneQuarta() {
-        Iscrizione iscrizione = turnoEntity.iscrizioni.get(3);
+        iscrizione = turnoEntity.iscrizioni.get(3);
         fixIscrizioneBase(iscrizione);
 
         modello.setColoreQuarta(coloreTxt);
