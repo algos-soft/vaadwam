@@ -983,12 +983,10 @@ public class MigrationService extends AService {
         }// end of if cycle
 
         int durata = servizioOld.getDurata();
-//        int funzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
         boolean visibile = servizioOld.isVisibile();
         boolean multiplo = servizioOld.isMultiplo();
         boolean primo = servizioOld.isPrimo();//--non utilizzato
         boolean fineGiornoSuccessivo = servizioOld.isFine_giorno_successivo(); //--non utilizzato
-//        List<Funzione> funzioni = selezionaFunzioni(servizioOld, croceNew);
         Set<Funzione> funzioniObbligatorie = getFunzioniObbligatorie(servizioOld, croceNew);
         Set<Funzione> funzioniFacoltative = getFunzioniFacoltative(servizioOld, croceNew);
         LocalTime inizio = LocalTime.of(oraInizio, minutiInizio);
@@ -1084,7 +1082,7 @@ public class MigrationService extends AService {
             }// end of if cycle
         }// end of if cycle
 
-        if (numeroFunzioniObbligatorie < 4 ) {
+        if (numeroFunzioniObbligatorie < 4) {
             funz = getFunzione(croceNew, servizioOld.getFunzione4_id());
             if (funz != null) {
                 listaFunzioni.add(funz);
@@ -1108,70 +1106,6 @@ public class MigrationService extends AService {
 
         return funz;
     }// end of method
-
-
-//    /**
-//     * Recupera le funzioni del servizio
-//     *
-//     * @param servizioOld della companyOld
-//     */
-//    @Deprecated
-//    private List<Funzione> selezionaFunzioni(ServizioAmb servizioOld, Croce croceNew) {
-//        List<Funzione> listaFunzioni = new ArrayList<>();
-//        FunzioneAmb funzAmb = null;
-//        Funzione funz = null;
-//        int numeroFunzioniObbligatorie = servizioOld.getFunzioni_obbligatorie();
-//        long idFunzione1 = servizioOld.getFunzione1_id();
-//        long idFunzione2 = servizioOld.getFunzione2_id();
-//        long idFunzione3 = servizioOld.getFunzione3_id();
-//        long idFunzione4 = servizioOld.getFunzione4_id();
-//
-//        funzAmb = funzioneAmb.findByID(idFunzione1);
-//        if (funzAmb != null) {
-//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-//            if (funz != null) {
-//                funz.setObbligatoria(numeroFunzioniObbligatorie > 0);
-//                listaFunzioni.add(funz);
-//            } else {
-//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-//            }// end of if/else cycle
-//        }// end of if cycle
-//
-//        funzAmb = funzioneAmb.findByID(idFunzione2);
-//        if (funzAmb != null) {
-//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-//            if (funz != null) {
-//                funz.setObbligatoria(numeroFunzioniObbligatorie > 1);
-//                listaFunzioni.add(funz);
-//            } else {
-//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-//            }// end of if/else cycle
-//        }// end of if cycle
-//
-//        funzAmb = funzioneAmb.findByID(idFunzione3);
-//        if (funzAmb != null) {
-//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-//            if (funz != null) {
-//                funz.setObbligatoria(numeroFunzioniObbligatorie > 2);
-//                listaFunzioni.add(funz);
-//            } else {
-//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-//            }// end of if/else cycle
-//        }// end of if cycle
-//
-//        funzAmb = funzioneAmb.findByID(idFunzione4);
-//        if (funzAmb != null) {
-//            funz = funzioneService.findByKeyUnica(croceNew, funzAmb.getSigla());
-//            if (funz != null) {
-//                funz.setObbligatoria(numeroFunzioniObbligatorie > 3);
-//                listaFunzioni.add(funz);
-//            } else {
-//                System.out.println("Siamo in selezionaFunzioni e non trovo la funzione: " + croceNew.code + funzAmb.getSigla());
-//            }// end of if/else cycle
-//        }// end of if cycle
-//
-//        return listaFunzioni;
-//    }// end of method
 
 
     private void creaColoreGruppoServizi(Croce croceNew) {
@@ -1527,15 +1461,19 @@ public class MigrationService extends AService {
         //--cominciamo a cercare se c'è
         turnoNew = (Turno) turnoService.findById(croceNew.code + turnoService.getPropertyUnica(giornoNew, servizio));
 
-        turnoNew = turnoService.newEntity(
-                croceNew,
-                giornoNew,
-                servizio,
-                inizioNew,
-                fineNew,
-                iscrizioni,
-                titoloExtra,
-                localitaExtra);
+        if (turnoNew == null) {
+            turnoNew = turnoService.newEntity(
+                    croceNew,
+                    giornoNew,
+                    servizio,
+                    inizioNew,
+                    fineNew,
+                    iscrizioni,
+                    titoloExtra,
+                    localitaExtra);
+        } else {
+            return status;
+        }// end of if/else cycle
 
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
         if (iscrizioni != null) {

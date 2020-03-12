@@ -39,6 +39,8 @@ public class WamCost {
 
     public final static String TAG_TURNO_EDIT = "turnoedit";
 
+    public final static String TAG_TURNO_EDIT_OLD = "turnoeditold";
+
     public final static String TAG_TURNO_EDIT_UNO = TAG_TURNO_EDIT + "uno";
 
     public final static String TAG_TURNO_EDIT_DUE = TAG_TURNO_EDIT + "due";
@@ -164,6 +166,8 @@ public class WamCost {
     public static final String SECURED_VIEW_REDIRECT_TABELLONE = "redirectTabellone";
 
     public final static String USA_MAIL_IMPORT = "usaMailImport";
+
+    public final static String USA_COLORAZIONE_TURNI = "usaColorazioneTurni";
 
     public final static String USA_COLORAZIONE_DIFFERENZIATA = "usaColorazioneDifferenziata";
 

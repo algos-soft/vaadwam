@@ -52,7 +52,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * 4.4.Nota iscrizione
  * 4.5.Orario finale
  */
-@Route(value = TAG_TURNO_EDIT)
+@Route(value = TAG_TURNO_EDIT_OLD)
 @Tag("turno-edit-iscrizioni")
 @HtmlImport("src/views/iscrizioni/turno-edit-iscrizioni.html")
 @SpringComponent
@@ -341,7 +341,7 @@ public class TurnoEditIscrizioni extends PolymerTemplate<TurnoEditIscrizioni.Ser
 
         if (servizio != null) {
             if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-                orario = servizioService.getOrario(servizio);
+                orario = servizioService.getOrarioBreve(servizio);
                 modello.setOrario(orario);
             }// end of if cycle
         }// end of if cycle

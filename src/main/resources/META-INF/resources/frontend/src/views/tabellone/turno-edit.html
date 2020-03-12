@@ -1,0 +1,284 @@
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html">
+
+<!--Doppia quadra è 'One way binding' mentre doppia graffa è 'Two way binding'-->
+<dom-module id="turno-edit">
+    <template>
+        <style>
+            .button {
+                width: 100%;
+                height: 8mm;
+                text-align: left;
+                font-size: 3.5mm;
+                font-weight: bold;
+                border-style: solid;
+                border-color: rgba(255, 255, 255, 1);
+                border-width: 0.2mm;
+                border-radius: 2mm;
+            }
+
+            .buttondiv {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+        </style>
+
+        <!--servizio-->
+        <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+        <div style="display: flex; flex-direction:column; align-items: center;margin-top: 1em;">
+            <div style="font-size: 120%; display: flex; flex-direction:row; align-items: initial">
+                [[giorno]]
+            </div>
+            <div style="font-size: 120%; font-weight: bold">[[servizio]]</div>
+        </div>
+
+        <template is="dom-if" if=[[usaOrarioLabel]]>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
+                [[orario]]
+            </div>
+        </template>
+
+        <template is="dom-if" if=[[usaOrarioPicker]]>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangeInizioExtra"
+                                        value="{{inizioExtra}}"
+                                        step="900"
+                                        style="width: 7em">{{inizioExtra}}
+                    </vaadin-time-picker>
+                    <vaadin-text-field id="spazioVuoto" style="width: 2em;" disabled></vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangeFineExtra"
+                                        value="{{fineExtra}}"
+                                        step="900"
+                                        style="width: 7em"></vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end servizio-->
+
+
+        <!--prima iscrizione-->
+        <template is="dom-if" if=[[primaIscrizione]]>
+            <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em">
+
+                <!--prima riga-->
+                <div style="display: flex; flex-direction:row; align-items: center; ">
+                    <vaadin-button
+                            on-click="handleClickPrima"
+                            disabled=[[!abilitataPrima]]
+                            style="width: 8em; background-color:[[colorePrima]];">
+                        <div class="buttondiv">
+                            <iron-icon icon=[[iconaPrima]] style="height:4mm"></iron-icon>
+                            <label>[[funzionePrima]]</label>
+                        </div>
+                    </vaadin-button>
+                    <vaadin-button
+                            on-click="handleClickPrima"
+                            disabled=[[!abilitataPrima]]
+                            value="[[militePrima]]"
+                            style="width: 11em; background-color:[[colorePrima]];">
+                        [[militePrima]]
+                    </vaadin-button>
+                </div>
+
+                <!--seconda riga-->
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        disabled=[[!abilitataPickerPrima]]
+                                        value="{{inizioPrima}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                    <vaadin-text-field on-value-changed="handleChangePrima"
+                                       disabled=[[!abilitataPickerPrima]]
+                                       value="{{notePrima}}"
+                                       style="width: 7em">
+                    </vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        disabled=[[!abilitataPickerPrima]]
+                                        value="{{finePrima}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end prima iscrizione-->
+
+        <!--seconda iscrizione-->
+        <template is="dom-if" if=[[secondaIscrizione]]>
+            <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em">
+
+                <!--prima riga-->
+                <div style="display: flex; flex-direction:row; align-items: center; ">
+                    <vaadin-button
+                            on-click="handleClickSeconda"
+                            disabled=[[!abilitataSeconda]]
+                            style="width: 8em; background-color:[[coloreSeconda]];">
+                        <div class="buttondiv">
+                            <iron-icon icon=[[iconaSeconda]] style="height:4mm"></iron-icon>
+                            <label>[[funzioneSeconda]]</label>
+                        </div>
+                    </vaadin-button>
+                    <vaadin-button
+                            on-click="handleClickSeconda"
+                            disabled=[[!abilitataSeconda]]
+                            value="[[militeSeconda]]"
+                            style="width: 11em; background-color:[[coloreSeconda]];">
+                        [[militeSeconda]]
+                    </vaadin-button>
+                </div>
+
+                <!--seconda riga-->
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangeSeconda"
+                                        disabled=[[!abilitataPickerSeconda]]
+                                        value="{{inizioSeconda}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                    <vaadin-text-field on-value-changed="handleChangeSeconda"
+                                       disabled=[[!abilitataPickerSeconda]]
+                                       value="{{noteSeconda}}"
+                                       style="width: 7em">
+                    </vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangeSeconda"
+                                        disabled=[[!abilitataPickerSeconda]]
+                                        value="{{fineSeconda}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end seconda iscrizione-->
+
+        <!--terza iscrizione-->
+        <template is="dom-if" if=[[terzaIscrizione]]>
+            <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em;">
+
+                <!--prima riga-->
+                <div style="display: flex; flex-direction:row; align-items: center; ">
+                    <vaadin-button
+                            on-click="handleClickTerza"
+                            disabled=[[!abilitataTerza]]
+                            style="width: 8em; background-color:[[coloreTerza]];">
+                        <div class="buttondiv">
+                            <iron-icon icon=[[iconaTerza]] style="height:4mm"></iron-icon>
+                            <label>[[funzioneTerza]]</label>
+                        </div>
+                    </vaadin-button>
+                    <vaadin-button
+                            on-click="handleClickTerza"
+                            disabled=[[!abilitataTerza]]
+                            value="[[militeTerza]]"
+                            style="width: 11em; background-color:[[coloreTerza]];">
+                        [[militeTerza]]
+                    </vaadin-button>
+                </div>
+
+                <!--seconda riga-->
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangeTerza"
+                                        disabled=[[!abilitataPickerTerza]]
+                                        value="{{inizioTerza}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                    <vaadin-text-field on-value-changed="handleChangeTerza"
+                                       disabled=[[!abilitataPickerTerza]]
+                                       value="{{noteTerza}}"
+                                       style="width: 7em">
+                    </vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangeTerza"
+                                        disabled=[[!abilitataPickerTerza]]
+                                        value="{{fineTerza}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end terza iscrizione-->
+
+        <!--quarta iscrizione-->
+        <template is="dom-if" if=[[quartaIscrizione]]>
+            <!--form centrato orizzontalmente nella pagina, contiene tutto-->
+            <div style="display: flex; flex-direction:column; align-items: center; margin-top:1.0em">
+
+                <!--prima riga-->
+                <div style="display: flex; flex-direction:row; align-items: center; ">
+                    <vaadin-button
+                            on-click="handleClickQuarta"
+                            disabled=[[!abilitataQuarta]]
+                            style="width: 8em; background-color:[[coloreQuarta]]; ">
+                        <div class="buttondiv">
+                            <iron-icon icon=[[iconaQuarta]] style="height:4mm"></iron-icon>
+                            <label>[[funzioneQuarta]]</label>
+                        </div>
+                    </vaadin-button>
+                    <vaadin-button
+                            on-click="handleClickQuarta"
+                            disabled=[[!abilitataQuarta]]
+                            style="width: 11em; background-color:[[coloreQuarta]];">
+                        [[militeQuarta]]
+                    </vaadin-button>
+                </div>
+
+                <!--seconda riga-->
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker on-value-changed="handleChangeQuarta"
+                                        disabled=[[!abilitataPickerQuarta]]
+                                        value="{{inizioQuarta}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                    <vaadin-text-field on-value-changed="handleChangeQuarta"
+                                       disabled=[[!abilitataPickerQuarta]]
+                                       value="{{noteQuarta}}"
+                                       style="width: 7em">
+                    </vaadin-text-field>
+                    <vaadin-time-picker on-value-changed="handleChangeQuarta"
+                                        disabled=[[!abilitataPickerQuarta]]
+                                        value="{{fineQuarta}}"
+                                        step="900"
+                                        style="width: 6em">
+                    </vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+        <!--end quarta iscrizione-->
+
+        <!--area dei bottoni-->
+        <!--questi vengono costruiti completamente nel wrapper TurnoEditPolymer.java-->
+        <!--e collegati tramite @Id("annulla") e @Id("conferma")-->
+        <!--le regolazioni ed i listener degli eventi rimangono esclusivamente sul server-->
+        <!--qui rimane solamente la parte grafica (senza logica)-->
+        <div style="display: flex; flex-direction:row; align-items: center;  justify-content: center; margin-top:1em">
+            <vaadin-button id="annulla" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised secondary"></vaadin-button>
+            <vaadin-button id="conferma" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised primary"></vaadin-button>
+        </div>
+        <!--end bottoni-->
+
+    </template>
+
+    <script>
+        class TurnoEditClass extends Polymer.Element {
+            static get is() {
+                return 'turno-edit'
+            }
+        }
+
+        customElements.define(TurnoEditClass.is, TurnoEditClass);
+    </script>
+
+
+</dom-module>

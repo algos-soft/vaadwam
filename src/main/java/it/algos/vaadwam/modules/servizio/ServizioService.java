@@ -499,9 +499,9 @@ public class ServizioService extends WamService {
 
     /**
      * Orario completo del servizio (inizio e fine) <br>
-     * Nella forma '8:00 - 12:30' <br>
+     * Nella forma '9 - 12' <br>
      */
-    public String getOrario(Servizio entityBean) {
+    public String getOrarioBreve(Servizio entityBean) {
         String orario = "";
         String tagVuoto = "...";
         int oraInizio = entityBean.inizio != null ? entityBean.inizio.getHour() : 0;
@@ -509,6 +509,26 @@ public class ServizioService extends WamService {
 
         if (oraInizio > 0 || oraFine > 0) {
             orario = oraInizio + " - " + oraFine;
+        } else {
+            orario = tagVuoto;
+        }// end of if/else cycle
+
+        return orario;
+    }// end of method
+
+
+    /**
+     * Orario completo del servizio (inizio e fine) <br>
+     * Nella forma '9:30 - 12:30' <br>
+     */
+    public String getOrarioLungo(Servizio entityBean) {
+        String orario = "";
+        String tagVuoto = "...";
+        LocalTime inizio = entityBean.inizio != null ? entityBean.inizio : LocalTime.MIDNIGHT;
+        LocalTime fine = entityBean.fine != null ? entityBean.fine : LocalTime.MIDNIGHT;
+
+        if (inizio != null && fine != null && inizio != LocalTime.MIDNIGHT && fine != LocalTime.MIDNIGHT) {
+            orario = inizio + " - " + fine;
         } else {
             orario = tagVuoto;
         }// end of if/else cycle

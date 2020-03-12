@@ -570,7 +570,7 @@ public class TurnoService extends WamService {
         servizio = turno.getServizio();
         List<Funzione> obbligatorie = servizioService.getObbligatorie(servizio);
 
-        if (obbligatorie != null) {
+        if (obbligatorie!=null) {
             for (Funzione funz : obbligatorie) {
                 if (!iscrizioneService.isValida(turno, funz)) {
                     turnoValido = false;
