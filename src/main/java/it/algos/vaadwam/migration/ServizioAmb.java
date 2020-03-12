@@ -93,7 +93,7 @@ public class ServizioAmb extends AmbEntity {
 
 
     public List<ServizioAmb> findAll(int codeCroce) {
-        return (List<ServizioAmb>) super.findAll(DBNAME, codeCroce);
+        return (List<ServizioAmb>) super.findAll(DBNAME, codeCroce,"ordine");
     }// end of method
 
 
