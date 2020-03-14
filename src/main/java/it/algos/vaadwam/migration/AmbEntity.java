@@ -2,8 +2,10 @@ package it.algos.vaadwam.migration;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -31,6 +33,11 @@ public class AmbEntity {
 
     protected final static String MY_URL = MY_URL_BASE + MY_SSL + MY_TIME;
 
+    @Value("${wam.mysql.user}")
+    private String mysqlUser;
+
+    @Value("${wam.mysql.password}")
+    private String mysqlPassword;
 
     protected String myDriver = "com.mysql.jdbc.Driver";
 
@@ -41,7 +48,7 @@ public class AmbEntity {
         String where = " WHERE " + whereText;
 
         try { // prova ad eseguire il codice
-            Connection connection = DriverManager.getConnection(MY_URL, "root", "");
+            Connection connection=getMysqlConnection();
             String query = "SELECT * FROM " + dbName + where;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -67,7 +74,7 @@ public class AmbEntity {
         String where = " WHERE id=" + keyID;
 
         try { // prova ad eseguire il codice
-            Connection connection = DriverManager.getConnection(MY_URL, "root", "");
+            Connection connection=getMysqlConnection();
             String query = "SELECT * FROM " + dbName + where;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -119,7 +126,7 @@ public class AmbEntity {
         String order = orderText.equals("") ? "" : " ORDER BY " + orderText;
 
         try { // prova ad eseguire il codice
-            Connection connection = DriverManager.getConnection(MY_URL, "root", "");
+            Connection connection=getMysqlConnection();
             String query = "SELECT * FROM " + dbName + where + order;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -158,5 +165,23 @@ public class AmbEntity {
         return null;
     }// end of method
 
+    /**
+     * Returns a new connection to MySql
+     */
+    private Connection getMysqlConnection() throws SQLException {
+        String user = "root";
+        String password="";
+
+        if(!StringUtils.isEmpty(mysqlUser)) {
+            user=mysqlUser;
+        }
+
+        if(!StringUtils.isEmpty(mysqlPassword)) {
+            password=mysqlPassword;
+        }
+
+        Connection connection = DriverManager.getConnection(MY_URL, user, password);
+        return connection;
+    }
 
 }// end of class
