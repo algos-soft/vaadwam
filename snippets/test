@@ -1,0 +1,3 @@
+
+* prima previsto e poi ottenuto
+        Assert.assertEquals(previsto, ottenuto);

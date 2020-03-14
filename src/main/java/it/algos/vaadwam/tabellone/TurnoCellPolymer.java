@@ -182,10 +182,10 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         if (iscr.note != null && iscr.note.length() > 0) {
             status = true;
         }// end of if cycle
-        if (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT) {
+        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
             status = true;
         }// end of if cycle
-        if (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT) {
+        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
             status = true;
         }// end of if cycle
 

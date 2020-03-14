@@ -20,19 +20,20 @@ import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.SPAZIO;
-import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 
@@ -85,6 +86,12 @@ public class TurnoList extends WamViewList {
      */
     @Autowired
     private MigrationService migration;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private IscrizioneService iscrizioneService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -210,7 +217,36 @@ public class TurnoList extends WamViewList {
      * Sovrascritto
      */
     protected void addSpecificColumnsAfter() {
-        Grid.Column colonna = grid.addComponentColumn(turno -> {
+        Grid.Column colonnaNote = grid.addComponentColumn(turno -> {
+            boolean esisteProblema = false;
+            Icon icon;
+            List<Iscrizione> iscrizioni = ((Turno) turno).iscrizioni;
+
+            if (array.isValid(iscrizioni)) {
+                for (Iscrizione iscr : iscrizioni) {
+                    if (iscrizioneService.aggiungeAvviso((Turno) turno, iscr)) {
+                        esisteProblema = true;
+                    }// end of if cycle
+                }// end of for cycle
+            }// end of if cycle
+
+            if (esisteProblema) {
+                icon = new Icon(VaadinIcon.CLOSE);
+                icon.setColor("red");
+            } else {
+                icon = new Icon(VaadinIcon.CHECK);
+                icon.setColor("green");
+            }// end of if/else cycle
+            icon.setSize("1em");
+
+            return icon;
+        });//end of lambda expressions
+
+        colonnaNote.setId("noteIscrizioni");
+        colonnaNote.setHeader("?");
+        colonnaNote.setFlexGrow(0);
+
+        Grid.Column colonnaMiliti = grid.addComponentColumn(turno -> {
             Label label = new Label();
             String testo = "";
             String sep = VIRGOLA + SPAZIO;
@@ -230,9 +266,9 @@ public class TurnoList extends WamViewList {
             return label;
         });//end of lambda expressions
 
-        colonna.setId("idMiliti");
-        colonna.setHeader("militi segnati nel turno");
-        colonna.setFlexGrow(1);
+        colonnaMiliti.setId("idMiliti");
+        colonnaMiliti.setHeader("Militi segnati nel turno");
+        colonnaMiliti.setFlexGrow(1);
     }// end of method
 
 
@@ -253,6 +289,7 @@ public class TurnoList extends WamViewList {
         int annoCorrente = LocalDate.now().getYear();
         LocalDate inizio;
         LocalDate fine;
+        Sort sort;
 
         if (filtroComboBox != null) {
             filtro = (EAFiltroTurno) filtroComboBox.getValue();
@@ -260,8 +297,9 @@ public class TurnoList extends WamViewList {
                 anno = annoCorrente - filtro.delta;
                 inizio = date.primoGennaio(anno);
                 fine = date.trentunDicembre(anno);
+                sort = new Sort(Sort.Direction.DESC, "giorno");
 
-                filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine)));
+                filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine), sort));
             }// end of if cycle
         }// end of if cycle
 

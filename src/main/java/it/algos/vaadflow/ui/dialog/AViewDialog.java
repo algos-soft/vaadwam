@@ -79,6 +79,12 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     protected final FormLayout formLayout = new FormLayout();
 
     /**
+     * Corpo centrale del Form <br>
+     * Placeholder (eventuale, presente di default) <br>
+     */
+    protected final FormLayout formSubLayout = new FormLayout();
+
+    /**
      * Barra dei bottoni di comando <br>
      * Placeholder (eventuale, presente di default) <br>
      */
@@ -261,6 +267,8 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         //--Form placeholder standard per i campi, creati dopo open()
         this.add(creaFormLayout());
+        this.add(new H3());
+        this.add(creaSubFormLayout());
 
         //--spazio per distanziare i bottoni dai campi
         this.add(new H3());
@@ -281,6 +289,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         this.saveButton.setText(confirmText);
     }// end of method
 
+
     /**
      * Regola login and context della sessione <br>
      * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
@@ -289,6 +298,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     protected void fixLoginContext() {
         context = vaadinService.getSessionContext();
     }// end of method
+
 
     /**
      * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
@@ -324,6 +334,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
     /**
      * Body placeholder per i campi, creati dopo open()
+     * Normalmente colonna doppia <br>
      */
     protected Div creaFormLayout() {
         Div div;
@@ -336,6 +347,22 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         formLayout.addClassName("no-padding");
         div = new Div(formLayout);
+        div.addClassName("has-padding");
+
+        return div;
+    }// end of method
+
+
+    /**
+     * Body placeholder per un'eventuale spazio sotto il formLayout <br>
+     * Colonna singola <br>
+     */
+    protected Component creaSubFormLayout() {
+        Div div;
+        formSubLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("50em", 1));
+
+        formSubLayout.addClassName("no-padding");
+        div = new Div(formSubLayout);
         div.addClassName("has-padding");
 
         return div;
@@ -385,6 +412,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         bottomLayout.setFlexGrow(1, spazioVuotoEspandibile);
         return bottomLayout;
     }// end of method
+
 
     /**
      * Modalità di chiusura della finestra <br>

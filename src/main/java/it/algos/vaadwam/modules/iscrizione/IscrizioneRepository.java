@@ -2,11 +2,14 @@ package it.algos.vaadwam.modules.iscrizione;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadwam.modules.croce.Croce;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
+
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 
 /**
@@ -29,9 +32,10 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 public interface IscrizioneRepository extends MongoRepository<Iscrizione, String> {
 
 
-
 //	public Iscrizione findByCode(String code);
 
-	public List<Iscrizione> findAll();
+    public List<Iscrizione> findAll();
+
+    public List<Iscrizione> findAllByCroce(Croce croce);
 
 }// end of class

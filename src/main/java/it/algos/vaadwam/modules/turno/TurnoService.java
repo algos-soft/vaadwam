@@ -209,9 +209,6 @@ public class TurnoService extends WamService {
     public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
         Turno entity = (Turno) super.beforeSave(entityBean, operation);
 
-//        --property (ridondante) calcolata
-//        entity.durataEffettiva = getDurata(entity);
-
         //--elimina informazioni inutili dalla lista (embedded) di iscrizioni
         if (array.isValid(entity.iscrizioni)) {
             for (Iscrizione iscr : entity.iscrizioni) {

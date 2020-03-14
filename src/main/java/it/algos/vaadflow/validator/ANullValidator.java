@@ -9,27 +9,27 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Project it.algos.vaadflow
+ * Project vaadwam
  * Created by Algos
  * User: gac
- * Date: gio, 07-giu-2018
- * Time: 16:28
+ * Date: sab, 14-mar-2020
+ * Time: 11:13
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
-public class AStringNullValidator implements Validator {
+public class ANullValidator implements Validator {
 
     private static final long serialVersionUID = 1L;
 
     private String message = "";
 
 
-    public AStringNullValidator() {
+    public ANullValidator() {
     }// end of costructor
 
 
-    public AStringNullValidator(String message) {
+    public ANullValidator(String message) {
         this.message = message;
     }// end of costructor
 
@@ -38,17 +38,8 @@ public class AStringNullValidator implements Validator {
     public ValidationResult apply(Object obj, ValueContext valueContext) {
         String testo;
 
-        if (obj instanceof String) {
-            testo = (String) obj;
-            if (testo.length() == 0) {
-                if (message.equals("")) {
-                    return ValidationResult.error("Il contenuto di questo campo non può essere vuoto");
-                } else {
-                    return ValidationResult.error(message);
-                }// end of if/else cycle
-            } else {
-                return ValidationResult.ok();
-            }// end of if/else cycle
+        if (obj != null) {
+            return ValidationResult.ok();
         } else {
             if (message.equals("")) {
                 return ValidationResult.error("Il contenuto di questo campo non può essere vuoto");

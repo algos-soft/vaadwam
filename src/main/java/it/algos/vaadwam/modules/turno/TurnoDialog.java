@@ -12,12 +12,9 @@ import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
-import it.algos.vaadflow.ui.fields.ACheckBox;
-import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
-import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewDialog;
@@ -27,7 +24,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
@@ -120,31 +116,37 @@ public class TurnoDialog extends WamViewDialog<Turno> {
     }// end of constructor
 
 
-    /**
-     * Eventuali aggiustamenti finali al layout
-     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
-     * Sovrascritto nella sottoclasse
-     */
-    protected void fixLayout() {
-        if (currentItem != null) {
-            this.getFormLayout().add(creaGrid());
-        }// end of if cycle
-    }// end of method
+//    /**
+//     * Eventuali aggiustamenti finali al layout
+//     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
+//     * Sovrascritto nella sottoclasse
+//     */
+//    protected void fixLayout() {
+//        if (currentItem != null) {
+//            this.getFormLayout().add(creaGrid());
+//        }// end of if cycle
+//    }// end of method
+
+//    /**
+//     * Body placeholder per un'eventuale spazio sotto il formLayout
+//     */
+//    protected Div creaSubFormLayout() {
+//        return null;
+//    }// end of method
 
 
     /**
      * Crea (o ricrea dopo una clonazione) il componente base
      */
-    public Grid creaGrid() {
-        List<Funzione> items;
+    public void fixLayout() {
+        List<Iscrizione> items;
         String widthA = "4em";
         String widthB = "6em";
         String widthC = "12em";
-        grid = new Grid(Funzione.class);
+        grid = new Grid(Iscrizione.class);
         Servizio servizio = ((Turno) currentItem).servizio;
-        iscrizioniDelTurno = ((Turno) currentItem).iscrizioni;
-        if (servizio != null) {
-            items = servizioService.getFunzioniAll(servizio);
+        items = ((Turno) currentItem).iscrizioni;
+        if (items != null) {
             grid.setItems(items);
         }// end of if cycle
 
@@ -152,17 +154,24 @@ public class TurnoDialog extends WamViewDialog<Turno> {
             grid.removeColumn((Grid.Column) column);
         }// end of for cycle
 
+        grid.setWidth("200em");
         //--aggiunge una colonna semplice
-        Grid.Column colonnaOrdine = grid.addColumn("ordine");
+        Grid.Column colonnaOrdine = grid.addColumn("funzione");
         colonnaOrdine.setHeader("Funz");
-        colonnaOrdine.setId("ordine");
-        colonnaOrdine.setWidth(widthA);
+        colonnaOrdine.setId("funzione");
+        colonnaOrdine.setWidth(widthB);
+
+//        //--aggiunge una colonna semplice
+//        Grid.Column colonnaSiglaFunzione = grid.addColumn("sigla");
+//        colonnaSiglaFunzione.setHeader("Sigla");
+//        colonnaSiglaFunzione.setId("sigla");
+//        colonnaSiglaFunzione.setWidth(widthB);
 
         //--aggiunge una colonna semplice
-        Grid.Column colonnaSiglaFunzione = grid.addColumn("sigla");
-        colonnaSiglaFunzione.setHeader("Sigla");
-        colonnaSiglaFunzione.setId("sigla");
-        colonnaSiglaFunzione.setWidth(widthB);
+        Grid.Column colonnaMilite = grid.addColumn("milite");
+        colonnaMilite.setHeader("Milite");
+        colonnaMilite.setId("milite");
+        colonnaMilite.setWidth(widthC);
 
 
 //        //--aggiunge una colonna calcolata
@@ -249,10 +258,65 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 //        colonnaEdit.setId("iscrizione");
 //        colonnaEdit.setWidth(widthA);
 
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaLast = grid.addColumn("lastModifica");
+        colonnaLast.setHeader("Last");
+        colonnaLast.setId("last");
+        colonnaLast.setWidth(widthC);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaInizio = grid.addColumn("inizio");
+        colonnaInizio.setHeader("Inizio");
+        colonnaInizio.setId("inizio");
+        colonnaInizio.setWidth(widthC);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaFine = grid.addColumn("fine");
+        colonnaFine.setHeader("Fine");
+        colonnaFine.setId("fine");
+        colonnaFine.setWidth(widthC);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaDurata = grid.addColumn("durataEffettiva");
+        colonnaDurata.setHeader("H");
+        colonnaDurata.setId("durataEffettiva");
+        colonnaDurata.setWidth(widthA);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaProblema = grid.addColumn("esisteProblema");
+        colonnaProblema.setHeader("?");
+        colonnaProblema.setId("esisteProblema");
+        colonnaProblema.setWidth(widthA);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaNote = grid.addColumn("note");
+        colonnaNote.setHeader("...");
+        colonnaNote.setId("note");
+        colonnaNote.setWidth(widthB);
+
+        //--aggiunge una colonna semplice
+        Grid.Column colonnaMail = grid.addColumn("notificaInviata");
+        colonnaMail.setHeader("Mail");
+        colonnaMail.setId("notificaInviata");
+        colonnaMail.setWidth(widthB);
+
         //--header
         fixGridHeader();
 
-        return grid;
+        formSubLayout.add(grid);
+
+//        final FormLayout iscrizioniLayout = new FormLayout();
+//        Div div;
+////        iscrizioniLayout.add(grid);
+//        iscrizioniLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("50em", 1));
+//
+//        iscrizioniLayout.addClassName("no-padding");
+//        div = new Div(iscrizioniLayout);
+//        div.addClassName("has-padding");
+////        add(div);
+////        return div;
+
+//        return grid;
     }// end of method
 
 

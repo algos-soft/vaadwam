@@ -9,6 +9,7 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -62,11 +63,11 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder(builderMethodName = "builderIscrizione")
 @EqualsAndHashCode(callSuper = false)
+@AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.nonUsata)
 @AIList(fields = {"funzione", "milite", "lastModifica", "durata", "esisteProblema"})
 @AIForm(fields = {"funzione", "milite", "lastModifica", "durata", "esisteProblema"})
-@AIScript(sovrascrivibile = false)
-public class Iscrizione extends AEntity {
+public class Iscrizione extends WamEntity {
 
 
     /**

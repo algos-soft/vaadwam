@@ -2,12 +2,8 @@ package it.algos.vaadwam.modules.turno;
 
 import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.annotation.*;
-import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
-import it.algos.vaadflow.enumeration.EAFieldAccessibility;
 import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -21,7 +17,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -94,7 +89,7 @@ public class Turno extends WamEntity {
      */
     @NotNull
     @Field("giorno")
-    @AIField(type = EAFieldType.localdate,widthEM = 8)
+    @AIField(type = EAFieldType.localdate, widthEM = 8)
     @AIColumn(widthEM = 8)
     public LocalDate giorno;
 
@@ -106,7 +101,7 @@ public class Turno extends WamEntity {
     @NotNull
     @DBRef
     @Field("serv")
-    @AIField(type = EAFieldType.combo, serviceClazz = ServizioService.class)
+    @AIField(type = EAFieldType.combo, serviceClazz = ServizioService.class, required = true)
     @AIColumn(widthEM = 7)
     public Servizio servizio;
 
@@ -128,14 +123,6 @@ public class Turno extends WamEntity {
     @AIColumn(headerIcon = VaadinIcon.BACKWARDS, headerIconColor = "red")
     public LocalTime fine;
 
-    /**
-     * Durata effettiva (in minuti) del turno (obbligatoria, calcolata in automatico prima del Save)
-     * Informazione ridondante ma comoda per le successive elaborazioni (tabellone, iscrizioni, statistiche)
-     */
-    @Deprecated
-    @Field("dur")
-    @AIField(type = EAFieldType.integer, name = "Durata")
-    public int durataEffettiva;
 
     /**
      * iscrizioni dei volontari a questo turno (obbligatorio per un turno valido)
