@@ -1568,7 +1568,7 @@ public class MigrationService extends AService {
             return null;
         }// end of if cycle
 
-        return iscrizioneService.newEntity(funzioneNew, militeNew, null, durata, esisteProblema);
+        return iscrizioneService.newEntity(funzioneNew, militeNew, durata, esisteProblema);
     }// end of method
 
 

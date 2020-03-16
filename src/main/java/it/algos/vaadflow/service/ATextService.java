@@ -1,5 +1,6 @@
 package it.algos.vaadflow.service;
 
+import com.vaadin.flow.component.html.Label;
 import it.algos.vaadflow.enumeration.EAFirstChar;
 import it.algos.vaadflow.enumeration.EAPrefType;
 import lombok.extern.slf4j.Slf4j;
@@ -653,7 +654,7 @@ public class ATextService extends AbstractService {
 
         formattato += valueTxt.substring(0, pos);
         formattato += sep;
-        formattato += valueTxt.substring( pos);
+        formattato += valueTxt.substring(pos);
 
         // valore di ritorno
         return formattato;
@@ -981,6 +982,45 @@ public class ATextService extends AbstractService {
             log.warn("Algos - ATextService.compareStr(): valori nulli");
             return 0;
         }// end of if/else cycle
+    }// end of method
+
+
+    /**
+     * Label colorata
+     */
+    private Label getLabel(String message, String labelColor) {
+        Label label = null;
+
+        if (isValid(message)) {
+            label = new Label(message);
+            label.getElement().getStyle().set("color", labelColor);
+        }// end of if cycle
+
+        return label;
+    }// end of method
+
+
+    /**
+     * Label colorata
+     */
+    public Label getLabelDev(String message) {
+        return getLabel(message, "red");
+    }// end of method
+
+
+    /**
+     * Label colorata
+     */
+    public Label getLabelUser(String message) {
+        return getLabel(message, "green");
+    }// end of method
+
+
+    /**
+     * Label colorata
+     */
+    public Label getLabelAdmin(String message) {
+        return getLabel(message, "blue");
     }// end of method
 
 }// end of class

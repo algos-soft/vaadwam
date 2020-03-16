@@ -202,9 +202,9 @@ public class StatisticaList extends WamViewList {
         alertDevAll = null;
         super.creaAlertLayout();
 
-        alertPlacehorder.add(getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
-        alertPlacehorder.add(getLabelDev(DEVELOPER_DELETE));
-        alertPlacehorder.add(getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
+        alertPlacehorder.add(text.getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
+        alertPlacehorder.add(text.getLabelDev(DEVELOPER_DELETE));
+        alertPlacehorder.add(text.getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
         try { // prova ad eseguire il codice
             alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
         } catch (Exception unErrore) { // intercetta l'errore
@@ -310,12 +310,12 @@ public class StatisticaList extends WamViewList {
             }// end of if/else cycle
 
             if (lastImport != null) {
-                label = getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
+                label = text.getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
             } else {
                 if (elaborazioneAutomaticaDiQuestaCroce) {
-                    label = getLabelDev(tag + nota + " Non ancora effettuata.");
+                    label = text.getLabelDev(tag + nota + " Non ancora effettuata.");
                 } else {
-                    label = getLabelDev(testo);
+                    label = text.getLabelDev(testo);
                 }// end of if/else cycle
             }// end of if/else cycle
 

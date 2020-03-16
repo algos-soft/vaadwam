@@ -19,20 +19,15 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
 public class AStringNullValidator implements Validator {
-
     private static final long serialVersionUID = 1L;
-
     private String message = "";
-
 
     public AStringNullValidator() {
     }// end of costructor
 
-
     public AStringNullValidator(String message) {
         this.message = message;
     }// end of costructor
-
 
     @Override
     public ValidationResult apply(Object obj, ValueContext valueContext) {
@@ -58,7 +53,6 @@ public class AStringNullValidator implements Validator {
         }// end of if/else cycle
     }// end of methodù
 
-
     /**
      * Applies this function to the given arguments.
      *
@@ -71,5 +65,4 @@ public class AStringNullValidator implements Validator {
     public Object apply(Object o, Object o2) {
         return null;
     }
-
 }// end of class

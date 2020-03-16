@@ -555,6 +555,30 @@ public class TurnoService extends WamService {
 
 
     /**
+     * Lista di iscrizioni, lunga quanto le funzioni del servizio <br>
+     * Se una funzione non ha iscrizione, ne metto una vuota <br>
+     * Con la funzione e senza milite <br>
+     *
+     * @param servizio di riferimento
+     *
+     * @return lista (Iscrizione) di iscrizioni per un turno con questo servizio
+     */
+    public List<Iscrizione> getIscrizioni(Servizio servizio) {
+        List<Iscrizione> items = new ArrayList<>();
+        List<Funzione> funzioni = servizioService.getFunzioniAll(servizio);
+
+        if (array.isValid(funzioni)) {
+            for (Funzione funzione : funzioni) {
+//                items.add(Iscrizione.builderIscrizione().funzione(funzione).build());
+                items.add(iscrizioneService.newEntity(servizio, funzione));
+            }// end of for cycle
+        }// end of if cycle
+
+        return items;
+    }// end of method
+
+
+    /**
      * Turno valido se tutte le funzioni obbligatorie hanno un milite segnato <br>
      *
      * @param turno di riferimento
@@ -567,7 +591,7 @@ public class TurnoService extends WamService {
         servizio = turno.getServizio();
         List<Funzione> obbligatorie = servizioService.getObbligatorie(servizio);
 
-        if (obbligatorie!=null) {
+        if (obbligatorie != null) {
             for (Funzione funz : obbligatorie) {
                 if (!iscrizioneService.isValida(turno, funz)) {
                     turnoValido = false;

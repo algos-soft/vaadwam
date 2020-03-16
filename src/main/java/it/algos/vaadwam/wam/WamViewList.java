@@ -214,32 +214,32 @@ public abstract class WamViewList extends AGridViewList {
         }// end of if cycle
 
         if (alertUser != null) {
-            alertPlacehorder.add(getLabelUser(alertUser.get(0)));
+            alertPlacehorder.add(text.getLabelUser(alertUser.get(0)));
         }// end of if cycle
         if (isUser) {
             if (alertUser != null) {
                 for (int k = 1; k < alertUser.size(); k++) {
-                    alertPlacehorder.add(getLabelUser(alertUser.get(k)));
+                    alertPlacehorder.add(text.getLabelUser(alertUser.get(k)));
                 }// end of for cycle
             }// end of if cycle
         } else {
             if (alertAdmin != null) {
                 for (String alert : alertAdmin) {
-                    alertPlacehorder.add(getLabelAdmin(alert));
+                    alertPlacehorder.add(text.getLabelAdmin(alert));
                 }// end of for cycle
             }// end of if cycle
             if (isDeveloper) {
                 if (wamLogin != null && wamLogin.getCroce() != null) {
                     if (alertDev != null) {
                         for (String alert : alertDev) {
-                            alertPlacehorder.add(getLabelDev(alert));
+                            alertPlacehorder.add(text.getLabelDev(alert));
                         }// end of for cycle
                         alertPlacehorder.add(getInfoImport(((WamService) service).lastImport, ((WamService) service).durataLastImport));
                     }// end of if cycle
                 } else {
                     if (alertDevAll != null) {
                         for (String alert : alertDevAll) {
-                            alertPlacehorder.add(getLabelDev(alert));
+                            alertPlacehorder.add(text.getLabelDev(alert));
                         }// end of for cycle
                     }// end of if cycle
                 }// end of if/else cycle
@@ -248,7 +248,7 @@ public abstract class WamViewList extends AGridViewList {
 
         if (alertParticolare != null) {
             for (String alert : alertParticolare) {
-                alertPlacehorder.add(getLabelDev(alert));
+                alertPlacehorder.add(text.getLabelDev(alert));
             }// end of for cycle
         }// end of if cycle
     }// end of method
@@ -324,12 +324,12 @@ public abstract class WamViewList extends AGridViewList {
             }// end of if/else cycle
 
             if (lastImport != null) {
-                label = getLabelDev(testo + " Ultimo import il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
+                label = text.getLabelDev(testo + " Ultimo import il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
             } else {
                 if (importAutomaticoDiQuestaCroce) {
-                    label = getLabelDev(tag + nota + " Non ancora effettuato.");
+                    label = text.getLabelDev(tag + nota + " Non ancora effettuato.");
                 } else {
-                    label = getLabelDev(testo);
+                    label = text.getLabelDev(testo);
                 }// end of if/else cycle
             }// end of if/else cycle
 

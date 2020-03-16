@@ -3,15 +3,19 @@ package it.algos.vaadwam.modules.turno;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
+import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -74,6 +78,12 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
+    protected TurnoService turnoService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
     protected ServizioService servizioService;
 
     /**
@@ -93,6 +103,14 @@ public class TurnoDialog extends WamViewDialog<Turno> {
     private Grid grid;
 
     private List<Iscrizione> iscrizioniDelTurno;
+
+    private ATextField titoloExtraField;
+
+    private ATextField localitaExtraField;
+
+    private AComboBox servizioField;
+
+    private Turno turnoEntity;
 
 
     /**
@@ -116,23 +134,72 @@ public class TurnoDialog extends WamViewDialog<Turno> {
     }// end of constructor
 
 
-//    /**
-//     * Eventuali aggiustamenti finali al layout
-//     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
-//     * Sovrascritto nella sottoclasse
-//     */
-//    protected void fixLayout() {
-//        if (currentItem != null) {
-//            this.getFormLayout().add(creaGrid());
-//        }// end of if cycle
-//    }// end of method
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertDev.add("Key e Croce appaiono solo per il developer e NON sono modificabili");
+        if (operation == EAOperation.addNew) {
+            alertDev.add("Modificando il comboBox dei servizi, viene regolata in automatico la key");
+            alertDev.add("Modificando il comboBox dei servizi, vengono predisposte le iscrizioni per le funzioni previste");
+        } else {
+        }// end of if/else cycle
+        alertDev.add("TitoloExtra e LocalitàExtra servono solo per i servizi SENZA orario");
+        alertDev.add("Il servizio è modificabile SOLO se non c'è nessun milite segnato");
 
-//    /**
-//     * Body placeholder per un'eventuale spazio sotto il formLayout
-//     */
-//    protected Div creaSubFormLayout() {
-//        return null;
-//    }// end of method
+        super.fixAlertLayout();
+    }// end of method
+
+
+    /**
+     * Eventuali specifiche regolazioni aggiuntive ai fields del binder
+     * Sovrascritto nella sottoclasse
+     */
+    protected void fixStandardAlgosFields() {
+        titoloExtraField = (ATextField) getField("titoloExtra");
+        localitaExtraField = (ATextField) getField("localitaExtra");
+
+        titoloExtraField.setEnabled(false);
+        localitaExtraField.setEnabled(false);
+
+        servizioField = (AComboBox) getField("servizio");
+        servizioField.addValueChangeListener(event -> sincroServizio((Servizio) event.getValue()));//end of lambda expressions
+    }// end of method
+
+
+    private void sincroServizio(Servizio servizio) {
+        if (servizio.isOrarioDefinito()) {
+            titoloExtraField.setEnabled(false);
+            localitaExtraField.setEnabled(false);
+        } else {
+            titoloExtraField.setEnabled(true);
+            localitaExtraField.setEnabled(true);
+        }// end of if/else cycle
+
+        regolaKey(servizio);
+        creaIscrizioni(servizio);
+    }// end of method
+
+
+    private void regolaKey(Servizio servizio) {
+        String sigla = servizio.code;
+        ATextField keyField = (ATextField) getField("id");
+        keyField.setValue(((Turno) currentItem).id + sigla);
+    }// end of method
+
+
+    private void creaIscrizioni(Servizio servizio) {
+        iscrizioniDelTurno = turnoService.getIscrizioni(servizio);
+        if (grid != null) {
+            grid.setItems(iscrizioniDelTurno);
+        }// end of if cycle
+    }// end of method
 
 
     /**
@@ -290,7 +357,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 
         //--aggiunge una colonna semplice
         Grid.Column colonnaNote = grid.addColumn("note");
-        colonnaNote.setHeader("...");
+        colonnaNote.setHeader("Note");
         colonnaNote.setId("note");
         colonnaNote.setWidth(widthB);
 
@@ -303,6 +370,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         //--header
         fixGridHeader();
 
+        grid.addItemDoubleClickListener(event -> apreDialogoIscrizione((ItemDoubleClickEvent) event));
         formSubLayout.add(grid);
 
 //        final FormLayout iscrizioniLayout = new FormLayout();
@@ -334,5 +402,35 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         informationCell.setComponent(comp);
     }// end of method
 
+
+    protected void apreDialogoIscrizione(ItemDoubleClickEvent evento) {
+        turnoEntity = (Turno) currentItem;
+        Iscrizione entityBean = (Iscrizione) evento.getItem();
+        IscrizioneTurnoDialog dialogo = appContext.getBean(IscrizioneTurnoDialog.class, service, Iscrizione.class, turnoEntity);
+
+        dialogo.openWam(entityBean, EAOperation.edit, this::save, this::delete);
+    }// end of method
+
+
+    /**
+     * Primo ingresso dopo il click sul bottone <br>
+     */
+    protected void save(AEntity entityBean, EAOperation operation) {
+//        if (service.save(entityBean, operation) != null) {
+//            updateFiltri();
+//            updateGrid();
+//        }// end of if cycle
+    }// end of method
+
+
+    protected void delete(AEntity entityBean) {
+//        service.delete(entityBean);
+//        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
+//
+//        if (usaRefresh) {
+//            updateFiltri();
+//            updateGrid();
+//        }// end of if cycle
+    }// end of method
 
 }// end of class

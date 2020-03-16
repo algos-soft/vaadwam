@@ -1,29 +1,33 @@
-package it.algos.vaadwam.modules.iscrizione;
+package it.algos.vaadwam.modules.turno;
 
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.fields.ACheckBox;
+import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATimePicker;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewDialog;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadwam.application.WamCost.TAG_ISC;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadwam.application.WamCost.TAG_ISC_TUR;
 
 /**
- * Project vaadwam <br>
+ * Project vaadwam
  * Created by Algos
- * User: Gac
- * Fix date: 30-set-2018 16.22.05 <br>
- * <p>
+ * User: gac
+ * Date: dom, 15-mar-2020
+ * Time: 17:26
  * Estende la classe astratta AViewDialog per visualizzare i fields <br>
  * <p>
  * Not annotated with @SpringView (sbagliato) perché usa la @Route di VaadinFlow <br>
@@ -35,10 +39,9 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Qualifier(TAG_ISC)
-@Slf4j
-@AIScript(sovrascrivibile = true)
-public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
+@Qualifier(TAG_ISC_TUR)
+@AIScript(sovrascrivibile = false)
+public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
 
 
     /**
@@ -47,13 +50,24 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
     @Autowired
     private IscrizioneService iscrizioneService;
 
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private ServizioService servizioService;
+
+
+    private Turno turnoEntity;
+
+    private Servizio servizioEntity;
+
 
     /**
      * Costruttore base senza parametri <br>
      * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
      * Se manca, manda in rosso i parametri del costruttore usato <br>
      */
-    public IscrizioneDialog() {
+    public IscrizioneTurnoDialog() {
     }// end of constructor
 
 
@@ -64,11 +78,23 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
      * @param service     business class e layer di collegamento per la Repository
      * @param binderClass di tipo AEntity usata dal Binder dei Fields
      */
-    public IscrizioneDialog(IAService service, Class<? extends AEntity> binderClass) {
+    public IscrizioneTurnoDialog(IAService service, Class<? extends AEntity> binderClass, Turno turnoEntity) {
         super(service, binderClass);
+        this.turnoEntity = turnoEntity;
     }// end of constructor
 
 
+    /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.usaFormDueColonne = false;
+    }// end of method
 
 
     /**
@@ -81,10 +107,24 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
      */
     @Override
     protected void fixAlertLayout() {
-        alertDev.add("Le iscrizioni sono interne al turno (embedded). Scheda di prova");
-        alertDev.add("La key esiste solo qui in questa prova.");
-        alertDev.add("Inizio, fine e durata hanno senso solo quando l'iscrizione è all'interno di un turno.");
-        alertDev.add("La mail ha senso solo quando è selezionato il milite.");
+        String giorno = null;
+        String funzione = null;
+        String orario = null;
+
+        if (turnoEntity != null) {
+        }// end of if cycle
+
+        if (turnoEntity != null && servizioEntity != null) {
+            orario = servizioService.getOrarioLungo(servizioEntity);
+        }// end of if cycle
+
+        if (((Iscrizione) currentItem).funzione!=null) {
+            funzione=((Iscrizione) currentItem).funzione.descrizione;
+        }// end of if cycle
+
+        alertAdmin.add("Turno: " + (giorno != null ? giorno : VUOTA));
+        alertAdmin.add("Funzione: " + (funzione != null ? funzione : VUOTA));
+        alertDev.add("Orario previsto: " + (orario != null ? orario : VUOTA));
 
         super.fixAlertLayout();
     }// end of method
@@ -100,7 +140,15 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
      * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
      */
     protected List<String> getPropertiesName() {
-        return iscrizioneService != null ? iscrizioneService.getFormPropertyNamesList(context) : null;
+        ArrayList<String> lista = new ArrayList<>();
+
+        lista.add("funzione");
+        lista.add("milite");
+        lista.add("inizio");
+        lista.add("fine");
+        lista.add("note");
+
+        return lista;
     }// end of method
 
 
@@ -109,17 +157,20 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
      * Sovrascritto nella sottoclasse
      */
     protected void fixStandardAlgosFields() {
+        AComboBox funzioneField = (AComboBox) getField("funzione");
         ATimePicker inizioField = (ATimePicker) getField("inizio");
         ATimePicker fineField = (ATimePicker) getField("fine");
-        IntegerField durataField = (IntegerField) getField("durataEffettiva");
-        ACheckBox problemaField = (ACheckBox) getField("esisteProblema");
-        ACheckBox notificaField = (ACheckBox) getField("notificaInviata");
+//        IntegerField durataField = (IntegerField) getField("durataEffettiva");
+//        ACheckBox problemaField = (ACheckBox) getField("esisteProblema");
+//        ACheckBox notificaField = (ACheckBox) getField("notificaInviata");
 
-        inizioField.setEnabled(false);
-        fineField.setEnabled(false);
-        durataField.setEnabled(false);
-        problemaField.setEnabled(false);
-        notificaField.setEnabled(false);
+        funzioneField.setEnabled(false);
+//        inizioField.setEnabled(false);
+//        fineField.setEnabled(false);
+
+//        durataField.setEnabled(false);
+//        problemaField.setEnabled(false);
+//        notificaField.setEnabled(false);
     }// end of method
 
 }// end of class

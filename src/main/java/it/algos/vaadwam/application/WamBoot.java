@@ -182,6 +182,8 @@ public class WamBoot extends ABoot {
         if (croceService.isVuoto()) {
             migration.importOnlyCroci();
         }// end of if cycle
+
+        migration.importAll();
     }// end of method
 
 
