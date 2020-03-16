@@ -1,10 +1,14 @@
 package it.algos.vaadwam.modules.iscrizione;
 
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
+import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
@@ -12,9 +16,17 @@ import it.algos.vaadflow.ui.dialog.IADialog;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneDialog;
+import it.algos.vaadwam.wam.WamLogin;
+import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.vaadin.klaudeta.PaginatedGrid;
+
+import java.util.ArrayList;
+
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 
 /**
@@ -42,19 +54,10 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 @UIScope
 @Route(value = TAG_ISC, layout = WamLayout.class)
 @Qualifier(TAG_ISC)
-@AIView(roleTypeVisibility = EARoleType.developer)
 @Slf4j
-@AIScript(sovrascrivibile = true)
-public class IscrizioneList extends AGridViewList {
-
-
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
-
+@AIScript(sovrascrivibile = false)
+@AIView(vaadflow = false, menuName = "iscrizioni", menuIcon = VaadinIcon.LIST_OL,  roleTypeVisibility = EARoleType.developer)
+public class IscrizioneList extends WamViewList {
 
 
     /**
@@ -70,5 +73,55 @@ public class IscrizioneList extends AGridViewList {
     public IscrizioneList(@Qualifier(TAG_ISC) IAService service) {
         super(service, Iscrizione.class);
     }// end of Vaadin/@Route constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (login.isDeveloper()) {
+            super.usaButtonDelete = true;
+        }// end of if cycle
+
+        if (login.isDeveloper()) {
+            super.usaButtonNew = true;
+            super.isEntityModificabile = true;
+        }// end of if cycle
+
+        searchType = EASearch.nonUsata;
+        super.usaImportButton = false;
+        super.usaPagination = false;
+
+        alertUser = null;
+        alertAdmin = null;
+        alertDev = null;
+        alertDevAll = null;
+        alertParticolare = new ArrayList<>();
+        alertParticolare.add("Iscrizioni interne al turno (embedded). Lista di prova.");
+    }// end of method
+
+
+    /**
+     * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>
+     * Il dialogo è PROTOTYPE e viene creato esclusivamente da appContext.getBean(... <br>
+     * Nella creazione vengono regolati il service e la entityClazz di riferimento <br>
+     * Contestualmente alla creazione, il dialogo viene aperto con l'item corrente (ricevuto come parametro) <br>
+     * Se entityBean è null, nella superclasse AViewDialog viene modificato il flag a EAOperation.addNew <br>
+     * Si passano al dialogo anche i metodi locali (di questa classe AViewList) <br>
+     * come ritorno dalle azioni save e delete al click dei rispettivi bottoni <br>
+     * Il metodo DEVE essere sovrascritto <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    @Override
+    protected void openDialog(AEntity entityBean) {
+        appContext.getBean(IscrizioneDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+    }// end of method
 
 }// end of class

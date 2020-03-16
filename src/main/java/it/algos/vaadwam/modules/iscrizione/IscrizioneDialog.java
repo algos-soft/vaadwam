@@ -9,6 +9,7 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,7 +41,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 @Qualifier(TAG_ISC)
 @Slf4j
 @AIScript(sovrascrivibile = true)
-public class IscrizioneDialog extends AViewDialog<Iscrizione> {
+public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
 
 
     /**
@@ -62,53 +63,6 @@ public class IscrizioneDialog extends AViewDialog<Iscrizione> {
     public IscrizioneDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
-
-
-    /**
-     * Costruisce eventuali fields specifici (costruiti non come standard type)
-     * Aggiunge i fields specifici al binder
-     * Aggiunge i fields specifici alla fieldMap
-     * Sovrascritto nella sottoclasse
-     */
-    @Override
-    protected void addSpecificAlgosFields() {
-        AComboBox comboFunzioni = null;
-        AComboBox comboMiliti = null;
-        List<Funzione> funzioniDelServizio = null;
-//        Iscrizione iscrizione = currentItem;
-//        Turno turno=null;
-//        Servizio servizio=null;
-        Funzione funzione = null;
-
-        if (operation == EAOperation.editDaLink) {
-//            turno = (Turno) operation.getSorgente();
-//            if (turno!=null) {
-//                servizio=turno.servizio;
-//            }// end of if cycle
-//            if (servizio!=null) {
-//                funzioniDelServizio=servizio.funzioni;
-//            }// end of if cycle
-
-
-            comboFunzioni = (AComboBox) getField("funzione");
-
-            funzioniDelServizio = new ArrayList<>();
-            funzione = currentItem.funzione;
-
-            if (funzione != null) {
-                funzioniDelServizio.add(funzione);
-            } else {
-                log.error("Qualcosa non ha funzionato");
-            }// end of if/else cycle
-
-            if (comboFunzioni != null && funzioniDelServizio.size() == 1) {
-                comboFunzioni.setItems(funzioniDelServizio);
-            }// end of if cycle
-
-            comboMiliti = (AComboBox) getField("milite");
-        }// end of if cycle
-
-    }// end of method
 
 
 }// end of class

@@ -5,8 +5,9 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.converter.StringToLongConverter;
@@ -15,16 +16,10 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
-import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.converter.AConverterComboBox;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.ui.fields.*;
-import it.algos.vaadflow.validator.AIntegerZeroValidator;
-import it.algos.vaadflow.validator.ALongZeroValidator;
-import it.algos.vaadflow.validator.AStringNullValidator;
-import it.algos.vaadflow.validator.AUniqueValidator;
-import it.algos.vaadflow.ui.fields.IAIcon;
+import it.algos.vaadflow.validator.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -159,7 +154,8 @@ public class AFieldService extends AbstractService {
         Class serviceClazz = annotation.getServiceClass(reflectionJavaField);
         Class linkClazz = annotation.getLinkClass(reflectionJavaField);
         List<String> enumItems = annotation.getEnumItems(reflectionJavaField);
-        AStringNullValidator nullValidator = new AStringNullValidator(messageNotNull);
+        ANullValidator nullValidator = new ANullValidator(messageNotNull);
+        AStringNullValidator stringNullValidator = new AStringNullValidator(messageNotNull);
         AIntegerZeroValidator integerZeroValidator = new AIntegerZeroValidator();
         ALongZeroValidator longZeroValidator = new ALongZeroValidator();
         AUniqueValidator uniqueValidator = null;
@@ -184,56 +180,48 @@ public class AFieldService extends AbstractService {
                     if (notNull) {
                         if (lengthValidator != null) {
                             if (uniqueValidator != null) {
-                                binder
-                                        .forField(field)
-                                        .withValidator(nullValidator)
+                                binder.forField(field)
+                                        .withValidator(stringNullValidator)
                                         .withValidator(lengthValidator)
 //                                        .withValidator(uniqueValidator)
                                         .bind(fieldName);
                             } else {
-                                binder
-                                        .forField(field)
-                                        .withValidator(nullValidator)
+                                binder.forField(field)
+                                        .withValidator(stringNullValidator)
                                         .withValidator(lengthValidator)
                                         .bind(fieldName);
                             }// end of if/else cycle
                         } else {
                             if (uniqueValidator != null) {
-                                binder
-                                        .forField(field)
-                                        .withValidator(nullValidator)
+                                binder.forField(field)
+                                        .withValidator(stringNullValidator)
 //                                        .withValidator(uniqueValidator)
                                         .bind(fieldName);
                             } else {
-                                binder
-                                        .forField(field)
-                                        .withValidator(nullValidator)
+                                binder.forField(field)
+                                        .withValidator(stringNullValidator)
                                         .bind(fieldName);
                             }// end of if/else cycle
                         }// end of if/else cycle
                     } else {
                         if (lengthValidator != null) {
                             if (uniqueValidator != null) {
-                                binder
-                                        .forField(field)
+                                binder.forField(field)
                                         .withValidator(lengthValidator)
 //                                        .withValidator(uniqueValidator)
                                         .bind(fieldName);
                             } else {
-                                binder
-                                        .forField(field)
+                                binder.forField(field)
                                         .withValidator(lengthValidator)
                                         .bind(fieldName);
                             }// end of if/else cycle
                         } else {
                             if (uniqueValidator != null) {
-                                binder
-                                        .forField(field)
+                                binder.forField(field)
                                         .withValidator(lengthValidator)
                                         .bind(fieldName);
                             } else {
-                                binder
-                                        .forField(field)
+                                binder.forField(field)
                                         .bind(fieldName);
                             }// end of if/else cycle
                         }// end of if/else cycle
@@ -250,7 +238,7 @@ public class AFieldService extends AbstractService {
                 ((EmailField) field).setClearButtonVisible(true);
                 if (binder != null) {
                     if (required) {
-                        binder.forField(field).withValidator(nullValidator).withValidator(eMailValidator).bind(fieldName);
+                        binder.forField(field).withValidator(stringNullValidator).withValidator(eMailValidator).bind(fieldName);
                     } else {
                         binder.forField(field).withNullRepresentation("").withValidator(eMailValidator).bind(fieldName);
                     }// end of if/else cycle
@@ -258,7 +246,7 @@ public class AFieldService extends AbstractService {
                 break;
             case password:
                 field = new PasswordField(caption);
-                ((PasswordField)field).setPlaceholder("Enter password");
+                ((PasswordField) field).setPlaceholder("Enter password");
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);
                 }// end of if cycle
@@ -272,7 +260,7 @@ public class AFieldService extends AbstractService {
                 field.setReadOnly(false);
                 break;
             case integer:
-                 field = new IntegerField(caption);
+                field = new IntegerField(caption);
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);
                 }// end of if cycle
@@ -303,7 +291,7 @@ public class AFieldService extends AbstractService {
                     IAService service = (IAService) StaticContextAccessor.getBean(clazz);
                     List items = ((IAService) service).findAll();
                     if (items != null) {
-                        Set<AEntity> hSet = new HashSet<AEntity>(items);
+                        Set<Role> hSet = new HashSet<Role>(items);
                         hSet.addAll(items);
 
                         ((MultiselectComboBox) field).setItems(hSet);
@@ -330,7 +318,13 @@ public class AFieldService extends AbstractService {
                 field.setReadOnly(false);
 
                 if (binder != null) {
-                    binder.forField(field).bind(fieldName);
+                    if (notNull) {
+                        binder.forField(field)
+                                .withValidator(nullValidator)
+                                .bind(fieldName);
+                    } else {
+                        binder.forField(field).bind(fieldName);
+                    }// end of if/else cycle
                 }// end of if cycle
                 break;
             /**
@@ -414,7 +408,7 @@ public class AFieldService extends AbstractService {
 
                         FlexLayout wrapper = new FlexLayout();
                         text.getStyle().set("margin-left", "0.5em");
-                        wrapper.add(((VaadinIcon)icon).create(), text);
+                        wrapper.add(((VaadinIcon) icon).create(), text);
                         return wrapper;
                     }));
                     if (binder != null) {

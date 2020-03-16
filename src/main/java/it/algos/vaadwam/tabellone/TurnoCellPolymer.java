@@ -182,10 +182,10 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         if (iscr.note != null && iscr.note.length() > 0) {
             status = true;
         }// end of if cycle
-        if (iscr.inizio != turno.inizio || turno.inizio == LocalTime.MIDNIGHT) {
+        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
             status = true;
         }// end of if cycle
-        if (iscr.fine != turno.fine || turno.fine == LocalTime.MIDNIGHT) {
+        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
             status = true;
         }// end of if cycle
 
@@ -229,16 +229,20 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
 
         switch (numIscr) {
             case 1:
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO + "/" + turno));
+//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO + "/" + turno));
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
                 break;
             case 2:
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE + "/" + turno));
+//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE + "/" + turno));
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
                 break;
             case 3:
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE + "/" + turno));
+//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE + "/" + turno));
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
                 break;
             case 4:
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO + "/" + turno));
+//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO + "/" + turno));
+                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
                 break;
             default:
                 break;
@@ -275,16 +279,20 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
             int numIscr = servizioService.getFunzioniAll(servizio).size();
             switch (numIscr) {
                 case 1:
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO, query));
+//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO, query));
+                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
                     break;
                 case 2:
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE, query));
+//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE, query));
+                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
                     break;
                 case 3:
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE, query));
+//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE, query));
+                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
                     break;
                 case 4:
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO, query));
+//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO, query));
+                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
                     break;
                 default:
                     break;

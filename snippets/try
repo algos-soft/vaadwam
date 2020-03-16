@@ -1,0 +1,23 @@
+==try==
+try
+{
+    statements that can throw exceptions
+}
+catch (exception-type identifier)
+{
+    statements executed when exception is thrown
+}
+finally
+{
+    statements that are executed whether or not
+    exceptions occur
+}
+
+==throws==
+Serve per far 'risalire' l'errore. Ha senso se in alto l'errore viene gestito.
+throws is a keyword in Java which is used in the signature of method to indicate that this method might throw one of the listed type exceptions.
+The caller to these methods has to handle the exception using a try-catch block.
+
+    throws keyword is required only for checked exception and usage of throws keyword for unchecked exception is meaningless.
+    throws keyword is required only to convince compiler and usage of throws keyword does not prevent abnormal termination of program.
+    By the help of throws keyword we can provide information to the caller of the method about the exception.

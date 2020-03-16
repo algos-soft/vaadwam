@@ -51,6 +51,8 @@ public abstract class WamViewList extends AGridViewList {
 
     protected Button deleteButton;
 
+    protected boolean usaImportButton;
+
     protected Button importButton;
 
     protected List<String> alertUser;
@@ -60,6 +62,8 @@ public abstract class WamViewList extends AGridViewList {
     protected List<String> alertDev;
 
     protected List<String> alertDevAll;
+
+    protected List<String> alertParticolare;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -142,12 +146,15 @@ public abstract class WamViewList extends AGridViewList {
             super.isEntityModificabile = false;
         }// end of if/else cycle
 
+        this.usaImportButton = true;
+
         super.usaPagination = true;
 
         alertUser = new ArrayList<>();
         alertAdmin = new ArrayList<>();
         alertDev = new ArrayList<>();
         alertDevAll = new ArrayList<>();
+        alertParticolare = new ArrayList<>();
     }// end of method
 
 
@@ -238,6 +245,12 @@ public abstract class WamViewList extends AGridViewList {
                 }// end of if/else cycle
             }// end of if cycle
         }// end of if/else cycle
+
+        if (alertParticolare != null) {
+            for (String alert : alertParticolare) {
+                alertPlacehorder.add(getLabelDev(alert));
+            }// end of for cycle
+        }// end of if cycle
     }// end of method
 
 
@@ -260,7 +273,7 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
             importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
@@ -286,7 +299,6 @@ public abstract class WamViewList extends AGridViewList {
         ((WamService) service).importa();
         UI.getCurrent().getPage().reload();
     }// end of method
-
 
 
     /**

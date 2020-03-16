@@ -118,7 +118,7 @@ public abstract class ABoot implements ServletContextListener {
 
 
     /**
-     * Inizializzazione di alcuni parametri standard del database mongoDB <br>
+     * Inizializzazione di alcuni parametri del database mongoDB <br>
      */
     protected void iniziaDBMongo() {
         mongo.getMaxBlockingSortBytes();
@@ -130,8 +130,6 @@ public abstract class ABoot implements ServletContextListener {
     /**
      * Inizializzazione delle versioni standard di vaadinflow <br>
      * Inizializzazione delle versioni del programma specifico <br>
-     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
-     * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void iniziaVersioni() {
     }// end of method
@@ -220,9 +218,8 @@ public abstract class ABoot implements ServletContextListener {
 
 
     /**
-     * Inizializzazione dei dati di alcune collection essenziali per la partenza <br>
-     * Il metodo può essere sovrascritto per creare le preferenze specifiche dell'applicazione <br>
-     * Invocare PRIMA il metodo della superclasse <br>
+     * Inizializzazione dei dati di alcune collections essenziali per la partenza <br>
+     * Sovrascritto
      */
     protected void iniziaDataPreliminari() {
     }// end of method

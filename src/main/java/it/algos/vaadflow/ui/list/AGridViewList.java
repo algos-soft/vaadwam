@@ -255,9 +255,7 @@ public abstract class AGridViewList extends ALayoutViewList {
      * Header text
      */
     protected String getGridHeaderText() {
-        int numRecCollezione = items.size();
-//        int numRecCollezione = service.count();
-        String filtro = text.format(items.size());
+        int numRecCollezione = items != null ? items.size() : 0;
         String totale = text.format(numRecCollezione);
         String testo = entityClazz != null ? entityClazz.getSimpleName() + " - " : "";
 
@@ -383,11 +381,11 @@ public abstract class AGridViewList extends ALayoutViewList {
             try { // prova ad eseguire il codice
                 grid.deselectAll();
                 grid.setItems(items);
-                headerGridHolder.setText(getGridHeaderText());
             } catch (Exception unErrore) { // intercetta l'errore
                 log.error(unErrore.toString());
             }// fine del blocco try-catch
         }// end of if cycle
+        headerGridHolder.setText(getGridHeaderText());
 
         creaAlertLayout();
     }// end of method

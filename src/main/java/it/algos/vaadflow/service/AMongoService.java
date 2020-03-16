@@ -643,7 +643,7 @@ public class AMongoService extends AbstractService {
 
 
     /**
-     * Recupera il valore del parametro internalQueryExecMaxBlockingSortBytes <br>
+     * Recupera il valore del parametro internalQueryExecMaxBlockingSortBytes
      *
      * @return value of parameter
      */

@@ -6,5 +6,4 @@ Per il merge di una branch:
 5) posizionarsi su Remote Branches
 6) selezionare quella che si vuole 'consolidare'
 7) premere Rebase current onto selected
-7) premere Merge into current
-8) eseguire SUBITO un commit (forzando con una modifica farlocca )
+8) eseguire SUBITO un commit (forzando con una modifica farlocca)

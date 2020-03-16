@@ -2,10 +2,10 @@ package it.algos.vaadwam.modules.iscrizione;
 
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,7 +40,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 @Qualifier(TAG_ISC)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class IscrizioneService extends AService {
+public class IscrizioneService extends WamService {
 
 
     /**
@@ -69,7 +69,7 @@ public class IscrizioneService extends AService {
     public IscrizioneService(@Qualifier(TAG_ISC) MongoRepository repository) {
         super(repository);
         super.entityClass = Iscrizione.class;
-//        this.repository = (IscrizioneRepository) repository;
+        this.repository = (IscrizioneRepository) repository;
     }// end of Spring constructor
 
 
@@ -178,6 +178,17 @@ public class IscrizioneService extends AService {
     }// end of method
 
 
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Iscrizione> findAll() {
+        return repository.findAll();
+    }// end of method
+
+
     public boolean isValida(Iscrizione iscrizione) {
         boolean status = false;
 
@@ -218,6 +229,7 @@ public class IscrizioneService extends AService {
         }// end of if cycle
     }// end of method
 
+
     public void setFine(Iscrizione iscrizione, Turno turno) {
         if (iscrizione != null && turno != null) {
             setFine(iscrizione, turno.getFine());
@@ -229,6 +241,23 @@ public class IscrizioneService extends AService {
         if (iscrizione != null) {
             iscrizione.setFine(time);
         }// end of if cycle
+    }// end of method
+
+
+    public boolean aggiungeAvviso(Turno turno, Iscrizione iscr) {
+        boolean status = false;
+
+        if (iscr.note != null && iscr.note.length() > 0) {
+            status = true;
+        }// end of if cycle
+        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
+            status = true;
+        }// end of if cycle
+        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
+            status = true;
+        }// end of if cycle
+
+        return status;
     }// end of method
 
 }// end of class
