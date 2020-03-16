@@ -210,9 +210,9 @@ public class MigrationService extends AService {
             croceNew = getCroce(croceOld);
 
             if (croceNew != null) {
-                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
+//                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
                     importCroce(croceNew);
-                }// end of if cycle
+//                }// end of if cycle
             }// end of if cycle
         }// end of for cycle
     }// end of method
