@@ -181,9 +181,9 @@ public class WamBoot extends ABoot {
         //--importazioni dal vecchio webambulanze
         if (croceService.isVuoto()) {
             migration.importOnlyCroci();
+            migration.importAll();
         }// end of if cycle
 
-        migration.importAll();
     }// end of method
 
 
