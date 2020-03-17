@@ -7,6 +7,7 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
+import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -601,5 +603,25 @@ public class TurnoService extends WamService {
 
         return turnoValido;
     }// end of method
+
+
+    /**
+     * Data completa (estesa) del giorno di esecuzione del turno <br>
+     */
+    public String getGiornoTxt(Turno turnoEntity) {
+        String giornoTxt = VUOTA;
+        LocalDate localData = null;
+
+        if (turnoEntity != null) {
+            localData = turnoEntity.giorno;
+        }// end of if cycle
+
+        if (localData != null) {
+            giornoTxt = date.get(localData, EATime.completa);
+        }// end of if cycle
+
+        return giornoTxt;
+    }// end of method
+
 
 }// end of class

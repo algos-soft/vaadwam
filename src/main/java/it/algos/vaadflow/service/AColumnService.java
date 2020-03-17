@@ -90,6 +90,19 @@ public class AColumnService extends AbstractService {
      * @param entityClazz  modello-dati specifico
      * @param propertyName della property
      */
+    public void create(Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName) {
+        create(grid, entityClazz, propertyName, VUOTA);
+    }// end of method
+
+
+    /**
+     * Create a single columnService.
+     * The columnService type is chosen according to the annotation @AIColumn or, if is not present, a @AIField.
+     *
+     * @param grid         a cui aggiungere la colonna
+     * @param entityClazz  modello-dati specifico
+     * @param propertyName della property
+     */
     public void create(Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName, String searchProperty) {
         pref = StaticContextAccessor.getBean(PreferenzaService.class);
         Grid.Column<AEntity> colonna = null;

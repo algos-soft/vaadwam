@@ -84,7 +84,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("funz")
     @AIField(type = EAFieldType.combo, serviceClazz = FunzioneService.class)
-    @AIColumn(widthEM = 20)
+    @AIColumn(widthEM = 8)
     public Funzione funzione;
 
 
@@ -96,7 +96,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 20)
+    @AIColumn(widthEM = 14)
     public Milite milite;
 
 
@@ -107,7 +107,6 @@ public class Iscrizione extends AEntity {
     @NotNull
     @Field("last")
     @AIField(type = EAFieldType.localdatetime)
-    @AIColumn(widthEM = 20)
     public LocalDateTime lastModifica;
 
 
@@ -134,6 +133,7 @@ public class Iscrizione extends AEntity {
      */
     @Field("dur")
     @AIField(type = EAFieldType.integer, name = "Durata")
+    @AIColumn( name = "H")
     public int durataEffettiva;
 
 
@@ -143,7 +143,7 @@ public class Iscrizione extends AEntity {
      */
     @Field("prob")
     @AIField(type = EAFieldType.checkbox)
-    @AIColumn(widthEM = 20, name = "?")
+    @AIColumn( name = "?")
     public boolean esisteProblema;
 
 

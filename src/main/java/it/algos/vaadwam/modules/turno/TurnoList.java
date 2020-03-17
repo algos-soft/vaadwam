@@ -68,12 +68,12 @@ import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 public class TurnoList extends WamViewList {
 
 
-    /**
-     * Icona visibile nel menu (facoltativa)
-     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-     * Se manca il MENU_NAME, di default usa il 'name' della view
-     */
-    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
+//    /**
+//     * Icona visibile nel menu (facoltativa)
+//     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
+//     * Se manca il MENU_NAME, di default usa il 'name' della view
+//     */
+//    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
 
     public static final String IRON_ICON = "schedule";
 

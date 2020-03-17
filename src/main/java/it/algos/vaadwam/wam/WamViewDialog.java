@@ -207,6 +207,18 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
      * @param entityBean        The item to edit; it may be an existing or a newly created instance
      * @param operationProposed The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
      * @param itemSaver         funzione associata al bottone 'accetta' ('registra', 'conferma')
+     */
+    public void openWam(final AEntity entityBean, EAOperation operationProposed, BiConsumer<T, EAOperation> itemSaver) {
+        open(entityBean, operationProposed, itemSaver, null);
+    }// end of method
+
+    /**
+     * Opens the given item for editing in the dialog.
+     * Crea i fields e visualizza il dialogo <br>
+     *
+     * @param entityBean        The item to edit; it may be an existing or a newly created instance
+     * @param operationProposed The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
+     * @param itemSaver         funzione associata al bottone 'accetta' ('registra', 'conferma')
      * @param itemDeleter       funzione associata al bottone 'delete' (eventuale)
      */
     public void openWam(final AEntity entityBean, EAOperation operationProposed, BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {

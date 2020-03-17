@@ -3,8 +3,11 @@ package it.algos.vaadwam.modules.turno;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadflow.ui.fields.ATextArea;
+import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadflow.ui.fields.ATimePicker;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -48,6 +51,18 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
+    private ADateService dateService;
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private TurnoService turnoService;
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
     private IscrizioneService iscrizioneService;
 
     /**
@@ -81,6 +96,7 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
     public IscrizioneTurnoDialog(IAService service, Class<? extends AEntity> binderClass, Turno turnoEntity) {
         super(service, binderClass);
         this.turnoEntity = turnoEntity;
+        this.servizioEntity = turnoEntity.servizio;
     }// end of constructor
 
 
@@ -112,19 +128,20 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
         String orario = null;
 
         if (turnoEntity != null) {
+            giorno = turnoService.getGiornoTxt(turnoEntity);
+        }// end of if cycle
+
+        if (((Iscrizione) currentItem).funzione != null) {
+            funzione = ((Iscrizione) currentItem).funzione.descrizione;
         }// end of if cycle
 
         if (turnoEntity != null && servizioEntity != null) {
             orario = servizioService.getOrarioLungo(servizioEntity);
         }// end of if cycle
 
-        if (((Iscrizione) currentItem).funzione!=null) {
-            funzione=((Iscrizione) currentItem).funzione.descrizione;
-        }// end of if cycle
-
         alertAdmin.add("Turno: " + (giorno != null ? giorno : VUOTA));
         alertAdmin.add("Funzione: " + (funzione != null ? funzione : VUOTA));
-        alertDev.add("Orario previsto: " + (orario != null ? orario : VUOTA));
+        alertAdmin.add("Orario previsto: " + (orario != null ? orario : VUOTA));
 
         super.fixAlertLayout();
     }// end of method
@@ -142,7 +159,6 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
     protected List<String> getPropertiesName() {
         ArrayList<String> lista = new ArrayList<>();
 
-        lista.add("funzione");
         lista.add("milite");
         lista.add("inizio");
         lista.add("fine");
@@ -157,14 +173,14 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
      * Sovrascritto nella sottoclasse
      */
     protected void fixStandardAlgosFields() {
-        AComboBox funzioneField = (AComboBox) getField("funzione");
         ATimePicker inizioField = (ATimePicker) getField("inizio");
         ATimePicker fineField = (ATimePicker) getField("fine");
 //        IntegerField durataField = (IntegerField) getField("durataEffettiva");
 //        ACheckBox problemaField = (ACheckBox) getField("esisteProblema");
 //        ACheckBox notificaField = (ACheckBox) getField("notificaInviata");
+        ATextArea noteField = (ATextArea) getField("note");
 
-        funzioneField.setEnabled(false);
+        noteField.setLabel("Segnalazione per eventuali problemi di orario");
 //        inizioField.setEnabled(false);
 //        fineField.setEnabled(false);
 
