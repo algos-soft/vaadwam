@@ -220,10 +220,10 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         this.fixLayout();
 
         //--una o più righe di avvisi
-//        this.creaAlertLayout();
-//        if (alertPlacehorder.getComponentCount() > 0) {
+        this.creaAlertLayout();
+        if (alertPlacehorder.getComponentCount() > 0) {
             this.add(alertPlacehorder);
-//        }// end of if cycle
+        }// end of if cycle
 
         //--barra/menu dei bottoni specifici del modulo
         //--crea i bottoni SENZA i listeners che vengono aggiunti dopo aver recuperato gli items

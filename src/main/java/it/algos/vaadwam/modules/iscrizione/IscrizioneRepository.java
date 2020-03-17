@@ -32,10 +32,6 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 public interface IscrizioneRepository extends MongoRepository<Iscrizione, String> {
 
 
-//	public Iscrizione findByCode(String code);
-
     public List<Iscrizione> findAll();
-
-    public List<Iscrizione> findAllByCroce(Croce croce);
 
 }// end of class

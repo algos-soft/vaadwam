@@ -66,8 +66,8 @@ import java.time.LocalTime;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.nonUsata)
 @AIList(fields = {"funzione", "milite", "lastModifica", "durata", "esisteProblema"})
-@AIForm(fields = {"funzione", "milite", "lastModifica", "durata", "esisteProblema"})
-public class Iscrizione extends WamEntity {
+@AIForm(fields = {"funzione", "milite", "lastModifica", "inizio", "note", "fine", "durataEffettiva", "esisteProblema", "notificaInviata"})
+public class Iscrizione extends AEntity {
 
 
     /**
@@ -89,10 +89,10 @@ public class Iscrizione extends WamEntity {
 
 
     /**
-     * milite di riferimento (obbligatorio)
+     * milite di riferimento (facoltativo alla creazione, dopo obbligatorio)
      * riferimento dinamico CON @DBRef
      */
-    @NotNull
+//    @NotNull
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
@@ -112,15 +112,15 @@ public class Iscrizione extends WamEntity {
 
 
     /**
-     * Orario di inizio turno del singolo milite (obbligatorio, suggerito da turno)
+     * Orario di inizio turno del singolo milite (obbligatorio per alcuni servizi, suggerito da turno)
      */
     @Field("ini")
-    @AIField(type = EAFieldType.localtime, name = "Inizio turno")
+    @AIField(type = EAFieldType.localtime, name = "Inizio effettivo turno")
     @AIColumn(headerIcon = VaadinIcon.FORWARD, headerIconColor = "green")
     public LocalTime inizio;
 
     /**
-     * Orario di fine turno del singolo milite (obbligatorio, suggerito da turno)
+     * Orario di fine turno del singolo milite (obbligatorio per alcuni servizi, suggerito da turno)
      */
     @NotNull
     @Field("end")
@@ -129,7 +129,7 @@ public class Iscrizione extends WamEntity {
     public LocalTime fine;
 
     /**
-     * Durata effettiva (in minuti) del turno del singolo milite (obbligatoria, calcolata in automatico prima del Save)
+     * Durata effettiva (in minuti) del turno del singolo milite (obbligatoria per alcuni servizi, calcolata in automatico prima del Save)
      * Informazione ridondante ma comoda per le successive elaborazioni (statistiche)
      */
     @Field("dur")
@@ -138,7 +138,7 @@ public class Iscrizione extends WamEntity {
 
 
     /**
-     * eventuali problemi di presenza del milite/volontario di questa iscrizione nel turno
+     * eventuali problemi di presenza del milite/volontario di questa iscrizione nel turno (facoltativa)
      * serve per evidenziare il problema nel tabellonesuperato
      */
     @Field("prob")
@@ -148,7 +148,7 @@ public class Iscrizione extends WamEntity {
 
 
     /**
-     * se è stata inviata la notifica di inizio turno dal sistema di notifiche automatiche
+     * se è stata inviata la notifica di inizio turno dal sistema di notifiche automatiche (facoltativa)
      */
     @Field("inv")
     @AIField(type = EAFieldType.checkbox)

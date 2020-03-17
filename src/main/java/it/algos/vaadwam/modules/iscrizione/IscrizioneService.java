@@ -4,6 +4,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +82,7 @@ public class IscrizioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Iscrizione newEntity() {
-        return newEntity((Funzione) null, (Milite) null, (LocalDateTime) null, 0, false);
+        return newEntity((Funzione) null, (Milite) null, 0, false);
     }// end of method
 
 
@@ -96,7 +97,7 @@ public class IscrizioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Iscrizione newEntity(Funzione funzione, int durata) {
-        return newEntity(funzione, (Milite) null, (LocalDateTime) null, durata, false);
+        return newEntity(funzione, (Milite) null, durata, false);
     }// end of method
 
 
@@ -112,13 +113,36 @@ public class IscrizioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Iscrizione newEntity(Funzione funzione, Milite milite, LocalDateTime lastModifica, int durata, boolean esisteProblema) {
+    public Iscrizione newEntity(Funzione funzione, Milite milite, int durata, boolean esisteProblema) {
         Iscrizione entity = Iscrizione.builderIscrizione()
                 .funzione(funzione)
                 .milite(milite)
-                .lastModifica(lastModifica != null ? lastModifica : LocalDateTime.now())
+                .lastModifica(LocalDateTime.now())
                 .durataEffettiva(durata)
                 .esisteProblema(esisteProblema)
+                .build();
+
+        return entity;
+    }// end of method
+
+
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata
+     * Eventuali regolazioni iniziali delle property
+     * Properties obbligatorie
+     * Properties facoltative
+     *
+     * @param servizio di riferimento per gli orari di inizio e fine
+     * @param funzione per cui il milite/volontario/utente si iscrive (obbligatorio)
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    public Iscrizione newEntity(Servizio servizio, Funzione funzione) {
+        Iscrizione entity = Iscrizione.builderIscrizione()
+                .funzione(funzione)
+                .inizio(servizio.inizio)
+                .fine(servizio.fine)
+                .lastModifica(LocalDateTime.now())
                 .build();
 
         return entity;

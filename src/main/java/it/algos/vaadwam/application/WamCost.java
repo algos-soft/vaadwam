@@ -62,6 +62,7 @@ public class WamCost {
     public final static String TAG_MIL = "milite";
 
     public final static String TAG_ISC = "iscrizione";
+    public final static String TAG_ISC_TUR = "iscrizioneTurno";
 
     public final static String TAG_SER = "servizio";
 
