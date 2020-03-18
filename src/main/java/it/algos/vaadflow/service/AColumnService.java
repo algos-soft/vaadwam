@@ -594,12 +594,12 @@ public class AColumnService extends AbstractService {
 
                 }));//end of lambda expressions and anonymous inner class
                 break;
-            case calculated:
+            case calculatedTxt:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Label label = new Label();
                     Method metodo = null;
                     Object serviceInstance = null;
-                    String value = "";
+                    String value = VUOTA;
 
                     if (text.isEmpty(methodName)) {
                         log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
@@ -612,6 +612,31 @@ public class AColumnService extends AbstractService {
                         serviceInstance = StaticContextAccessor.getBean(serviceClazz);
                         value = (String) metodo.invoke(serviceInstance, entity);
                         label.setText(value);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    return label;
+                }));//end of lambda expressions and anonymous inner class
+                break;
+            case calculatedInt:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Label label = new Label();
+                    Method metodo = null;
+                    Object serviceInstance = null;
+                    Integer value = null;
+
+                    if (text.isEmpty(methodName)) {
+                        log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
+                        return label;
+                    }// end of if cycle
+
+                    try { // prova ad eseguire il codice
+                        //--il metodo DEVE avere un solo parametro e di tipo AEntity
+                        metodo = serviceClazz.getDeclaredMethod(methodName, AEntity.class);
+                        serviceInstance = StaticContextAccessor.getBean(serviceClazz);
+                        value = (Integer) metodo.invoke(serviceInstance, entity);
+                        label.setText("" + value);
                     } catch (Exception unErrore) { // intercetta l'errore
                         log.error(unErrore.toString());
                     }// fine del blocco try-catch
@@ -714,7 +739,11 @@ public class AColumnService extends AbstractService {
             case pref:
                 width = "10em";
                 break;
-            case calculated:
+            case calculatedTxt:
+                width = "10em";
+                break;
+            case calculatedInt:
+                width = "3em";
                 break;
             default:
                 log.warn("Switch - caso non definito");

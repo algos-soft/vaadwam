@@ -594,10 +594,24 @@ public class ServizioService extends WamService {
 
 
     /**
-     * Durata di un periodo in ore <br>
+     * Durata di un servizio in ore <br>
      */
-    public String durata(AEntity entityBean) {
+    public String getDurataTxt(AEntity entityBean) {
         return "" + date.differenza(((Servizio) entityBean).fine, ((Servizio) entityBean).inizio);
+    }// end of method
+
+
+    /**
+     * Durata di un servizio in ore <br>
+     */
+    public int getDurataInt(AEntity entityBean) {
+        int durata = 0;
+
+        if (entityBean != null && ((Servizio) entityBean).inizio != null && ((Servizio) entityBean).fine != null) {
+            durata = date.differenza(((Servizio) entityBean).fine, ((Servizio) entityBean).inizio);
+        }// end of if cycle
+
+        return durata;
     }// end of method
 
 

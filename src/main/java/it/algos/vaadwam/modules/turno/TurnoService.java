@@ -623,4 +623,19 @@ public class TurnoService extends WamService {
     }// end of method
 
 
+    /**
+     * Durata di un servizio in ore <br>
+     */
+    public int getDurataInt(AEntity entityBean) {
+        int durata = 0;
+
+        if (entityBean != null) {
+            if (((Turno) entityBean).inizio != null && ((Turno) entityBean).fine != null) {
+                durata = date.differenza(((Turno) entityBean).fine, ((Turno) entityBean).inizio);
+            }// end of if cycle
+        }// end of if cycle
+
+        return durata;
+    }// end of method
+
 }// end of class

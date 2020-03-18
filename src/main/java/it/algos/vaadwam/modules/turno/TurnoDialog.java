@@ -175,11 +175,19 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 
         titoloExtraField.setEnabled(false);
         localitaExtraField.setEnabled(false);
+    }// end of method
 
+    /**
+     * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewLDialog.creaFields()<br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
         servizioField = (AComboBox) getField("servizio");
         servizioField.addValueChangeListener(event -> sincroServizio((Servizio) event.getValue()));//end of lambda expressions
     }// end of method
-
 
     private void sincroServizio(Servizio servizio) {
         if (servizio.isOrarioDefinito()) {
@@ -191,6 +199,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         }// end of if/else cycle
 
         regolaKey(servizio);
+        regolaOrario(servizio);
         creaIscrizioni(servizio);
     }// end of method
 
@@ -202,10 +211,22 @@ public class TurnoDialog extends WamViewDialog<Turno> {
     }// end of method
 
 
+    private void regolaOrario(Servizio servizio) {
+        if (servizio != null && currentItem != null && currentItem instanceof Turno) {
+            ((Turno) currentItem).inizio = servizio.inizio;
+            ((Turno) currentItem).fine = servizio.fine;
+        }// end of if cycle
+    }// end of method
+
+
     private void creaIscrizioni(Servizio servizio) {
         iscrizioniDelTurno = turnoService.getIscrizioni(servizio);
         if (grid != null) {
             grid.setItems(iscrizioniDelTurno);
+        }// end of if cycle
+
+        if (currentItem != null && currentItem instanceof Turno) {
+            ((Turno) currentItem).iscrizioni = iscrizioniDelTurno;
         }// end of if cycle
     }// end of method
 

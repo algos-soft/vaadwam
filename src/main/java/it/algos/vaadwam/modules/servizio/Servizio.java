@@ -18,7 +18,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,7 +73,7 @@ import java.util.Set;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "ripetibile", "obbligatorie", "facoltative", "colore"})
-@AIForm(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "ripetibile", "obbligatorie", "facoltative"})
+@AIForm(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine",  "visibile", "ripetibile", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
@@ -103,7 +102,7 @@ public class Servizio extends WamEntity {
     @Size(min = 3)
     @Field("cod")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(widthEM = 8)
+    @AIColumn(widthEM = 10)
     public String code;
 
     /**
@@ -149,8 +148,8 @@ public class Servizio extends WamEntity {
      */
     @Transient
     @Field("dur")
-    @AIField(type = EAFieldType.calculated, name = "Durata", serviceClazz = ServizioService.class)
-    @AIColumn(headerIcon = VaadinIcon.PROGRESSBAR, widthEM = 3, methodName = "durata")
+    @AIField(type = EAFieldType.calculatedInt, name = "Durata prevista", serviceClazz = ServizioService.class)
+    @AIColumn(headerIcon = VaadinIcon.PROGRESSBAR, widthEM = 3, methodName = "getDurataInt")
     public int durataPrevista;
 
 
@@ -185,7 +184,7 @@ public class Servizio extends WamEntity {
     @DBRef
     @Field("obb")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni obbligatorie")
-    @AIColumn(name = "Funz. obbligatorie", widthEM = 12)
+    @AIColumn(name = "Funz. obbligatorie", widthEM = 20)
     public Set<Funzione> obbligatorie;
 
     /**
@@ -197,7 +196,7 @@ public class Servizio extends WamEntity {
     @DBRef
     @Field("fac")
     @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni facoltative")
-    @AIColumn(name = "Funz. facoltative", widthEM = 12)
+    @AIColumn(name = "Funz. facoltative", widthEM = 20)
     public Set<Funzione> facoltative;
 
     /**

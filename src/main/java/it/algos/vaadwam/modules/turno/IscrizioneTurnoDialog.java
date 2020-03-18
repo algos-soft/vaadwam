@@ -161,6 +161,8 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
         lista.add("inizio");
         lista.add("fine");
         lista.add("note");
+        lista.add("durataEffettiva");
+        lista.add("esisteProblema");
 
         return lista;
     }// end of method

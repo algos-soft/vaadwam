@@ -662,6 +662,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         //--Regola in lettura l'eeventuale field company (un combo). Dal DB alla UI
         readCompanyField();
+
+        //--aggiunge eventuali listeners ai fields (dopo aver regolato il loro valore iniziale)
+        this.addListeners();
     }// end of method
 
 
@@ -857,6 +860,16 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         }// end of if cycle
     }// end of method
 
+
+    /**
+     * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewLDialog.creaFields()<br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
+    }// end of method
 
     /**
      * Azione proveniente dal click sul bottone Registra
