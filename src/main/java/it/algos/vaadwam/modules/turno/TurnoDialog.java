@@ -220,7 +220,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
             grid.removeColumn((Grid.Column) column);
         }// end of for cycle
 
-        grid.setWidth("160em");
+        grid.setWidth("10em");
 
         //--Colonne aggiunte in automatico
         for (String propertyName : getGridPropertyNamesList()) {
@@ -312,12 +312,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Primo ingresso dopo il click sul bottone <br>
      */
     protected void save(Iscrizione entityBean, EAOperation operation) {
-        int a = 87;
         updateItems();
-//        if (service.save(entityBean, operation) != null) {
-//            updateFiltri();
-//            updateGrid();
-//        }// end of if cycle
     }// end of method
 
 

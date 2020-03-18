@@ -142,7 +142,6 @@ public class IscrizioneService extends WamService {
                 .funzione(funzione)
                 .inizio(servizio.inizio)
                 .fine(servizio.fine)
-                .lastModifica(LocalDateTime.now())
                 .build();
 
         return entity;
@@ -282,6 +281,32 @@ public class IscrizioneService extends WamService {
         }// end of if cycle
 
         return status;
+    }// end of method
+
+
+    public int durataOre(Iscrizione iscr) {
+        int durata = 0;
+
+        if (iscr != null && iscr.inizio != null && iscr.fine != null) {
+            durata = date.differenza(iscr.fine, iscr.inizio);
+        }// end of if cycle
+
+        return durata;
+    }// end of method
+
+
+    public void setDurata(Iscrizione iscrizione) {
+        if (iscrizione != null) {
+            iscrizione.durataEffettiva = durataOre(iscrizione);
+        }// end of if cycle
+    }// end of method
+
+
+    public void setDurataSave(Iscrizione iscrizione) {
+        if (iscrizione != null) {
+            setDurata(iscrizione);
+            save(iscrizione);
+        }// end of if cycle
     }// end of method
 
 }// end of class

@@ -170,7 +170,7 @@ public class Funzione extends WamEntity {
      */
     @Override
     public String toString() {
-        return code;
+        return descrizione;
     }// end of method
 
 

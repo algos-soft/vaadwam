@@ -224,6 +224,30 @@ public class AColumnService extends AbstractService {
                     return icon;
                 }));//end of lambda expressions and anonymous inner class
                 break;
+            case checkboxreverse:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Field field = reflection.getField(entityClazz, propertyName);
+                    boolean status = false;
+                    Icon icon;
+
+                    try { // prova ad eseguire il codice
+                        status = field.getBoolean(entity);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    if (status) {
+                        icon = new Icon(VaadinIcon.CLOSE);
+                        icon.setColor("red");
+                    } else {
+                        icon = new Icon(VaadinIcon.CHECK);
+                        icon.setColor("green");
+                    }// end of if/else cycle
+                    icon.setSize("1em");
+
+                    return icon;
+                }));//end of lambda expressions and anonymous inner class
+                break;
             case booleano:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Field field = reflection.getField(entityClazz, propertyName);
@@ -604,9 +628,9 @@ public class AColumnService extends AbstractService {
         switch (type) {
             case text://@todo in futuro vanno differenziati
             case textarea:
-                //--larghezza di default per un testo = 7em
+                //--larghezza di default per un testo = 10em
                 //--per larghezze minori o maggiori, inserire widthEM = ... nell'annotation @AIColumn della Entity
-                width = text.isValid(width) ? width : "7em";
+                width = text.isValid(width) ? width : "10em";
                 break;
             case email:
                 //--larghezza di default per un mail = 18em
@@ -631,6 +655,7 @@ public class AColumnService extends AbstractService {
                 width = text.isValid(width) ? width : "7em";
                 break;
             case checkbox:
+            case checkboxreverse:
             case booleano:
             case yesno:
             case yesnobold:

@@ -5,9 +5,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATextArea;
-import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadflow.ui.fields.ATimePicker;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -187,6 +185,27 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
 //        durataField.setEnabled(false);
 //        problemaField.setEnabled(false);
 //        notificaField.setEnabled(false);
+    }// end of method
+
+
+    /**
+     * Regola in scrittura eventuali valori NON associati al binder
+     * Dalla  UI al DB
+     * Sovrascritto
+     */
+    @Override
+    protected void writeSpecificFields() {
+        String currentText = VUOTA;
+        super.writeSpecificFields();
+
+        ATextArea noteField = (ATextArea) getField("note");
+        if (noteField != null) {
+            currentText = noteField.getValue();
+            ((Iscrizione) currentItem).note = currentText;
+        }// end of if cycle
+
+        iscrizioneService.setDurata((Iscrizione) currentItem);
+
     }// end of method
 
 }// end of class

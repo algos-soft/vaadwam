@@ -9,7 +9,6 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -84,7 +83,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("funz")
     @AIField(type = EAFieldType.combo, serviceClazz = FunzioneService.class)
-    @AIColumn(widthEM = 8)
+    @AIColumn(widthEM = 14)
     public Funzione funzione;
 
 
@@ -96,7 +95,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 14)
+    @AIColumn(widthEM = 22)
     public Milite milite;
 
 
@@ -133,7 +132,7 @@ public class Iscrizione extends AEntity {
      */
     @Field("dur")
     @AIField(type = EAFieldType.integer, name = "Durata")
-    @AIColumn( name = "H")
+    @AIColumn(headerIcon = VaadinIcon.CALENDAR)
     public int durataEffettiva;
 
 
@@ -142,8 +141,8 @@ public class Iscrizione extends AEntity {
      * serve per evidenziare il problema nel tabellonesuperato
      */
     @Field("prob")
-    @AIField(type = EAFieldType.checkbox)
-    @AIColumn( name = "?")
+    @AIField(type = EAFieldType.checkboxreverse)
+    @AIColumn(headerIcon = VaadinIcon.STOPWATCH)
     public boolean esisteProblema;
 
 
@@ -151,7 +150,8 @@ public class Iscrizione extends AEntity {
      * se è stata inviata la notifica di inizio turno dal sistema di notifiche automatiche (facoltativa)
      */
     @Field("inv")
-    @AIField(type = EAFieldType.checkbox)
+    @AIField(type = EAFieldType.yesno)
+    @AIColumn( headerIcon = VaadinIcon.ENVELOPE, headerIconColor = "green")
     public boolean notificaInviata;
 
 

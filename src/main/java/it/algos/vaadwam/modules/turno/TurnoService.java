@@ -571,7 +571,6 @@ public class TurnoService extends WamService {
 
         if (array.isValid(funzioni)) {
             for (Funzione funzione : funzioni) {
-//                items.add(Iscrizione.builderIscrizione().funzione(funzione).build());
                 items.add(iscrizioneService.newEntity(servizio, funzione));
             }// end of for cycle
         }// end of if cycle
