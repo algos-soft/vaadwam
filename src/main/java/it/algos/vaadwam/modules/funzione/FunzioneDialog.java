@@ -57,8 +57,6 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
     @Autowired
     private ServizioService servizioService;
-    @Autowired
-    private AAvvisoService avvisoService;
 
     private Button iconButton;
 
@@ -85,6 +83,19 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
     }// end of constructor
 
 
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertAdmin.add("Questa funzione può essere cancellata solo se non è usata in nessun servizio");
+        super.fixAlertLayout();
+    }// end of method
     /**
      * Eventuali aggiustamenti finali al layout
      * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
@@ -170,7 +181,6 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
 
     private boolean funzioneCancellabile() {
-        boolean status = true;
         boolean usataNeiServizi = false;
         Funzione funzioneDaCancellare = (Funzione) currentItem;
 
@@ -178,16 +188,14 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
         for (Servizio servizio : servizi) {
             if (servizioService.isContieneFunzione(servizio, funzioneDaCancellare)) {
                 usataNeiServizi = true;
-                status = false;
             }// end of if cycle
         }// end of for cycle
 
         if (usataNeiServizi) {
-            avvisoService.warn(this.alertPlacehorder,"Questa funzione non può essere cancellata, perché usata in uno o più servizii");
-//            Notification.show("Questa funzione non può essere cancellata, perché usata in uno o più servizii", 4000, Notification.Position.MIDDLE);
+            avvisoService.warn(this.alertPlacehorder,"Questa funzione non può essere cancellata, perché usata in uno o più servizi");
         }// end of if cycle
 
-        return status;
+        return !usataNeiServizi;
     }// end of method
 
 }// end of class

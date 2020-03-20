@@ -11,6 +11,8 @@ import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -272,6 +274,45 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 //            updateItems();
 //            updateView();
         }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Opens the confirmation dialog before deleting all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void deleteClicked() {
+        if (militeCancellabile()) {
+            super.deleteClicked();
+        }// end of if cycle
+    }// end of method
+
+
+    private boolean militeCancellabile() {
+        boolean usatoNeiTurni = false;
+        Milite militeDaCancellare = (Milite) currentItem;
+        List<Iscrizione> iscrizioni;
+
+        List<Turno> turni = turnoService.findAllAnnoCorrente();
+        for (Turno turno : turni) {
+            iscrizioni = turno.iscrizioni;
+            if (iscrizioni != null) {
+                for (Iscrizione iscr : iscrizioni) {
+                    if (iscr != null && iscr.milite != null && iscr.milite.equals(militeDaCancellare)) {
+                        usatoNeiTurni = true;
+                    }// end of if cycle
+                }// end of for cycle
+            }// end of if cycle
+        }// end of for cycle
+
+        if (usatoNeiTurni) {
+            avvisoService.warn(this.alertPlacehorder, "Questo milite non può essere cancellato, perché segnato in uno o più turni");
+        }// end of if cycle
+
+        return !usatoNeiTurni;
     }// end of method
 
 }// end of class

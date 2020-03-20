@@ -40,7 +40,6 @@ public class WamLogin extends ALogin {
 
     private EARoleType roleType;
 
-
     public WamLogin() {
     }
 

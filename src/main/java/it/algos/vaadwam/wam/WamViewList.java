@@ -193,8 +193,8 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaAlertLayout() {
         super.creaAlertLayout();
 
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
+        boolean isDeveloper = wamLogin.isDeveloper();
+        boolean isAdmin = wamLogin.isAdmin();
         boolean isUser = !isDeveloper && !isAdmin;
 
         if (alertUser != null) {

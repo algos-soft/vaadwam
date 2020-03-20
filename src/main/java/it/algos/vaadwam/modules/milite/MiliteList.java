@@ -412,7 +412,11 @@ public class MiliteList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        if (login.isDeveloper()) {
+            appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        } else {
+            appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.editNoDelete : EAOperation.showOnly, this::save, this::delete);
+        }// end of if/else cycle
     }// end of method
 
 }// end of class

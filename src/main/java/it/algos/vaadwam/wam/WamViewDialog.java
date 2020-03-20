@@ -7,11 +7,13 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.AAvvisoService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,8 +46,16 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
-    private CroceService croceService;
+    protected CroceService croceService;
 
+    @Autowired
+    protected AAvvisoService avvisoService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -155,8 +165,8 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
         AbstractField fieldCode = (AbstractField) this.fieldMap.get("code");
         AbstractField fieldSigla = (AbstractField) this.fieldMap.get("sigla");
 
-        if (!login.isDeveloper()) {
-            if (login.isAdmin()) {
+        if (!wamLogin.isDeveloper()) {
+            if (wamLogin.isAdmin()) {
                 //blocca solo il code e l'ordine
                 if (fieldOrdine != null) {
                     fieldOrdine.setEnabled(false);

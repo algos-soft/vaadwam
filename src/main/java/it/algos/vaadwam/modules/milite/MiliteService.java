@@ -934,4 +934,5 @@ public class MiliteService extends WamService implements IUtenteService {
         return roleType;
     }// end of method
 
+
 }// end of class
