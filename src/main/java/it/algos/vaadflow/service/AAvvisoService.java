@@ -1,6 +1,5 @@
 package it.algos.vaadflow.service;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.ui.dialog.polymer.bean.DialogoUnoBeanPolymer;

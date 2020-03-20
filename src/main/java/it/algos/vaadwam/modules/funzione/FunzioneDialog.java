@@ -3,11 +3,9 @@ package it.algos.vaadwam.modules.funzione;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.service.AAvvisoService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -24,6 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_FUN;
+import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -93,17 +92,22 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
      */
     @Override
     protected void fixAlertLayout() {
+        alertUser.add(USER_VISIONE);
         alertAdmin.add("Questa funzione può essere cancellata solo se non è usata in nessun servizio");
+        alertDev.add("Devi eventualmente cancellare prima il servizio che la usa");
+
         super.fixAlertLayout();
     }// end of method
+
+
     /**
      * Eventuali aggiustamenti finali al layout
      * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixLayout() {
-        super.fixLayout();
+    protected void fixLayoutFinal() {
+        super.fixLayoutFinal();
         getFormLayout().add(addButtonIcona());
     }// end of method
 
@@ -192,7 +196,7 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
         }// end of for cycle
 
         if (usataNeiServizi) {
-            avvisoService.warn(this.alertPlacehorder,"Questa funzione non può essere cancellata, perché usata in uno o più servizi");
+            avvisoService.warn(this.alertPlacehorder, "Questa funzione non può essere cancellata, perché usata in uno o più servizi");
         }// end of if cycle
 
         return !usataNeiServizi;

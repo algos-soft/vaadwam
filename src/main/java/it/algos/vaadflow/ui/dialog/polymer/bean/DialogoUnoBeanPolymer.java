@@ -27,14 +27,6 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
      *
      * @param bodyText (obbligatorio) Detail message
      */
-    public DialogoUnoBeanPolymer() {
-    }// end of constructor
-    /**
-     * Costruttore usato da
-     * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, bodyText) <br>
-     *
-     * @param bodyText (obbligatorio) Detail message
-     */
     public DialogoUnoBeanPolymer(String bodyText) {
         super(bodyText);
     }// end of constructor

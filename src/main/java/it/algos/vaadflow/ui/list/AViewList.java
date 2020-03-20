@@ -180,7 +180,6 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * <p>
      * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia BeforeEnterObserver implementata in AViewList <br>
      * Chiamato DOPO @PostConstruct e DOPO setParameter() <br>
-     * Qui va tutta la logica inizale della view <br>
      * Può essere sovrascritto, per costruire diversamente la view <br>
      * Invocare PRIMA il metodo della superclasse <br>
      *
@@ -220,10 +219,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         this.fixLayout();
 
         //--una o più righe di avvisi
-        this.creaAlertLayout();
-        if (alertPlacehorder.getComponentCount() > 0) {
-            this.add(alertPlacehorder);
-        }// end of if cycle
+        this.add(alertPlacehorder);
 
         //--barra/menu dei bottoni specifici del modulo
         //--crea i bottoni SENZA i listeners che vengono aggiunti dopo aver recuperato gli items

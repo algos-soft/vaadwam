@@ -301,8 +301,6 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
 
     private Label question;
 
-    public DialogoBeanPolymer() {
-    }// end of constructor
 
     /**
      * Costruttore usato dalla sottoclasse concreta
