@@ -723,4 +723,19 @@ public class ServizioService extends WamService {
         return listaFunzioni;
     }// end of method
 
+
+    public boolean isContieneFunzione(Servizio servizio, Funzione funzioneDaControllare) {
+        boolean contiene = false;
+        List<Funzione> listaFunzioni = getFunzioniAll(servizio);
+
+        for (Funzione funzione : listaFunzioni) {
+            if (funzione.equals(funzioneDaControllare)) {
+                contiene = true;
+            }// end of if cycle
+        }// end of for cycle
+
+        return contiene;
+    }// end of method
+
+
 }// end of class

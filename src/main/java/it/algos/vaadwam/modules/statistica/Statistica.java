@@ -72,7 +72,7 @@ import java.time.LocalDate;
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "statistica", company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "milite", "last", "delta", "valido", "turni", "ore","media"})
-@AIForm(fields = {"croce", "ordine", "last", "delta", "valido", "turni", "ore", "media"})
+@AIForm(fields = { "ordine", "last", "delta", "valido", "turni", "ore", "media"})
 public class Statistica extends WamEntity {
 
 

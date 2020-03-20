@@ -902,7 +902,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
      * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
      */
-    protected final void deleteClicked() {
+    protected  void deleteClicked() {
         appContext.getBean(ADeleteDialog.class, currentItem.toString()).open(this::deleteConfirmed);
     }// end of method
 

@@ -1,19 +1,16 @@
 package it.algos.vaadwam.modules.funzione;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
-import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.AAvvisoService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
-import it.algos.vaadwam.wam.WamLogin;
+import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +18,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.access.annotation.Secured;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
+import java.io.Serializable;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 
 /**
@@ -58,6 +54,11 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
     @Autowired
     ApplicationContext appContext;
+
+    @Autowired
+    private ServizioService servizioService;
+    @Autowired
+    private AAvvisoService avvisoService;
 
     private Button iconButton;
 
@@ -153,5 +154,40 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
         setIcona();
     }// end of method
 
+
+    /**
+     * Opens the confirmation dialog before deleting all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void deleteClicked() {
+        if (funzioneCancellabile()) {
+            super.deleteClicked();
+        }// end of if cycle
+    }// end of method
+
+
+    private boolean funzioneCancellabile() {
+        boolean status = true;
+        boolean usataNeiServizi = false;
+        Funzione funzioneDaCancellare = (Funzione) currentItem;
+
+        List<Servizio> servizi = servizioService.findAll();
+        for (Servizio servizio : servizi) {
+            if (servizioService.isContieneFunzione(servizio, funzioneDaCancellare)) {
+                usataNeiServizi = true;
+                status = false;
+            }// end of if cycle
+        }// end of for cycle
+
+        if (usataNeiServizi) {
+            avvisoService.warn(this.alertPlacehorder,"Questa funzione non può essere cancellata, perché usata in uno o più servizii");
+//            Notification.show("Questa funzione non può essere cancellata, perché usata in uno o più servizii", 4000, Notification.Position.MIDDLE);
+        }// end of if cycle
+
+        return status;
+    }// end of method
 
 }// end of class
