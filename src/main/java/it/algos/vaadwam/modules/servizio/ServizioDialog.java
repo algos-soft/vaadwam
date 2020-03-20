@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_SER;
+import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -115,6 +116,24 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
     public ServizioDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
+
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertUser.add(USER_VISIONE);
+        alertAdmin.add("Questo servizio può essere cancellato solo se non è usato in nessun turno");
+        alertDev.add("Devi eventualmente cancellare prima il turno che lo usa");
+
+        super.fixAlertLayout();
+    }// end of method
 
 
     /**
