@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
+import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -85,6 +87,27 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         super(service, binderClass);
     }// end of constructor
 
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertUser.add(NOME);
+        alertUser.add(CANCELLARE);
+        alertUser.add(ADMIN);
+        alertUser.add(NICKNAME);
+
+        alertAdmin.add(STORICO);
+        alertDev.add(STORICO);
+
+        super.fixAlertLayout();
+    }// end of method
 
     /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder

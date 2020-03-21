@@ -98,8 +98,8 @@ public class Utente extends ACEntity implements UserDetails {
     @NotNull(message = "UserName, anche detto nickName, non può essere lasciato vuoto")
     @Indexed(unique = true, sparse = true, direction = IndexDirection.DESCENDING)
     @Field("user")
-    @AIField(type = EAFieldType.text)
-    @AIColumn(widthEM = 12)
+    @AIField(type = EAFieldType.text, name = "nickname")
+    @AIColumn(name = "nickname", widthEM = 12)
     public String username;
 
 

@@ -65,6 +65,10 @@ public abstract class WamViewList extends AGridViewList {
 
     protected List<String> alertParticolare;
 
+    protected boolean soloVisioneUser;
+
+    protected boolean soloVisioneAdmin;
+
     /**
      * Istanza unica di una classe di servizio: <br>
      * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
@@ -155,6 +159,9 @@ public abstract class WamViewList extends AGridViewList {
         alertDev = new ArrayList<>();
         alertDevAll = new ArrayList<>();
         alertParticolare = new ArrayList<>();
+
+        soloVisioneUser = true;
+        soloVisioneAdmin = true;
     }// end of method
 
 
@@ -197,10 +204,10 @@ public abstract class WamViewList extends AGridViewList {
         boolean isAdmin = wamLogin.isAdmin();
         boolean isUser = !isDeveloper && !isAdmin;
 
-        if (alertUser != null) {
+        if (alertUser != null && soloVisioneUser) {
             alertUser.add(USER_VISIONE);
         }// end of if cycle
-        if (alertAdmin != null) {
+        if (alertAdmin != null && soloVisioneAdmin) {
             alertAdmin.add(ADMIN_VISIONE);
             alertAdmin.add(ADMIN_DELETE);
         }// end of if cycle
@@ -214,7 +221,7 @@ public abstract class WamViewList extends AGridViewList {
         }// end of if cycle
 
         //--sempre (per tutti)
-        if (alertUser != null) {
+        if (alertUser != null && alertUser.size() > 0) {
             alertPlacehorder.add(text.getLabelUser(alertUser.get(0)));
         }// end of if cycle
 
