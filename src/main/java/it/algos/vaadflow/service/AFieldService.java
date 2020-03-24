@@ -73,11 +73,11 @@ public class AFieldService extends AbstractService {
 //    private AConverterPrefByte prefConverter;
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AFieldService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AFieldService() {
+//    }// end of constructor
 
 
     /**

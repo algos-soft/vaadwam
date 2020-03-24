@@ -65,11 +65,11 @@ public class AColumnService extends AbstractService {
     public PreferenzaService pref;
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AColumnService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AColumnService() {
+//    }// end of constructor
 
 
     /**

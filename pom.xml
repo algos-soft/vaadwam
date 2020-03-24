@@ -104,6 +104,13 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-spring-boot-starter</artifactId>
+            <version>1.82.0</version>
+        </dependency>
+
         <!-- Vaadin -->
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -290,6 +297,8 @@
             <version>26.0-jre</version>
         </dependency>
 
+
+
 <!--        <dependency>-->
 <!--            <groupId>dev.mett.vaadin</groupId>-->
 <!--            <artifactId>tooltip</artifactId>-->
@@ -348,15 +357,23 @@
                 </property>
             </activation>
 
+<!--
+            commentato Alex 24-03-2020 funziona lo stesso
             <dependencies>
                 <dependency>
                     <groupId>com.vaadin</groupId>
                     <artifactId>flow-server-production-mode</artifactId>
                 </dependency>
+
             </dependencies>
+-->
+
 
             <build>
                 <plugins>
+
+<!--
+                    commentato Alex 24-03-2020 funziona lo stesso
                     <plugin>
                         <groupId>com.vaadin</groupId>
                         <artifactId>flow-maven-plugin</artifactId>
@@ -373,6 +390,7 @@
                             </execution>
                         </executions>
                     </plugin>
+-->
 
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
@@ -382,8 +400,10 @@
                             <jvmArguments>-Dvaadin.productionMode</jvmArguments>
                         </configuration>
                     </plugin>
+
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 </project>

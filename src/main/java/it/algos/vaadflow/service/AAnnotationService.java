@@ -72,11 +72,11 @@ public class AAnnotationService extends AbstractService {
     private static final AAnnotationService INSTANCE = new AAnnotationService();
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AAnnotationService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AAnnotationService() {
+//    }// end of constructor
 
 
     /**

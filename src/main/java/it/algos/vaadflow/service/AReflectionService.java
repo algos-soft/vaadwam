@@ -48,11 +48,11 @@ public class AReflectionService extends AbstractService {
     private static final AReflectionService INSTANCE = new AReflectionService();
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AReflectionService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AReflectionService() {
+//    }// end of constructor
 
 
     /**

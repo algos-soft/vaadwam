@@ -48,11 +48,11 @@ public class AFileService extends AbstractService {
      */
     private static final AFileService INSTANCE = new AFileService();
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AFileService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AFileService() {
+//    }// end of constructor
 
     /**
      * Gets the unique instance of this Singleton.

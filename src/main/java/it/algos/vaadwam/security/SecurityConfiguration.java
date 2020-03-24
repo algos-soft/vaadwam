@@ -6,6 +6,7 @@ import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadflow.security.CustomRequestCache;
 import it.algos.vaadflow.security.SecurityUtils;
+import net.bull.javamelody.MonitoredWithSpring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ import javax.annotation.PostConstruct;
 @EnableWebSecurity
 @Configuration
 @AIScript(sovrascrivibile = true)
+@MonitoredWithSpring
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_PROCESSING_URL = "/login";

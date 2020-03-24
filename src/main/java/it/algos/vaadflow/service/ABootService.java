@@ -68,11 +68,11 @@ public class ABootService extends AbstractService {
     protected PreferenzaService pref;
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private ABootService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private ABootService() {
+//    }// end of constructor
 
     /**
      * Gets the unique instance of this Singleton.

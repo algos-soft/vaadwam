@@ -41,11 +41,11 @@ public class AMathService extends AbstractService {
     private static final AMathService INSTANCE = new AMathService();
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AMathService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AMathService() {
+//    }// end of constructor
 
 
     /**

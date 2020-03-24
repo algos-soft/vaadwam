@@ -75,11 +75,11 @@ public class AMongoService extends AbstractService {
 //    public MongoTemplate template;
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private AMongoService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private AMongoService() {
+//    }// end of constructor
 
 
     @Autowired

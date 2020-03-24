@@ -41,11 +41,11 @@ public class ARouteService extends AbstractService {
     private static final ARouteService INSTANCE = new ARouteService();
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private ARouteService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private ARouteService() {
+//    }// end of constructor
 
 
     /**

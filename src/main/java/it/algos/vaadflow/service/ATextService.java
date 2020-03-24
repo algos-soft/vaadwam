@@ -70,11 +70,11 @@ public class ATextService extends AbstractService {
     private static final ATextService INSTANCE = new ATextService();
 
 
-    /**
-     * Private constructor to avoid client applications to use constructor
-     */
-    private ATextService() {
-    }// end of constructor
+//    /**
+//     * Private constructor to avoid client applications to use constructor
+//     */
+//    private ATextService() {
+//    }// end of constructor
 
 
     /**
