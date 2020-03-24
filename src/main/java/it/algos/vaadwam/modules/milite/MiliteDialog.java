@@ -11,6 +11,8 @@ import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +21,15 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
+import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -83,6 +87,27 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         super(service, binderClass);
     }// end of constructor
 
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertUser.add(NOME);
+        alertUser.add(CANCELLARE);
+        alertUser.add(ADMIN);
+        alertUser.add(NICKNAME);
+
+        alertAdmin.add(STORICO);
+        alertDev.add(STORICO);
+
+        super.fixAlertLayout();
+    }// end of method
 
     /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
@@ -272,6 +297,45 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 //            updateItems();
 //            updateView();
         }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Opens the confirmation dialog before deleting all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void deleteClicked() {
+        if (militeCancellabile()) {
+            super.deleteClicked();
+        }// end of if cycle
+    }// end of method
+
+
+    private boolean militeCancellabile() {
+        boolean usatoNeiTurni = false;
+        Milite militeDaCancellare = (Milite) currentItem;
+        List<Iscrizione> iscrizioni;
+
+        List<Turno> turni = turnoService.findAllAnnoCorrente();
+        for (Turno turno : turni) {
+            iscrizioni = turno.iscrizioni;
+            if (iscrizioni != null) {
+                for (Iscrizione iscr : iscrizioni) {
+                    if (iscr != null && iscr.milite != null && iscr.milite.equals(militeDaCancellare)) {
+                        usatoNeiTurni = true;
+                    }// end of if cycle
+                }// end of for cycle
+            }// end of if cycle
+        }// end of for cycle
+
+        if (usatoNeiTurni) {
+            avvisoService.warn(this.alertPlacehorder, "Questo milite non può essere cancellato, perché segnato in uno o più turni");
+        }// end of if cycle
+
+        return !usatoNeiTurni;
     }// end of method
 
 }// end of class

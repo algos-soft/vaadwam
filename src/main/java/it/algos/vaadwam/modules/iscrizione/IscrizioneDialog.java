@@ -69,8 +69,6 @@ public class IscrizioneDialog extends WamViewDialog<Iscrizione> {
     }// end of constructor
 
 
-
-
     /**
      * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
      * <p>

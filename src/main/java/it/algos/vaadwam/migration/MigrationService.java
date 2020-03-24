@@ -501,7 +501,7 @@ public class MigrationService extends AService {
                             }// end of if cycle
                             numRec++;
                             fine = System.currentTimeMillis();
-                            log.info(text.primaMaiuscola(croceNew.getCode()) + " - milite numero " + numRec + " (su " + listaUtentiOld.size() + " totali) importato in " + (fine - inizioPar) + " millisecondi");
+//                            log.info(text.primaMaiuscola(croceNew.getCode()) + " - milite numero " + numRec + " (su " + listaUtentiOld.size() + " totali) importato in " + (fine - inizioPar) + " millisecondi");
 //                            log.info("Singolo milite importato in " + date.deltaText(inizioPar));
 //                            log.info("In totale " + numRec + " militi su " + listaMilitiOld.size() + "importati in " + date.deltaText(inizio));
                         } else {

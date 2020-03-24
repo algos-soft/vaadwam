@@ -6,17 +6,15 @@ import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.service.AAvvisoService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadwam.modules.croce.CroceService;
-import lombok.extern.slf4j.Slf4j;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -44,8 +42,16 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
-    private CroceService croceService;
+    protected CroceService croceService;
 
+    @Autowired
+    protected AAvvisoService avvisoService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -83,7 +89,6 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
     public WamViewDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
-
 
 
     /**
@@ -126,6 +131,52 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
 
 
     /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        boolean isDeveloper = wamLogin.isDeveloper();
+        boolean isAdmin = wamLogin.isAdmin();
+        boolean isUser = !isDeveloper && !isAdmin;
+
+        //--solo utente
+        if (isUser || isDeveloper) {
+            if (alertUser != null) {
+                for (Object alert : alertUser) {
+                    alertPlacehorder.add(text.getLabelUser((String) alert));
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        //--solo admin
+        if (isAdmin || isDeveloper) {
+            if (alertAdmin != null) {
+                for (Object alert : alertAdmin) {
+                    alertPlacehorder.add(text.getLabelAdmin((String) alert));
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+
+        //--solo developer
+        if (isDeveloper) {
+            if (wamLogin != null && wamLogin.getCroce() != null) {
+                if (alertDev != null) {
+                    for (Object alert : alertDev) {
+                        alertPlacehorder.add(text.getLabelDev((String) alert));
+                    }// end of for cycle
+                }// end of if cycle
+            }// end of if cycle
+
+        }// end of if cycle
+    }// end of method
+
+
+    /**
      * Controlla l'esistenza del field company e ne regola i valori
      * Il field company esiste solo se si verificano contemporaneamente i seguenti:
      * 1) l'applicazione usa multiCompany
@@ -148,15 +199,15 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixLayout() {
-        super.fixLayout();
+    protected void fixLayoutFinal() {
+        super.fixLayoutFinal();
         LinkedHashMap<String, AbstractField> fieldMap = this.fieldMap;
         AbstractField fieldOrdine = (AbstractField) this.fieldMap.get("ordine");
         AbstractField fieldCode = (AbstractField) this.fieldMap.get("code");
         AbstractField fieldSigla = (AbstractField) this.fieldMap.get("sigla");
 
-        if (!login.isDeveloper()) {
-            if (login.isAdmin()) {
+        if (!wamLogin.isDeveloper()) {
+            if (wamLogin.isAdmin()) {
                 //blocca solo il code e l'ordine
                 if (fieldOrdine != null) {
                     fieldOrdine.setEnabled(false);
@@ -200,6 +251,20 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
 
     }// end of method
 
+
+    /**
+     * Opens the given item for editing in the dialog.
+     * Crea i fields e visualizza il dialogo <br>
+     *
+     * @param entityBean        The item to edit; it may be an existing or a newly created instance
+     * @param operationProposed The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
+     * @param itemSaver         funzione associata al bottone 'accetta' ('registra', 'conferma')
+     */
+    public void openWam(final AEntity entityBean, EAOperation operationProposed, BiConsumer<T, EAOperation> itemSaver) {
+        open(entityBean, operationProposed, itemSaver, null);
+    }// end of method
+
+
     /**
      * Opens the given item for editing in the dialog.
      * Crea i fields e visualizza il dialogo <br>
@@ -212,6 +277,7 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
     public void openWam(final AEntity entityBean, EAOperation operationProposed, BiConsumer<T, EAOperation> itemSaver, Consumer<T> itemDeleter) {
         open(entityBean, operationProposed, itemSaver, itemDeleter, null);
     }// end of method
+
 
     /**
      * Regola in lettura l'eeventuale field company (un combo)

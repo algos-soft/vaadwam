@@ -141,12 +141,12 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
     /**
      * Flag di preferenza per il testo del bottone Cancel. Normalmente 'Annulla'.
      */
-    protected String textCancelButton;
+    public String textCancelButton;
 
     /**
      * Flag di preferenza per il testo del bottone Confirm. Normalmente 'Conferma'.
      */
-    protected String textConfirmButton;
+    public String textConfirmButton;
 
     /**
      * Corpo centrale del Dialog <br>
@@ -166,50 +166,65 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
 
 
     /**
-     * Flag di preferenza per il colore di sfondo dell'header. Normalmente EAColor.lightgray.
+     * Flag di preferenza per il colore di sfondo dell'header. Normalmente EAColor.white.
      */
-    protected EAColor backgroundColorHeader;
+    public EAColor backgroundColorHeader;
 
     /**
-     * Flag di preferenza per il colore di sfondo dell'header. Normalmente EAColor.lightgray.
+     * Flag di preferenza per il colore di sfondo del body. Normalmente EAColor.white.
      */
-    protected EAColor backgroundColorBody;
+    public EAColor backgroundColorBody;
 
     /**
-     * Flag di preferenza per il colore di sfondo del footer. Normalmente lightslategray.
+     * Flag di preferenza per il colore di sfondo del footer. Normalmente EAColor.white.
      */
-    protected EAColor backgroundColorFooter;
+    public EAColor backgroundColorFooter;
+
+    /**
+     * Flag di preferenza per il colore del testo dell'header. Normalmente EAColor.white.
+     */
+    public EAColor foregroundColorHeader;
+
+    /**
+     * Flag di preferenza per il colore del testo del body. Normalmente EAColor.white.
+     */
+    public EAColor foregroundColorBody;
+
+    /**
+     * Flag di preferenza per il colore del testo del footer. Normalmente EAColor.white.
+     */
+    public EAColor foregroundColorFooter;
 
 
     /**
      * Flag di preferenza per la larghezza del dialogo. Normalmente 18em.
      */
-    protected String width;
+    public String width;
 
     /**
      * Flag di preferenza per l'altezza di header. Normalmente 8em.
      */
-    protected String heightHeader;
+    public String heightHeader;
 
     /**
      * Flag di preferenza per l'altezza di body. Normalmente 8em.
      */
-    protected String heightBody;
+    public String heightBody;
 
     /**
      * Flag di preferenza per l'altezza di footer. Normalmente 8em.
      */
-    protected String heightFooter;
+    public String heightFooter;
 
 
     /**
      * Titolo del dialogo <br>
      */
-    protected Label title;
+    public Label title;
 
-    protected Button cancelButton = new Button(textCancelButton);
+    public Button cancelButton = new Button(textCancelButton);
 
-    protected Button confirmButton = new Button(textConfirmButton);
+    public Button confirmButton = new Button(textConfirmButton);
 
     /**
      * Service (@Scope = 'singleton') iniettato dal costruttore @Autowired di Spring <br>
@@ -234,7 +249,6 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
 
     protected String iconaConferma;
 
-
     /**
      * Questo Component NON viene costruito qui ma viene iniettato da Vaadin <br>
      * Questo Component viene iniettato nel file html SOLO se esiste un componente (compatibile) con lo stesso ID <br>
@@ -249,7 +263,6 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
      * Corresponding element was found in a sub template, for which injection is not supported  <br>
      */
     protected Span header = new Span();
-
 
     /**
      * Component che DEVE essere costruito qui perché altrimenti: <br>
@@ -268,6 +281,8 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
      * Corresponding element was found in a sub template, for which injection is not supported  <br>
      */
     protected Button conferma = new Button();
+
+    private boolean iniziaSubito = true;
 
 
 //    public DialogoPolymer(String title, String content, ComponentEventListener listener) {
@@ -341,6 +356,21 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
 
 
     /**
+     * Costruttore usato da
+     * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, headerText, bodyText) <br>
+     *
+     * @param headerText   (opzionale) Title message
+     * @param bodyText     (obbligatorio) Detail message
+     * @param iniziaSubito per rendere immediatamente visibile il dialogo, oppure per aspettare a costruirlo dopo aver regolato alcuni parametri
+     */
+    public DialogoBeanPolymer(String headerText, String bodyText, boolean iniziaSubito) {
+        this.headerText = headerText;
+        this.bodyText = bodyText;
+        this.iniziaSubito = iniziaSubito;
+    }// end of constructor
+
+
+    /**
      * Metodo invocato subito DOPO il costruttore
      * L'istanza DEVE essere creata da SpringBoot con Object algos = appContext.getBean(AlgosClass.class);  <br>
      * <p>
@@ -359,6 +389,16 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
         fixBody();
         fixFooter();
 
+        if (iniziaSubito) {
+            open();
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     *
+     */
+    public void open() {
         layoutPolymer();
     }// end of method
 
@@ -377,6 +417,10 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
         this.backgroundColorBody = EAColor.white;
         this.backgroundColorFooter = EAColor.white;
 
+        this.foregroundColorHeader = EAColor.black;
+        this.foregroundColorBody = EAColor.black;
+        this.foregroundColorFooter = EAColor.black;
+
         this.width = "30em";
         this.heightHeader = "3em";
         this.heightBody = "6em";
@@ -390,26 +434,6 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
     }// end of method
 
 
-    /**
-     * Costruisce la pagina <br>
-     */
-    protected void layoutPolymer() {
-        getModel().setBackgroundColorHeader(backgroundColorHeader.getEsadecimale());
-        getModel().setBackgroundColorBody(backgroundColorBody.getEsadecimale());
-        getModel().setBackgroundColorFooter(backgroundColorFooter.getEsadecimale());
-        getModel().setWidth(width);
-        getModel().setHeightHeader(heightHeader);
-        getModel().setHeightBody(heightBody);
-        getModel().setHeightFooter(heightFooter);
-        getModel().setHeaderText(headerText);
-        getModel().setBodyText(bodyText);
-        getModel().setTextCancelButton(textCancelButton);
-        getModel().setTextConfirmButton(textConfirmButton);
-        getModel().setIconaAnnulla(iconaAnnulla);
-        getModel().setIconaConferma(iconaConferma);
-        dialog.addDialogCloseActionListener(e -> close());
-        dialog.open();
-    }// end of method
 
 
     protected void fixHeader() {
@@ -427,6 +451,31 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
         conferma.setIcon(new Icon(VaadinIcon.CHECK));
         conferma.getElement().getStyle().set("margin-right", "auto");
         conferma.addClickListener(buttonClickEvent -> close());
+    }// end of method
+
+
+    /**
+     * Costruisce la pagina <br>
+     */
+    protected void layoutPolymer() {
+        getModel().setBackgroundColorHeader(backgroundColorHeader.getEsadecimale());
+        getModel().setBackgroundColorBody(backgroundColorBody.getEsadecimale());
+        getModel().setBackgroundColorFooter(backgroundColorFooter.getEsadecimale());
+        getModel().setForegroundColorHeader(foregroundColorHeader.getEsadecimale());
+        getModel().setForegroundColorBody(foregroundColorBody.getEsadecimale());
+        getModel().setForegroundColorFooter(foregroundColorFooter.getEsadecimale());
+        getModel().setWidth(width);
+        getModel().setHeightHeader(heightHeader);
+        getModel().setHeightBody(heightBody);
+        getModel().setHeightFooter(heightFooter);
+        getModel().setHeaderText(headerText);
+        getModel().setBodyText(bodyText);
+        getModel().setTextCancelButton(textCancelButton);
+        getModel().setTextConfirmButton(textConfirmButton);
+        getModel().setIconaAnnulla(iconaAnnulla);
+        getModel().setIconaConferma(iconaConferma);
+        dialog.addDialogCloseActionListener(e -> close());
+        dialog.open();
     }// end of method
 
 
@@ -493,6 +542,12 @@ public abstract class DialogoBeanPolymer extends PolymerTemplate<DialogoBeanPoly
         void setBackgroundColorBody(String backgroundColorBody);
 
         void setBackgroundColorFooter(String backgroundColorFooter);
+
+        void setForegroundColorHeader(String foregroundColorHeader);
+
+        void setForegroundColorBody(String foregroundColorBody);
+
+        void setForegroundColorFooter(String foregroundColorFooter);
 
         void setTextCancelButton(String textCancelButton);
 

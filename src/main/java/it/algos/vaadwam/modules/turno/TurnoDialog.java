@@ -11,6 +11,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.AArrayService;
+import it.algos.vaadflow.service.AColumnService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.IADialog;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
@@ -54,6 +56,12 @@ import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 @Slf4j
 @AIScript(sovrascrivibile = true)
 public class TurnoDialog extends WamViewDialog<Turno> {
+
+    /**
+     * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
+     * The class MUST be an instance of Singleton Class and is created at the time of class loading <br>
+     */
+    public AColumnService columnService = AColumnService.getInstance();
 
     /**
      * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
@@ -167,11 +175,19 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 
         titoloExtraField.setEnabled(false);
         localitaExtraField.setEnabled(false);
+    }// end of method
 
+    /**
+     * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewLDialog.creaFields()<br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
         servizioField = (AComboBox) getField("servizio");
         servizioField.addValueChangeListener(event -> sincroServizio((Servizio) event.getValue()));//end of lambda expressions
     }// end of method
-
 
     private void sincroServizio(Servizio servizio) {
         if (servizio.isOrarioDefinito()) {
@@ -183,6 +199,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         }// end of if/else cycle
 
         regolaKey(servizio);
+        regolaOrario(servizio);
         creaIscrizioni(servizio);
     }// end of method
 
@@ -194,10 +211,22 @@ public class TurnoDialog extends WamViewDialog<Turno> {
     }// end of method
 
 
+    private void regolaOrario(Servizio servizio) {
+        if (servizio != null && currentItem != null && currentItem instanceof Turno) {
+            ((Turno) currentItem).inizio = servizio.inizio;
+            ((Turno) currentItem).fine = servizio.fine;
+        }// end of if cycle
+    }// end of method
+
+
     private void creaIscrizioni(Servizio servizio) {
         iscrizioniDelTurno = turnoService.getIscrizioni(servizio);
         if (grid != null) {
             grid.setItems(iscrizioniDelTurno);
+        }// end of if cycle
+
+        if (currentItem != null && currentItem instanceof Turno) {
+            ((Turno) currentItem).iscrizioni = iscrizioniDelTurno;
         }// end of if cycle
     }// end of method
 
@@ -206,185 +235,73 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Crea (o ricrea dopo una clonazione) il componente base
      */
     public void fixLayout() {
-        List<Iscrizione> items;
-        String widthA = "4em";
-        String widthB = "6em";
-        String widthC = "12em";
         grid = new Grid(Iscrizione.class);
-        Servizio servizio = ((Turno) currentItem).servizio;
-        items = ((Turno) currentItem).iscrizioni;
-        if (items != null) {
-            grid.setItems(items);
-        }// end of if cycle
 
         for (Object column : grid.getColumns()) {
             grid.removeColumn((Grid.Column) column);
         }// end of for cycle
 
-        grid.setWidth("200em");
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaOrdine = grid.addColumn("funzione");
-        colonnaOrdine.setHeader("Funz");
-        colonnaOrdine.setId("funzione");
-        colonnaOrdine.setWidth(widthB);
+        grid.setWidth("10em");
 
-//        //--aggiunge una colonna semplice
-//        Grid.Column colonnaSiglaFunzione = grid.addColumn("sigla");
-//        colonnaSiglaFunzione.setHeader("Sigla");
-//        colonnaSiglaFunzione.setId("sigla");
-//        colonnaSiglaFunzione.setWidth(widthB);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaMilite = grid.addColumn("milite");
-        colonnaMilite.setHeader("Milite");
-        colonnaMilite.setId("milite");
-        colonnaMilite.setWidth(widthC);
-
-
-//        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaFunzioneObbligatoria = grid.addComponentColumn(funzione -> {
-//            ACheckBox box = new ACheckBox("");
-//            List<Funzione> funzioniDelServizio = servizio.funzioni;
-//            if (funzioniDelServizio != null) {
-//                for (Funzione funzServizio : funzioniDelServizio) {
-//                    if (funzServizio.code.equals(((Funzione) funzione).code)) {
-//                        box.setValue(funzServizio.obbligatoria);
-//                    }// end of if cycle
-//                }// end of for cycle
-//            }// end of if cycle
-//            return box;
-//        });//end of lambda expressions
-//        colonnaFunzioneObbligatoria.setHeader("Must");
-//        colonnaFunzioneObbligatoria.setId("must");
-//        colonnaFunzioneObbligatoria.setWidth(widthA);
-
-
-//        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaMilite = grid.addComponentColumn(funzione -> {
-//            Milite milite = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getMilite();
-//            if (milite != null) {
-//                return new Label(milite.toString());
-//            } else {
-//                return new Label("Non ancora segnato");
-//            }// end of if/else cycle
-//        });//end of lambda expressions
-//        colonnaMilite.setHeader("Milite");
-//        colonnaMilite.setId("milite");
-//        colonnaMilite.setWidth(widthB);
-
-
-//        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaLastModifica = grid.addComponentColumn(funzione -> {
-//            LocalDateTime time = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getLastModifica();
-//            if (time != null) {
-//                return new Label(time.toString());
-//            } else {
-//                return new Label("Non ancora segnato");
-//            }// end of if/else cycle
-//        });//end of lambda expressions
-//        colonnaLastModifica.setHeader("Time");
-//        colonnaLastModifica.setId("last");
-//        colonnaLastModifica.setWidth(widthB);
-
-
-//        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaDurata = grid.addComponentColumn(funzione -> {
-//            int durata = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).getDurataEffettiva();
-//            if (durata > 0) {
-//                return new Label(durata + "");
-//            } else {
-//                return new Label("0");
-//            }// end of if/else cycle
-//        });//end of lambda expressions
-//        colonnaDurata.setHeader("Ore");
-//        colonnaDurata.setId("durata");
-//        colonnaDurata.setWidth(widthA);
-
-
-//        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaEsisteProblema = grid.addComponentColumn(funzione -> {
-//            boolean status = iscrizioneService.getByTurnoAndFunzione(((Turno) currentItem), funzione).isEsisteProblema();
-//            return new ACheckBox("", status);
-//        });//end of lambda expressions
-//        colonnaEsisteProblema.setHeader("Prob");
-//        colonnaEsisteProblema.setId("problema");
-//        colonnaEsisteProblema.setWidth(widthA);
-
-
-        //--aggiunge una colonna calcolata
-//        Grid.Column colonnaEdit = grid.addComponentColumn(funzione -> {
-//            final Iscrizione iscrizioneDellaRiga = iscrizioneService.getByTurnoAndFunzione(currentItem, funzione);
-//            Button edit = new Button("Edit", event -> dialogoIscrizione.open(iscrizioneDellaRiga, EAOperation.editDaLink, context));
-//            edit.setIcon(new Icon("lumo", "edit"));
-//            edit.addClassName("review__edit");
-//            edit.getElement().setAttribute("theme", "tertiary");
-//
-//            return edit;
-//        });//end of lambda expressions
-//        colonnaEdit.setHeader("Iscr");
-//        colonnaEdit.setId("iscrizione");
-//        colonnaEdit.setWidth(widthA);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaLast = grid.addColumn("lastModifica");
-        colonnaLast.setHeader("Last");
-        colonnaLast.setId("last");
-        colonnaLast.setWidth(widthC);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaInizio = grid.addColumn("inizio");
-        colonnaInizio.setHeader("Inizio");
-        colonnaInizio.setId("inizio");
-        colonnaInizio.setWidth(widthC);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaFine = grid.addColumn("fine");
-        colonnaFine.setHeader("Fine");
-        colonnaFine.setId("fine");
-        colonnaFine.setWidth(widthC);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaDurata = grid.addColumn("durataEffettiva");
-        colonnaDurata.setHeader("H");
-        colonnaDurata.setId("durataEffettiva");
-        colonnaDurata.setWidth(widthA);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaProblema = grid.addColumn("esisteProblema");
-        colonnaProblema.setHeader("?");
-        colonnaProblema.setId("esisteProblema");
-        colonnaProblema.setWidth(widthA);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaNote = grid.addColumn("note");
-        colonnaNote.setHeader("Note");
-        colonnaNote.setId("note");
-        colonnaNote.setWidth(widthB);
-
-        //--aggiunge una colonna semplice
-        Grid.Column colonnaMail = grid.addColumn("notificaInviata");
-        colonnaMail.setHeader("Mail");
-        colonnaMail.setId("notificaInviata");
-        colonnaMail.setWidth(widthB);
+        //--Colonne aggiunte in automatico
+        for (String propertyName : getGridPropertyNamesList()) {
+            columnService.create(grid, Iscrizione.class, propertyName);
+        }// end of for cycle
 
         //--header
         fixGridHeader();
 
         grid.addItemDoubleClickListener(event -> apreDialogoIscrizione((ItemDoubleClickEvent) event));
         formSubLayout.add(grid);
+        updateItems();
+    }// end of method
 
-//        final FormLayout iscrizioniLayout = new FormLayout();
-//        Div div;
-////        iscrizioniLayout.add(grid);
-//        iscrizioniLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("50em", 1));
-//
-//        iscrizioniLayout.addClassName("no-padding");
-//        div = new Div(iscrizioniLayout);
-//        div.addClassName("has-padding");
-////        add(div);
-////        return div;
 
-//        return grid;
+    /**
+     * Costruisce una lista di nomi delle properties <br>
+     * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID) <br>
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse) <br>
+     * 3) Sovrascrive il metodo getGridPropertyNamesList() nella sottoclasse specifica di xxxService <br>
+     * Un eventuale modifica dell'ordine di presentazione delle colonne viene regolata nel metodo sovrascritto <br>
+     */
+    protected List<String> getGridPropertyNamesList() {
+        ArrayList<String> lista = new ArrayList<>();
+
+        lista.add("funzione");
+        lista.add("milite");
+        lista.add("lastModifica");
+        lista.add("inizio");
+        lista.add("fine");
+        lista.add("durataEffettiva");
+        lista.add("esisteProblema");
+        lista.add("note");
+        lista.add("notificaInviata");
+
+        return lista;
+    }// end of method
+
+
+    /**
+     * Aggiunge in automatico le colonne previste in gridPropertyNamesList <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
+     */
+    protected void addColumnsGrid(List<String> gridPropertyNamesList) {
+        if (grid != null) {
+            if (gridPropertyNamesList != null) {
+                for (String propertyName : gridPropertyNamesList) {
+                    columnService.create(grid, Iscrizione.class, propertyName);
+                }// end of for cycle
+            }// end of if cycle
+        }// end of if cycle
+    }// end of method
+
+
+    private void updateItems() {
+        List<Iscrizione> items;
+        items = ((Turno) currentItem).iscrizioni;
+        if (items != null) {
+            grid.setItems(items);
+        }// end of if cycle
     }// end of method
 
 
@@ -408,29 +325,16 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         Iscrizione entityBean = (Iscrizione) evento.getItem();
         IscrizioneTurnoDialog dialogo = appContext.getBean(IscrizioneTurnoDialog.class, service, Iscrizione.class, turnoEntity);
 
-        dialogo.openWam(entityBean, EAOperation.edit, this::save, this::delete);
+        dialogo.openWam(entityBean, EAOperation.editNoDelete, this::save);
     }// end of method
 
 
     /**
      * Primo ingresso dopo il click sul bottone <br>
      */
-    protected void save(AEntity entityBean, EAOperation operation) {
-//        if (service.save(entityBean, operation) != null) {
-//            updateFiltri();
-//            updateGrid();
-//        }// end of if cycle
+    protected void save(Iscrizione entityBean, EAOperation operation) {
+        updateItems();
     }// end of method
 
-
-    protected void delete(AEntity entityBean) {
-//        service.delete(entityBean);
-//        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
-//
-//        if (usaRefresh) {
-//            updateFiltri();
-//            updateGrid();
-//        }// end of if cycle
-    }// end of method
 
 }// end of class

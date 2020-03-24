@@ -24,6 +24,8 @@ import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_SER;
+import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -112,6 +116,24 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
     public ServizioDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
+
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertUser.add(USER_VISIONE);
+        alertAdmin.add("Questo servizio può essere cancellato solo se non è usato in nessun turno");
+        alertDev.add("Devi eventualmente cancellare prima il turno che lo usa");
+
+        super.fixAlertLayout();
+    }// end of method
 
 
     /**
@@ -500,5 +522,37 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
 //        addButton.setEnabled(((Servizio) currentItem).funzioni.size() < funzioneService.count());
     }// end of method
 
+
+    /**
+     * Opens the confirmation dialog before deleting all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void deleteClicked() {
+        if (servizioCancellabile()) {
+            super.deleteClicked();
+        }// end of if cycle
+    }// end of method
+
+
+    private boolean servizioCancellabile() {
+        boolean usatoNeiTurni = false;
+        Servizio servizioDaCancellare = (Servizio) currentItem;
+
+        List<Turno> turni = turnoService.findAllAnnoCorrente();
+        for (Turno turno : turni) {
+            if (turno.servizio.equals(servizioDaCancellare)) {
+                usatoNeiTurni = true;
+            }// end of if cycle
+        }// end of for cycle
+
+        if (usatoNeiTurni) {
+            avvisoService.warn(this.alertPlacehorder,"Questo servizio non può essere cancellato, perché usato in uno o più turni");
+        }// end of if cycle
+
+        return !usatoNeiTurni;
+    }// end of method
 
 }// end of class

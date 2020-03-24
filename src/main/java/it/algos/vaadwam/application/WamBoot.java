@@ -63,9 +63,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 2.7;
+    private final static double PROJECT_VERSION = 2.9;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 3, 11);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 3, 21);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -181,9 +181,8 @@ public class WamBoot extends ABoot {
         //--importazioni dal vecchio webambulanze
         if (croceService.isVuoto()) {
             migration.importOnlyCroci();
-            //migration.importAll();
+//            migration.importAll();
         }// end of if cycle
-
     }// end of method
 
 

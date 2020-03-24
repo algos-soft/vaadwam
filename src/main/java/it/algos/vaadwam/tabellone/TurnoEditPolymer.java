@@ -13,7 +13,6 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
@@ -282,17 +281,21 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Data completa (estesa) del giorno di esecuzione del turno <br>
      */
     private void fixGiorno() {
-        String data;
-        LocalDate giorno = null;
 
-        if (turnoEntity != null) {
-            giorno = turnoEntity.getGiorno();
-        }// end of if cycle
+        String data = turnoService.getGiornoTxt(turnoEntity);
+        getModel().setGiorno(data);
 
-        if (giorno != null) {
-            data = dateService.get(giorno, EATime.completa);
-            getModel().setGiorno(data);
-        }// end of if cycle
+//        String data;
+//        LocalDate giorno = null;
+//
+//        if (turnoEntity != null) {
+//            giorno = turnoEntity.getGiorno();
+//        }// end of if cycle
+//
+//        if (giorno != null) {
+//            data = dateService.get(giorno, EATime.completa);
+//            getModel().setGiorno(data);
+//        }// end of if cycle
 
     }// end of method
 
@@ -720,6 +723,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
     }// end of method
 
+
     /**
      * Java event handler on the server, run asynchronously <br>
      * <p>
@@ -738,6 +742,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         handleChange(turnoEntity.iscrizioni.get(1), inizioText, noteText, fineText);
     }// end of method
 
+
     /**
      * Java event handler on the server, run asynchronously <br>
      * <p>
@@ -755,6 +760,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
         handleChange(turnoEntity.iscrizioni.get(2), inizioText, noteText, fineText);
     }// end of method
+
 
     /**
      * Java event handler on the server, run asynchronously <br>

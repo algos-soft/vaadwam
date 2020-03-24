@@ -1,10 +1,13 @@
 package it.algos.vaadwam.modules.turno;
 
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadflow.ui.fields.ACheckBox;
+import it.algos.vaadflow.ui.fields.ATextArea;
 import it.algos.vaadflow.ui.fields.ATimePicker;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +47,18 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC_TUR;
 @AIScript(sovrascrivibile = false)
 public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
 
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private ADateService dateService;
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private TurnoService turnoService;
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
@@ -81,6 +97,7 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
     public IscrizioneTurnoDialog(IAService service, Class<? extends AEntity> binderClass, Turno turnoEntity) {
         super(service, binderClass);
         this.turnoEntity = turnoEntity;
+        this.servizioEntity = turnoEntity.servizio;
     }// end of constructor
 
 
@@ -112,19 +129,20 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
         String orario = null;
 
         if (turnoEntity != null) {
+            giorno = turnoService.getGiornoTxt(turnoEntity);
+        }// end of if cycle
+
+        if (((Iscrizione) currentItem).funzione != null) {
+            funzione = ((Iscrizione) currentItem).funzione.descrizione;
         }// end of if cycle
 
         if (turnoEntity != null && servizioEntity != null) {
             orario = servizioService.getOrarioLungo(servizioEntity);
         }// end of if cycle
 
-        if (((Iscrizione) currentItem).funzione!=null) {
-            funzione=((Iscrizione) currentItem).funzione.descrizione;
-        }// end of if cycle
-
         alertAdmin.add("Turno: " + (giorno != null ? giorno : VUOTA));
         alertAdmin.add("Funzione: " + (funzione != null ? funzione : VUOTA));
-        alertDev.add("Orario previsto: " + (orario != null ? orario : VUOTA));
+        alertAdmin.add("Orario previsto: " + (orario != null ? orario : VUOTA));
 
         super.fixAlertLayout();
     }// end of method
@@ -142,11 +160,12 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
     protected List<String> getPropertiesName() {
         ArrayList<String> lista = new ArrayList<>();
 
-        lista.add("funzione");
         lista.add("milite");
         lista.add("inizio");
         lista.add("fine");
         lista.add("note");
+        lista.add("durataEffettiva");
+        lista.add("esisteProblema");
 
         return lista;
     }// end of method
@@ -157,20 +176,84 @@ public class IscrizioneTurnoDialog extends WamViewDialog<Iscrizione> {
      * Sovrascritto nella sottoclasse
      */
     protected void fixStandardAlgosFields() {
-        AComboBox funzioneField = (AComboBox) getField("funzione");
+        ATextArea noteField = (ATextArea) getField("note");
+        noteField.setLabel("Segnalazione per eventuali problemi di orario");
+    }// end of method
+
+
+    /**
+     * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewLDialog.creaFields()<br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
         ATimePicker inizioField = (ATimePicker) getField("inizio");
         ATimePicker fineField = (ATimePicker) getField("fine");
-//        IntegerField durataField = (IntegerField) getField("durataEffettiva");
-//        ACheckBox problemaField = (ACheckBox) getField("esisteProblema");
-//        ACheckBox notificaField = (ACheckBox) getField("notificaInviata");
+        ATextArea noteField = (ATextArea) getField("note");
 
-        funzioneField.setEnabled(false);
-//        inizioField.setEnabled(false);
-//        fineField.setEnabled(false);
+        inizioField.addValueChangeListener(event -> sincroOrarioNote());//end of lambda expressions
+        fineField.addValueChangeListener(event -> sincroOrarioNote());//end of lambda expressions
+        noteField.addValueChangeListener(event -> sincroOrarioNote());//end of lambda expressions
+    }// end of method
 
-//        durataField.setEnabled(false);
-//        problemaField.setEnabled(false);
-//        notificaField.setEnabled(false);
+
+    /**
+     * Calcola quanto tempo passa da 'inizio' a 'fine' dell'iscrizione e lo inserisce in 'durataField' <br>
+     * 1) Controlla che 'inizio' dell'iscrizione coincida con 'inizio' del servizio <br>
+     * 2) Controlla che 'fine' dell'iscrizione coincida con 'fine' del servizio <br>
+     * 3) Controlla che 'note' sia vuoto <br>
+     * Se tutte e 3 le condizioni sono soddisfatte, pone a 'false'  il field 'esisteProblema' <br>
+     */
+    private void sincroOrarioNote() {
+        ATimePicker inizioField = (ATimePicker) getField("inizio");
+        ATimePicker fineField = (ATimePicker) getField("fine");
+        ATextArea noteField = (ATextArea) getField("note");
+        IntegerField durataField = (IntegerField) getField("durataEffettiva");
+        ACheckBox problemaField = (ACheckBox) getField("esisteProblema");
+        LocalTime inizio = (LocalTime) inizioField.getValue();
+        LocalTime fine = (LocalTime) fineField.getValue();
+        String noteTxt = noteField.getValore();
+        boolean esisteProblema = false;
+
+        int durata = date.differenza(fine, inizio);
+        durataField.setValue(durata);
+
+        if (!inizio.equals(servizioEntity.inizio)) {
+            esisteProblema = true;
+        }// end of if cycle
+
+        if (!fine.equals(servizioEntity.fine)) {
+            esisteProblema = true;
+        }// end of if cycle
+
+        if (text.isValid(noteTxt)) {
+            esisteProblema = true;
+        }// end of if cycle
+
+        problemaField.setValue(esisteProblema);
+    }// end of method
+
+
+    /**
+     * Regola in scrittura eventuali valori NON associati al binder
+     * Dalla  UI al DB
+     * Sovrascritto
+     */
+    @Override
+    protected void writeSpecificFields() {
+        String currentText = VUOTA;
+        super.writeSpecificFields();
+
+        ATextArea noteField = (ATextArea) getField("note");
+        if (noteField != null) {
+            currentText = noteField.getValue();
+            ((Iscrizione) currentItem).note = currentText;
+        }// end of if cycle
+
+        iscrizioneService.setDurata((Iscrizione) currentItem);
+
     }// end of method
 
 }// end of class

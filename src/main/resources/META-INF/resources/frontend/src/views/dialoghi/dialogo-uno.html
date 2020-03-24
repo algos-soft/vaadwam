@@ -1,0 +1,47 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<!--form centrato orizzontalmente nella pagina, contiene tutto-->
+<!--testo e un bottone (da cui DialogoUno=un bottone)-->
+<!--occorre un template generale e poi, dentro, <vaadin-dialog> che a sua volta contiene un template-->
+<!--dentro il dialogo NON si possono usare Component iniettati con @ID ma occorre usare un TemplateModel-->
+<!--i Component con id NON vengono iniettati automaticamente perché-->
+<!--Corresponding element was found in a sub template, for which injection is not supported-->
+<!--li uso lo stesso in modo che in futuro, se trovo il modo, possano essere usati-->
+<dom-module id="dialogo-uno">
+    <template>
+        <vaadin-dialog id="dialog">
+            <template>
+                <!--prima riga (opzionale)-->
+                <div id="header"
+                     style="height:[[heightHeader]]; width: [[width]]; display: flex; flex-direction:row; align-items: center;  background-color:[[backgroundColorHeader]]; color:[[foregroundColorHeader]];">
+                    <h3>[[headerText]]</h3>
+                </div>
+                <!--seconda riga (obbligatoria)-->
+                <div id="body"
+                     style="height:[[heightBody]]; width: [[width]]; display: flex; flex-direction:row; align-items: center; background-color:[[backgroundColorBody]]; color:[[foregroundColorBody]];">
+                    <div>[[bodyText]]</div>
+                </div>
+                <!--terza riga (obbligatoria)-->
+                <div id="footer"
+                     style="height:[[heightFooter]]; width: [[width]]; display: flex; flex-direction:column; align-items: flex-end; background-color:[[backgroundColorFooter]]; color:[[foregroundColorFooter]];">
+                    <vaadin-button id="conferma" on-click="handleClickConferma" style="width:3em;"
+                                   theme="raised primary">
+                        [[textConfirmButton]]
+                    </vaadin-button>
+                </div>
+            </template>
+        </vaadin-dialog>
+    </template>
+
+    <script>
+        class NomeClasseIrrilevanteDialogoUno extends Polymer.Element {
+            static get is() {
+                return 'dialogo-uno'
+            }// end of static script method
+        }// end of script class
+        customElements.define(NomeClasseIrrilevanteDialogoUno.is, NomeClasseIrrilevanteDialogoUno);
+    </script>
+
+</dom-module>

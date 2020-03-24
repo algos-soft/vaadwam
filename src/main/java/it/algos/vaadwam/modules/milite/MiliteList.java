@@ -63,7 +63,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 @AIView(vaadflow = false, menuName = "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "username", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
 public class MiliteList extends WamViewList {
 
-
     /**
      * Icona visibile nel menu (facoltativa)
      * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
@@ -72,6 +71,16 @@ public class MiliteList extends WamViewList {
     public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
 
     public static final String IRON_ICON = "account-box";
+
+    public static String NOME = "Nome e cognome sono quelli che appaiono nel tabellone. Il nickname è quello di selezione al login";
+
+    public static String CANCELLARE = "Non puoi cancellare la scheda ma puoi modificare nome, cognome, password, telefono, mail e indirizzo";
+
+    public static String ADMIN = "Le funzioni vengono modificate solo da un admin";
+
+    public static String NICKNAME = "Il nickname non può mai essere modificato";
+
+    public static String STORICO = "I militi non si possono cancellare. Se non effettuano più turni, disabilitare il flag 'attivo' per spostarli nello 'storico.";
 
     /**
      * Service iniettato da Spring (@Scope = 'singleton').
@@ -135,6 +144,8 @@ public class MiliteList extends WamViewList {
             super.searchType = EASearch.nonUsata;
             super.usaPopupFiltro = false;
         }// end of if/else cycle
+
+        super.soloVisioneUser = false;
     }// end of method
 
 
@@ -149,12 +160,12 @@ public class MiliteList extends WamViewList {
         fixPreferenze();
 
         alertUser.add("Militi dell'associazione");
-        alertUser.add("Nome e cognome sono quelli che appaiono nel tabellone. Il nickname è quello di selezione al login");
-        alertUser.add("Non puoi cancellare la scheda ma puoi modificare nome, cognome, password, telefono, mail e indirizzo");
-        alertUser.add("Le funzioni vengono modificate solo da un admin");
-        alertUser.add("Il nickname non può mai essere modificato");
+        alertUser.add(NOME);
+        alertUser.add(CANCELLARE);
+        alertUser.add(ADMIN);
+        alertUser.add(NICKNAME);
         alertAdmin.add("Seleziona i militi attivi o lo storico o admin/dipendente/infermiere.");
-        alertAdmin.add("I militi non si possono cancellare. Se non effettuano più turni, disabilitare il flag 'attivo' per spostarli nello 'storico.");
+        alertAdmin.add(STORICO);
 
         super.creaAlertLayout();
     }// end of method
@@ -305,7 +316,7 @@ public class MiliteList extends WamViewList {
             Set<Funzione> funzioniUtenteAbilitate = ((Milite) milite).getFunzioni();
             Icon icon;
 
-            if (funzioniUtenteAbilitate!=null && contiene(funzioniUtenteAbilitate, funzione)) {
+            if (funzioniUtenteAbilitate != null && contiene(funzioniUtenteAbilitate, funzione)) {
                 icon = new Icon(VaadinIcon.CHECK);
                 icon.setColor("green");
             } else {
@@ -412,7 +423,11 @@ public class MiliteList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        if (login.isDeveloper()) {
+            appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        } else {
+            appContext.getBean(MiliteDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.editNoDelete : EAOperation.showOnly, this::save, this::delete);
+        }// end of if/else cycle
     }// end of method
 
 }// end of class

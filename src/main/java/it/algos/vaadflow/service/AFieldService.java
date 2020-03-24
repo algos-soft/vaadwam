@@ -367,6 +367,7 @@ public class AFieldService extends AbstractService {
                 break;
             case booleano:
             case checkbox:
+            case checkboxreverse:
             case yesno:
             case yesnobold:
                 field = new ACheckBox(caption);

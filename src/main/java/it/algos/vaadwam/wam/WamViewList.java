@@ -33,19 +33,19 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Slf4j
 public abstract class WamViewList extends AGridViewList {
 
-    protected static String USER_VISIONE = "Solo in visione. Le modifiche vengono effettuate da un admin.";
+    public static String USER_VISIONE = "Solo in visione. Le modifiche vengono effettuate da un admin.";
 
-    protected static String ADMIN_VISIONE = "Come admin si possono aggiungere, modificare e cancellare i record. Gli utenti normali possono solo vederli.";
+    public static String ADMIN_VISIONE = "Come admin si possono aggiungere, modificare e cancellare i record. Gli utenti normali possono solo vederli.";
 
-    protected static String ADMIN_DELETE = "I record utilizzati nei turni già effettuati, non possono essere cancellati.";
+    public static String ADMIN_DELETE = "I record utilizzati nei turni già effettuati, non possono essere cancellati.";
 
-    protected static String DEVELOPER_DELETE = "Come developer si possono cancellare i record della croce corrente.";
+    public static String DEVELOPER_DELETE = "Come developer si possono cancellare i record della croce corrente.";
 
-    protected static String DEVELOPER_IMPORT = "Come developer si possono importare i record dal vecchio programma.";
+    public static String DEVELOPER_IMPORT = "Come developer si possono importare i record dal vecchio programma.";
 
-    protected static String DEVELOPER_MOSTRA_ALL = "Non ci sono croci selezionate. Vengono mostrati tutti i record di tutte le croci.";
+    public static String DEVELOPER_MOSTRA_ALL = "Non ci sono croci selezionate. Vengono mostrati tutti i record di tutte le croci.";
 
-    protected static String DEVELOPER_DELETE_ALL = "Delete cancella TUTTI i record di TUTTE le croci.";
+    public static String DEVELOPER_DELETE_ALL = "Delete cancella TUTTI i record di TUTTE le croci.";
 
     protected Button genericFieldValue;
 
@@ -64,6 +64,10 @@ public abstract class WamViewList extends AGridViewList {
     protected List<String> alertDevAll;
 
     protected List<String> alertParticolare;
+
+    protected boolean soloVisioneUser;
+
+    protected boolean soloVisioneAdmin;
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -155,6 +159,9 @@ public abstract class WamViewList extends AGridViewList {
         alertDev = new ArrayList<>();
         alertDevAll = new ArrayList<>();
         alertParticolare = new ArrayList<>();
+
+        soloVisioneUser = true;
+        soloVisioneAdmin = true;
     }// end of method
 
 
@@ -193,14 +200,14 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaAlertLayout() {
         super.creaAlertLayout();
 
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
+        boolean isDeveloper = wamLogin.isDeveloper();
+        boolean isAdmin = wamLogin.isAdmin();
         boolean isUser = !isDeveloper && !isAdmin;
 
-        if (alertUser != null) {
+        if (alertUser != null && soloVisioneUser) {
             alertUser.add(USER_VISIONE);
         }// end of if cycle
-        if (alertAdmin != null) {
+        if (alertAdmin != null && soloVisioneAdmin) {
             alertAdmin.add(ADMIN_VISIONE);
             alertAdmin.add(ADMIN_DELETE);
         }// end of if cycle
@@ -213,43 +220,51 @@ public abstract class WamViewList extends AGridViewList {
             alertDevAll.add(DEVELOPER_DELETE_ALL);
         }// end of if cycle
 
-        if (alertUser != null) {
+        //--sempre (per tutti)
+        if (alertUser != null && alertUser.size() > 0) {
             alertPlacehorder.add(text.getLabelUser(alertUser.get(0)));
         }// end of if cycle
-        if (isUser) {
+
+        //--solo utente
+        if (isUser || isDeveloper) {
             if (alertUser != null) {
                 for (int k = 1; k < alertUser.size(); k++) {
                     alertPlacehorder.add(text.getLabelUser(alertUser.get(k)));
                 }// end of for cycle
             }// end of if cycle
-        } else {
+        }// end of if cycle
+
+        //--solo admin
+        if (isAdmin || isDeveloper) {
             if (alertAdmin != null) {
                 for (String alert : alertAdmin) {
                     alertPlacehorder.add(text.getLabelAdmin(alert));
                 }// end of for cycle
             }// end of if cycle
-            if (isDeveloper) {
-                if (wamLogin != null && wamLogin.getCroce() != null) {
-                    if (alertDev != null) {
-                        for (String alert : alertDev) {
-                            alertPlacehorder.add(text.getLabelDev(alert));
-                        }// end of for cycle
-                        alertPlacehorder.add(getInfoImport(((WamService) service).lastImport, ((WamService) service).durataLastImport));
-                    }// end of if cycle
-                } else {
-                    if (alertDevAll != null) {
-                        for (String alert : alertDevAll) {
-                            alertPlacehorder.add(text.getLabelDev(alert));
-                        }// end of for cycle
-                    }// end of if cycle
-                }// end of if/else cycle
-            }// end of if cycle
-        }// end of if/else cycle
+        }// end of if cycle
 
-        if (alertParticolare != null) {
-            for (String alert : alertParticolare) {
-                alertPlacehorder.add(text.getLabelDev(alert));
-            }// end of for cycle
+        //--solo developer
+        if (isDeveloper) {
+            if (wamLogin != null && wamLogin.getCroce() != null) {
+                if (alertDev != null) {
+                    for (String alert : alertDev) {
+                        alertPlacehorder.add(text.getLabelDev(alert));
+                    }// end of for cycle
+                    alertPlacehorder.add(getInfoImport(((WamService) service).lastImport, ((WamService) service).durataLastImport));
+                }// end of if cycle
+            } else {
+                if (alertDevAll != null) {
+                    for (String alert : alertDevAll) {
+                        alertPlacehorder.add(text.getLabelDev(alert));
+                    }// end of for cycle
+                }// end of if cycle
+            }// end of if/else cycle
+
+            if (alertParticolare != null) {
+                for (String alert : alertParticolare) {
+                    alertPlacehorder.add(text.getLabelDev(alert));
+                }// end of for cycle
+            }// end of if cycle
         }// end of if cycle
     }// end of method
 

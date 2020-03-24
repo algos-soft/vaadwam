@@ -274,26 +274,37 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
 
     /**
-     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Creazione iniziale (business logic) della view DOPO costruttore, init(), postConstruct() <br>
+     * <p>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
      */
     @PostConstruct
+    protected void postConstruct() {
+        initView();
+    }// end of method
+
+
+    /**
+     * Qui va la logica inizale della view <br>
+     * Alcuni parametri sarannop regolabili solo dopo il metodo open(() <br>
+     */
     protected void initView() {
 
         //--Login and context della sessione
         fixLoginContext();
 
-        //--Le preferenze standard
-        //--Le preferenze specifiche, eventualmente sovrascritte nella sottoclasse
+        //--Preferenze specifiche di questa view
         fixPreferenze();
 
         //--Titolo placeholder del dialogo, regolato dopo open()
         this.add(creaTitleLayout());
 
-        //--Una o più righe di avvisi (opzionale) - Solo per programmatore
-        this.add(creaAlertLayout());
+        //--Costruisce gli oggetti base (placeholder) di questa view
+        this.fixLayout();
+
+        //--una o più righe di avvisi - verranno aggiunte dopo open()
+        this.add(alertPlacehorder);
 
         //--Form placeholder standard per i campi, creati dopo open()
         this.add(creaFormLayout());
@@ -351,7 +362,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         //--Flag per differenziare i dialoghi di secondo livello, aperti dai primi. Normalmente true.
         isDialogoPrimoLivello = true;
 
-        alertUser = new ArrayList<>();
+        alertUser = new ArrayList<String>();
         alertAdmin = new ArrayList<>();
         alertDev = new ArrayList<>();
     }// end of method
@@ -368,18 +379,16 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
     /**
      * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * Costruisce gli oggetti base (placeholder) di questa view <br>
      * <p>
      * Chiamato da AViewDialog.initView() <br>
      * Placeholder per  gli avvisi
-     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
      */
-    private Component creaAlertLayout() {
+    private void fixLayout() {
         alertPlacehorder = new VerticalLayout();
         alertPlacehorder.setMargin(false);
         alertPlacehorder.setSpacing(false);
         alertPlacehorder.setPadding(false);
-
-        return alertPlacehorder;
     }// end of method
 
 
@@ -478,6 +487,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         });//end of lambda expressions and anonymous inner class
     }// end of method
 
+
     /**
      * Opens the given item for editing in the dialog.
      * Crea i fields e visualizza il dialogo <br>
@@ -496,8 +506,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Opens the given item for editing in the dialog.
      * Crea i fields e visualizza il dialogo <br>
      *
-     * @param entityBean
-     * The item to edit; it may be an existing or a newly created instance
+     * @param entityBean        The item to edit; it may be an existing or a newly created instance
      * @param operationProposed The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
      * @param itemSaver         funzione associata al bottone 'accetta' ('registra', 'conferma')
      * @param itemDeleter       funzione associata al bottone 'delete' (eventuale)
@@ -649,7 +658,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         //--Eventuali aggiustamenti finali al layout
         //--Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
-        fixLayout();
+        fixLayoutFinal();
 
         //--Controlla l'esistenza del field company e ne regola i valori
         fixCompanyField();
@@ -662,6 +671,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         //--Regola in lettura l'eeventuale field company (un combo). Dal DB alla UI
         readCompanyField();
+
+        //--aggiunge eventuali listeners ai fields (dopo aver regolato il loro valore iniziale)
+        this.addListeners();
     }// end of method
 
 
@@ -744,7 +756,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
      * Sovrascritto nella sottoclasse
      */
-    protected void fixLayout() {
+    protected void fixLayoutFinal() {
     }// end of method
 
 
@@ -859,6 +871,17 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
 
     /**
+     * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da AViewLDialog.creaFields()<br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
+    }// end of method
+
+
+    /**
      * Azione proveniente dal click sul bottone Registra
      * Inizio delle operazioni di registrazione
      */
@@ -889,7 +912,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * {@link #deleteConfirmed(Serializable)} if the Delete button is clicked.
      * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
      */
-    protected final void deleteClicked() {
+    protected void deleteClicked() {
         appContext.getBean(ADeleteDialog.class, currentItem.toString()).open(this::deleteConfirmed);
     }// end of method
 

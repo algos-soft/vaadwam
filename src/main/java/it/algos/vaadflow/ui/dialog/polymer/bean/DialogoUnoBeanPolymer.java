@@ -2,7 +2,6 @@ package it.algos.vaadflow.ui.dialog.polymer.bean;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -25,7 +24,8 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
     /**
      * Costruttore usato da
      * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, bodyText) <br>
-     * @param bodyText       (obbligatorio) Detail message
+     *
+     * @param bodyText (obbligatorio) Detail message
      */
     public DialogoUnoBeanPolymer(String bodyText) {
         super(bodyText);
@@ -35,8 +35,9 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
     /**
      * Costruttore usato da
      * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, headerText, bodyText) <br>
-     * @param headerText     (opzionale) Title message
-     * @param bodyText       (obbligatorio) Detail message
+     *
+     * @param headerText (opzionale) Title message
+     * @param bodyText   (obbligatorio) Detail message
      */
     public DialogoUnoBeanPolymer(String headerText, String bodyText) {
         super(headerText, bodyText);
@@ -46,6 +47,7 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
     /**
      * Costruttore usato da
      * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, headerText, bodyText, confirmHandler) <br>
+     *
      * @param headerText     (opzionale) Title message
      * @param bodyText       (obbligatorio) Detail message
      * @param confirmHandler (opzionale) The confirmation handler function
@@ -58,6 +60,7 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
     /**
      * Costruttore usato da
      * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, headerText, bodyText, confirmHandler, cancelHandler) <br>
+     *
      * @param headerText     (opzionale) Title message
      * @param bodyText       (obbligatorio) Detail message
      * @param confirmHandler (opzionale) The confirmation handler function
@@ -65,6 +68,19 @@ public class DialogoUnoBeanPolymer extends DialogoBeanPolymer {
      */
     public DialogoUnoBeanPolymer(String headerText, String bodyText, Runnable confirmHandler, Runnable cancelHandler) {
         super(headerText, bodyText, confirmHandler, cancelHandler);
+    }// end of constructor
+
+
+    /**
+     * Costruttore usato da
+     * dialogo=appContext.getBean(DialogoUnoBeanPolymer.class, headerText, bodyText) <br>
+     *
+     * @param headerText   (opzionale) Title message
+     * @param bodyText     (obbligatorio) Detail message
+     * @param iniziaSubito per rendere immediatamente visibile il dialogo, oppure per aspettare a costruirlo dopo aver regolato alcuni parametri
+     */
+    public DialogoUnoBeanPolymer(String headerText, String bodyText, boolean iniziaSubito) {
+        super(headerText, bodyText, iniziaSubito);
     }// end of constructor
 
 

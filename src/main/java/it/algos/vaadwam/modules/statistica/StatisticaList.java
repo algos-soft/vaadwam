@@ -183,7 +183,11 @@ public class StatisticaList extends WamViewList {
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
+
+        super.soloVisioneUser = false;
+        super.soloVisioneAdmin = false;
     }// end of method
+
 
 
     /**
@@ -196,21 +200,12 @@ public class StatisticaList extends WamViewList {
     protected void creaAlertLayout() {
         fixPreferenze();
 
-        alertUser = null;
-        alertAdmin = null;
-        alertDev = null;
-        alertDevAll = null;
-        super.creaAlertLayout();
+        alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte.");
+        alertDev.add("Come developer si possono elaborare in ogni momento per la croce corrente");
 
-        alertPlacehorder.add(text.getLabelAdmin("Solo in visione. Vengono generate in automatico ogni notte"));
-        alertPlacehorder.add(text.getLabelDev(DEVELOPER_DELETE));
-        alertPlacehorder.add(text.getLabelDev("Come developer si possono elaborare in ogni momento per la croce corrente."));
-        try { // prova ad eseguire il codice
-            alertPlacehorder.add(getInfoElabora(((WamService) service).lastImport, ((WamService) service).durataLastImport));
-        } catch (Exception unErrore) { // intercetta l'errore
-            log.error(unErrore.toString());
-        }// fine del blocco try-catch
+        super.creaAlertLayout();
     }// end of method
+
 
 
     /**
@@ -236,11 +231,14 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.remove(importButton);
         }// end of if cycleì
 
-        Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
-        elaboraButton.getElement().setAttribute("theme", "primary");
-        elaboraButton.addClassName("view-toolbar__button");
-        elaboraButton.addClickListener(e -> elabora());
-        topPlaceholder.add(elaboraButton);
+        if (wamLogin.isDeveloper()) {
+            Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
+            elaboraButton.getElement().setAttribute("theme", "primary");
+            elaboraButton.addClassName("view-toolbar__button");
+            elaboraButton.addClickListener(e -> elabora());
+            topPlaceholder.add(elaboraButton);
+        }// end of if cycle
+
     }// end of method
 
 

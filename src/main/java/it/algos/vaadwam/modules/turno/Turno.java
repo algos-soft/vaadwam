@@ -9,6 +9,7 @@ import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -64,7 +65,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"giorno", "servizio", "inizio", "fine"})
+@AIList(fields = {"giorno", "servizio", "inizio", "fine", "durataPrevista"})
 @AIForm(fields = {"giorno", "servizio", "titoloExtra", "localitaExtra"})
 public class Turno extends WamEntity {
 
@@ -123,6 +124,16 @@ public class Turno extends WamEntity {
     @AIColumn(headerIcon = VaadinIcon.BACKWARDS, headerIconColor = "red")
     public LocalTime fine;
 
+
+    /**
+     * Durata prevista (in ore) del servizio (calcolata per la Grid e non registrata)
+     * Informazione ridondante ma comoda per le successive elaborazioni (turno, tabellone, iscrizioni, statistiche)
+     */
+    @Transient
+    @Field("dur")
+    @AIField(type = EAFieldType.calculatedInt, name = "Durata prevista", serviceClazz = TurnoService.class)
+    @AIColumn(headerIcon = VaadinIcon.PROGRESSBAR, widthEM = 3, methodName = "getDurataInt")
+    public int durataPrevista;
 
     /**
      * iscrizioni dei volontari a questo turno (obbligatorio per un turno valido)

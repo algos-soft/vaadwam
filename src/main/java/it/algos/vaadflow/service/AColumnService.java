@@ -90,6 +90,19 @@ public class AColumnService extends AbstractService {
      * @param entityClazz  modello-dati specifico
      * @param propertyName della property
      */
+    public void create(Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName) {
+        create(grid, entityClazz, propertyName, VUOTA);
+    }// end of method
+
+
+    /**
+     * Create a single columnService.
+     * The columnService type is chosen according to the annotation @AIColumn or, if is not present, a @AIField.
+     *
+     * @param grid         a cui aggiungere la colonna
+     * @param entityClazz  modello-dati specifico
+     * @param propertyName della property
+     */
     public void create(Grid<AEntity> grid, Class<? extends AEntity> entityClazz, String propertyName, String searchProperty) {
         pref = StaticContextAccessor.getBean(PreferenzaService.class);
         Grid.Column<AEntity> colonna = null;
@@ -205,6 +218,30 @@ public class AColumnService extends AbstractService {
                     } else {
                         icon = new Icon(VaadinIcon.CLOSE);
                         icon.setColor("red");
+                    }// end of if/else cycle
+                    icon.setSize("1em");
+
+                    return icon;
+                }));//end of lambda expressions and anonymous inner class
+                break;
+            case checkboxreverse:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Field field = reflection.getField(entityClazz, propertyName);
+                    boolean status = false;
+                    Icon icon;
+
+                    try { // prova ad eseguire il codice
+                        status = field.getBoolean(entity);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    if (status) {
+                        icon = new Icon(VaadinIcon.CLOSE);
+                        icon.setColor("red");
+                    } else {
+                        icon = new Icon(VaadinIcon.CHECK);
+                        icon.setColor("green");
                     }// end of if/else cycle
                     icon.setSize("1em");
 
@@ -557,12 +594,12 @@ public class AColumnService extends AbstractService {
 
                 }));//end of lambda expressions and anonymous inner class
                 break;
-            case calculated:
+            case calculatedTxt:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Label label = new Label();
                     Method metodo = null;
                     Object serviceInstance = null;
-                    String value = "";
+                    String value = VUOTA;
 
                     if (text.isEmpty(methodName)) {
                         log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
@@ -582,6 +619,31 @@ public class AColumnService extends AbstractService {
                     return label;
                 }));//end of lambda expressions and anonymous inner class
                 break;
+            case calculatedInt:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Label label = new Label();
+                    Method metodo = null;
+                    Object serviceInstance = null;
+                    Integer value = null;
+
+                    if (text.isEmpty(methodName)) {
+                        log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
+                        return label;
+                    }// end of if cycle
+
+                    try { // prova ad eseguire il codice
+                        //--il metodo DEVE avere un solo parametro e di tipo AEntity
+                        metodo = serviceClazz.getDeclaredMethod(methodName, AEntity.class);
+                        serviceInstance = StaticContextAccessor.getBean(serviceClazz);
+                        value = (Integer) metodo.invoke(serviceInstance, entity);
+                        label.setText("" + value);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
+
+                    return label;
+                }));//end of lambda expressions and anonymous inner class
+                break;
             default:
                 log.warn("Switch - caso non definito");
                 break;
@@ -591,9 +653,9 @@ public class AColumnService extends AbstractService {
         switch (type) {
             case text://@todo in futuro vanno differenziati
             case textarea:
-                //--larghezza di default per un testo = 7em
+                //--larghezza di default per un testo = 10em
                 //--per larghezze minori o maggiori, inserire widthEM = ... nell'annotation @AIColumn della Entity
-                width = text.isValid(width) ? width : "7em";
+                width = text.isValid(width) ? width : "10em";
                 break;
             case email:
                 //--larghezza di default per un mail = 18em
@@ -618,6 +680,7 @@ public class AColumnService extends AbstractService {
                 width = text.isValid(width) ? width : "7em";
                 break;
             case checkbox:
+            case checkboxreverse:
             case booleano:
             case yesno:
             case yesnobold:
@@ -676,7 +739,11 @@ public class AColumnService extends AbstractService {
             case pref:
                 width = "10em";
                 break;
-            case calculated:
+            case calculatedTxt:
+                width = "10em";
+                break;
+            case calculatedInt:
+                width = "3em";
                 break;
             default:
                 log.warn("Switch - caso non definito");

@@ -309,17 +309,19 @@ public class StatisticaService extends WamService {
 
         for (int j = 0; j < listaTurniCroce.size(); j++) {
             turno = listaTurniCroce.get(j);
-            for (int k = 0; k < turno.iscrizioni.size(); k++) {
-                if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null) {
-                    militeIscritto = turno.iscrizioni.get(k).milite;
-                    if (militeIscritto.id.equals(milite.id)) {
-                        listaTurniMilite.add(turno);
-                        oreTotali += turno.iscrizioni.get(k).durataEffettiva;
-                        last = turno.giorno;
-                        delta = date.differenza(LocalDate.now(), last);
+            if (turno.iscrizioni!=null) {
+                for (int k = 0; k < turno.iscrizioni.size(); k++) {
+                    if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null) {
+                        militeIscritto = turno.iscrizioni.get(k).milite;
+                        if (militeIscritto.id.equals(milite.id)) {
+                            listaTurniMilite.add(turno);
+                            oreTotali += turno.iscrizioni.get(k).durataEffettiva;
+                            last = turno.giorno;
+                            delta = date.differenza(LocalDate.now(), last);
+                        }// end of if cycle
                     }// end of if cycle
-                }// end of if cycle
-            }// end of for cycle
+                }// end of for cycle
+            }// end of if cycle
         }// end of for cycle
 
         turni = listaTurniMilite.size();

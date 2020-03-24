@@ -30,6 +30,9 @@ import org.springframework.context.annotation.Scope;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadwam.modules.croce.CroceList.NOMI;
+import static it.algos.vaadwam.modules.milite.MiliteList.*;
+import static it.algos.vaadwam.modules.milite.MiliteList.STORICO;
 
 /**
  * Project vaadwam <br>
@@ -111,6 +114,21 @@ public class CroceDialog extends AViewDialog<Croce> {
     public CroceDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertAdmin.add(NOMI);
+
+        super.fixAlertLayout();
+    }// end of method
 
     /**
      * Regola login and context della sessione <br>

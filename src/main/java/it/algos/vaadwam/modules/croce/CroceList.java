@@ -55,6 +55,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @AIView(vaadflow = false, menuName = "croce", menuIcon = VaadinIcon.HOSPITAL, roleTypeVisibility = EARoleType.admin)
 public class CroceList extends WamViewList {
 
+    public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";
 
     /**
      * Icona visibile nel menu (facoltativa)
@@ -110,6 +111,8 @@ public class CroceList extends WamViewList {
             super.usaButtonNew = false;
         }// end of if/else cycle
 
+        super.soloVisioneUser = false;
+        super.soloVisioneAdmin = false;
     }// end of method
 
 
@@ -121,21 +124,15 @@ public class CroceList extends WamViewList {
      */
     @Override
     protected void creaAlertLayout() {
-        super.creaAlertLayout();
-        alertPlacehorder.removeAll();
-        boolean isDeveloper = login.isDeveloper();
-        boolean isAdmin = login.isAdmin();
+        fixPreferenze();
 
-        if (isDeveloper) {
-            alertPlacehorder.add(new Label("Lista visibile solo perché sei collegato come developer. Gli admin vedono SOLO la loro Croce. Gli utenti normali non vedono nulla."));
-            alertPlacehorder.add(new Label("Si possono importare le Croci dal vecchio programma"));
-//            alertPlacehorder.add(getInfoImport(task, USA_DAEMON_CROCI, LAST_IMPORT_CROCI,""));
-        } else {
-            if (isAdmin) {
-                alertPlacehorder.add(new Label("Visibile la Croce di appartenenza solo perché sei collegato come admin. Gli utenti normali non la vedono."));
-                alertPlacehorder.add(new Label("Puoi modificare le descrizioni ed i nomi delle persone. Non il code."));
-            }// end of if cycle
-        }// end of if/else cycle
+        alertAdmin.add("Visibile la Croce di appartenenza solo perché sei collegato come admin. Gli utenti normali non la vedono.");
+        alertAdmin.add(NOMI);
+
+        alertDev.add("Lista visibile solo perché sei collegato come developer. Gli admin vedono SOLO la loro Croce. Gli utenti normali non vedono nulla.");
+        alertDev.add("Si possono importare le Croci dal vecchio programma.");
+
+        super.creaAlertLayout();
     }// end of method
 
 
@@ -174,9 +171,9 @@ public class CroceList extends WamViewList {
      * Eventuale header text
      */
     protected void fixGridHeader() {
-        if (login.isDeveloper()) {
+//        if (login.isDeveloper()) {
             super.fixGridHeader();
-        }// end of if cycle
+//        }// end of if cycle
     }// end of method
 
 

@@ -200,7 +200,6 @@ public class FunzioneService extends WamService {
             for (Funzione funz : entity.dipendenti) {
                 funz.croce = null;
                 funz.dipendenti = null;
-                funz.descrizione = null;
             }// end of for cycle
         }// end of if cycle
 
