@@ -22,7 +22,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_LOGOUT;
 @UIScope
 @Route(value = TAG_LOGOUT)
 @AIView(vaadflow = true, menuName = "logout", menuIcon = VaadinIcon.SIGN_OUT)
-public class LogoutView extends ALayoutViewList implements BeforeEnterObserver {
+public class LogoutView  extends ALayoutViewList implements BeforeEnterObserver {
 
     public LogoutView() {
         super(null, null);

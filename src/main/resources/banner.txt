@@ -2,7 +2,7 @@
 |     | | /| / // _ |  /  |/  /
 |     | |/ |/ // __ | / /|_/ /
 |     |__/|__//_/ |_|/_/  /_/
-|     WebAmbulanze    (c)Algos
+|     WebAmbulanze  (c)Algos
 |
 SpringBoot ver: ${spring-boot.formatted-version}
 WAM ver: ${application.formatted-version}
