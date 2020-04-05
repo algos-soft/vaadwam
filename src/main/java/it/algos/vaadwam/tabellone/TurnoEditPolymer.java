@@ -551,7 +551,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         annulla.setText("Annulla");
         annulla.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-            annulla.addClickShortcut(Key.ARROW_LEFT);
+            annulla.addClickShortcut(Key.ESCAPE);
         }// end of if cycle
         annulla.addClickListener(e -> annulla());
         annulla.getElement().setAttribute("title", "Ritorno al tabellone");

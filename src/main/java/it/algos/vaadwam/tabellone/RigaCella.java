@@ -45,7 +45,9 @@ public class RigaCella {
 
 
     public String getColoreTesto() {
-        return nomeIconaAvviso.equals(VUOTA) ? EAColor.black.getEsadecimale() : eaColore.getContrasto();
+        //return nomeIconaAvviso.equals(VUOTA) ? EAColor.black.getEsadecimale() : eaColore.getContrasto();
+        // alex 5 apr, parliamone
+        return EAColor.black.getEsadecimale();
     }// end of method
 
 
