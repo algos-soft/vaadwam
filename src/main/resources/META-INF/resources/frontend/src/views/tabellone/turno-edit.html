@@ -108,65 +108,99 @@
                 <!--area con tutte le iscrizioni-->
                 <div class="areaiscrizioni">
 
-                    <!--singola iscrizione (da ripetere n volte con dom-repeat)-->
-                    <div class="iscrizione">
+                    <dom-repeat items="[[iscrizioni]]">
+                        <template>
+                            <div>
 
-                        <!--prima riga-->
-                        <div class="iscrizioneRow">
+                                <!--singola iscrizione (ripetuta n volte con dom-repeat)-->
+                                <div class="iscrizione">
 
-                            <vaadin-button
-                                    on-click="handleClickPrima"
-                                    disabled=[[!abilitataPrima]]
-                                    style="width: 8em; background-color:[[colorePrima]]">
-                                <div class="buttondiv">
-                                    <iron-icon icon=[[iconaPrima]] style="height:4mm"></iron-icon>
-                                    <label>[[funzionePrima]]</label>
+                                    <!--prima riga-->
+                                    <div class="iscrizioneRow">
+
+                                        <vaadin-button
+                                                on-click="handleClickPrima"
+                                                disabled=[[!item.abilitata]]
+                                                style="width: 8em; background-color:[[item.colore]]">
+                                            <div class="buttondiv">
+                                                <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
+                                                <label>[[item.funzione]]</label>
+                                            </div>
+                                        </vaadin-button>
+
+                                        <div class="gap"></div>
+
+                                        <vaadin-button
+                                                on-click="handleClickPrima"
+                                                disabled=[[!item.abilitata]]
+                                                value="[[item.milite]]"
+                                                style="flex-grow: 2; background-color:[[item.colore]]">
+                                            [[item.milite]]
+                                        </vaadin-button>
+
+                                    </div>
+                                    <!--end prima riga -->
+
+
+                                    <!--seconda riga-->
+                                    <div class="iscrizioneRow">
+
+<!--                                        <vaadin-time-picker on-value-changed="handleChangePrima"-->
+<!--                                                            disabled=[[!item.abilitataPicker]]-->
+<!--                                                            value="{{item.inizio}}"-->
+<!--                                                            step="900"-->
+<!--                                                            style="width: 6em">-->
+<!--                                        </vaadin-time-picker>-->
+
+                                            <vaadin-time-picker on-value-changed="handleChangePrima"
+                                                                disabled=[[!item.abilitataPicker]]
+                                                                step="900"
+                                                                style="width: 6em">
+                                            </vaadin-time-picker>
+
+
+                                        <div class="gap"></div>
+
+<!--                                        <vaadin-text-field on-value-changed="handleChangePrima"-->
+<!--                                                           disabled=[[!item.abilitataPicker]]-->
+<!--                                                           value="{{item.note}}"-->
+<!--                                                           style="width: 7em;flex-grow: 1">-->
+<!--                                        </vaadin-text-field>-->
+
+                                        <vaadin-text-field on-value-changed="handleChangePrima"
+                                                           disabled=[[!item.abilitataPicker]]
+                                                           style="width: 7em;flex-grow: 1">
+                                        </vaadin-text-field>
+
+                                        <div class="gap"></div>
+
+<!--                                        <vaadin-time-picker on-value-changed="handleChangePrima"-->
+<!--                                                            disabled=[[!item.abilitataPicker]]-->
+<!--                                                            value="{{item.fine}}"-->
+<!--                                                            step="900"-->
+<!--                                                            style="width: 6em">-->
+<!--                                        </vaadin-time-picker>-->
+
+                                        <vaadin-time-picker on-value-changed="handleChangePrima"
+                                                            disabled=[[!item.abilitataPicker]]
+                                                            step="900"
+                                                            style="width: 6em">
+                                        </vaadin-time-picker>
+
+
+                                    </div>
+                                    <!--end seconda riga -->
+
+
                                 </div>
-                            </vaadin-button>
+                                <!--end singola iscrizione -->
 
-                            <div class="gap"></div>
 
-                            <vaadin-button
-                                    on-click="handleClickPrima"
-                                    disabled=[[!abilitataPrima]]
-                                    value="[[militePrima]]"
-                                    style="flex-grow: 2; background-color:[[colorePrima]]">
-                                [[militePrima]]
-                            </vaadin-button>
 
-                        </div>
+                            </div>
+                        </template>
+                    </dom-repeat>
 
-                        <!--seconda riga-->
-                        <div class="iscrizioneRow">
-
-                            <vaadin-time-picker on-value-changed="handleChangePrima"
-                                                disabled=[[!abilitataPickerPrima]]
-                                                value="{{inizioPrima}}"
-                                                step="900"
-                                                style="width: 6em">
-                            </vaadin-time-picker>
-
-                            <div class="gap"></div>
-
-                            <vaadin-text-field on-value-changed="handleChangePrima"
-                                               disabled=[[!abilitataPickerPrima]]
-                                               value="{{notePrima}}"
-                                               style="width: 7em;flex-grow: 1">
-                            </vaadin-text-field>
-
-                            <div class="gap"></div>
-
-                            <vaadin-time-picker on-value-changed="handleChangePrima"
-                                                disabled=[[!abilitataPickerPrima]]
-                                                value="{{finePrima}}"
-                                                step="900"
-                                                style="width: 6em">
-                            </vaadin-time-picker>
-
-                        </div>
-
-                    </div>
-                    <!--end singola iscrizione -->
 
                 </div>
                 <!--end area iscrizioni-->

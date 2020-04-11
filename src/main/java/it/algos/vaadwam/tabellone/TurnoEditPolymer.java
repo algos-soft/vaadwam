@@ -152,8 +152,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     private void elaboraParameter(String turnoKey) {
         if (text.isValid(turnoKey)) {
             turnoEntity = turnoService.findById(turnoKey);
-        }// end of if cycle
-    }// end of method
+        }
+    }
 
 
     /**
@@ -265,35 +265,68 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * fine (picker)
      */
     private void fixIscrizioni() {
-        int pos = 0;
-        TurnoIscrizione turnoIscrizione;
 
         List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
-        if (iscrizioni != null) {
-            turnoIscrizioneList = new ArrayList<TurnoIscrizione>();
-            for (Iscrizione iscr : turnoEntity.getIscrizioni()) {
-                turnoIscrizione = (TurnoIscrizione) appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, pos++);
-                turnoIscrizioneList.add(turnoIscrizione);
+        List<TurnoIscrizioneModel> turnoIscrizioni = new ArrayList<>();
+
+        if (iscrizioni != null && iscrizioni.size()>0){
+            for (Iscrizione iscrizione : iscrizioni){
+
+                TurnoIscrizioneModel tim = new TurnoIscrizioneModel();
+                tim.setAbilitata(true);
+                tim.setColore("yellow");
+                tim.setFine("12-09-2022");
+                tim.setFlagIscrizione(true);
+                tim.setFunzione("leader");
+                tim.setIcona("ambulanza");
+                tim.setInizio("10-09-2022");
+                tim.setMilite("Rossi");
+                tim.setNote("note");
+
+                turnoIscrizioni.add(tim);
             }
         }
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-            fixIscrizionePrima(turnoIscrizioneList.get(0));
-        }// end of if cycle
+        getModel().setIscrizioni(turnoIscrizioni);
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-            fixIscrizioneSeconda(turnoIscrizioneList.get(1));
-        }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-            fixIscrizioneTerza(turnoIscrizioneList.get(2));
-        }// end of if cycle
+//
+//        int pos = 0;
+//        TurnoIscrizione turnoIscrizione;
+//
+//        List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
+//        if (iscrizioni != null) {
+//            turnoIscrizioneList = new ArrayList<TurnoIscrizione>();
+//            for (Iscrizione iscr : turnoEntity.getIscrizioni()) {
+//                turnoIscrizione = (TurnoIscrizione) appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, pos++);
+//                turnoIscrizioneList.add(turnoIscrizione);
+//
+//                TurnoIscrizioneModel model = new TurnoIscrizioneModel();
+//
+//            }
+//        }
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
+//            fixIscrizionePrima(turnoIscrizioneList.get(0));
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
+//            fixIscrizioneSeconda(turnoIscrizioneList.get(1));
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
+//            fixIscrizioneTerza(turnoIscrizioneList.get(2));
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
+//            fixIscrizioneQuarta(turnoIscrizioneList.get(3));
+//        }// end of if cycle
+//
+//        fixAbilitazioneIscrizioni();
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-            fixIscrizioneQuarta(turnoIscrizioneList.get(3));
-        }// end of if cycle
 
-        fixAbilitazioneIscrizioni();
+
+
     }// end of method
 
 
