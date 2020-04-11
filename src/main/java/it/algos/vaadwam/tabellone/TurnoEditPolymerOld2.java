@@ -25,7 +25,6 @@ import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -42,23 +41,39 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
- * Java wrapper of the polymer element `turno-edit`
+ * Project vaadwam
+ * Created by Algos
+ * User: gac
+ * Date: ven, 06-mar-2020
+ * Time: 10:19
+ * <p>
+ * Java wrapper of the polymer element `turno-edit` <br>
+ * <p>
+ * Questa classe viene costruita tramite una chiamata del browser effettuata da @Route <br>
+ * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
  */
-@Route(value = TAG_TURNO_EDIT)
+//@Route(value = TAG_TURNO_EDIT)
+@Route(value = "old_turno_edit")
 @Tag("turno-edit")
 @HtmlImport("src/views/tabellone/turno-edit.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Viewport("width=device-width")
-@Slf4j
-public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements HasUrlParameter<String> {
+public class TurnoEditPolymerOld2 extends PolymerTemplate<TurnoEditModel> implements HasUrlParameter<String> {
 
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     protected TabelloneService tabelloneService;
 
     /**
-     * Milite loggato al momento
+     * Milite loggato al momento <br>
      */
     protected Milite militeLoggato;
 
@@ -77,33 +92,88 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     @Id("conferma")
     private Button conferma;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private PreferenzaService pref;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private TurnoService turnoService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private ServizioService servizioService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private FunzioneService funzioneService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private ADateService dateService;
 
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private MiliteService militeService;
 
+    //--property bean
     private Turno turnoEntity = null;
 
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private ATextService text;
 
+    /**
+     * Istanza unica di una classe di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
     @Autowired
     private AArrayService array;
 
-    private List<TurnoIscrizione> turnoIscrizioneList;
+    private List<TurnoIscrizione> listaIscrizioni;
 
 
     /**
@@ -130,18 +200,17 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
             if (parametersMap != null) {
                 elaboraParameter(parametersMap);
             } else {
-                log.error("Parametri non corretti");
-            }
-        }
+                System.out.println("Parametri non corretti");
+            }// end of if/else cycle
+        }// end of if/else cycle
 
         if (turnoEntity == null) {
             Notification.show("Errore: non esiste il turno indicato", 2000, Notification.Position.MIDDLE);
             return;
-        }
+        }// end of if cycle
 
         layoutPolymer();
-
-    }
+    }// end of method
 
 
     /**
@@ -195,35 +264,61 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Regola i dati da presentare in base al turno selezionato.
+     * Regola i dati da presentare in base al turno selezionato <br>
+     * Il turno arriva come parametro di @Route a questa classe <br>
+     * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
      */
     private void layoutPolymer() {
-
-        // Data completa (estesa) del giorno di esecuzione del turno
-        String data = turnoService.getGiornoTxt(turnoEntity);
-        getModel().setGiorno(data);
-
-        // Descrizione estesa del servizio
-        Servizio servizio = null;
-        if (turnoEntity != null) {
-            servizio = turnoEntity.getServizio();
-            if (servizio != null) {
-                getModel().setServizio(servizio.descrizione);
-            }
-        }
-
-        // Orario (eventuale) del turno
+        fixGiorno();
+        fixServizio();
         fixOrario();
-
         fixIscrizioni();
         fixAnnulla();
         fixConferma();
-    }
+    }// end of method
 
 
     /**
-     * Orario (eventuale) del turno
-     * <p>
+     * Data completa (estesa) del giorno di esecuzione del turno <br>
+     */
+    private void fixGiorno() {
+
+        String data = turnoService.getGiornoTxt(turnoEntity);
+        getModel().setGiorno(data);
+
+//        String data;
+//        LocalDate giorno = null;
+//
+//        if (turnoEntity != null) {
+//            giorno = turnoEntity.getGiorno();
+//        }// end of if cycle
+//
+//        if (giorno != null) {
+//            data = dateService.get(giorno, EATime.completa);
+//            getModel().setGiorno(data);
+//        }// end of if cycle
+
+    }// end of method
+
+
+    /**
+     * Descrizione estesa del servizio <br>
+     */
+    private void fixServizio() {
+        Servizio servizio = null;
+
+        if (turnoEntity != null) {
+            servizio = turnoEntity.getServizio();
+        }// end of if cycle
+
+        if (servizio != null) {
+            getModel().setServizio(servizio.descrizione);
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Orario (eventuale) del turno <br>
      * Se il servizio ha un orario definito, lo presenta in html come 'div' <br>
      * Se il servizio non ha un orario definito, lo presenta in html come due 'time-picker' <br>
      */
@@ -233,7 +328,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
         if (turnoEntity != null) {
             servizio = turnoEntity.getServizio();
-        }
+        }// end of if cycle
 
         if (servizio != null) {
             if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
@@ -247,11 +342,11 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                     getModel().setFineExtra(servizio.getFine().toString());
                     getModel().setUsaOrarioLabel(false);
                     getModel().setUsaOrarioPicker(true);
-                }
-            }
-        }
+                }// end of if/else cycle
+            }// end of if cycle
+        }// end of if cycle
 
-    }
+    }// end of method
 
 
     /**
@@ -268,29 +363,28 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         int pos = 0;
         TurnoIscrizione turnoIscrizione;
 
-        List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
-        if (iscrizioni != null) {
-            turnoIscrizioneList = new ArrayList<TurnoIscrizione>();
+        if (turnoEntity.getIscrizioni() != null) {
+            listaIscrizioni = new ArrayList<>();
             for (Iscrizione iscr : turnoEntity.getIscrizioni()) {
                 turnoIscrizione = (TurnoIscrizione) appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, pos++);
-                turnoIscrizioneList.add(turnoIscrizione);
-            }
-        }
-
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-            fixIscrizionePrima(turnoIscrizioneList.get(0));
+                listaIscrizioni.add(turnoIscrizione);
+            }// end of for cycle
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-            fixIscrizioneSeconda(turnoIscrizioneList.get(1));
+        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
+            fixIscrizionePrima(listaIscrizioni.get(0));
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-            fixIscrizioneTerza(turnoIscrizioneList.get(2));
+        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
+            fixIscrizioneSeconda(listaIscrizioni.get(1));
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-            fixIscrizioneQuarta(turnoIscrizioneList.get(3));
+        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
+            fixIscrizioneTerza(listaIscrizioni.get(2));
+        }// end of if cycle
+
+        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
+            fixIscrizioneQuarta(listaIscrizioni.get(3));
         }// end of if cycle
 
         fixAbilitazioneIscrizioni();
@@ -383,8 +477,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
         //--Controlla se il milite loggato è già segnato in una iscrizione.
         //--Quella segnata viene abilitata. Tutte le altre disabilitate.
-        if (array.isValid(turnoIscrizioneList)) {
-            for (TurnoIscrizione turnoIscr : turnoIscrizioneList) {
+        if (array.isValid(listaIscrizioni)) {
+            for (TurnoIscrizione turnoIscr : listaIscrizioni) {
                 militeIsc = turnoIscr.iscrizione.getMilite();
                 if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
                     militeLoggatoGiaSegnato = true;
@@ -407,24 +501,24 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     private void abilitaIscrizioni() {
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-            getModel().setAbilitataPrima(turnoIscrizioneList.get(0).abilitata);
-            getModel().setAbilitataPickerPrima(turnoIscrizioneList.get(0).abilitataPicker);
+        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
+            getModel().setAbilitataPrima(listaIscrizioni.get(0).abilitata);
+            getModel().setAbilitataPickerPrima(listaIscrizioni.get(0).abilitataPicker);
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-            getModel().setAbilitataSeconda(turnoIscrizioneList.get(1).abilitata);
-            getModel().setAbilitataPickerSeconda(turnoIscrizioneList.get(1).abilitataPicker);
+        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
+            getModel().setAbilitataSeconda(listaIscrizioni.get(1).abilitata);
+            getModel().setAbilitataPickerSeconda(listaIscrizioni.get(1).abilitataPicker);
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-            getModel().setAbilitataTerza(turnoIscrizioneList.get(2).abilitata);
-            getModel().setAbilitataPickerTerza(turnoIscrizioneList.get(2).abilitataPicker);
+        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
+            getModel().setAbilitataTerza(listaIscrizioni.get(2).abilitata);
+            getModel().setAbilitataPickerTerza(listaIscrizioni.get(2).abilitataPicker);
         }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-            getModel().setAbilitataQuarta(turnoIscrizioneList.get(3).abilitata);
-            getModel().setAbilitataPickerQuarta(turnoIscrizioneList.get(3).abilitataPicker);
+        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
+            getModel().setAbilitataQuarta(listaIscrizioni.get(3).abilitata);
+            getModel().setAbilitataPickerQuarta(listaIscrizioni.get(3).abilitataPicker);
         }// end of if cycle
     }// end of method
 
@@ -440,8 +534,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         boolean iscrizioneAbilitataMiliteLoggato;
         boolean iscrizioneNonSegnata;
 
-        if (array.isValid(turnoIscrizioneList)) {
-            for (TurnoIscrizione turnoIscr : turnoIscrizioneList) {
+        if (array.isValid(listaIscrizioni)) {
+            for (TurnoIscrizione turnoIscr : listaIscrizioni) {
                 iscrizioneAbilitataMiliteLoggato = listaIDFunzioniAbilitate.contains(turnoIscr.funzioneEntity.id);
                 iscrizioneNonSegnata = turnoIscr.militeEntity == null;
                 turnoIscr.abilitata = iscrizioneAbilitataMiliteLoggato && iscrizioneNonSegnata;
