@@ -19,6 +19,10 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_DIFFERENZIATA
 import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_TURNI;
 
 /**
+ * QUESTA CLASSE VA ELIMINATA, E' SOSTITUITA DA TurnoIscrzioneModel - Alex 12 apr 2020
+ */
+
+/**
  * Project vaadwam
  * Created by Algos
  * User: gac

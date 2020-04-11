@@ -10,6 +10,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.polymertemplate.ModelItem;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -255,135 +256,42 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Regolazione delle iscrizioni <br>
-     * Possono essere da 1 a 4 (di più non sono previste in 'turno-edit.html') <br>
-     * Ogni iscrizione (su due righe) ha:
-     * funzione (bottone)
-     * milite (bottone)
-     * inizio (picker)
-     * note (text)
-     * fine (picker)
+     * Aggiunge al modello la lista delle iscrizioni
      */
     private void fixIscrizioni() {
 
         List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
         List<TurnoIscrizioneModel> turnoIscrizioni = new ArrayList<>();
 
+        int i=0;
         if (iscrizioni != null && iscrizioni.size()>0){
             for (Iscrizione iscrizione : iscrizioni){
 
+                TurnoIscrizione turnoIscrizione = appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, i);
+
                 TurnoIscrizioneModel tim = new TurnoIscrizioneModel();
-                tim.setAbilitata(true);
-                tim.setColore("yellow");
-                tim.setFine("14:00");
                 tim.setFlagIscrizione(true);
-                tim.setFunzione("leader");
-                tim.setIcona("ambulanza");
-                tim.setInizio("09:00");
-                tim.setMilite("Rossi");
-                tim.setNote("note");
+                tim.setColore(turnoIscrizione.coloreTxt);
+                tim.setIcona(turnoIscrizione.iconaTxt);
+                tim.setMilite(turnoIscrizione.militetxt);
+                tim.setFunzione(turnoIscrizione.funzioneTxt);
+                tim.setInizio(turnoIscrizione.inizioTxt);
+                tim.setNote(turnoIscrizione.noteTxt);
+                tim.setFine(turnoIscrizione.fineTxt);
+                tim.setAbilitata(true);
+                tim.setAbilitataPicker(true);
 
                 turnoIscrizioni.add(tim);
+
+                i++;
             }
         }
 
         getModel().setIscrizioni(turnoIscrizioni);
 
+        fixAbilitazioneIscrizioni();
 
-//
-//        int pos = 0;
-//        TurnoIscrizione turnoIscrizione;
-//
-//        List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
-//        if (iscrizioni != null) {
-//            turnoIscrizioneList = new ArrayList<TurnoIscrizione>();
-//            for (Iscrizione iscr : turnoEntity.getIscrizioni()) {
-//                turnoIscrizione = (TurnoIscrizione) appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, pos++);
-//                turnoIscrizioneList.add(turnoIscrizione);
-//
-//                TurnoIscrizioneModel model = new TurnoIscrizioneModel();
-//
-//            }
-//        }
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-//            fixIscrizionePrima(turnoIscrizioneList.get(0));
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-//            fixIscrizioneSeconda(turnoIscrizioneList.get(1));
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-//            fixIscrizioneTerza(turnoIscrizioneList.get(2));
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-//            fixIscrizioneQuarta(turnoIscrizioneList.get(3));
-//        }// end of if cycle
-//
-//        fixAbilitazioneIscrizioni();
-
-
-
-
-    }// end of method
-
-
-    private void fixIscrizionePrima(TurnoIscrizione turnoIscrizione) {
-        getModel().setPrimaIscrizione(true);
-        getModel().setColorePrima(turnoIscrizione.coloreTxt);
-        getModel().setIconaPrima(turnoIscrizione.iconaTxt);
-
-        getModel().setMilitePrima(turnoIscrizione.militetxt);
-        getModel().setFunzionePrima(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioPrima(turnoIscrizione.inizioTxt);
-        getModel().setNotePrima(turnoIscrizione.noteTxt);
-        getModel().setFinePrima(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneSeconda(TurnoIscrizione turnoIscrizione) {
-        getModel().setSecondaIscrizione(true);
-        getModel().setColoreSeconda(turnoIscrizione.coloreTxt);
-        getModel().setIconaSeconda(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteSeconda(turnoIscrizione.militetxt);
-        getModel().setFunzioneSeconda(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioSeconda(turnoIscrizione.inizioTxt);
-        getModel().setNoteSeconda(turnoIscrizione.noteTxt);
-        getModel().setFineSeconda(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneTerza(TurnoIscrizione turnoIscrizione) {
-        getModel().setTerzaIscrizione(true);
-        getModel().setColoreTerza(turnoIscrizione.coloreTxt);
-        getModel().setIconaTerza(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteTerza(turnoIscrizione.militetxt);
-        getModel().setFunzioneTerza(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioTerza(turnoIscrizione.inizioTxt);
-        getModel().setNoteTerza(turnoIscrizione.noteTxt);
-        getModel().setFineTerza(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneQuarta(TurnoIscrizione turnoIscrizione) {
-        getModel().setQuartaIscrizione(true);
-        getModel().setColoreQuarta(turnoIscrizione.coloreTxt);
-        getModel().setIconaQuarta(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteQuarta(turnoIscrizione.militetxt);
-        getModel().setFunzioneQuarta(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioQuarta(turnoIscrizione.inizioTxt);
-        getModel().setNoteQuarta(turnoIscrizione.noteTxt);
-        getModel().setFineQuarta(turnoIscrizione.fineTxt);
-    }// end of method
+    }
 
 
     /**
@@ -399,23 +307,22 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         Milite militeIsc;
         boolean militeLoggatoGiaSegnato = false;
 
-        //--Recupera il milite loggato
         this.militeLoggato = militeService.getMilite();
 
         // @todo per adesso
         // @todo Controlla se siamo loggati come developer, come admin o come user <br>
         if (militeLoggato == null) {
             return;
-        }// end of if cycle
+        }
 
-        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        // Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
         if (tabelloneService.isStorico(turnoEntity)) {
             abilitaIscrizioni();
             return;
-        }// end of if cycle
+        }
 
-        //--Controlla se il milite loggato è già segnato in una iscrizione.
-        //--Quella segnata viene abilitata. Tutte le altre disabilitate.
+        // Controlla se il milite loggato è già segnato in una iscrizione.
+        // Quella segnata viene abilitata. Tutte le altre disabilitate.
         if (array.isValid(turnoIscrizioneList)) {
             for (TurnoIscrizione turnoIscr : turnoIscrizioneList) {
                 militeIsc = turnoIscr.iscrizione.getMilite();
@@ -423,43 +330,45 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                     militeLoggatoGiaSegnato = true;
                     turnoIscr.abilitata = true;
                     turnoIscr.abilitataPicker = true;
-//                } else {
-//                    turnoIscr.abilitata = false;
-                }// end of if cycle
-            }// end of for cycle
-        }// end of if cycle
+                }
+            }
+        }
 
-        //--Se il milite loggato non è segnato nel turno
-        //--Abilita le iscrizioni abilitate per il milite loggato e senza un altro milite già segnato
+        // Se il milite loggato non è segnato nel turno
+        // abilita le iscrizioni abilitate per il milite loggato e senza un altro milite già segnato
         if (!militeLoggatoGiaSegnato) {
             abilitaOnly();
-        }// end of if cycle
+        }
 
         abilitaIscrizioni();
-    }// end of method
+
+    }
 
 
     private void abilitaIscrizioni() {
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-            getModel().setAbilitataPrima(turnoIscrizioneList.get(0).abilitata);
-            getModel().setAbilitataPickerPrima(turnoIscrizioneList.get(0).abilitataPicker);
-        }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-            getModel().setAbilitataSeconda(turnoIscrizioneList.get(1).abilitata);
-            getModel().setAbilitataPickerSeconda(turnoIscrizioneList.get(1).abilitataPicker);
-        }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-            getModel().setAbilitataTerza(turnoIscrizioneList.get(2).abilitata);
-            getModel().setAbilitataPickerTerza(turnoIscrizioneList.get(2).abilitataPicker);
-        }// end of if cycle
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
+//            getModel().setAbilitataPrima(turnoIscrizioneList.get(0).abilitata);
+//            getModel().setAbilitataPickerPrima(turnoIscrizioneList.get(0).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
+//            getModel().setAbilitataSeconda(turnoIscrizioneList.get(1).abilitata);
+//            getModel().setAbilitataPickerSeconda(turnoIscrizioneList.get(1).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
+//            getModel().setAbilitataTerza(turnoIscrizioneList.get(2).abilitata);
+//            getModel().setAbilitataPickerTerza(turnoIscrizioneList.get(2).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
+//            getModel().setAbilitataQuarta(turnoIscrizioneList.get(3).abilitata);
+//            getModel().setAbilitataPickerQuarta(turnoIscrizioneList.get(3).abilitataPicker);
+//        }// end of if cycle
 
-        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-            getModel().setAbilitataQuarta(turnoIscrizioneList.get(3).abilitata);
-            getModel().setAbilitataPickerQuarta(turnoIscrizioneList.get(3).abilitataPicker);
-        }// end of if cycle
-    }// end of method
+    }
 
 
     /**
@@ -550,19 +459,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
      * Se era segnato, viene cancellato <br>
      * Se non era segnato, lo diventa <br>
      * Riconsidera tutte le abilitazioni <br>
      * Abilita il bottone 'conferma' <br>
      */
     @EventHandler
-    public void handleClickPrima() {
+    public void handleClickMilite() {
         handleClick(turnoEntity.iscrizioni.get(0));
     }// end of method
 
@@ -646,22 +549,35 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+     * L'ora di inizio è stata modificata
      */
     @EventHandler
-    public void handleChangePrima() {
-        String inizioText = getModel().getInizioPrima();
-        String noteText = getModel().getNotePrima();
-        String fineText = getModel().getFinePrima();
+    public void handleChangeOraInizio(@ModelItem TurnoIscrizioneModel item) {
+        String inizio = item.getInizio();
+        String fine = item.getFine();
+        int a = 87;
+        int b=a;
+//        String inizioText = getModel().getInizioPrima();
+//        String noteText = getModel().getNotePrima();
+//        String fineText = getModel().getFinePrima();
+//        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
+    }
 
-        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
-    }// end of method
+    /**
+     * L'ora di fine è stata modificata
+     */
+    @EventHandler
+    public void handleChangeOraFine(@ModelItem TurnoIscrizioneModel item) {
+        String inizio = item.getInizio();
+        String fine = item.getFine();
+        int a = 87;
+        int b=a;
+
+//        String inizioText = getModel().getInizioPrima();
+//        String noteText = getModel().getNotePrima();
+//        String fineText = getModel().getFinePrima();
+//        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
+    }
 
 
     /**

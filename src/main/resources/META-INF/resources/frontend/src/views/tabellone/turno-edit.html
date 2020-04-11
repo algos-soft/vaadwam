@@ -56,6 +56,7 @@
                 flex-direction: row;
                 justify-content: space-around;
                 align-items: stretch;
+                margin-top: 1em;
             }
 
             .iscrizione{
@@ -65,6 +66,7 @@
 	            justify-content: flex-start;
 	            align-items: stretch;
 	            align-content: stretch;
+	            margin-top: 1em;
             }
 
             .iscrizioneRow{
@@ -119,7 +121,6 @@
                                     <div class="iscrizioneRow">
 
                                         <vaadin-button
-                                                on-click="handleClickPrima"
                                                 disabled=[[!item.abilitata]]
                                                 style="width: 8em; background-color:[[item.colore]]">
                                             <div class="buttondiv">
@@ -131,7 +132,7 @@
                                         <div class="gap"></div>
 
                                         <vaadin-button
-                                                on-click="handleClickPrima"
+                                                on-click="handleClickMilite"
                                                 disabled=[[!item.abilitata]]
                                                 value="[[item.milite]]"
                                                 style="flex-grow: 2; background-color:[[item.colore]]">
@@ -145,28 +146,14 @@
                                     <!--seconda riga-->
                                     <div class="iscrizioneRow">
 
-<!--                                        <vaadin-time-picker on-value-changed="handleChangePrima"-->
-<!--                                                            disabled=[[!item.abilitataPicker]]-->
-<!--                                                            value="{{item.inizio}}"-->
-<!--                                                            step="900"-->
-<!--                                                            style="width: 6em">-->
-<!--                                        </vaadin-time-picker>-->
-
-                                            <vaadin-time-picker
-                                                                disabled=[[!item.abilitataPicker]]
-                                                                value="{{item.inizio}}"
-                                                                step="900"
-                                                                style="width: 6em">
-                                            </vaadin-time-picker>
-
+                                        <vaadin-time-picker on-value-changed="handleChangeOraInizio"
+                                                            disabled=[[!item.abilitataPicker]]
+                                                            value="{{item.inizio}}"
+                                                            step="900"
+                                                            style="width: 6em">
+                                        </vaadin-time-picker>
 
                                         <div class="gap"></div>
-
-<!--                                        <vaadin-text-field on-value-changed="handleChangePrima"-->
-<!--                                                           disabled=[[!item.abilitataPicker]]-->
-<!--                                                           value="{{item.note}}"-->
-<!--                                                           style="width: 7em;flex-grow: 1">-->
-<!--                                        </vaadin-text-field>-->
 
                                         <vaadin-text-field
                                                            disabled=[[!item.abilitataPicker]]
@@ -176,20 +163,12 @@
 
                                         <div class="gap"></div>
 
-<!--                                        <vaadin-time-picker on-value-changed="handleChangePrima"-->
-<!--                                                            disabled=[[!item.abilitataPicker]]-->
-<!--                                                            value="{{item.fine}}"-->
-<!--                                                            step="900"-->
-<!--                                                            style="width: 6em">-->
-<!--                                        </vaadin-time-picker>-->
-
-                                        <vaadin-time-picker
+                                        <vaadin-time-picker on-value-changed="handleChangeOraFine"
                                                             disabled=[[!item.abilitataPicker]]
                                                             value="{{item.fine}}"
                                                             step="900"
                                                             style="width: 6em">
                                         </vaadin-time-picker>
-
 
                                     </div>
                                     <!--end seconda riga -->
