@@ -152,8 +152,9 @@
 <!--                                                            style="width: 6em">-->
 <!--                                        </vaadin-time-picker>-->
 
-                                            <vaadin-time-picker on-value-changed="handleChangePrima"
+                                            <vaadin-time-picker
                                                                 disabled=[[!item.abilitataPicker]]
+                                                                value="{{item.inizio}}"
                                                                 step="900"
                                                                 style="width: 6em">
                                             </vaadin-time-picker>
@@ -167,8 +168,9 @@
 <!--                                                           style="width: 7em;flex-grow: 1">-->
 <!--                                        </vaadin-text-field>-->
 
-                                        <vaadin-text-field on-value-changed="handleChangePrima"
+                                        <vaadin-text-field
                                                            disabled=[[!item.abilitataPicker]]
+                                                           value="{{item.note}}"
                                                            style="width: 7em;flex-grow: 1">
                                         </vaadin-text-field>
 
@@ -181,8 +183,9 @@
 <!--                                                            style="width: 6em">-->
 <!--                                        </vaadin-time-picker>-->
 
-                                        <vaadin-time-picker on-value-changed="handleChangePrima"
+                                        <vaadin-time-picker
                                                             disabled=[[!item.abilitataPicker]]
+                                                            value="{{item.fine}}"
                                                             step="900"
                                                             style="width: 6em">
                                         </vaadin-time-picker>

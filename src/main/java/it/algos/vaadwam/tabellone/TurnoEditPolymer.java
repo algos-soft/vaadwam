@@ -275,11 +275,11 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                 TurnoIscrizioneModel tim = new TurnoIscrizioneModel();
                 tim.setAbilitata(true);
                 tim.setColore("yellow");
-                tim.setFine("12-09-2022");
+                tim.setFine("14:00");
                 tim.setFlagIscrizione(true);
                 tim.setFunzione("leader");
                 tim.setIcona("ambulanza");
-                tim.setInizio("10-09-2022");
+                tim.setInizio("09:00");
                 tim.setMilite("Rossi");
                 tim.setNote("note");
 
