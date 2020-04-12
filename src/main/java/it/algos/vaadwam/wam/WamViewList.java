@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadwam.application.WamCost.*;
@@ -325,11 +326,11 @@ public abstract class WamViewList extends AGridViewList {
         String testo = "";
         String tag = "Import automatico: ";
         String nota = taskCroce != null ? taskCroce.getSchedule().getNota() : VUOTA;
-        int durata = pref.getInt(flagDurataLastImport);
+        int durata = text.isValid(flagDurataLastImport) ? pref.getInt(flagDurataLastImport) : 0;
         boolean importAutomaticoDiQuestaCroce = pref.isBool(USA_DAEMON_CROCE);
 
         if (login.isDeveloper()) {
-            LocalDateTime lastImport = pref.getDateTime(flagLastImport);
+            LocalDateTime lastImport = text.isValid(flagLastImport) ? pref.getDateTime(flagLastImport) : START_DATE_TIME;
             testo = tag;
 
             if (importAutomaticoDiQuestaCroce) {
