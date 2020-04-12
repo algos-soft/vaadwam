@@ -40,6 +40,8 @@ import static it.algos.@MODULELOWER@.application.@COST@.@QUALIFIER@;
 @AIScript(sovrascrivibile = true)
 public class @ENTITY@Dialog extends AViewDialog<@ENTITY@> {
 
+    //--casting del Service per usarlo localmente
+    private @ENTITY@Service service;
 
     /**
      * Costruttore senza parametri <br>
@@ -60,6 +62,7 @@ public class @ENTITY@Dialog extends AViewDialog<@ENTITY@> {
      */
     public @ENTITY@Dialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
+        this.service = (@ENTITY@Service) service;
     }// end of constructor
 
     @READCOMPANY@

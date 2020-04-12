@@ -4,6 +4,22 @@ server.compression.mime-types=application/json,application/xml,text/html,text/xm
 server.tomcat.uri-encoding=UTF-8
 spring.jackson.serialization.write_dates_as_timestamps=false
 
+wiredTigerCacheSizeGB = 4
+
 # Comment out if using anything else than H2 (e.g. MySQL or PostgreSQL)
 # spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.data.mongodb.database=@MODULELOWER@
+
+# Ensure application is run in Vaadin 14/npm mode
+# Se vero non si vede nulla di giusto (manca la formattazione, soprattutto di VerticalLayout)
+# Se falso è lentissimo. Va lanciato npm install dal terminale interno al progetto
+vaadin.compatibilityMode=true
+
+# mail
+spring.mail.host=smtp.algos.it
+spring.mail.port=25
+spring.mail.username=gac@algos.it
+spring.mail.password=fulvia
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true

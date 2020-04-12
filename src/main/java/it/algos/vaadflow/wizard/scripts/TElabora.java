@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+
 /**
  * Project springvaadin
  * Created by Algos
@@ -194,6 +196,8 @@ public class TElabora {
 
     public boolean flagCompany;            //--dal dialogo di input
 
+    public boolean flagSecurity;            //--dal dialogo di input
+
     public boolean flagGrid;            //--dal dialogo di input
 
     public boolean flagList;            //--dal dialogo di input
@@ -332,6 +336,16 @@ public class TElabora {
 
 
     /**
+     * Regolazioni iniziali indipendenti dal dialogo di input
+     * Regolazioni iniziali con i valori del dialogo di input
+     */
+    public void regolazioni(Map<Chiave, Object> mappaInput) {
+        this.regola();
+        this.regolaProgetto(mappaInput);
+    }// end of method
+
+
+    /**
      * Directory it.algos.vaadflow
      */
     public void directoryBase(Map<Chiave, Object> mappaInput) {
@@ -422,16 +436,6 @@ public class TElabora {
 
     /**
      * Regolazioni iniziali indipendenti dal dialogo di input
-     * Regolazioni iniziali con i valori del dialogo di input
-     */
-    public void regolazioni(Map<Chiave, Object> mappaInput) {
-        this.regola();
-        this.regolaProgetto(mappaInput);
-    }// end of method
-
-
-    /**
-     * Regolazioni iniziali indipendenti dal dialogo di input
      */
     private void regola() {
         this.userDir = System.getProperty("user.dir");
@@ -491,6 +495,9 @@ public class TElabora {
             } else {
                 this.newProjectName = targetProjectName;
             }// end of if/else cycle
+            if (mappaInput.containsKey(Chiave.flagSecurity)) {
+                this.flagSecurity = (boolean) mappaInput.get(Chiave.flagSecurity);
+            }// end of if cycle
             this.firstCharProject = nameShort.substring(0, 1);
         } else {
             if (mappaInput.containsKey(Chiave.newProjectName) && mappaInput.get(Chiave.newProjectName) != null) {
@@ -561,6 +568,7 @@ public class TElabora {
                 superClassEntity = SUPERCLASS_ENTITY;
             }// end of if/else cycle
         }// end of if cycle
+
 
         if (mappaInput.containsKey(Chiave.flagGrid)) {
             this.flagGrid = (boolean) mappaInput.get(Chiave.flagGrid);
@@ -741,6 +749,7 @@ public class TElabora {
         mappa.put(Token.estendeEntity, creaEstendeEntity());
         mappa.put(Token.superClassEntity, superClassEntity);
         mappa.put(Token.usaCompany, creaUsaCompany());
+        mappa.put(Token.usaSecurity, creaUsaCompany());
         mappa.put(Token.readCompany, creaReadCompany());
         mappa.put(Token.grid, gridSuperclass);
         mappa.put(Token.creaGrid, creaGrid());
@@ -1196,6 +1205,19 @@ public class TElabora {
     }// end of method
 
 
+    private String creaUsaSecurity() {
+        methodUsaCompanyText = "";
+
+        if (flagCompany) {
+            methodUsaCompanyText = "EACompanyRequired.obbligatoria";
+        } else {
+            methodUsaCompanyText = "EACompanyRequired.nonUsata";
+        }// end of if/else cycle
+
+        return methodUsaCompanyText;
+    }// end of method
+
+
     private String creaBuilder() {
         methodBuilderText = "";
         String tab4 = "\t\t\t\t";
@@ -1552,6 +1574,12 @@ public class TElabora {
         testoApp = Token.replace(Token.moduleNameMinuscolo, testoApp, newProjectName);
         testoApp = Token.replace(Token.moduleNameMaiuscolo, testoApp, text.primaMaiuscola(nameShort));
 
+        if (flagSecurity) {
+            testoApp = Token.replace(Token.usaSecurity, testoApp, VUOTA);
+        } else {
+            testoApp = Token.replace(Token.usaSecurity, testoApp, ", exclude = {SecurityAutoConfiguration.class}");
+        }// end of if/else cycle
+
         checkAndWrite(destPath, testoApp);
     }// end of method
 
@@ -1562,7 +1590,9 @@ public class TElabora {
 
 
     private void creaSecurityDirectory() {
-        file.creaDirectory(projectJavaPath + "/" + SECURITY_NAME);
+        if (flagSecurity) {
+            file.creaDirectory(projectJavaPath + "/" + SECURITY_NAME);
+        }// end of if cycle
     }// end of method
 
 

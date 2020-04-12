@@ -19,8 +19,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependencies -->
-        <!-- Va tenuta aggiornata la versione di VAADIN 10.0.x -->
-        <vaadin.version>14.0.0</vaadin.version>
+        <!-- Va tenuta aggiornata la versione di VAADIN 14.1.3 -->
+        <vaadin.version>14.1.3</vaadin.version>
 
         <!-- Va tenuta aggiornata la versione di spring-boot -->
         <spring-boot.version>2.1.7.RELEASE</spring-boot.version>
@@ -126,7 +126,6 @@
         </dependency>
 
         <!-- Spring -->
-        <!-- Probabilmente da cambiare in 14.0.1 -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
@@ -150,23 +149,12 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.flowingcode.addons.applayout</groupId>
-            <artifactId>app-layout-addon</artifactId>
-            <version>1.0.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.webjars.bowergithub.polymerelements</groupId>
             <artifactId>iron-form</artifactId>
@@ -215,6 +203,7 @@
             <version>1.0.0</version>
         </dependency>
 
+        <!-- JUnit 5 -->
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

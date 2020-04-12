@@ -29,34 +29,16 @@ import java.util.Date;
  * Eseguita quindi ad ogni avvio/riavvio del server e NON ad ogni sessione <br>
  * È OBBLIGATORIO aggiungere questa classe nei listeners del file web.WEB-INF.web.xml
  */
-@SpringComponent
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-public class @MODULEUPPER@Vers extends AVersBoot {
+public class @MODULEUPPER@Vers extends AVers {
 
 
     private final static String CODE_PROJECT = "@FIRSTCHARPROJECT@";
 
     /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private VersioneService vers;
-
-
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private PreferenzaService pref;
-
-
-    /**
-     * Executed on container startup
-     * Setup non-UI logic here
-     * <p>
      * This method is called prior to the servlet context being initialized (when the Web application is deployed).
      * You can initialize servlet context related data here.
      * <p>
@@ -64,24 +46,12 @@ public class @MODULEUPPER@Vers extends AVersBoot {
      * L'ordine di inserimento è FONDAMENTALE
      */
     public int inizia() {
-        int k = 1;
-        super.inizia();
+        int k = super.inizia();
         codeProject = CODE_PROJECT;
 
-        //--prima installazione del programma
-        //--non fa nulla, solo informativo
-        if (installa(++k)) {
-            crea("Setup", "Installazione iniziale");
-        }// fine del blocco if
-
         //--creata una nuova preferenza
         if (installa(++k)) {
-            creaPrefBool(FlowCost.USA_DEBUG, "Flag generale di debug (ce ne possono essere di specifici, validi solo se questo è vero)");
-        }// fine del blocco if
-
-        //--creata una nuova preferenza
-        if (installa(++k)) {
-            creaPrefBool(FlowCost.USA_LOG_DEBUG, "Uso del log di registrazione per il livello debug. Di default true");
+            creaPrefDate("pippoz", "Ultimo download del modulo nazionalità");
         }// fine del blocco if
 
         return k;

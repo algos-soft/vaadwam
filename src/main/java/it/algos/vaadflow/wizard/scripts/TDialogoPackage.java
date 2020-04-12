@@ -318,43 +318,6 @@ public class TDialogoPackage extends TDialogo {
     }// end of method
 
 
-//    private Component creaFooter() {
-//        VerticalLayout layout = new VerticalLayout();
-//        HorizontalLayout layoutFooter = new HorizontalLayout();
-//        layoutFooter.setSpacing(true);
-//        layoutFooter.setMargin(true);
-//
-//        cancelButton = new NativeButton("Annulla", event -> {
-//            recipient.gotInput(null);
-//            dialog.close();
-//        });//end of lambda expressions
-//        cancelButton.setWidth(NORMAL_WIDTH);
-//        cancelButton.setHeight(NORMAL_HEIGHT);
-//
-//        confirmButton = new NativeButton("Conferma", event -> {
-//            if (fieldCheckBoxPropertyCode.getValue()) {
-//                chiudeDialogo();
-//            } else {
-////                Notification.show("Stai creando una EntityClass SENZA la property 'code'. È possibile, ma alcune linee di codice andranno riscritte.",2000,Notification.Position.MIDDLE);
-//                Notification.show("Stai tentando di creare una EntityClass SENZA la property 'code'. Non è possibile.", DURATA, Notification.Position.MIDDLE);
-//            }// end of if/else cycle
-//        });//end of lambda expressions
-//        confirmButton.setWidth(NORMAL_WIDTH);
-//        confirmButton.setHeight(NORMAL_HEIGHT);
-//
-//        layoutFooter.add(cancelButton, confirmButton);
-//        layout.add(layoutFooter);
-//        return layout;
-//    }// end of method
-//
-//
-//    private void chiudeDialogo() {
-//        setMappa();
-//        recipient.gotInput(mappaInput);
-//        dialog.close();
-//    }// end of method
-
-
     private void sincroRadio(String radioSelected) {
         if (radioSelected.equals(RADIO_NEW)) {
             newPackage = true;

@@ -1,14 +1,13 @@
 package it.algos.vaadflow.wizard.scripts;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.service.AArrayService;
-import it.algos.vaadflow.service.AFileService;
-import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.wizard.enumeration.Chiave;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +31,39 @@ import java.util.List;
 public class TDialogoNewProject extends TDialogo {
 
     private static final String SEP = "/";
+
     private static final String PROJECT_BASE_NAME = "it.algos.vaadflow";
+
     private static final String SOURCES_NAME = "wizard/sources";
+
     private static final String DIR_PROJECT_BASE = DIR_JAVA + "/" + PROJECT_BASE_NAME;
+
     private static final String DIR_SOURCES = DIR_PROJECT_BASE + SEP + SOURCES_NAME;
+
     @Autowired
     private AArrayService array;
+
     private ComboBox<String> fieldComboProgetti;
+
     //--regolate indipendentemente dai risultati del dialogo
     private String userDir;                 //--di sistema
+
     private String ideaProjectRootPath;     //--userDir meno PROJECT_BASE_NAME
+
     private String projectBasePath;         //--ideaProjectRootPath più PROJECT_BASE_NAME
+
     private String sourcePath;              //--projectBasePath più DIR_SOURCES
+
     private TextField fieldTextProject;
+
+    private Checkbox fieldCheckBoxSecurity;
+
 
     /**
      * Costruttore @Autowired
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation
      */
-    public TDialogoNewProject( ) {
+    public TDialogoNewProject() {
         super();
     }// end of Spring constructor
 
@@ -72,10 +85,12 @@ public class TDialogoNewProject extends TDialogo {
         this.add(layout);
 
         this.add(creaBody());
+        this.add(creaSecurity());
         this.add(creaFooter());
 
         addListener();
-        }// end of method
+    }// end of method
+
 
     /**
      * Regolazioni iniziali indipendenti dal dialogo di input
@@ -112,9 +127,19 @@ public class TDialogoNewProject extends TDialogo {
         return new VerticalLayout(fieldComboProgetti);
     }// end of method
 
+
+    private Component creaSecurity() {
+        fieldCheckBoxSecurity = new Checkbox();
+        fieldCheckBoxSecurity.setLabel("Utilizza Spring Security");
+        fieldCheckBoxSecurity.setValue(false);
+        return fieldCheckBoxSecurity;
+    }// end of method
+
+
     private void addListener() {
         fieldComboProgetti.addValueChangeListener(event -> sincroProject(event.getValue()));//end of lambda expressions
     }// end of method
+
 
     private void sincroProject(String valueFromProject) {
         if (text.isValid(valueFromProject) && valueFromProject.length() > 2) {
@@ -156,6 +181,7 @@ public class TDialogoNewProject extends TDialogo {
         if (mappaInput != null) {
             mappaInput.put(Chiave.newProjectName, fieldComboProgetti.getValue());
             mappaInput.put(Chiave.targetProjectName, fieldComboProgetti.getValue());
+            mappaInput.put(Chiave.flagSecurity, fieldCheckBoxSecurity.getValue());
         }// end of if cycle
     }// end of method
 

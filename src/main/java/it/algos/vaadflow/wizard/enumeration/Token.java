@@ -42,6 +42,7 @@ public enum Token {
     propertyDescrizione("DESCRIZIONE"),
     toString("TOSTRING"),
     usaCompany("USACOMPANY"),
+    usaSecurity("USASECURITY"),
     readCompany("READCOMPANY"),
     grid("GRID"),
     creaGrid("CREAGRID"),
