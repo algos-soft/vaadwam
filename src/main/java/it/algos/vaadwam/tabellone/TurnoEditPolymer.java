@@ -402,7 +402,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             annulla.addClickShortcut(Key.ESCAPE);
         }// end of if cycle
-        annulla.addClickListener(e -> annulla());
+        annulla.addClickListener(e -> handleAnnulla());
         annulla.getElement().setAttribute("title", "Ritorno al tabellone");
     }// end of method
 
@@ -417,7 +417,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             conferma.addClickShortcut(Key.ENTER);
         }// end of if cycle
-        conferma.addClickListener(e -> conferma());
+        conferma.addClickListener(e -> handleConferma());
         conferma.setEnabled(false);
     }// end of method
 
@@ -579,6 +579,40 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 //        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
     }
 
+    /**
+     * E' stato premutp il bottone Conferma
+     */
+    @EventHandler
+    public void handleConferma() {
+
+        int a = 87;
+        int b=a;
+
+        TurnoEditModel model = getModel();
+        List<TurnoIscrizioneModel> iscrizioni = model.getIscrizioni();
+        for(TurnoIscrizioneModel iscrizione : iscrizioni){
+            log.info(iscrizione.getInizio()+" - "+iscrizione.getFine()+" - "+iscrizione.getNote());
+        }
+
+        // validare i dati GUI
+        // se non vanno bene, spiegare il perché e non uscire dalla pagina
+        // se vanno bene, creare una entity per il database e salvare sul db
+
+        // turnoService.save(turnoEntity);
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+
+    }
+
+    /**
+     * E' stato premutp il bottone Annulla
+     */
+    @EventHandler
+    public void handleAnnulla() {
+        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+    }
+
+
+
 
     /**
      * Java event handler on the server, run asynchronously <br>
@@ -653,35 +687,35 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     }// end of method
 
 
-    /**
-     * Evento lanciato dal bottone Annulla <br>
-     * <p>
-     * Torna al tabellone <br>
-     */
-    public void annulla() {
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-    }// end of method
+//    /**
+//     * Evento lanciato dal bottone Annulla <br>
+//     * <p>
+//     * Torna al tabellone <br>
+//     */
+//    public void annulla() {
+//        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+//    }// end of method
 
 
-    /**
-     * Evento lanciato dal bottone Conferma <br>
-     * <p>
-     * Recupera i dati di tutte le iscrizioni presenti <br>
-     * Controlla che il milite non sia già segnato nel turno <br>
-     * Controlla che il milite non sia già segnato in un altro turno della stessa giornata <br>
-     * Registra le modifiche (eventuali) al turno <br>
-     * Torna al tabellone <br>
-     */
-    public void conferma() {
-
-        //@todo dovrebbero arrivare già regolati dal click sul nome
-//        for (Iscrizione iscrizione : turno.iscrizioni) {
-//            iscrizioneService.setInizio(iscrizione, turno);
-//        }// end of for cycle
-        //@todo dovrebbero arrivare già regolati dal click sul nome
-
-        turnoService.save(turnoEntity);
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-    }// end of method
+//    /**
+//     * Evento lanciato dal bottone Conferma <br>
+//     * <p>
+//     * Recupera i dati di tutte le iscrizioni presenti <br>
+//     * Controlla che il milite non sia già segnato nel turno <br>
+//     * Controlla che il milite non sia già segnato in un altro turno della stessa giornata <br>
+//     * Registra le modifiche (eventuali) al turno <br>
+//     * Torna al tabellone <br>
+//     */
+//    public void conferma() {
+//
+//        //@todo dovrebbero arrivare già regolati dal click sul nome
+////        for (Iscrizione iscrizione : turno.iscrizioni) {
+////            iscrizioneService.setInizio(iscrizione, turno);
+////        }// end of for cycle
+//        //@todo dovrebbero arrivare già regolati dal click sul nome
+//
+//        turnoService.save(turnoEntity);
+//        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+//    }// end of method
 
 }// end of class
