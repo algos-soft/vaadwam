@@ -72,12 +72,13 @@
             .iscrizioneRow{
                 display: flex;
                 flex-direction: row;
-                justify-content: space-around;
+                justify-content: flex-start;
                 align-items: stretch;
+                vertical-align: middle;
             }
 
-            .gap {
-                width: 0.2em;
+            .hgap {
+                width: 0.4em;
             }
 
         </style>
@@ -122,20 +123,20 @@
 
                                         <vaadin-button
                                                 disabled=[[!item.abilitata]]
-                                                style="width: 8em; background-color:[[item.colore]]">
+                                                style="width: 8em; background-color:[[item.colore]];">
                                             <div class="buttondiv">
                                                 <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
                                                 <label>[[item.funzione]]</label>
                                             </div>
                                         </vaadin-button>
 
-                                        <div class="gap"></div>
+                                        <div class="hgap"></div>
 
                                         <vaadin-button
                                                 on-click="handleClickMilite"
                                                 disabled=[[!item.abilitata]]
                                                 value="[[item.milite]]"
-                                                style="flex-grow: 2; background-color:[[item.colore]]">
+                                                style="flex-grow: 2; background-color:[[item.colore]]; ">
                                             [[item.milite]]
                                         </vaadin-button>
 
@@ -146,28 +147,31 @@
                                     <!--seconda riga-->
                                     <div class="iscrizioneRow">
 
-                                        <vaadin-time-picker on-value-changed="handleChangeOraInizio"
+                                        <vaadin-time-picker
+                                                            on-value-changed="handleChangeOraInizio"
                                                             disabled=[[!item.abilitataPicker]]
                                                             value="{{item.inizio}}"
                                                             step="900"
-                                                            style="width: 6em">
+                                                            style="width: 6em;">
                                         </vaadin-time-picker>
 
-                                        <div class="gap"></div>
+                                        <div class="hgap"></div>
 
                                         <vaadin-text-field
                                                            disabled=[[!item.abilitataPicker]]
                                                            value="{{item.note}}"
-                                                           style="width: 7em;flex-grow: 1">
+                                                           style="width: 7em; flex-grow: 1;">
                                         </vaadin-text-field>
 
-                                        <div class="gap"></div>
 
-                                        <vaadin-time-picker on-value-changed="handleChangeOraFine"
+                                        <div class="hgap"></div>
+
+                                        <vaadin-time-picker
+                                                            on-value-changed="handleChangeOraFine"
                                                             disabled=[[!item.abilitataPicker]]
                                                             value="{{item.fine}}"
                                                             step="900"
-                                                            style="width: 6em">
+                                                            style="width: 6em;">
                                         </vaadin-time-picker>
 
                                     </div>
@@ -194,7 +198,7 @@
                                    style="width:8em; flex-grow:1"
                                    theme="raised secondary"></vaadin-button>
 
-                    <div class="gap"></div>
+                    <div class="hgap"></div>
 
                     <vaadin-button id="conferma"
                                    style="width:8em;flex-grow:1"
