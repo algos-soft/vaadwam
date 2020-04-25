@@ -224,9 +224,11 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         //--body con la Grid
         //--seleziona quale grid usare e la aggiunge al layout
         this.creaBody();
+
         if (gridPlaceholder.getComponentCount() > 0) {
             this.add(gridPlaceholder);
-        }// end of if cycle
+        }
+
         //--aggiunge al layout una (eventuale) legenda-componente di bottoni in basso sotto la grid
         this.creaGridBottomLayout();
         if (usaBottomLayout && bottomPlacehorder.getComponentCount() > 0) {
@@ -245,7 +247,9 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         this.addListeners();
 
         updateFiltri();
+
         this.updateGrid();
+
     }// end of method
 
 
