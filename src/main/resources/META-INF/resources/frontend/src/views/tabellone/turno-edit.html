@@ -16,13 +16,13 @@
                 align-items: center;
             }
 
-            .fullPage{
+            .fullPage {
                 display: flex;
-	            flex-direction: column;
-	            flex-wrap: nowrap;
-	           	justify-content: flex-start;
-	            align-items: center;
-	            align-content: stretch;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                align-content: stretch;
             }
 
             .headerRow {
@@ -31,27 +31,27 @@
                 font-size: 120%;
             }
 
-            .singlecolumn{
+            .singlecolumn {
                 display: flex;
-	            flex-direction: column;
-	            flex-wrap: nowrap;
-	            justify-content: flex-start;
-	            align-items: stretch;
-	            align-content: stretch;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: stretch;
+                align-content: stretch;
                 width: 20em;
             }
 
 
-            .areaiscrizioni{
+            .areaiscrizioni {
                 display: flex;
-	            flex-direction: column;
-	            flex-wrap: nowrap;
-	            justify-content: flex-start;
-	            align-items: stretch;
-	            align-content: stretch;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: stretch;
+                align-content: stretch;
             }
 
-            .areabottoni{
+            .areabottoni {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
@@ -59,17 +59,17 @@
                 margin-top: 1em;
             }
 
-            .iscrizione{
+            .iscrizione {
                 display: flex;
-	            flex-direction: column;
-	            flex-wrap: nowrap;
-	            justify-content: flex-start;
-	            align-items: stretch;
-	            align-content: stretch;
-	            margin-top: 1em;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: stretch;
+                align-content: stretch;
+                margin-top: 1em;
             }
 
-            .iscrizioneRow{
+            .iscrizioneRow {
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
@@ -148,30 +148,31 @@
                                     <div class="iscrizioneRow">
 
                                         <vaadin-time-picker
-                                                            on-value-changed="handleChangeOraInizio"
-                                                            disabled=[[!item.abilitataPicker]]
-                                                            value="{{item.inizio}}"
-                                                            step="900"
-                                                            style="width: 6em;">
+                                                on-value-changed="handleChangeOraInizio"
+                                                disabled=[[!item.abilitataPicker]]
+                                                value="{{item.inizio}}"
+                                                step="900"
+                                                style="width: 6em;">
                                         </vaadin-time-picker>
 
                                         <div class="hgap"></div>
 
                                         <vaadin-text-field
-                                                           disabled=[[!item.abilitataPicker]]
-                                                           value="{{item.note}}"
-                                                           style="width: 7em; flex-grow: 1;">
+                                                on-value-changed="handleChangeNote"
+                                                disabled=[[!item.abilitataPicker]]
+                                                value="{{item.note}}"
+                                                style="width: 7em; flex-grow: 1;">
                                         </vaadin-text-field>
 
 
                                         <div class="hgap"></div>
 
                                         <vaadin-time-picker
-                                                            on-value-changed="handleChangeOraFine"
-                                                            disabled=[[!item.abilitataPicker]]
-                                                            value="{{item.fine}}"
-                                                            step="900"
-                                                            style="width: 6em;">
+                                                on-value-changed="handleChangeOraFine"
+                                                disabled=[[!item.abilitataPicker]]
+                                                value="{{item.fine}}"
+                                                step="900"
+                                                style="width: 6em;">
                                         </vaadin-time-picker>
 
                                     </div>
@@ -180,7 +181,6 @@
 
                                 </div>
                                 <!--end singola iscrizione -->
-
 
 
                             </div>

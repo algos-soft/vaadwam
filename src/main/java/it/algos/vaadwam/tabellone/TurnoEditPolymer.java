@@ -489,6 +489,45 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     /**
      * Java event handler on the server, run asynchronously <br>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Proviene dal ciclo <dom-repeat items="[[iscrizioni]]"> del Client <br>
+     * <p>
+     * Modificata l'ora di inizio del turno per il milite selezionato  <br>
+     */
+    @EventHandler
+    public void handleChangeOraInizio(@ModelItem TurnoIscrizioneModel item) {
+        handleChange(item);
+    }// end of method
+
+
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Proviene dal ciclo <dom-repeat items="[[iscrizioni]]"> del Client <br>
+     * <p>
+     * Modificata il campo note per il milite selezionato  <br>
+     */
+    @EventHandler
+    public void handleChangeNote(@ModelItem TurnoIscrizioneModel item) {
+        handleChange(item);
+    }// end of method
+
+
+    /**
+     * Java event handler on the server, run asynchronously <br>
+     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Proviene dal ciclo <dom-repeat items="[[iscrizioni]]"> del Client <br>
+     * <p>
+     * Modificata l'ora di fine turno per il milite selezionato  <br>
+     */
+    @EventHandler
+    public void handleChangeOraFine(@ModelItem TurnoIscrizioneModel item) {
+        handleChange(item);
+    }// end of method
+
+
+    /**
+     * Java event handler on the server, run asynchronously <br>
      * <p>
      * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
      * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
@@ -521,39 +560,6 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         turnoEntity.fine = LocalTime.parse(fineText);
         conferma.setEnabled(true);
     }// end of method
-
-
-    /**
-     * L'ora di inizio è stata modificata
-     */
-    @EventHandler
-    public void handleChangeOraInizio(@ModelItem TurnoIscrizioneModel item) {
-        String inizio = item.getInizio();
-        String fine = item.getFine();
-        int a = 87;
-        int b = a;
-//        String inizioText = getModel().getInizioPrima();
-//        String noteText = getModel().getNotePrima();
-//        String fineText = getModel().getFinePrima();
-//        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
-    }
-
-
-    /**
-     * L'ora di fine è stata modificata
-     */
-    @EventHandler
-    public void handleChangeOraFine(@ModelItem TurnoIscrizioneModel item) {
-        String inizio = item.getInizio();
-        String fine = item.getFine();
-        int a = 87;
-        int b = a;
-
-//        String inizioText = getModel().getInizioPrima();
-//        String noteText = getModel().getNotePrima();
-//        String fineText = getModel().getFinePrima();
-//        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
-    }
 
 
     /**
@@ -599,16 +605,51 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     /**
      * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
      */
-    private void handleChange(Iscrizione iscr, String inizioText, String noteText, String fineText) {
+    private void handleChange(TurnoIscrizioneModel item) {
+        Iscrizione iscr = null;
 
-        if (iscr != null) {
-            iscr.inizio = LocalTime.parse(inizioText);
-            iscr.note = noteText;
-            iscr.fine = LocalTime.parse(fineText);
+        if (item != null) {
+            iscr = getIscrizione(item);
+            iscr.inizio = LocalTime.parse(item.getInizio());
+            iscr.note = item.getNote();
+            iscr.fine = LocalTime.parse(item.getFine());
         }// end of if cycle
 
         fixIscrizioni();
         conferma.setEnabled(true);
+    }// end of method
+
+
+    /**
+     * Recupera il turnoIscrizione selezionato dal ciclo <dom-repeat items="[[iscrizioni]]"> del Client <br>
+     */
+    private TurnoIscrizione getTurnoIscrizione(TurnoIscrizioneModel item) {
+        TurnoIscrizione turnoIscrizione = null;
+
+        if (array.isValid(listaTurnoIscrizioni)) {
+            for (TurnoIscrizione turnoIsc : listaTurnoIscrizioni) {
+                if (turnoIsc.keyTag.equals(item.getKeyTag())) {
+                    turnoIscrizione = turnoIsc;
+                }// end of if cycle
+            }// end of for cycle
+        }// end of if cycle
+
+        return turnoIscrizione;
+    }// end of method
+
+
+    /**
+     * Recupera l'iscrizione selezionata dal ciclo <dom-repeat items="[[iscrizioni]]"> del Client <br>
+     */
+    private Iscrizione getIscrizione(TurnoIscrizioneModel item) {
+        Iscrizione iscrizione = null;
+        TurnoIscrizione turnoIscrizione = getTurnoIscrizione(item);
+
+        if (turnoIscrizione != null) {
+            iscrizione = turnoIscrizione.iscrizioneEntity;
+        }// end of if cycle
+
+        return iscrizione;
     }// end of method
 
 }// end of class
