@@ -9,9 +9,11 @@ import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.enumeration.EAPrefType;
+import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -57,12 +59,14 @@ public class AColumnService extends AbstractService {
      */
     private static final AColumnService INSTANCE = new AColumnService();
 
-
     /**
      * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
      * The class MUST be an instance of Singleton Class and is created at the time of class loading <br>
      */
     public PreferenzaService pref;
+
+    @Autowired
+    protected LogService logger;
 
 
     /**
@@ -749,6 +753,7 @@ public class AColumnService extends AbstractService {
                 width = "3em";
                 break;
             default:
+                logger.warn("Switch - caso non definito", AColumnService.class, "create");
                 log.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
