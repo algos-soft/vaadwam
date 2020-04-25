@@ -41,11 +41,11 @@ public class ARouteService extends AbstractService {
     private static final ARouteService INSTANCE = new ARouteService();
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private ARouteService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public ARouteService() {
+    }// end of constructor
 
 
     /**
@@ -73,7 +73,7 @@ public class ARouteService extends AbstractService {
      * @return the translated {@code String}.
      *
      * @throws UnsupportedEncodingException If the named encoding is not supported
-     * @see URLDecoder#decode(java.lang.String, java.lang.String)
+     * @see URLDecoder#decode(String, String)
      * @since 1.4
      */
     public String codifica(String text) {
@@ -105,7 +105,7 @@ public class ARouteService extends AbstractService {
      *
      * @throws UnsupportedEncodingException If character encoding needs to be consulted, but
      *                                      named character encoding is not supported
-     * @see URLEncoder#encode(java.lang.String, java.lang.String)
+     * @see URLEncoder#encode(String, String)
      * @since 1.4
      */
     public String decodifica(String textUTF8) {

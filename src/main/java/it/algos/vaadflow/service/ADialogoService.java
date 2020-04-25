@@ -45,11 +45,11 @@ public class ADialogoService extends AbstractService {
     public ARouteService routeService = ARouteService.getInstance();
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private ADialogoService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public ADialogoService() {
+    }// end of constructor
 
 
     /**

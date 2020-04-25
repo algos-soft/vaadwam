@@ -65,11 +65,11 @@ public class AColumnService extends AbstractService {
     public PreferenzaService pref;
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private AColumnService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public AColumnService() {
+    }// end of constructor
 
 
     /**
@@ -120,7 +120,7 @@ public class AColumnService extends AbstractService {
         VaadinIcon headerIcon = annotation.getHeaderIcon(entityClazz, propertyName);
         String widthHeaderIcon = annotation.getHeaderIconSizePX(entityClazz, propertyName);
         String colorHeaderIcon = annotation.getHeaderIconColor(entityClazz, propertyName);
-        String methodName = annotation.getMethodName(entityClazz, propertyName);
+        String methodName = annotation.getMethodNameColumn(entityClazz, propertyName);
 
         if (type == null) {
             try { // prova ad eseguire il codice
@@ -369,6 +369,7 @@ public class AColumnService extends AbstractService {
                 }));//end of lambda expressions and anonymous inner class
                 break;
             case combo:
+            case combolinkato:
 //                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
 //                    ComboBox combo = new ComboBox();
 //                    Object entityBean = reflection.getPropertyValue(entity, propertyName);

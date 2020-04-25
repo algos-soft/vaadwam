@@ -15,6 +15,9 @@ spring.data.mongodb.database=@MODULELOWER@
 # Se falso è lentissimo. Va lanciato npm install dal terminale interno al progetto
 vaadin.compatibilityMode=true
 
+# Comment out if you need to stop banner visualization
+#spring.main.banner-mode=off
+
 # mail
 spring.mail.host=smtp.algos.it
 spring.mail.port=25

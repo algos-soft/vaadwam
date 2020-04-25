@@ -159,7 +159,7 @@ public class CroceDialog extends AViewDialog<Croce> {
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixStandardAlgosFields() {
+    protected void fixStandardAlgosFieldsAnte() {
         if (wamLogin.isAdmin()) {
             Object codeField = fieldMap.get("code");
             if (codeField != null) {

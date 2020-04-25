@@ -1,7 +1,6 @@
 package it.algos.vaadflow.application;
 
 import it.algos.vaadflow.backend.login.ALogin;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.company.CompanyService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 
@@ -79,6 +78,13 @@ public class FlowVar {
      * Eventuali titolo della pagina <br>
      */
     public static String layoutTitle = "";
+
+    /**
+     * Controlla se l'applicazione usa il Drawer laterale oppure no <br>
+     * Di defaul uguale a true <br>
+     * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
+     */
+    public static boolean usaDrawer = true;
 
     /**
      * Service da usare per recuperare dal mongoDB l'utenza loggata tramite 'username' che è unico <br>

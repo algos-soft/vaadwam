@@ -11,6 +11,8 @@ import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.mese.MeseService;
 import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
+import it.algos.vaadflow.modules.provincia.ProvinciaService;
+import it.algos.vaadflow.modules.regione.RegioneService;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.secolo.SecoloService;
 import it.algos.vaadflow.modules.utente.UtenteService;
@@ -114,6 +116,19 @@ public class FlowData extends AData {
 
 
     /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private RegioneService regioneService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private ProvinciaService provinciaService;
+
+
+    /**
      * Inizializzazione dei dati di alcune collections standard sul DB mongo <br>
      */
     public void loadAllData() {
@@ -132,6 +147,9 @@ public class FlowData extends AData {
         meseService.loadData();
         annoService.loadData();
         giornoService.loadData();
+
+        regioneService.loadData();
+        provinciaService.loadData();
     }// end of method
 
 

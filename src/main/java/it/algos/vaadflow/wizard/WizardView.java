@@ -17,8 +17,8 @@ import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.ui.MainLayout;
-import it.algos.vaadflow.wizard.enumeration.Chiave;
-import it.algos.vaadflow.wizard.enumeration.Progetto;
+import it.algos.vaadflow.wiz.enumeration.Chiave;
+import it.algos.vaadflow.wiz.enumeration.Progetto;
 import it.algos.vaadflow.wizard.scripts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +62,11 @@ import static it.algos.vaadflow.application.FlowCost.TAG_WIZ;
 public class WizardView extends VerticalLayout {
 
     public static final String VAADFLOW = "Progetto base vaadflow. ";
+
     public static final String PACKAGE = "Creazione di un nuovo package o modifica di un package esistente";
+
     public final static String NORMAL_WIDTH = "9em";
+
     public final static String NORMAL_HEIGHT = "3em";
 //    /**
 //     * Icona visibile nel menu (facoltativa)
@@ -74,11 +77,17 @@ public class WizardView extends VerticalLayout {
 //    public static final String IRON_ICON = "build";
 
     private static final String PROJECT_BASE_NAME = "vaadflow";
+
     private static Progetto PROGETTO_STANDARD_SUGGERITO_NUOVO = Progetto.vaadin;
+
     private static Progetto PROGETTO_STANDARD_SUGGERITO_MODIFICA = Progetto.test;
+
     private static String NOME_PACKAGE_STANDARD_SUGGERITO = "prova";
+
     private static String PROJECT = "Creazione di un nuovo project";
+
     private static String LABEL_B = "Update di un project esistente";
+
     private static String LABEL_C = VAADFLOW + PACKAGE + ", tramite dialogo wizard";
 
     /**
@@ -87,38 +96,61 @@ public class WizardView extends VerticalLayout {
     private ATextService text;
 
     private Label labelUno;
+
     private Label labelDue;
+
     private Label labelTre;
+
     private Label labelQuattro;
+
     private Button buttonProject;
+
     private Button buttonPackage;
+
     private Button buttonUno;
+
     private Button buttonDue;
+
     private Button buttonTre;
+
     private Button buttonQuattro;
+
     private NativeButton confirmButton;
+
     private NativeButton cancelButton;
 
     /**
      * Inietta da Spring nel costruttore come 'singleton'
      */
     private TDialogoPackage dialogPackage;
+
     @Autowired
     private TDialogoNewProject newProject;
+
     @Autowired
     private TDialogoUpdateProject updateProject;
+
     /**
      * Inietta da Spring nel costruttore come 'singleton'
      */
     private TElabora elabora;
+
     private TRecipient recipient;
+
     private ComboBox fieldComboProgetti;
+
     private TextField fieldTextPackage;
+
     private TextField fieldTextEntity; // suggerito
+
     private TextField fieldTextTag; // suggerito
+
     private Checkbox fieldCheckBoxCompany;
+
     private Checkbox fieldCheckBoxSovrascrive;
+
     private Map<Chiave, Object> mappaInput = new HashMap<>();
+
 
     @Autowired
     public WizardView(ATextService text, TDialogoPackage dialogPackage, TElabora elabora) {
@@ -135,6 +167,7 @@ public class WizardView extends VerticalLayout {
 //        this.removeAll();
 //        checkIniziale();
 //    }// end of method
+
 
     public void checkIniziale() {
         this.setMargin(true);
@@ -166,6 +199,7 @@ public class WizardView extends VerticalLayout {
 //        this.add(labelQuattro);
     }// end of method
 
+
     public void iniziaProject() {
         labelUno = new Label("Update di questo project");
         this.add(labelUno);
@@ -175,6 +209,7 @@ public class WizardView extends VerticalLayout {
         this.add(labelTre);
     }// end of method
 
+
     private Component creaMenuBase() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
@@ -183,27 +218,15 @@ public class WizardView extends VerticalLayout {
         labelDue = new Label(PROJECT);
         this.add(labelDue);
         buttonUno = new Button("New project");
-        buttonUno.addClickListener(event -> newProject.open(new TRecipient() {
-            @Override
-            public void gotInput(Map<Chiave, Object> mappaInput) {
-                elaboraNewProject(mappaInput);
-            }// end of inner method
-        }));// end of lambda expressions and anonymous inner class
+        // end of inner method
+        buttonUno.addClickListener(event -> newProject.open(this::elaboraNewProject));// end of lambda expressions and anonymous inner class
         this.add(buttonUno);
-
-//        buttonDue = new Button("Update project");
-//        buttonDue.addClickListener(event -> updateProject.open(new TRecipient() {
-//            @Override
-//            public void gotInput(Map<Chiave, Object> mappaInput) {
-//                elaboraUpdateProject(mappaInput);
-//            }// end of inner method
-//        }));// end of lambda expressions and anonymous inner class
-//        layout.add(buttonDue);
 
         labelDue = new Label(PACKAGE);
         this.add(labelDue);
         buttonDue = new Button("Nuovo package");
         buttonDue.addClickListener(event -> dialogPackage.open(new TRecipient() {
+
             @Override
             public void gotInput(Map<Chiave, Object> mappaInput) {
                 elaboraPackage(mappaInput);
@@ -213,6 +236,7 @@ public class WizardView extends VerticalLayout {
 
         buttonTre = new Button("Modifica package");
         buttonTre.addClickListener(event -> dialogPackage.open(new TRecipient() {
+
             @Override
             public void gotInput(Map<Chiave, Object> mappaInput) {
                 elaboraPackage(mappaInput);
@@ -236,15 +260,32 @@ public class WizardView extends VerticalLayout {
         mappaInput.put(Chiave.targetProjectName, currentProject != null ? currentProject : nomeProgetto);
 
         buttonProject = new Button("Update this project");
-        buttonProject.addClickListener(e -> {
-            elaboraUpdateProject(mappaInput);
-            layout.add(new Checkbox("Fatto", true));
-        });//end of lambda expressions
+        buttonProject.addClickListener(event -> updateProject.open(new TRecipient() {
+
+            @Override
+            public void gotInput(Map<Chiave, Object> mappaInput) {
+                elaboraUpdateProject(mappaInput);
+            }// end of inner method
+        }));// end of lambda expressions and anonymous inner class
         layout.add(buttonProject);
+
+//        buttonProject = new Button("Update this project");
+//        buttonProject.addClickListener(e -> {
+//            elaboraUpdateProject(mappaInput);
+//            layout.add(new Checkbox("Fatto", true));
+//        });//end of lambda expressions
+//        layout.add(buttonProject);
+
+
+//        buttonProject.addClickListener(e ->  {
+//                elaboraUpdateProject(mappaInput);
+//        });// end of lambda expressions and anonymous inner class
+
 
         this.add(layout);
         return layout;
     }// end of method
+
 
     private Component updatePackage() {
         HorizontalLayout layout = new HorizontalLayout();
@@ -253,6 +294,7 @@ public class WizardView extends VerticalLayout {
 
         buttonPackage = new Button("Package");
         buttonPackage.addClickListener(event -> dialogPackage.open(new TRecipient() {
+
                     @Override
                     public void gotInput(Map<Chiave, Object> mappaInput) {
                         elaboraPackage(mappaInput);
@@ -265,7 +307,8 @@ public class WizardView extends VerticalLayout {
         return layout;
     }// end of method
 
-        private void elaboraNewProject(Map<Chiave, Object> mappaInput) {
+
+    private void elaboraNewProject(Map<Chiave, Object> mappaInput) {
         newProject.close();
 
         if (mappaInput != null) {

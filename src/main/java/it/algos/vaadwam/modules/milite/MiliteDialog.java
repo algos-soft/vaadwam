@@ -114,7 +114,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixStandardAlgosFields() {
+    protected void fixStandardAlgosFieldsAnte() {
         String tag = "funzioni";
         Object field;
         MultiselectComboBox comboField = (MultiselectComboBox) fieldMap.get(tag);

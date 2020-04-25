@@ -48,21 +48,35 @@ public abstract class FlowCost {
 
     public static final String TAG_GIO = "giorno";
 
+    public static final String TAG_WIZ_VIEW = "wizView";
+
+    public static final String TAG_WIZ_NEW_PROJECT = "vizNewProject";
+
     public static final Locale APP_LOCALE = Locale.US;
 
     public static final String VUOTA = "";
 
     public static final String SPAZIO = " ";
 
+    public static final String TRATTINO = "-";
+
+    public static final String UNDERSCORE = "_";
+
+    public static final String SLASH = "/";
+
     public static final String SEP = " - ";
 
     public static final String VIRGOLA = ",";
+
+    public static final String PUNTO = ".";
 
     public static final String PUNTO_VIRGOLA = ";";
 
     public static final String TRE_PUNTI = "...";
 
     public static final String A_CAPO = "\n";
+
+    public static final String A_CAPO_REGEX = "\\\\n";
 
     public static final String ASTERISCO = "*";
 
@@ -89,6 +103,12 @@ public abstract class FlowCost {
     public static final String TAG_ROL = "role";
 
     public static final String TAG_PRE = "preferenza";
+
+    public static final String TAG_REGIONE = "regione";
+
+    public static final String TAG_PROVINCIA = "provincia";
+
+    public static final String TAG_COMUNE = "comune";
 
     public static final String PAGE_ROOT = "";
 
@@ -156,7 +176,15 @@ public abstract class FlowCost {
 
     public static final String FLAG_TEXT_EDIT = "textEdit";
 
+    public static final String FLAG_EDIT_LEFT = "editLeft";
+
+    public static final String ICONA_EDIT_BUTTON = "iconaEditButton";
+
     public static final String FLAG_LOG_ACTION = "logAction";
+
+    public static final String USA_TITOLO_FORM = "usaTitoloForm";
+
+    public static final String USA_BACK_BUTTON = "usaBackButton";
 
     public static final String BOT_ACCETTA = "Accetta";
 
@@ -217,6 +245,7 @@ public abstract class FlowCost {
     public static final String COMPANY_UNICO = "codeCompanyUnico";
 
     //--bottoni della scheda/form/dialog
+
     public static final String REGISTRA = "Save";
 
     public static final String ANNULLA = "Back";
@@ -320,6 +349,10 @@ public abstract class FlowCost {
 
     public static final String KEY_MAPPA_BODY = "body";
 
+    public static final String KEY_MAPPA_FORM_TYPE = "keyFormType";
+
+    public static final String KEY_MAPPA_ENTITY_BEAN = "keyEntityBean";
+
     public static final String KEY_SECURITY_CONTEXT = "SPRING_SECURITY_CONTEXT";
 
     public static final String KEY_LOGGED_USER = "loggedUser";
@@ -341,6 +374,8 @@ public abstract class FlowCost {
     public static final LocalDateTime START_DATE_TIME = LocalDateTime.of(1970, 1, 1, 0, 0);
 
     public static final LocalTime START_TIME = LocalTime.of(0, 0);
+
+    public static final String TAG = "nonRegistrare";
 
     private static final String[] esclusiAll = {PROPERTY_SERIAL, PROPERTY_CREAZIONE, PROPERTY_MODIFICA};
 

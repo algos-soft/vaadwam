@@ -30,11 +30,11 @@ public class AEnumerationService extends AbstractService {
     private final static String TAG = ";";
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private AEnumerationService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public AEnumerationService() {
+    }// end of constructor
 
 
     /**

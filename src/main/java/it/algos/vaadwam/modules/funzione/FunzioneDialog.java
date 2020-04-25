@@ -117,7 +117,7 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixStandardAlgosFields() {
+    protected void fixStandardAlgosFieldsAnte() {
         Object comboField = fieldMap.get("dipendenti");
         List funzioni = ((FunzioneService) service).findAll();
 

@@ -5,7 +5,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.ui.MainLayout;
+import it.algos.vaadflow.ui.MainLayout14;
 
 
 /**
@@ -21,9 +21,9 @@ import it.algos.vaadflow.ui.MainLayout;
  * Annotated with @Route (obbligatorio) per la selezione della vista. @Route(value = "") per la vista iniziale
  * Annotated with @AIScript (facoltativo) per controllare la ri-creazione di questo file nello script di algos <br>
  */
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "", layout = MainLayout14.class)
 @AIScript(sovrascrivibile = false)
-public class HomeView extends VerticalLayout {
+public class @MODULEUPPER@Home extends VerticalLayout {
 
     /**
      * Icona visibile nel menu (facoltativa)
@@ -34,7 +34,7 @@ public class HomeView extends VerticalLayout {
     /**
      * Costruttore
      */
-    public HomeView() {
+    public @MODULEUPPER@Home() {
         removeAll();
         add(new Label("Pagina di avvio"));
     }// end of constructor

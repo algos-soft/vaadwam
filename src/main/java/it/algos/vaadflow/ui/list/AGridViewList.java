@@ -99,7 +99,9 @@ public abstract class AGridViewList extends ALayoutViewList {
 
         //--Apre il dialog di detail
         //--Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come prima colonna
-        this.addDetailDialog();
+        if (pref.isBool(FlowCost.FLAG_EDIT_LEFT)) {
+            this.addDetailDialog();
+        }// end of if cycle
 
         //--Eventuali colonne specifiche aggiunte PRIMA di quelle automatiche
         this.addSpecificColumnsBefore();
@@ -109,6 +111,12 @@ public abstract class AGridViewList extends ALayoutViewList {
 
         //--Eventuali colonne specifiche aggiunte DOPO quelle automatiche
         this.addSpecificColumnsAfter();
+
+        //--Apre il dialog di detail
+        //--Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come ultima colonna
+        if (!pref.isBool(FlowCost.FLAG_EDIT_LEFT)) {
+            this.addDetailDialog();
+        }// end of if cycle
 
         // Sets the max number of items to be rendered on the grid for each page
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
@@ -206,7 +214,7 @@ public abstract class AGridViewList extends ALayoutViewList {
 
     /**
      * Apre il dialog di detail <br>
-     * Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come prima colonna <br>
+     * Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come prima o ultima colonna <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
      */
     protected void addDetailDialog() {
@@ -239,15 +247,17 @@ public abstract class AGridViewList extends ALayoutViewList {
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
      */
     protected void fixGridHeader() {
-        try { // prova ad eseguire il codice
-            HeaderRow topRow = grid.prependHeaderRow();
-            Grid.Column[] matrix = array.getColumnArray(grid);
-            HeaderRow.HeaderCell informationCell = topRow.join(matrix);
-            headerGridHolder = new Label("x");
-            informationCell.setComponent(headerGridHolder);
-        } catch (Exception unErrore) { // intercetta l'errore
-            log.error(unErrore.toString());
-        }// fine del blocco try-catch
+        if (usaHeaderGridHolder) {
+            try { // prova ad eseguire il codice
+                HeaderRow topRow = grid.prependHeaderRow();
+                Grid.Column[] matrix = array.getColumnArray(grid);
+                HeaderRow.HeaderCell informationCell = topRow.join(matrix);
+                headerGridHolder = new Label("x");
+                informationCell.setComponent(headerGridHolder);
+            } catch (Exception unErrore) { // intercetta l'errore
+                log.error(unErrore.toString());
+            }// fine del blocco try-catch
+        }// end of if cycle
     }// end of method
 
 
@@ -319,28 +329,32 @@ public abstract class AGridViewList extends ALayoutViewList {
         if (searchType == EASearch.editField && searchField != null && text.isValid(searchProperty)) {
             type = annotation.getFormType(entityClazz, searchProperty);
 
-            switch (type) {
-                case text:
-                    if (pref.isBool(USA_SEARCH_CASE_SENSITIVE)) {
-                        filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + searchField.getValue())));
-                    } else {
-                        filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + searchField.getValue(), "i")));
-                    }// end of if/else cycle
+            if (type != null) {
+                switch (type) {
+                    case text:
+                        if (pref.isBool(USA_SEARCH_CASE_SENSITIVE)) {
+                            filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + searchField.getValue())));
+                        } else {
+                            String valore = searchField.getValue();
+                            if (text.isValid(valore)) {
+                                filtri.add(new AFiltro(Criteria.where(searchProperty).regex("^" + valore, "i")));
+                            }// end of if cycle
+                        }// end of if/else cycle
+                        break;
+                    case integer:
+                        try { // prova ad eseguire il codice
+                            intValue = Integer.decode(searchField.getValue());
+                            filtri.add(new AFiltro(Criteria.where(searchProperty).is(intValue)));
+                        } catch (Exception unErrore) { // intercetta l'errore
+                            log.error(unErrore.toString());
+                        }// fine del blocco try-catch
 
-                    break;
-                case integer:
-                    try { // prova ad eseguire il codice
-                        intValue = Integer.decode(searchField.getValue());
-                        filtri.add(new AFiltro(Criteria.where(searchProperty).is(intValue)));
-                    } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
-                    }// fine del blocco try-catch
-
-                    break;
-                default:
-                    log.warn("Switch - caso non definito");
-                    break;
-            } // end of switch statement
+                        break;
+                    default:
+                        log.warn("Switch - caso non definito");
+                        break;
+                } // end of switch statement
+            }// end of if cycle
         }// end of if cycle
 
         updateFiltriSpecifici();
@@ -366,6 +380,7 @@ public abstract class AGridViewList extends ALayoutViewList {
      */
     @Override
     public void updateGrid() {
+        boolean startListEmpty = annotation.isStartListEmpty(this.getClass());
         Sort sort = annotation.getSort(this.getClass());
         if (array.isValid(filtri)) {
             if (sort != null) {
@@ -374,7 +389,11 @@ public abstract class AGridViewList extends ALayoutViewList {
                 items = mongo.findAllByProperty(entityClazz, filtri);
             }// end of if/else cycle
         } else {
-            items = service != null ? service.findAll() : null;
+            if (startListEmpty) {
+//                items = service != null ? service.findAll() : null;
+            } else {
+                items = service != null ? service.findAll() : null;
+            }// end of if/else cycle
         }// end of if/else cycle
 
         if (items != null) {
@@ -384,8 +403,14 @@ public abstract class AGridViewList extends ALayoutViewList {
             } catch (Exception unErrore) { // intercetta l'errore
                 log.error(unErrore.toString());
             }// fine del blocco try-catch
+        } else {
+            grid.deselectAll();
+            grid.setItems(new ArrayList());
+        }// end of if/else cycle
+
+        if (headerGridHolder != null) {
+            headerGridHolder.setText(getGridHeaderText());
         }// end of if cycle
-        headerGridHolder.setText(getGridHeaderText());
 
         creaAlertLayout();
     }// end of method

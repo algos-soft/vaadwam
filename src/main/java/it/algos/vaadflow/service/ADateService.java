@@ -80,11 +80,11 @@ public class ADateService extends AbstractService {
     private static final long MAX_GIORNI = 365 * MAX_ORE;
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private ADateService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public ADateService() {
+    }// end of constructor
 
 
     /**

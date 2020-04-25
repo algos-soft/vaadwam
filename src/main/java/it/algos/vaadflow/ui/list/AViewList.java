@@ -31,7 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static it.algos.vaadflow.application.FlowCost.*;
 
@@ -157,21 +160,6 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        Location location = event.getLocation();
-        QueryParameters queryParameters = location.getQueryParameters();
-        Map<String, List<String>> multiParametersMap = queryParameters.getParameters();
-
-        if (text.isValid(parameter)) {
-            this.singleParameter = parameter;
-        }// end of if cycle
-
-        if (array.isValid(multiParametersMap)) {
-            if (array.isMappaSemplificabile(multiParametersMap)) {
-                this.parametersMap = array.semplificaMappa(multiParametersMap);
-            } else {
-                this.multiParametersMap = multiParametersMap;
-            }// end of if/else cycle
-        }// end of if cycle
     }// end of method
 
 
@@ -523,17 +511,25 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
 
     protected Button createEditButton(AEntity entityBean) {
         String label = VUOTA;
+        String iconaTxt = pref.getStr(ICONA_EDIT_BUTTON);
         if (pref.isBool(FlowCost.USA_TEXT_EDIT_BUTTON)) {
             label = isEntityModificabile ? pref.getStr(FLAG_TEXT_EDIT) : pref.getStr(FLAG_TEXT_SHOW);
         }// end of if cycle
 
-        Button edit = new Button(label, event -> openDialog(entityBean));
-        edit.setIcon(new Icon("lumo", isEntityModificabile ? "edit" : "search"));
-        edit.addClassName("review__edit");
-        edit.getElement().setAttribute("theme", "tertiary");
-        edit.setHeight("1em");
+        buttonEdit = new Button(label);
+        if (usaRouteFormView) {
+            buttonEdit.addClickListener(event -> openForm(entityBean));
+        } else {
+            buttonEdit.addClickListener(event -> openDialog(entityBean));
+        }// end of if/else cycle
 
-        return edit;
+//        buttonEdit.setIcon(new Icon("lumo", isEntityModificabile ? "edit" : "search"));
+        buttonEdit.setIcon(new Icon("lumo", iconaTxt));
+        buttonEdit.addClassName("review__edit");
+        buttonEdit.getElement().setAttribute("theme", "tertiary");
+        buttonEdit.setHeight("1em");
+
+        return buttonEdit;
     }// end of method
 
 
@@ -573,7 +569,67 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      *
      * @param entityBean item corrente, null se nuova entity
      */
+    @Deprecated
     protected void openDialog(AEntity entityBean) {
+    }// end of method
+
+
+    /**
+     * Creazione ed apertura di una view di tipo Form per una nuova entity oppure per una esistente <br>
+     * Il metodo DEVE essere sovrascritto e chiamare super.openForm(AEntity entityBean, String formRouteName) <br>
+     */
+    protected void openFormNew(String formRouteName) {
+        openForm(null, formRouteName, EAOperation.addNew);
+    }// end of method
+
+
+    /**
+     * Creazione ed apertura di una view di tipo Form per una nuova entity oppure per una esistente <br>
+     * Il metodo DEVE essere sovrascritto e chiamare super.openForm(AEntity entityBean, String formRouteName) <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    protected void openForm(AEntity entityBean) {
+    }// end of method
+
+
+    /**
+     * Creazione ed apertura di una view di tipo Form per una nuova entity oppure per una esistente <br>
+     * <p>
+     * La view viene costruita partendo da @Route e non da SprinBoot <br>
+     * Nel costruttore vengono regolati il service e la entityClazz di riferimento <br>
+     * La chiamata sarà: getUI().ifPresent(ui -> ui.navigate("XxxForm", query)); con il tag della @Route specifica <br>
+     * Nel parametro del metodo navigate() si specifica il tag @Route della view <br>
+     * Nella mappa della query si specifica il flag EAOperation e l'ID del EntityBean <br>
+     * Se entityBean è null, in AViewForm viene modificato il flag a EAOperation.addNew <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    protected void openForm(AEntity entityBean, String formRouteName) {
+        openForm(entityBean, formRouteName, EAOperation.showOnly);
+    }// end of method
+
+
+    /**
+     * Creazione ed apertura di una view di tipo Form per una nuova entity oppure per una esistente <br>
+     * <p>
+     * La view viene costruita partendo da @Route e non da SprinBoot <br>
+     * Nel costruttore vengono regolati il service e la entityClazz di riferimento <br>
+     * La chiamata sarà: getUI().ifPresent(ui -> ui.navigate("XxxForm", query)); con il tag della @Route specifica <br>
+     * Nel parametro del metodo navigate() si specifica il tag @Route della view <br>
+     * Nella mappa della query si specifica il flag EAOperation e l'ID del EntityBean <br>
+     * Se entityBean è null, in AViewForm viene modificato il flag a EAOperation.addNew <br>
+     *
+     * @param entityBean item corrente, null se nuova entity
+     */
+    protected void openForm(AEntity entityBean, String formRouteName, EAOperation operation) {
+        HashMap mappa = new HashMap();
+        mappa.put(KEY_MAPPA_FORM_TYPE, operation.name());
+        if (entityBean!=null) {
+            mappa.put(KEY_MAPPA_ENTITY_BEAN, entityBean.id);
+        }// end of if cycle
+        final QueryParameters query = routeService.getQuery(mappa);
+        getUI().ifPresent(ui -> ui.navigate(formRouteName, query));
     }// end of method
 
 

@@ -16,6 +16,7 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
+import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.ui.fields.*;
@@ -26,10 +27,13 @@ import org.springframework.stereotype.Service;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 
 /**
  * Project it.algos.vaadflow
@@ -73,11 +77,11 @@ public class AFieldService extends AbstractService {
 //    private AConverterPrefByte prefConverter;
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private AFieldService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public AFieldService() {
+    }// end of constructor
 
 
     /**
@@ -98,11 +102,11 @@ public class AFieldService extends AbstractService {
      * @param binderClass  della Entity di riferimento
      * @param propertyName della property
      */
-    public AbstractField create(ApplicationContext appContext, Binder binder, Class binderClass, String propertyName) {
+    public AbstractField create(AEntity entityBean, ApplicationContext appContext, Binder binder, Class binderClass, String propertyName) {
         Field reflectionJavaField = reflection.getField(binderClass, propertyName);
 
         if (reflectionJavaField != null) {
-            return create(appContext, binder, reflectionJavaField);
+            return create(entityBean, appContext, binder, reflectionJavaField);
         } else {
             return null;
         }// end of if/else cycle
@@ -116,7 +120,7 @@ public class AFieldService extends AbstractService {
      * @param binder              collegamento tra i fields e la entityBean
      * @param reflectionJavaField di riferimento per estrarre le Annotation
      */
-    public AbstractField create(ApplicationContext appContext, Binder binder, Field reflectionJavaField) {
+    public AbstractField create(AEntity entityBean, ApplicationContext appContext, Binder binder, Field reflectionJavaField) {
         AbstractField field = null;
         String fieldName = reflectionJavaField.getName();
 //        int minDefault = 3;
@@ -160,6 +164,8 @@ public class AFieldService extends AbstractService {
         ALongZeroValidator longZeroValidator = new ALongZeroValidator();
         AUniqueValidator uniqueValidator = null;
         String color = annotation.getFieldColor(reflectionJavaField);
+        String methodName = annotation.getMethodNameField(reflectionJavaField);
+        String propertyLinkata = annotation.getPropertyLinkata(reflectionJavaField);
 
         if (type == null) {
             field = new ATextField(caption.equals("") ? "noname" : caption);
@@ -301,9 +307,6 @@ public class AFieldService extends AbstractService {
 
                 if (binder != null) {
                     binder.forField(field).bind(fieldName);
-//                    binder.forField(field)
-//                            .withConverter(new AConverterComboBox())
-//                            .bind(fieldName);
                 }// end of if cycle
                 break;
             case combo:
@@ -314,6 +317,38 @@ public class AFieldService extends AbstractService {
                     if (items != null) {
                         ((AComboBox) field).setItems(items);
                     }// end of if cycle
+                }// end of if cycle
+                field.setReadOnly(false);
+
+                if (binder != null) {
+                    if (notNull) {
+                        binder.forField(field)
+                                .withValidator(nullValidator)
+                                .bind(fieldName);
+                    } else {
+                        binder.forField(field).bind(fieldName);
+                    }// end of if/else cycle
+                }// end of if cycle
+                break;
+            case combolinkato:
+                field = new AComboBox(caption);
+                Method metodo = null;
+                Object serviceInstance = null;
+                String value = VUOTA;
+                List items;
+
+                if (serviceClazz != null && text.isValid(methodName)&&text.isValid(propertyLinkata)) {
+                    try { // prova ad eseguire il codice
+                        metodo = serviceClazz.getDeclaredMethod(methodName, AEntity.class);
+                        serviceInstance = StaticContextAccessor.getBean(serviceClazz);
+                        Object oggetto = reflection.getPropertyValue(entityBean, propertyLinkata);
+                        items = (List) metodo.invoke(serviceInstance, oggetto);
+                        if (items != null) {
+                            ((AComboBox) field).setItems(items);
+                        }// end of if cycle
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        log.error(unErrore.toString());
+                    }// fine del blocco try-catch
                 }// end of if cycle
                 field.setReadOnly(false);
 
@@ -338,15 +373,15 @@ public class AFieldService extends AbstractService {
                     ((AComboBox) field).setItems(enumItems);
                 } else {
                     if (enumClazz != null) {
-                        Object[] items = enumClazz.getEnumConstants();
-                        if (items != null) {
+                        Object[] elementi = enumClazz.getEnumConstants();
+                        if (elementi != null) {
 //                            ((AComboBox) field).setItems(array.toString(items));
-                            ((AComboBox) field).setItems(items);
+                            ((AComboBox) field).setItems(elementi);
                         }// end of if cycle
                     } else {
                         if (serviceClazz != null) {
                             IAService service = (IAService) StaticContextAccessor.getBean(serviceClazz);
-                            List items = ((IAService) service).findAll();
+                            items = ((IAService) service).findAll();
                             if (items != null) {
 //                                ((AComboBox) field).setItems(array.toString(items));
                                 ((AComboBox) field).setItems(items);
@@ -398,7 +433,7 @@ public class AFieldService extends AbstractService {
                 if (serviceClazz != null) {
                     field = new Select<>();
                     IAIcon service = (IAIcon) StaticContextAccessor.getBean(serviceClazz);
-                    List items = ((IAIcon) service).findIcons();
+                    items = ((IAIcon) service).findIcons();
                     if (items != null) {
                         ((Select) field).setItems(items);
                     }// end of if cycle

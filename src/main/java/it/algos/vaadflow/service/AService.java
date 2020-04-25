@@ -130,7 +130,7 @@ public abstract class AService extends AbstractService implements IAService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected ATextService text;
+    public ATextService text;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -635,6 +635,43 @@ public abstract class AService extends AbstractService implements IAService {
         return lista;
     }// end of method
 
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListNew(AContext context) {
+        return getFormPropertyNamesList(context);
+    }// end of method
+
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListEdit(AContext context) {
+        return getFormPropertyNamesList(context);
+    }// end of method
+
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListShow(AContext context) {
+        return getFormPropertyNamesList(context);
+    }// end of method
 
     /**
      * Costruisce una lista di nomi delle properties del Search nell'ordine:
@@ -813,7 +850,7 @@ public abstract class AService extends AbstractService implements IAService {
 
 
     /**
-     * Proviene da Lista (quasi sempre)
+     * Proviene da List e da Form (quasi sempre) <br>
      * Primo ingresso dopo il click sul bottone <br>
      */
     public AEntity save(AEntity entityBean, EAOperation operation) {

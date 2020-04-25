@@ -9,6 +9,7 @@ import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.IAService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
@@ -141,7 +142,7 @@ public class ASearchDialog extends ADialog {
         //--Aggiunge il field ad una fieldMap, per recuperare i fields dal nome
         if (propertyNamesList != null) {
             for (String propertyName : propertyNamesList) {
-                propertyField = fieldService.create(null, null, ((AService) service).entityClass, propertyName);
+//                propertyField = fieldService.create((AEntity)null, (ApplicationContext)null, ((AService) service).entityClass, propertyName);
                 if (propertyField != null) {
                     fieldKeyMongo = annotation.getFieldKeyMongo(((AService) service).entityClass, propertyName);
                     fieldMap.put(fieldKeyMongo, propertyField);

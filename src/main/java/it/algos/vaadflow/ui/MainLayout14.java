@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BodySize;
@@ -132,10 +133,18 @@ public class MainLayout14 extends AppLayout {
      * Layout base della pagina
      */
     protected void fixView() {
-        DrawerToggle drawer = new DrawerToggle();
         TopbarComponent topbar = createTopBar();
-        addToNavbar(drawer, topbar);
+
+        if (FlowVar.usaDrawer) {
+            DrawerToggle drawer = new DrawerToggle();
+            addToNavbar(drawer, topbar);
+        } else {
+            Span span = new Span();
+            span.getElement().setProperty("innerHTML", "&nbsp; &nbsp; &nbsp;");
+            addToNavbar(span, topbar);
+        }// end of if/else cycle
         this.setDrawerOpened(false);
+
     }// end of method
 
 

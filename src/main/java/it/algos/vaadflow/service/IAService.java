@@ -213,6 +213,37 @@ public interface IAService {
      */
     public List<String> getFormPropertyNamesList(AContext context);
 
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListNew(AContext context);
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListEdit(AContext context);
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
+     * Sovrascritto nella sottoclasse concreta <br>
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    public List<String> getFormPropertyNamesListShow(AContext context);
+
     /**
      * Costruisce una lista di nomi delle properties del Search nell'ordine:
      * 1) Sovrascrive la lista nella sottoclasse specifica di xxxService

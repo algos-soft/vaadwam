@@ -53,6 +53,6 @@ public interface PreferenzaRepository extends MongoRepository<Preferenza, String
 
     public List<Preferenza> findTop1AllByOrderByOrdineDesc();
 
-    public List<Preferenza> findAllByTypeOrderByValue(EAPrefType type);
+    public List<Preferenza> findAllByOrderByOrdine();
 
 }// end of class

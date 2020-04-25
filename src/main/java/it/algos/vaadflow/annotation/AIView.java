@@ -29,10 +29,21 @@ public @interface AIView {
     String menuName() default "";
 
     /**
+     * (Optional) Tag della @Route per aprire il Form
+     */
+    String routeFormName() default "";
+
+    /**
      * (Optional) Icona visibile nel menu
      * Di default un asterisco
      */
     VaadinIcon menuIcon() default VaadinIcon.ASTERISK;
+
+    /**
+     * (Optional) Mostra la lista vuota all'apertura. Da usare SOLO se ci sono filtri di selezione.
+     * Altrimenti non si vedrà mai niente
+     */
+    boolean startListEmpty() default false;
 
     /**
      * (Optional) Property per la ricerca tramite il searchField

@@ -32,6 +32,17 @@ public enum EAOperation {
         this.deleteEnabled = deleteEnabled;
     }
 
+    public static boolean contiene(String nome) {
+        boolean contiene = false;
+
+        for (EAOperation eaOperation : EAOperation.values()) {
+            if (eaOperation.name().equals(nome)) {
+                contiene = true;
+            }// end of if cycle
+        }// end of for cycle
+
+        return contiene;
+    }// end of method
 
     public String getNameInTitle() {
         return nameInTitle;

@@ -131,9 +131,9 @@ public class WamBoot extends ABoot {
      * @param wamVers Log delle versioni, modifiche e patch installat
      */
     @Autowired
-    public WamBoot(WamVers wamVers) {
+    public WamBoot() {
         super();
-        this.wamVers = wamVers;
+//        this.wamVers = wamVers;
     }// end of Spring constructor
 
 
@@ -158,7 +158,7 @@ public class WamBoot extends ABoot {
      */
     @Override
     protected void iniziaVersioni() {
-        wamVers.inizia();
+//        wamVers.inizia();
     }// end of method
 
 

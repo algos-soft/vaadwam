@@ -298,7 +298,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         fixPreferenze();
 
         //--Titolo placeholder del dialogo, regolato dopo open()
-        this.add(creaTitleLayout());
+        if (pref.isBool(USA_TITOLO_FORM)) {
+            this.add(creaTitleLayout());
+        }// end of if cycle
 
         //--Costruisce gli oggetti base (placeholder) di questa view
         this.fixLayout();
@@ -348,7 +350,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      */
     protected void fixPreferenze() {
         //--Flag di preferenza per usare il bottone Cancel. Normalmente true.
-        usaCancelButton = true;
+        this.usaCancelButton = pref.isBool(USA_BACK_BUTTON);
 
         //--Flag di preferenza per usare il bottone Save. Normalmente true.
         usaSaveButton = true;
@@ -362,7 +364,8 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         //--Flag per differenziare i dialoghi di secondo livello, aperti dai primi. Normalmente true.
         isDialogoPrimoLivello = true;
 
-        alertUser = new ArrayList<String>();
+
+        alertUser = new ArrayList<>();
         alertAdmin = new ArrayList<>();
         alertDev = new ArrayList<>();
     }// end of method
@@ -556,7 +559,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         deleteButton.setVisible(operation.isDeleteEnabled());
 
         //--Crea i fields
-        creaFields();
+        creaFields(entityBean);
 
         super.open();
     }// end of method
@@ -607,6 +610,20 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
 
     /**
+     * Costruisce nell'ordine una lista di nomi di properties <br>
+     * La lista viene usata per la costruzione automatica dei campi e l'inserimento nel binder <br>
+     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+     * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
+     * Sovrasrivibile nella sottoclasse <br>
+     * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
+     */
+    protected List<String> getPropertiesName() {
+        return service != null ? service.getFormPropertyNamesList(context) : null;
+    }// end of method
+
+
+    /**
      * Crea i fields
      * <p>
      * Crea un nuovo binder (vuoto) per questo Dialog e questa Entity
@@ -623,7 +640,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
      * Legge la entityBean ed inserisce nella UI i valori di eventuali fields NON associati al binder
      */
-    private void creaFields() {
+    private void creaFields(AEntity entityBean) {
         List<String> propertyNamesList;
 
         //--Crea una mappa fieldMap (vuota), per recuperare i fields dal nome
@@ -638,11 +655,17 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         //--Crea un nuovo binder (vuoto) per questo Dialog e questa entityBean (currentItem)
         binder = new Binder(binderClass);
 
-        //--Costruisce ogni singolo field
-        creaFieldsBase(propertyNamesList);
+        //--Eventuali fields specifici aggiunti PRIMA di quelli automatici
+        this.creaFieldsBefore();
 
-        //--Eventuali regolazioni aggiuntive ai fields del binder
-        fixStandardAlgosFields();
+        //--Fields normali indicati in @AIForfm(fields =... , aggiunti in automatico
+        creaFieldsBase(entityBean, propertyNamesList);
+
+        //--Eventuali fields specifici aggiunti DOPO quelli automatici
+        this.creaFieldsAfter();
+
+        //--Eventuali regolazioni aggiuntive ai fields del binder PRIMA di associare i valori
+        fixStandardAlgosFieldsAnte();
 
         //--Costruisce eventuali fields specifici (costruiti non come standard type)
         //--Aggiunge i fields specifici al binder (facoltativo, alcuni fields non funzionano col binder)
@@ -655,6 +678,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         //--Associa i valori del currentItem al binder. Dal DB alla UI
         binder.readBean(currentItem);
+
+        //--Eventuali regolazioni aggiuntive ai fields del binder DOPO aver associato i valori
+        fixStandardAlgosFieldsPost();
 
         //--Eventuali aggiustamenti finali al layout
         //--Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
@@ -678,19 +704,28 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
 
     /**
+     * Eventuali fields specifici aggiunti PRIMA di quelli automatici <br>
+     * Sovrascritto nella sottoclasse <br>
+     */
+    protected void creaFieldsBefore() {
+    }// end of method
+
+
+    /**
      * Costruisce ogni singolo field <br>
+     * Fields normali indicati in @AIForfm(fields =... , aggiunti in automatico
      * Costruisce i fields (di tipo AbstractField) della lista, in base ai reflectedFields ricevuti dal service <br>
      * Inizializza le properties grafiche (caption, visible, editable, width, ecc) <br>
      * Aggiunge il field al binder, nel metodo create() del fieldService <br>
      * Aggiunge il field ad una fieldMap, per recuperare i fields dal nome <br>
      * Controlla l'esistenza tra i field di un eventuale field di tipo textArea. Se NON esiste, abilita il tasto 'return'
      */
-    protected void creaFieldsBase(List<String> propertyNamesList) {
+    protected void creaFieldsBase(AEntity entityBean, List<String> propertyNamesList) {
         AbstractField propertyField = null;
         boolean esisteTextArea = false;
 
         for (String propertyName : propertyNamesList) {
-            propertyField = fieldService.create(appContext, binder, binderClass, propertyName);
+            propertyField = fieldService.create(entityBean, appContext, binder, binderClass, propertyName);
             if (propertyField != null) {
                 fieldMap.put(propertyName, propertyField);
             }// end of if cycle
@@ -709,24 +744,20 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
 
     /**
-     * Costruisce nell'ordine una lista di nomi di properties <br>
-     * La lista viene usata per la costruzione automatica dei campi e l'inserimento nel binder <br>
-     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
-     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
-     * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
-     * Sovrasrivibile nella sottoclasse <br>
-     * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
+     * Eventuali fields specifici aggiunti DOPO quelli automatici <br>
+     * Sovrascritto nella sottoclasse <br>
      */
-    protected List<String> getPropertiesName() {
-        return service != null ? service.getFormPropertyNamesList(context) : null;
+    protected void creaFieldsAfter() {
     }// end of method
 
 
+
+
     /**
-     * Eventuali specifiche regolazioni aggiuntive ai fields del binder
+     * Eventuali regolazioni aggiuntive ai fields del binder PRIMA di associare i valori <br>
      * Sovrascritto nella sottoclasse
      */
-    protected void fixStandardAlgosFields() {
+    protected void fixStandardAlgosFieldsAnte() {
     }// end of method
 
 
@@ -748,6 +779,14 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         for (String name : fieldMap.keySet()) {
             getFormLayout().add(fieldMap.get(name));
         }// end of for cycle
+    }// end of method
+
+
+    /**
+     * Eventuali regolazioni aggiuntive ai fields del binder DOPO aver associato i valori <br>
+     * Sovrascritto nella sottoclasse
+     */
+    protected void fixStandardAlgosFieldsPost() {
     }// end of method
 
 

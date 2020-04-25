@@ -1,4 +1,4 @@
-package it.algos.vaadflow.wizard.enumeration;
+package it.algos.vaadflow.wiz.enumeration;
 
 /**
  * Project springvaadin
@@ -13,15 +13,31 @@ public enum Chiave {
     newPackageName,
     newEntityName,
     newEntityTag,
+    pathUserDir,
+    pathVaadFlow,
+    pathProjectsDir,
+    pathSources,
+    pathTargetProget,
     flagOrdine,
     flagCode,
     flagDescrizione,
     flagKeyCode,
     flagCompany,
     flagSecurity,
+    flagSovrascriveDirectory,
+    flagSovrascriveFile,
+    flagDocumentation,
+    flagLinks,
+    flagSnippets,
+    flagDirectoryFlow,
+    flagDirectoryNewProject,
+    flagResources,
+    flagProperties,
+    flagRead,
+    flagGit,
+    flagPom,
     flagGrid,
     flagList,
-    flagSovrascrive,
     flagUsaAllPackages
 
 }// end of enumeration

@@ -411,6 +411,18 @@ public class LogService extends AService {
     }// fine del metodo
 
 
+    /**
+     * Gestisce un log di error <br>
+     *
+     * @param unErrore   eccezione con messaggio di errore
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void error(Exception unErrore, Class clazz, String methodName) {
+        esegue(unErrore.getMessage(), EALogLivello.error, clazz, methodName);
+    }// fine del metodo
+
+
 //    /**
 //     * Gestisce un log, con le modalità fissate nelle preferenze <br>
 //     *

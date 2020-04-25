@@ -1,4 +1,4 @@
-package it.algos.vaadflow.wizard.enumeration;
+package it.algos.vaadflow.wiz.enumeration;
 
 import lombok.extern.slf4j.Slf4j;
 

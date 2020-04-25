@@ -1,10 +1,17 @@
 package it.algos.vaadflow.ui.list;
 
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.Location;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.QueryParameters;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
+
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadflow.application.FlowCost.USA_EDIT_BUTTON;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
@@ -57,6 +64,36 @@ public abstract class APrefViewList extends AViewList {
 
 
     /**
+     * Regola i parametri del browser per una view costruita da @Route <br>
+     * <p>
+     * Chiamato da com.vaadin.flow.router.Router tramite l'interfaccia HasUrlParameter implementata in AViewList <br>
+     * Chiamato DOPO @PostConstruct ma PRIMA di beforeEnter() <br>
+     * Può essere sovrascritto, per gestire diversamente i parametri in ingresso <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     *
+     * @param event     con la location, ui, navigationTarget, source, ecc
+     * @param parameter opzionali nella chiamata del browser
+     */
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        Location location = event.getLocation();
+        QueryParameters queryParameters = location.getQueryParameters();
+        Map<String, List<String>> multiParametersMap = queryParameters.getParameters();
+
+        if (text.isValid(parameter)) {
+            this.singleParameter = parameter;
+        }// end of if cycle
+
+        if (array.isValid(multiParametersMap)) {
+            if (array.isMappaSemplificabile(multiParametersMap)) {
+                this.parametersMap = array.semplificaMappa(multiParametersMap);
+            } else {
+                this.multiParametersMap = multiParametersMap;
+            }// end of if/else cycle
+        }// end of if cycle
+    }// end of method
+
+    /**
      * Preferenze specifiche di questa view <br>
      * <p>
      * Chiamato da AViewList.initView() e sviluppato nella sottoclasse APrefViewList <br>
@@ -82,6 +119,9 @@ public abstract class APrefViewList extends AViewList {
 
         //--Flag di preferenza per la Label nell'header della Grid grid. Normalmente true.
         usaHaederGrid = true;
+
+        //--Flag per mostrare o meno la Label headerGridHolder. Normalmente true.
+        usaHeaderGridHolder = true;
 
         //--Flag di preferenza per modificare la entity. Normalmente true.
         isEntityModificabile = true;

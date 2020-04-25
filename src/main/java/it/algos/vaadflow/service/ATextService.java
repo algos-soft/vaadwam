@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static it.algos.vaadflow.application.FlowCost.SLASH;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 
 /**
@@ -45,6 +48,14 @@ public class ATextService extends AbstractService {
      */
     public static final String BARRA = "/";
 
+    public static final String REGEX_PIPE = "\\|";
+
+    public static final String PIPE = "|";
+
+    public static final String UGUALE = "=";
+
+    public static final String SPAZIO = " ";
+
     public static final String VIRGOLA = ",";
 
     public static final String REF = "<ref";
@@ -59,6 +70,10 @@ public class ATextService extends AbstractService {
 
     public static final String INTERROGATIVO = "?";
 
+    public static final String CIRCA = "circa";
+
+    public static final String ECC = "ecc.";
+
     /**
      * versione della classe per la serializzazione
      */
@@ -70,11 +85,11 @@ public class ATextService extends AbstractService {
     private static final ATextService INSTANCE = new ATextService();
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private ATextService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public ATextService() {
+    }// end of constructor
 
 
     /**
@@ -406,6 +421,68 @@ public class ATextService extends AbstractService {
     private boolean isNotNumber(char ch) {
         return !isNumber(ch);
     }// end of method
+
+
+    /**
+     * Controlla se il primo carattere della stringa passata come parametro è uno 'slash' <br>
+     *
+     * @param testoIngresso da elaborare
+     *
+     * @return true se NON è uno 'slash'
+     */
+    public boolean isNotSlasch(String testoIngresso) {
+        boolean status = true;
+        String primoCarattere;
+
+        if (isValid(testoIngresso)) {
+            primoCarattere = testoIngresso.substring(0, 1);
+            if (primoCarattere.equals(SLASH)) {
+                status = false;
+            }// end of if cycle
+        }// end of if cycle
+
+        return status;
+    } // fine del metodo
+
+
+    /**
+     * Controlla la stringa passata come parametro termina con un 'suffix' (3 caratteri terminali dopo un punto) <br>
+     *
+     * @param testoIngresso da elaborare
+     *
+     * @return true se MANCA il 'suffix'
+     */
+    public boolean isNotSuffix(String testoIngresso) {
+        boolean status = true;
+        String quartultimoCarattere;
+        int gap = 4;
+        int max;
+        String tagPatchProperties = ".properties";
+        String tagPatchGitIgnore = ".gitignore";
+        String tagPatchJava = ".java";
+
+        if (isValid(testoIngresso)) {
+            max = testoIngresso.length();
+            quartultimoCarattere = testoIngresso.substring(max - gap, max - gap + 1);
+            if (quartultimoCarattere.equals(PUNTO)) {
+                status = false;
+            }// end of if cycle
+        }// end of if cycle
+
+        if (testoIngresso.endsWith(tagPatchProperties)) {
+            status = false;
+        }// end of if cycle
+
+        if (testoIngresso.endsWith(tagPatchGitIgnore)) {
+            status = false;
+        }// end of if cycle
+
+        if (testoIngresso.endsWith(tagPatchJava)) {
+            status = false;
+        }// end of if cycle
+
+        return status;
+    } // fine del metodo
 
 
     public String getModifiche(Object oldValue, Object newValue) {
@@ -821,6 +898,98 @@ public class ATextService extends AbstractService {
 
 
     /**
+     * Restituisce la posizione di un tag in un testo <br>
+     * Rimanda al metodo base con i tag iniziali e finali di default <br>
+     *
+     * @param testo in ingresso
+     * @param tag   di riferimento per la ricerca
+     *
+     * @return true se esiste
+     */
+    public boolean isTag(String testo, String tag) {
+        return isTag(testo, REGEX_PIPE, tag, UGUALE);
+    }// end of method
+
+
+    /**
+     * Restituisce la posizione di un gruppo di tag in un testo <br>
+     * Il gruppo è costituito dal primo tag, seguito da n spazi, poi il secondo tag seguito da n spazi, poi il terzo tag <br>
+     *
+     * @param testo      to be scanned to find the pattern
+     * @param primoTag   di riferimento (di solito PIPE))
+     * @param secondoTag significativo (parametro)
+     * @param terzoTag   di riferimento (di solito UGUALE))
+     *
+     * @return true se esiste
+     */
+    public boolean isTag(String testo, String primoTag, String secondoTag, String terzoTag) {
+        return getPosFirstTag(testo, primoTag, secondoTag, terzoTag) != 0;
+    }// end of method
+
+
+    /**
+     * Restituisce la posizione di un tag in un testo <br>
+     * Rimanda al metodo base con i tag iniziali e finali di default <br>
+     *
+     * @param testo in ingresso
+     * @param tag   di riferimento per la ricerca
+     *
+     * @return posizione del tag nel testo - 0 se non esiste
+     */
+    public int getPosFirstTag(String testo, String tag) {
+        return getPosFirstTag(testo, REGEX_PIPE, tag, UGUALE);
+    }// end of method
+
+
+    /**
+     * Restituisce la posizione di un gruppo di tag in un testo <br>
+     * Il gruppo è costituito dal primo tag, seguito da n spazi, poi il secondo tag seguito da n spazi, poi il terzo tag <br>
+     *
+     * @param line       in ingresso
+     * @param primoTag   di riferimento (di solito PIPE))
+     * @param secondoTag significativo (parametro)
+     * @param terzoTag   di riferimento (di solito UGUALE))
+     *
+     * @return posizione del PRIMO tag nel testo - 0 se non esiste
+     */
+    public int getPosFirstTag(String line, String primoTag, String secondoTag, String terzoTag) {
+        int pos = 0;
+        String regexSpazioVariabile = "\\s*"; // zero o più occorrenze
+        String firstChar = secondoTag.substring(0, 1);
+        String rimanentiChars = secondoTag.substring(1);
+        String firstInsensitiveChar = "[" + firstChar.toUpperCase() + firstChar.toLowerCase() + "]";
+        String regex = primoTag + regexSpazioVariabile + firstInsensitiveChar + rimanentiChars + regexSpazioVariabile + terzoTag;
+
+        // Create a Pattern object
+        Pattern pattern = Pattern.compile(regex);
+
+        // Now create matcher object.
+        Matcher matcher = pattern.matcher(line);
+
+        if (matcher.find()) {
+            pos = matcher.start();
+        }// end of if cycle
+
+        return pos;
+    }// end of method
+
+
+    /**
+     * Elimina gli spazi multipli eventualmente presenti <br>
+     * Tutti gli spazi multipli vengono ridotti ad uno spazio singolo <br>
+     *
+     * @param line in ingresso
+     *
+     * @return stringa elaborata con tutti gli spazi ridotti ad 1 ed eliminati spazi in testa ed in coda
+     */
+    public String fixOneSpace(String line) {
+        String regexSpazioVariabile = "\\s+"; // una o più occorrenze
+
+        return line.replaceAll(regexSpazioVariabile, SPAZIO).trim();
+    }// end of method
+
+
+    /**
      * Elimina la parte di stringa successiva al tag, se esiste.
      * <p>
      * Esegue solo se la stringa è valida
@@ -878,6 +1047,38 @@ public class ATextService extends AbstractService {
      */
     public String levaDopoNote(String entrata) {
         return levaDopo(entrata, NOTE);
+    }// end of method
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag <!--, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoUguale(String entrata) {
+        return levaDopo(entrata, UGUALE);
+    }// end of method
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag <!--, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoEccetera(String entrata) {
+        return levaDopo(entrata, ECC);
     }// end of method
 
 
@@ -946,6 +1147,22 @@ public class ATextService extends AbstractService {
 
 
     /**
+     * Elimina la parte di stringa successiva al tag -circa-, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoCirca(String entrata) {
+        return levaDopo(entrata, "circa");
+    }// end of method
+
+
+    /**
      * Confronta due numeri.
      *
      * @param primo   numero
@@ -1003,6 +1220,14 @@ public class ATextService extends AbstractService {
     /**
      * Label colorata
      */
+    public Label getLabelHost(String message) {
+        return getLabel(message, "black");
+    }// end of method
+
+
+    /**
+     * Label colorata
+     */
     public Label getLabelDev(String message) {
         return getLabel(message, "red");
     }// end of method
@@ -1022,5 +1247,65 @@ public class ATextService extends AbstractService {
     public Label getLabelAdmin(String message) {
         return getLabel(message, "blue");
     }// end of method
+
+
+    /**
+     * Costruisce un array da una stringa multipla separata da virgole
+     */
+    public List<String> getArray(String stringaMultipla) {
+        List<String> lista = null;
+        String tag = VIRGOLA;
+        String[] parti = null;
+
+        if (isValid(stringaMultipla)) {
+            lista = new ArrayList<>();
+        } else {
+            return lista;
+        }// end of if/else cycle
+
+        if (stringaMultipla.contains(tag)) {
+            parti = stringaMultipla.split(tag);
+            if (parti != null) {
+                for (String value : parti) {
+                    lista.add(value);
+                }// end of for cycle
+            }// end of if cycle
+        } else {
+            lista.add(stringaMultipla);
+        }// end of if/else cycle
+
+        return lista;
+    }// end of method
+
+
+    /**
+     * Estrae delle singole stringhe separate da virgola
+     */
+    public String[] getMatrice(String stringaMultipla) {
+        String[] matrice = null;
+        List<String> lista = getArray(stringaMultipla);
+
+        if (lista != null) {
+            matrice = lista.toArray(new String[lista.size()]);
+        }// end of if cycle
+
+        return matrice;
+    }// end of method
+
+
+    /**
+     * Estrae delle singole stringhe separate da virgola
+     */
+    public Integer[] getMatriceInt(String stringaMultipla) {
+        Integer[] matrice = null;
+        List<String> lista = getArray(stringaMultipla);
+
+        if (lista != null) {
+            matrice = lista.toArray(new Integer[lista.size()]);
+        }// end of if cycle
+
+        return matrice;
+    }// end of method
+
 
 }// end of class

@@ -54,25 +54,32 @@ public class @MODULEUPPER@Boot extends ABoot {
      public final static String DEMO_COMPANY_CODE = "demo";
 
     /**
-     * Iniettata dal costruttore <br>
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
-    private @MODULEUPPER@Vers @MODULELOWER@Vers;
+   // private @MODULEUPPER@Vers @MODULELOWER@Vers;
 
-     /**
-      * La injection viene fatta da SpringBoot in automatico <br>
-      */
+    /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
      @Autowired
      protected LogService logger;
 
-   /**
-     * Costruttore @Autowired <br>
-     *
-     * @param wamVersBoot Log delle versioni, modifiche e patch installat
-     */
+     /**
+      * Costruttore @Autowired <br>
+      * Iniettato automaticamente dal framework SpringBoot/Vaadin <br>
+      * I parametri sono disponibili ANCHE durante il ciclo init() del costruttore <br>
+      *
+      * @param testVers Log delle versioni, modifiche e patch installat
+      */
     @Autowired
-    public @MODULEUPPER@Boot(@MODULEUPPER@Vers @MODULELOWER@Vers) {
+//    public @MODULEUPPER@Boot(@MODULEUPPER@Vers @MODULELOWER@Vers) {
+    public @MODULEUPPER@Boot() {
         super();
-        this.@MODULELOWER@Vers = @MODULELOWER@Vers;
+      //  this.@MODULELOWER@Vers = @MODULELOWER@Vers;
     }// end of Spring constructor
 
     /**
@@ -96,7 +103,7 @@ public class @MODULEUPPER@Boot extends ABoot {
      * Inizializzazione delle versioni del programma specifico <br>
      */
     protected void iniziaVersioni() {
-        @MODULELOWER@Vers.inizia();
+ //       @MODULELOWER@Vers.inizia();
     }// end of method
 
 

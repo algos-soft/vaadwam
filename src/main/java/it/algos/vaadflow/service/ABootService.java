@@ -1,22 +1,26 @@
 package it.algos.vaadflow.service;
 
 import it.algos.vaadflow.application.FlowVar;
-import it.algos.vaadflow.modules.company.CompanyList;
-import it.algos.vaadflow.modules.anno.AnnoList;
-import it.algos.vaadflow.modules.role.RoleList;
-import it.algos.vaadflow.modules.utente.UtenteList;
-import it.algos.vaadflow.modules.versione.VersioneList;
-import it.algos.vaadflow.modules.preferenza.PreferenzaList;
-import it.algos.vaadflow.modules.log.LogList;
-import it.algos.vaadflow.modules.address.AddressList;
-import it.algos.vaadflow.modules.mese.MeseList;
-import it.algos.vaadflow.modules.giorno.GiornoList;
-import it.algos.vaadflow.modules.person.PersonList;
-import it.algos.vaadflow.modules.secolo.SecoloList;
-import it.algos.vaadflow.modules.logtype.LogtypeList;
 import it.algos.vaadflow.developer.DeveloperView;
 import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.address.AddressList;
+import it.algos.vaadflow.modules.anno.AnnoList;
+import it.algos.vaadflow.modules.company.CompanyList;
+import it.algos.vaadflow.modules.comune.ComuneList;
+import it.algos.vaadflow.modules.giorno.GiornoList;
+import it.algos.vaadflow.modules.log.LogList;
+import it.algos.vaadflow.modules.logtype.LogtypeList;
+import it.algos.vaadflow.modules.mese.MeseList;
+import it.algos.vaadflow.modules.person.PersonList;
+import it.algos.vaadflow.modules.preferenza.PreferenzaList;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
+import it.algos.vaadflow.modules.provincia.ProvinciaList;
+import it.algos.vaadflow.modules.regione.RegioneList;
+import it.algos.vaadflow.modules.role.RoleList;
+import it.algos.vaadflow.modules.secolo.SecoloList;
+import it.algos.vaadflow.modules.utente.UtenteList;
+import it.algos.vaadflow.modules.versione.VersioneList;
+import it.algos.vaadflow.wiz.WizView;
 import it.algos.vaadflow.wizard.WizardView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +72,11 @@ public class ABootService extends AbstractService {
     protected PreferenzaService pref;
 
 
-//    /**
-//     * Private constructor to avoid client applications to use constructor
-//     */
-//    private ABootService() {
-//    }// end of constructor
+    /**
+     * Private constructor to avoid client applications to use constructor
+     */
+    public ABootService() {
+    }// end of constructor
 
     /**
      * Gets the unique instance of this Singleton.
@@ -92,7 +96,7 @@ public class ABootService extends AbstractService {
 //            FlowCost.MENU_CLAZZ_LIST.add(DeveloperView.class);
 //        }// end of if cycle
         if (pref.isBool(EAPreferenza.showWizard.getCode())) {
-            FlowVar.menuClazzList.add(WizardView.class);
+            FlowVar.menuClazzList.add(WizView.class);
         }// end of if cycle
         if (pref.isBool(EAPreferenza.showRole.getCode())) {
             FlowVar.menuClazzList.add(RoleList.class);
@@ -127,6 +131,9 @@ public class ABootService extends AbstractService {
         if (pref.isBool(EAPreferenza.showSecolo.getCode())) {
             FlowVar.menuClazzList.add(SecoloList.class);
         }// end of if cycle
+        FlowVar.menuClazzList.add(RegioneList.class);
+        FlowVar.menuClazzList.add(ProvinciaList.class);
+        FlowVar.menuClazzList.add(ComuneList.class);
 
         //--admin
         if (pref.isBool(EAPreferenza.showPreferenza.getCode())) {

@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Scope;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static it.algos.vaadflow.application.FlowCost.USA_BACK_BUTTON;
+
 /**
  * Project vaadflow
  * Created by Algos
@@ -102,7 +104,7 @@ public class ADialog extends Dialog implements IADialog {
      * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
      */
     @Autowired
-    public PreferenzaService pref ;
+    public PreferenzaService pref;
 
     public Runnable cancelHandler;
 
@@ -232,7 +234,7 @@ public class ADialog extends Dialog implements IADialog {
      * Invocare PRIMA il metodo della superclasse
      */
     protected void fixPreferenze() {
-        this.usaCancelButton = true;
+        this.usaCancelButton = pref.isBool(USA_BACK_BUTTON);
         this.usaConfirmButton = true;
     }// end of method
 
@@ -256,6 +258,8 @@ public class ADialog extends Dialog implements IADialog {
 ////        this.usaCancelButton = false;
 //        this.open("", "", (Runnable) null, (Runnable) null);
 //    }// end of method
+
+
     /**
      * Rimanda alla superclasse <br>
      */
@@ -287,8 +291,6 @@ public class ADialog extends Dialog implements IADialog {
         this.usaCancelButton = false;
         this.open(message, additionalMessage, (Runnable) null, (Runnable) null);
     }// end of method
-
-
 
 
     /**
@@ -388,6 +390,8 @@ public class ADialog extends Dialog implements IADialog {
     public void open(AEntity entityBean, EAOperation operation, BiConsumer itemSaver, Consumer itemDeleter) {
 
     }
+
+
     public void open(String message, Consumer itemSaver) {
     }
 
