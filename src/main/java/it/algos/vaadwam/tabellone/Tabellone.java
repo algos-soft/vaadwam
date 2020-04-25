@@ -2,6 +2,7 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,10 +11,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.OptionalParameter;
-import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
@@ -40,10 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
@@ -58,8 +53,10 @@ import static it.algos.vaadwam.application.WamCost.*;
  * La griglia è composta di oggetti 'Riga' <br>
  * La griglia è composta di oggetti 'TurnoCellPolymer' <br>
  */
-@UIScope
+//@UIScope
 @Route(value = TAG_TAB_LIST, layout = WamLayout.class)
+//@PreserveOnRefresh
+
 @Qualifier(TAG_TAB_LIST)
 @Slf4j
 @AIEntity(company = EACompanyRequired.obbligatoria)
@@ -134,13 +131,12 @@ public class Tabellone extends AGridViewList {
      */
     private EAPeriodo currentPeriodValue = EAPeriodo.oggi;
 
-    ;
-
     @Autowired
     private MiliteService militeService;
 
     private AComboBox comboPeriodi;
 
+    private boolean inited;
 
     /**
      * Costruttore @Autowired <br>
@@ -154,7 +150,7 @@ public class Tabellone extends AGridViewList {
     @Autowired
     public Tabellone(@Qualifier(TAG_TAB) IAService service) {
         super(service, Riga.class);
-    }// end of Vaadin/@Route constructor
+    }
 
 
     @Override
@@ -182,38 +178,43 @@ public class Tabellone extends AGridViewList {
 
 
     /**
-     * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
-     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
-     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     * Creazione dei contenuti
+     * <p>
+     * Invocata da @Route
      */
     @Override
     protected void initView() {
-        super.initView();
 
-        //--Crea il wam-login della sessione
+        if (!inited){
+            // crea tutta la struttura standard della pagina compresa la grid
+            super.initView();
+
+            inited=true;
+        }
+
+
+        // crea il wam-login della sessione
         wamLogin = wamService.fixWamLogin();
         ALogin login = vaadinService.getLogin();
         if (login != null) {
             wamLogin = (WamLogin) login;
-//            String username=login.getUtente()!=null?login.getUtente().username:"";
-//            Milite milite= militeService.findByKeyUnica(username);
-//            wamLogin.setMilite(milite);
-//            wamLogin.setCroce((Croce)login.getCompany());
-//            wamLogin.setRoleType((EARoleType) login.getRoleType());
-        }// end of if cycle
+        }
 
-        //--se il login è obbligatorio e manca, la View non funziona
+        // se il login è obbligatorio e manca, la View non funziona
         if (vaadinService.mancaLoginSeObbligatorio()) {
             return;
-        }// end of if cycle
+        }
+
+        // carica i dati dal db e crea le righe della griglia
+        loadDataInGrid();
 
         //--provvisorio. Serve per prendere i dati da un vecchio backup mysql di 'amb'
         if (pref.isBool(USA_DEBUG)) {//@todo levare
             startDay = MigrationService.GIORNO_INIZIALE_DEBUG;
             startDay = LocalDate.now();
-        }// end of if cycle
-    }// end of method
+        }
+
+    }
 
 
     /**
@@ -258,7 +259,8 @@ public class Tabellone extends AGridViewList {
         this.setColumns(grid);
 
         // costruisce le righe
-        this.updateGrid();
+        // this.updateGrid();
+        //this.loadDataInGrid();
 
         if (pref.isBool(USA_DEBUG)) {
             grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
@@ -314,12 +316,37 @@ public class Tabellone extends AGridViewList {
      */
     @Override
     public void updateGrid() {
-        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
-
-        if (items != null) {
-            grid.setItems(items);
-        }// end of if cycle
+//        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
+//
+//        if (items != null) {
+//            grid.setItems(items);
+//        }// end of if cycle
     }// end of method
+
+
+    /**
+     * Carica gli items nella Grid, utilizzando i filtri correnti
+     */
+    private void loadDataInGrid() {
+
+        Optional<UI> optionalUI = getUI();
+        if (optionalUI.isPresent()){
+            UI ui = optionalUI.get();
+            int a=87;
+            int b=a;
+        }
+
+        Optional<Component> optComponent = getParent();
+        if (optComponent.isPresent()){
+            Component comp = optComponent.get();
+            int a=87;
+            int b=a;
+        }
+
+        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
+        grid.setItems(items);
+
+    }
 
 
     /**
