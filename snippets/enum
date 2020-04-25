@@ -1,0 +1,23 @@
+    private LibBio libBio;
+
+
+    public void setLibBio(LibBio libBio) {
+        this.libBio = libBio;
+    }// end of method
+
+
+    @Component
+    public static class ParBioServiceInjector {
+
+        @Autowired
+        private LibBio libBio;
+
+
+        @PostConstruct
+        public void postConstruct() {
+            for (ParBio parBio : ParBio.values()) {
+                parBio.setLibBio(libBio);
+            }// end of for cycle
+        }// end of method
+
+    }// end of class

@@ -1,0 +1,11 @@
+Le informazioni possono essere visualizzate in 3 modi:
+
+1) di sistema
+   System.out.println("Attenzione. La directory di VaadFlow è cambiata");
+
+2) necessita Annotation @Slf4j della classe
+   log.info("Attenzione. La directory di VaadFlow è cambiata");
+
+3) necessita @Autowired protected LogService logger;
+   logger.error("Attenzione. La directory di VaadFlow è cambiata", WizDialog.class, "regolazioniIniziali");
+

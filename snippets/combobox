@@ -1,0 +1,2 @@
+        // Choose which property from Department is the presentation value
+        fieldComboProgetti.setItemLabelGenerator(File::getName);

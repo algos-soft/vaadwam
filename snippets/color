@@ -1,0 +1,1 @@
+            label.getElement().getStyle().set("color", labelColor);

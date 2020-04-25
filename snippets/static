@@ -1,0 +1,7 @@
+*metodo static alla partenza di un file 'static' o 'singleton'
+
+    //--blocco di codice statico eseguito quando questa classe viene 'iniettata' da SpringBoot
+    static {
+        System.out.println("This is a static block");
+    }// end of static method
+
