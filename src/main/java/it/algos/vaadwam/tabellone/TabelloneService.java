@@ -273,7 +273,6 @@ public class TabelloneService extends AService {
         return colore;
     }// end of method
 
-
     /**
      * Colore del turno in funzione della data corrente <br>
      * I periodi di colore cambiano da Croce a Croce <br>
@@ -286,7 +285,6 @@ public class TabelloneService extends AService {
         if (turno == null) {
             return colore;
         }// end of if/else cycle
-
 
         if (turnoService.isValido(turno)) {
             colore = EAWamColore.normale;
