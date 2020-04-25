@@ -23,7 +23,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 public class MainView extends AppLayout {
 
     public MainView() {
-        setPrimarySection(Section.DRAWER);
+        setPrimarySection(AppLayout.Section.DRAWER);
         Image img = new Image("https://i.imgur" +
                 ".com/GPpnszs.png", "Vaadin Logo");
         img.setHeight("44px");

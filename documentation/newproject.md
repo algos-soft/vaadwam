@@ -1,7 +1,7 @@
 #Documentazione per creare un nuovo progetto
 
 IDEA, creazione di un nuovo progetto di base con VaadinFlow e SpringBoot<br>
-Usa Vaadin 10.0.0 e IntelliJ Idea 2018.1.5 
+Usa Vaadin 14.0.1 e IntelliJ Idea 2019.3
    	
 
 ###Creazione struttura base project Idea
@@ -10,22 +10,25 @@ Usa Vaadin 10.0.0 e IntelliJ Idea 2018.1.5
 
 2. Selezionare **Maven** a sinistra (la seconda opzione del secondo gruppo)
 
-3. Non selezionare 'Create from archetype'.
+3. Controllare che Project SDK sia selezionato. Se manca, crearlo -> _New_
+
+4. Non selezionare 'Create from archetype'.
    <br>Confermare -> _Next_
 
-4. Scegliere il nome del progetto (minuscolo)
-   <br>Group: it.algos.nomeNuovoProgetto
-   <br>Artifact: nomeNuovoProgetto
-   <br>Confermare -> _Next_
+6. Controllare 'Name' del progetto (minuscolo) e 'Location' d'installazione.
 
-5. Controllare il nome del progetto (minuscolo) e la directory d'installazione.
+5. Aprire 'Artifact Coordinates' e regolare: 
+   <br>GroupId: it.algos
+   <br>ArtifactId: nomeNuovoProgetto
+   <br>Version: 1.0-SNAPSHOT
    <br> Confermare -> _Finish_
+
 
 
 
 ###Creazione nuovo progetto
 
-1. Aprire 'vaadbase' e lanciarlo
+1. Aprire 'vaadflow' e lanciarlo
 
 2. Clicca sul meu **Wizard** e sul bottone 'New project'
 
@@ -35,11 +38,11 @@ Usa Vaadin 10.0.0 e IntelliJ Idea 2018.1.5
 
 
 
-###Struttura base 'vaadbase'
+###Struttura base 'vaadflow'
 
-1. Viene creata la struttura base di un progetto, copiando i sorgenti del progetto 'it.algos.vaadbase' 
+1. Viene creata la struttura base di un progetto, copiando i sorgenti del progetto 'it.algos.vaadflow' 
 
-2. Viene creata in 'src/main/java', una directory 'it.algos.vaadbase'
+2. Viene creata in 'src/main/java', una directory 'it.algos.vaadflow'
 
 
 

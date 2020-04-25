@@ -1,3 +1,22 @@
 
 * prima previsto e poi ottenuto
         Assert.assertEquals(previsto, ottenuto);
+
+    @BeforeAll
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(service);
+        MockitoAnnotations.initMocks(text);
+        MockitoAnnotations.initMocks(array);
+        service.text = text;
+        service.array = array;
+        service.array.text = text;
+        service.text.array = array;
+    }// end of method
+
+    @BeforeEach
+    public void setUp2() {
+        nomeFile = VUOTA;
+        unFile = null;
+        nomeCompletoDirectory = PATH_DIRECTORY_TEST;
+    }// end of method

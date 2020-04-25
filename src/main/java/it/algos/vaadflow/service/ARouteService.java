@@ -42,7 +42,9 @@ public class ARouteService extends AbstractService {
 
 
     /**
-     * Private constructor to avoid client applications to use constructor
+     * Private constructor to avoid client applications to use constructor <br>
+     * In alcune circostanze SpringBoot non riesce a costruire l'istanza <br>
+     * Rimesso 'public' al posto del precedente 'private' <br>
      */
     public ARouteService() {
     }// end of constructor
@@ -73,7 +75,7 @@ public class ARouteService extends AbstractService {
      * @return the translated {@code String}.
      *
      * @throws UnsupportedEncodingException If the named encoding is not supported
-     * @see URLDecoder#decode(String, String)
+     * @see URLDecoder#decode(java.lang.String, java.lang.String)
      * @since 1.4
      */
     public String codifica(String text) {
@@ -105,7 +107,7 @@ public class ARouteService extends AbstractService {
      *
      * @throws UnsupportedEncodingException If character encoding needs to be consulted, but
      *                                      named character encoding is not supported
-     * @see URLEncoder#encode(String, String)
+     * @see URLEncoder#encode(java.lang.String, java.lang.String)
      * @since 1.4
      */
     public String decodifica(String textUTF8) {

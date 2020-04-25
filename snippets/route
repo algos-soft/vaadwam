@@ -9,8 +9,10 @@
 
     //--diversi parametri
     //--si aggiunge, come secondo parametro di navigate(), una query costruita da una mappa chiave=valore
-    final QueryParameters query = new QueryParameters(mappa);
-    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
+        HashMap mappa = new HashMap();
+        mappa.put("mariorr", "domani");
+        final QueryParameters query = routeService.getQuery(mappa);
+        getUI().ifPresent(ui -> ui.navigate("form", query));
     8080/turnoedit?servizio=crfAmb-pom&giorno=4
 
 

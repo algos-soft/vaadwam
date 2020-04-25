@@ -1,5 +1,6 @@
         Button edit = new Button(testoBottoneEdit, event -> dialog.open(entityBean, EAOperation.edit, context));
 
+        bottone.getElement().setAttribute("theme", "error");
 
         Button newButton = new Button("New entity", new Icon("lumo", "plus"));
         newButton.getElement().setAttribute("theme", "primary");
@@ -29,3 +30,5 @@ A native button that uses the browser’s look:
     NativeButton nativeButton = new NativeButton("Native Button");
     buttonLayout.addComponent(nativeButton);
 
+cancelButton.addClickShortcut(Key.ARROW_LEFT);
+buttonNew.addClickShortcut(Key.KEY_N, KeyModifier.ALT);
