@@ -7,6 +7,7 @@ import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.turno.Turno;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -33,6 +34,9 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_TURNI;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TurnoIscrizione {
+
+    //--identificatore
+    public String keyTag;
 
     public Iscrizione iscrizioneEntity;
 
@@ -84,6 +88,7 @@ public class TurnoIscrizione {
 
     private Turno turnoEntity;
 
+    private TurnoIscrizioneModel turnoIscrizioneModello;
 
 
     /**
@@ -101,11 +106,18 @@ public class TurnoIscrizione {
     }// end of constructor
 
 
-    public TurnoIscrizione(TurnoEditModel modello, Turno turnoEntity, int pos) {
-//        this.modello = modello;
+    public TurnoIscrizione(Turno turnoEntity, Iscrizione iscrizioneEntity, TurnoIscrizioneModel turnoIscrizioneModello) {
         this.turnoEntity = turnoEntity;
-//        this.pos = pos;
+        this.iscrizioneEntity = iscrizioneEntity;
+        this.turnoIscrizioneModello = turnoIscrizioneModello;
     }// end of constructor
+
+
+//    public TurnoIscrizione(TurnoEditModel modello, Turno turnoEntity, int pos) {
+////        this.modello = modello;
+//        this.turnoEntity = turnoEntity;
+////        this.pos = pos;
+//    }// end of constructor
 
 
     /**
@@ -120,6 +132,18 @@ public class TurnoIscrizione {
      */
     @PostConstruct
     protected void postConstruct() {
+        if (turnoIscrizioneModello == null) {
+            creaDaTurnoServer();
+        } else {
+            creaDaModelloClient();
+        }// end of if/else cycle
+    }// end of method
+
+
+    protected void creaDaTurnoServer() {
+        //--identificatore per confrontare le istanze TurnoIscrizioneModel del Client con quelle del Server
+        this.keyTag = RandomUtils.nextInt() + VUOTA;
+
         LocalTime inizioTime = iscrizioneEntity != null ? iscrizioneEntity.inizio : null;
         LocalTime fineTime = iscrizioneEntity != null ? iscrizioneEntity.fine : null;
         Servizio servizio = turnoEntity.getServizio();
@@ -139,6 +163,13 @@ public class TurnoIscrizione {
         inizioTxt = inizioTime != null ? inizioTime.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString();
         noteTxt = iscrizioneEntity != null ? iscrizioneEntity.note : VUOTA;
         fineTxt = fineTime != null ? fineTime.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString();
+    }// end of method
+
+
+    @Deprecated
+    protected void creaDaModelloClient() {
+        //--identificatore per confrontare le istanze TurnoIscrizioneModel del Client con quelle del Server
+        this.keyTag = turnoIscrizioneModello.getKeyTag();
     }// end of method
 
 

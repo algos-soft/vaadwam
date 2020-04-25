@@ -5,9 +5,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -26,8 +26,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_TAB;
+import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 
 /**
  * Project vaadwam
@@ -99,6 +99,9 @@ public class TabelloneService extends AService {
      */
     @Autowired
     protected CroceService croceService;
+
+    @Autowired
+    private MiliteService militeService;
 
 
     /**
@@ -341,7 +344,7 @@ public class TabelloneService extends AService {
 
         if (array.isValid(listaIscrizioniDelTurno)) {
             for (Iscrizione iscrizioneEntity : listaIscrizioniDelTurno) {
-                turnoIscrizione = appContext.getBean(TurnoIscrizione.class, turnoEntity,iscrizioneEntity);
+                turnoIscrizione = appContext.getBean(TurnoIscrizione.class, turnoEntity, iscrizioneEntity);
                 listaTurnoIscrizioni.add(turnoIscrizione);
             }// end of for cycle
         }// end of if cycle
@@ -360,7 +363,7 @@ public class TabelloneService extends AService {
 
         if (array.isValid(listaTurnoIscrizioni)) {
             for (TurnoIscrizione turnoIscrizione : listaTurnoIscrizioni) {
-                turnoIscrizioneModello = creaItemIscrizioni(turnoIscrizione);
+                turnoIscrizioneModello = creaItemIscrizioneModello(turnoIscrizione);
                 listaTurnoIscrizioniModello.add(turnoIscrizioneModello);
             }// end of for cycle
         }// end of if cycle
@@ -372,9 +375,11 @@ public class TabelloneService extends AService {
     /**
      * Costruisce un singolo item del modello dati per il collegamento TurnoEditPolymer con turno-edit.html <br>
      */
-    public TurnoIscrizioneModel creaItemIscrizioni(TurnoIscrizione turnoIscrizione) {
+    @Deprecated
+    public TurnoIscrizioneModel creaItemIscrizioneModello(TurnoIscrizione turnoIscrizione) {
         TurnoIscrizioneModel turnoIscrizioneModello = new TurnoIscrizioneModel();
 
+        turnoIscrizioneModello.setKeyTag(turnoIscrizione.keyTag);
         turnoIscrizioneModello.setColore(turnoIscrizione.coloreTxt);
         turnoIscrizioneModello.setIcona(turnoIscrizione.iconaTxt);
         turnoIscrizioneModello.setMilite(turnoIscrizione.militetxt);
@@ -387,5 +392,6 @@ public class TabelloneService extends AService {
 
         return turnoIscrizioneModello;
     }// end of method
+
 
 }// end of class
