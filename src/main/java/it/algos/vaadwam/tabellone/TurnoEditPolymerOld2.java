@@ -371,80 +371,80 @@ public class TurnoEditPolymerOld2 extends PolymerTemplate<TurnoEditModel> implem
             }// end of for cycle
         }// end of if cycle
 
-        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
-            fixIscrizionePrima(listaIscrizioni.get(0));
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
-            fixIscrizioneSeconda(listaIscrizioni.get(1));
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
-            fixIscrizioneTerza(listaIscrizioni.get(2));
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
-            fixIscrizioneQuarta(listaIscrizioni.get(3));
-        }// end of if cycle
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
+//            fixIscrizionePrima(listaIscrizioni.get(0));
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
+//            fixIscrizioneSeconda(listaIscrizioni.get(1));
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
+//            fixIscrizioneTerza(listaIscrizioni.get(2));
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
+//            fixIscrizioneQuarta(listaIscrizioni.get(3));
+//        }// end of if cycle
 
         fixAbilitazioneIscrizioni();
     }// end of method
 
 
-    private void fixIscrizionePrima(TurnoIscrizione turnoIscrizione) {
-        getModel().setPrimaIscrizione(true);
-        getModel().setColorePrima(turnoIscrizione.coloreTxt);
-        getModel().setIconaPrima(turnoIscrizione.iconaTxt);
-
-        getModel().setMilitePrima(turnoIscrizione.militetxt);
-        getModel().setFunzionePrima(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioPrima(turnoIscrizione.inizioTxt);
-        getModel().setNotePrima(turnoIscrizione.noteTxt);
-        getModel().setFinePrima(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneSeconda(TurnoIscrizione turnoIscrizione) {
-        getModel().setSecondaIscrizione(true);
-        getModel().setColoreSeconda(turnoIscrizione.coloreTxt);
-        getModel().setIconaSeconda(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteSeconda(turnoIscrizione.militetxt);
-        getModel().setFunzioneSeconda(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioSeconda(turnoIscrizione.inizioTxt);
-        getModel().setNoteSeconda(turnoIscrizione.noteTxt);
-        getModel().setFineSeconda(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneTerza(TurnoIscrizione turnoIscrizione) {
-        getModel().setTerzaIscrizione(true);
-        getModel().setColoreTerza(turnoIscrizione.coloreTxt);
-        getModel().setIconaTerza(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteTerza(turnoIscrizione.militetxt);
-        getModel().setFunzioneTerza(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioTerza(turnoIscrizione.inizioTxt);
-        getModel().setNoteTerza(turnoIscrizione.noteTxt);
-        getModel().setFineTerza(turnoIscrizione.fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneQuarta(TurnoIscrizione turnoIscrizione) {
-        getModel().setQuartaIscrizione(true);
-        getModel().setColoreQuarta(turnoIscrizione.coloreTxt);
-        getModel().setIconaQuarta(turnoIscrizione.iconaTxt);
-
-        getModel().setMiliteQuarta(turnoIscrizione.militetxt);
-        getModel().setFunzioneQuarta(turnoIscrizione.funzioneTxt);
-
-        getModel().setInizioQuarta(turnoIscrizione.inizioTxt);
-        getModel().setNoteQuarta(turnoIscrizione.noteTxt);
-        getModel().setFineQuarta(turnoIscrizione.fineTxt);
-    }// end of method
+//    private void fixIscrizionePrima(TurnoIscrizione turnoIscrizione) {
+//        getModel().setPrimaIscrizione(true);
+//        getModel().setColorePrima(turnoIscrizione.coloreTxt);
+//        getModel().setIconaPrima(turnoIscrizione.iconaTxt);
+//
+//        getModel().setMilitePrima(turnoIscrizione.militetxt);
+//        getModel().setFunzionePrima(turnoIscrizione.funzioneTxt);
+//
+//        getModel().setInizioPrima(turnoIscrizione.inizioTxt);
+//        getModel().setNotePrima(turnoIscrizione.noteTxt);
+//        getModel().setFinePrima(turnoIscrizione.fineTxt);
+//    }// end of method
+//
+//
+//    private void fixIscrizioneSeconda(TurnoIscrizione turnoIscrizione) {
+//        getModel().setSecondaIscrizione(true);
+//        getModel().setColoreSeconda(turnoIscrizione.coloreTxt);
+//        getModel().setIconaSeconda(turnoIscrizione.iconaTxt);
+//
+//        getModel().setMiliteSeconda(turnoIscrizione.militetxt);
+//        getModel().setFunzioneSeconda(turnoIscrizione.funzioneTxt);
+//
+//        getModel().setInizioSeconda(turnoIscrizione.inizioTxt);
+//        getModel().setNoteSeconda(turnoIscrizione.noteTxt);
+//        getModel().setFineSeconda(turnoIscrizione.fineTxt);
+//    }// end of method
+//
+//
+//    private void fixIscrizioneTerza(TurnoIscrizione turnoIscrizione) {
+//        getModel().setTerzaIscrizione(true);
+//        getModel().setColoreTerza(turnoIscrizione.coloreTxt);
+//        getModel().setIconaTerza(turnoIscrizione.iconaTxt);
+//
+//        getModel().setMiliteTerza(turnoIscrizione.militetxt);
+//        getModel().setFunzioneTerza(turnoIscrizione.funzioneTxt);
+//
+//        getModel().setInizioTerza(turnoIscrizione.inizioTxt);
+//        getModel().setNoteTerza(turnoIscrizione.noteTxt);
+//        getModel().setFineTerza(turnoIscrizione.fineTxt);
+//    }// end of method
+//
+//
+//    private void fixIscrizioneQuarta(TurnoIscrizione turnoIscrizione) {
+//        getModel().setQuartaIscrizione(true);
+//        getModel().setColoreQuarta(turnoIscrizione.coloreTxt);
+//        getModel().setIconaQuarta(turnoIscrizione.iconaTxt);
+//
+//        getModel().setMiliteQuarta(turnoIscrizione.militetxt);
+//        getModel().setFunzioneQuarta(turnoIscrizione.funzioneTxt);
+//
+//        getModel().setInizioQuarta(turnoIscrizione.inizioTxt);
+//        getModel().setNoteQuarta(turnoIscrizione.noteTxt);
+//        getModel().setFineQuarta(turnoIscrizione.fineTxt);
+//    }// end of method
 
 
     /**
@@ -479,7 +479,7 @@ public class TurnoEditPolymerOld2 extends PolymerTemplate<TurnoEditModel> implem
         //--Quella segnata viene abilitata. Tutte le altre disabilitate.
         if (array.isValid(listaIscrizioni)) {
             for (TurnoIscrizione turnoIscr : listaIscrizioni) {
-                militeIsc = turnoIscr.iscrizione.getMilite();
+                militeIsc = turnoIscr.iscrizioneEntity.getMilite();
                 if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
                     militeLoggatoGiaSegnato = true;
                     turnoIscr.abilitata = true;
@@ -501,25 +501,25 @@ public class TurnoEditPolymerOld2 extends PolymerTemplate<TurnoEditModel> implem
 
 
     private void abilitaIscrizioni() {
-        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
-            getModel().setAbilitataPrima(listaIscrizioni.get(0).abilitata);
-            getModel().setAbilitataPickerPrima(listaIscrizioni.get(0).abilitataPicker);
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
-            getModel().setAbilitataSeconda(listaIscrizioni.get(1).abilitata);
-            getModel().setAbilitataPickerSeconda(listaIscrizioni.get(1).abilitataPicker);
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
-            getModel().setAbilitataTerza(listaIscrizioni.get(2).abilitata);
-            getModel().setAbilitataPickerTerza(listaIscrizioni.get(2).abilitataPicker);
-        }// end of if cycle
-
-        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
-            getModel().setAbilitataQuarta(listaIscrizioni.get(3).abilitata);
-            getModel().setAbilitataPickerQuarta(listaIscrizioni.get(3).abilitataPicker);
-        }// end of if cycle
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 0) {
+//            getModel().setAbilitataPrima(listaIscrizioni.get(0).abilitata);
+//            getModel().setAbilitataPickerPrima(listaIscrizioni.get(0).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 1) {
+//            getModel().setAbilitataSeconda(listaIscrizioni.get(1).abilitata);
+//            getModel().setAbilitataPickerSeconda(listaIscrizioni.get(1).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 2) {
+//            getModel().setAbilitataTerza(listaIscrizioni.get(2).abilitata);
+//            getModel().setAbilitataPickerTerza(listaIscrizioni.get(2).abilitataPicker);
+//        }// end of if cycle
+//
+//        if (listaIscrizioni != null && listaIscrizioni.size() > 3) {
+//            getModel().setAbilitataQuarta(listaIscrizioni.get(3).abilitata);
+//            getModel().setAbilitataPickerQuarta(listaIscrizioni.get(3).abilitataPicker);
+//        }// end of if cycle
     }// end of method
 
 
@@ -706,80 +706,80 @@ public class TurnoEditPolymerOld2 extends PolymerTemplate<TurnoEditModel> implem
     }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangePrima() {
-        String inizioText = getModel().getInizioPrima();
-        String noteText = getModel().getNotePrima();
-        String fineText = getModel().getFinePrima();
-
-        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
-    }// end of method
-
-
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeSeconda() {
-        String inizioText = getModel().getInizioSeconda();
-        String noteText = getModel().getNoteSeconda();
-        String fineText = getModel().getFineSeconda();
-
-        handleChange(turnoEntity.iscrizioni.get(1), inizioText, noteText, fineText);
-    }// end of method
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangePrima() {
+//        String inizioText = getModel().getInizioPrima();
+//        String noteText = getModel().getNotePrima();
+//        String fineText = getModel().getFinePrima();
+//
+//        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
+//    }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeTerza() {
-        String inizioText = getModel().getInizioTerza();
-        String noteText = getModel().getNoteTerza();
-        String fineText = getModel().getFineTerza();
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeSeconda() {
+//        String inizioText = getModel().getInizioSeconda();
+//        String noteText = getModel().getNoteSeconda();
+//        String fineText = getModel().getFineSeconda();
+//
+//        handleChange(turnoEntity.iscrizioni.get(1), inizioText, noteText, fineText);
+//    }// end of method
 
-        handleChange(turnoEntity.iscrizioni.get(2), inizioText, noteText, fineText);
-    }// end of method
+
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeTerza() {
+//        String inizioText = getModel().getInizioTerza();
+//        String noteText = getModel().getNoteTerza();
+//        String fineText = getModel().getFineTerza();
+//
+//        handleChange(turnoEntity.iscrizioni.get(2), inizioText, noteText, fineText);
+//    }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeQuarta() {
-        String inizioText = getModel().getInizioQuarta();
-        String noteText = getModel().getNoteQuarta();
-        String fineText = getModel().getFineQuarta();
-
-        handleChange(turnoEntity.iscrizioni.get(3), inizioText, noteText, fineText);
-    }// end of method
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeQuarta() {
+//        String inizioText = getModel().getInizioQuarta();
+//        String noteText = getModel().getNoteQuarta();
+//        String fineText = getModel().getFineQuarta();
+//
+//        handleChange(turnoEntity.iscrizioni.get(3), inizioText, noteText, fineText);
+//    }// end of method
 
 
     /**

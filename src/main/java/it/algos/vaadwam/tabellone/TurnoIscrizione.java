@@ -22,6 +22,7 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_TURNI;
  * QUESTA CLASSE VA ELIMINATA, E' SOSTITUITA DA TurnoIscrzioneModel - Alex 12 apr 2020
  */
 
+
 /**
  * Project vaadwam
  * Created by Algos
@@ -33,7 +34,7 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_TURNI;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TurnoIscrizione {
 
-    public Iscrizione iscrizione;
+    public Iscrizione iscrizioneEntity;
 
     public boolean abilitata;
 
@@ -77,11 +78,12 @@ public class TurnoIscrizione {
     @Autowired
     private TabelloneService tabelloneService;
 
-    private int pos;
+//    private int pos;
 
-    private TurnoEditModel modello;
+//    private TurnoEditModel modello;
 
     private Turno turnoEntity;
+
 
 
     /**
@@ -93,10 +95,16 @@ public class TurnoIscrizione {
     }// end of constructor
 
 
-    public TurnoIscrizione(TurnoEditModel modello, Turno turnoEntity, int pos) {
-        this.modello = modello;
+    public TurnoIscrizione(Turno turnoEntity, Iscrizione iscrizioneEntity) {
         this.turnoEntity = turnoEntity;
-        this.pos = pos;
+        this.iscrizioneEntity = iscrizioneEntity;
+    }// end of constructor
+
+
+    public TurnoIscrizione(TurnoEditModel modello, Turno turnoEntity, int pos) {
+//        this.modello = modello;
+        this.turnoEntity = turnoEntity;
+//        this.pos = pos;
     }// end of constructor
 
 
@@ -112,115 +120,32 @@ public class TurnoIscrizione {
      */
     @PostConstruct
     protected void postConstruct() {
-        if (pos == 0) {
-            fixIscrizionePrima();
-        }// end of if cycle
-
-        if (pos == 1) {
-            fixIscrizioneSeconda();
-        }// end of if cycle
-
-        if (pos == 2) {
-            fixIscrizioneTerza();
-        }// end of if cycle
-
-        if (pos == 3) {
-            fixIscrizioneQuarta();
-        }// end of if cycle
-    }// end of method
-
-
-    private void fixIscrizioneBase(Iscrizione iscrizione) {
-        LocalTime inizioTime = iscrizione != null ? iscrizione.inizio : null;
-        LocalTime fineTime = iscrizione != null ? iscrizione.fine : null;
+        LocalTime inizioTime = iscrizioneEntity != null ? iscrizioneEntity.inizio : null;
+        LocalTime fineTime = iscrizioneEntity != null ? iscrizioneEntity.fine : null;
         Servizio servizio = turnoEntity.getServizio();
 
         abilitata = false;
         abilitataPicker = false;
 
-        funzioneEntity = iscrizione != null ? iscrizione.funzione : null;
-        militeEntity = iscrizione != null ? iscrizione.milite : null;
+        funzioneEntity = iscrizioneEntity != null ? iscrizioneEntity.funzione : null;
+        militeEntity = iscrizioneEntity != null ? iscrizioneEntity.milite : null;
 
-        coloreTxt = fixColor(iscrizione);
-        iconaTxt = fixIcona(iscrizione);
+        coloreTxt = fixColor();
+        iconaTxt = fixIcona();
 
         funzioneTxt = funzioneEntity != null ? funzioneEntity.code : VUOTA;
         militetxt = militeEntity != null ? militeEntity.username : VUOTA;
 
         inizioTxt = inizioTime != null ? inizioTime.toString() : servizio != null ? servizio.getInizio().toString() : LocalTime.MIDNIGHT.toString();
-        noteTxt = iscrizione != null ? iscrizione.note : VUOTA;
+        noteTxt = iscrizioneEntity != null ? iscrizioneEntity.note : VUOTA;
         fineTxt = fineTime != null ? fineTime.toString() : servizio != null ? servizio.getFine().toString() : LocalTime.MIDNIGHT.toString();
-    }// end of method
-
-
-    public void fixIscrizionePrima() {
-        iscrizione = turnoEntity.iscrizioni.get(0);
-        fixIscrizioneBase(iscrizione);
-
-        modello.setColorePrima(coloreTxt);
-        modello.setIconaPrima(iconaTxt);
-
-        modello.setFunzionePrima(funzioneTxt);
-        modello.setMilitePrima(militetxt);
-
-        modello.setInizioPrima(inizioTxt);
-        modello.setNotePrima(VUOTA);
-        modello.setFinePrima(fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneSeconda() {
-        iscrizione = turnoEntity.iscrizioni.get(1);
-        fixIscrizioneBase(iscrizione);
-
-        modello.setColoreSeconda(coloreTxt);
-        modello.setIconaSeconda(iconaTxt);
-
-        modello.setFunzioneSeconda(funzioneTxt);
-        modello.setMiliteSeconda(militetxt);
-
-        modello.setInizioSeconda(inizioTxt);
-        modello.setNoteSeconda(noteTxt);
-        modello.setFineSeconda(fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneTerza() {
-        iscrizione = turnoEntity.iscrizioni.get(2);
-        fixIscrizioneBase(iscrizione);
-
-        modello.setColoreTerza(coloreTxt);
-        modello.setIconaTerza(iconaTxt);
-
-        modello.setFunzioneTerza(funzioneTxt);
-        modello.setMiliteTerza(militetxt);
-
-        modello.setInizioTerza(inizioTxt);
-        modello.setNoteTerza(noteTxt);
-        modello.setFineTerza(fineTxt);
-    }// end of method
-
-
-    private void fixIscrizioneQuarta() {
-        iscrizione = turnoEntity.iscrizioni.get(3);
-        fixIscrizioneBase(iscrizione);
-
-        modello.setColoreQuarta(coloreTxt);
-        modello.setIconaQuarta(iconaTxt);
-
-        modello.setFunzioneQuarta(funzioneTxt);
-        modello.setMiliteQuarta(militetxt);
-
-        modello.setInizioQuarta(inizioTxt);
-        modello.setNoteQuarta(noteTxt);
-        modello.setFineQuarta(fineTxt);
     }// end of method
 
 
     /**
      * Colore dei due bottoni della prima riga (funzione e milite) di ogni iscrizione <br>
      */
-    private String fixColor(Iscrizione iscrizioneEntity) {
+    private String fixColor() {
         String colore = "";
 
         if (pref.isBool(USA_COLORAZIONE_TURNI)) {
@@ -240,7 +165,7 @@ public class TurnoIscrizione {
     /**
      * Icona della funzione di questa iscrizione <br>
      */
-    private String fixIcona(Iscrizione iscrizioneEntity) {
+    private String fixIcona() {
         String iconaTxt = "";
         String tag = "vaadin:";
         Funzione funzione;

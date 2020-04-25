@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Scope;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +103,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     @Autowired
     private AArrayService array;
 
-    private List<TurnoIscrizione> turnoIscrizioneList;
+    //--wrapper per avere disponibili contemporaneamente Milite e milite.username
+    private List<TurnoIscrizione> listaTurnoIscrizioni;
+
+    //--modello dati per il collegamento TurnoEditPolymer con turno-edit.html
+    //--serve per tutte le property ESCLUSI i Button 'annulla' e 'conferma'
+    //--che sono oggetti creati in questa classe Java col loro @ID di collegamento
+    private List<TurnoIscrizioneModel> listaTurnoIscrizioniModello;
 
 
     /**
@@ -132,17 +137,18 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                 elaboraParameter(parametersMap);
             } else {
                 log.error("Parametri non corretti");
-            }
-        }
+            }// end of if/else cycle
+        }// end of if/else cycle
 
         if (turnoEntity == null) {
             Notification.show("Errore: non esiste il turno indicato", 2000, Notification.Position.MIDDLE);
             return;
-        }
+        }// end of if cycle
 
+        //--Regola i dati da presentare in base al turno selezionato.
         layoutPolymer();
 
-    }
+    }// end of method
 
 
     /**
@@ -153,8 +159,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     private void elaboraParameter(String turnoKey) {
         if (text.isValid(turnoKey)) {
             turnoEntity = turnoService.findById(turnoKey);
-        }
-    }
+        }// end of if cycle
+    }// end of method
 
 
     /**
@@ -189,37 +195,65 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         turnoEntity = turnoService.newEntity(giorno, servizio);
 
         //--elimino l'ID del turno, per poterlo distinguere da un turno esistente e già nel mongoDB
-        //--l'ID viene costruioto automaticamente con newEntity() per averlo (di norma) subito disponibile
+        //--l'ID viene costruito automaticamente con newEntity() per averlo (di norma) subito disponibile
         //--ma viene in ogni caso ri-creato da beforeSave()
         turnoEntity.id = null;
     }// end of method
 
 
     /**
-     * Regola i dati da presentare in base al turno selezionato.
+     * Regola i dati da presentare in base al turno selezionato <br>
+     * Il turno arriva come parametro di @Route a questa classe <br>
+     * Invocata da un @EventHandler di TurnoCellPolymer.handleClick() <br>
+     * Regola i valori del modello-dati per ogni componente <br>
      */
     private void layoutPolymer() {
 
-        // Data completa (estesa) del giorno di esecuzione del turno
-        String data = turnoService.getGiornoTxt(turnoEntity);
-        getModel().setGiorno(data);
+        //--Data completa (estesa) del giorno di esecuzione del turno
+        fixGiorno();
 
-        // Descrizione estesa del servizio
-        Servizio servizio = null;
-        if (turnoEntity != null) {
-            servizio = turnoEntity.getServizio();
-            if (servizio != null) {
-                getModel().setServizio(servizio.descrizione);
-            }
-        }
+        //--Descrizione estesa del servizio
+        fixServizio();
 
-        // Orario (eventuale) del turno
+        //--Orario (eventuale) del turno
         fixOrario();
 
+        //--Regolazione delle iscrizioni
         fixIscrizioni();
+
+        //--Regolazioni standard di default del bottone 'Annulla'
         fixAnnulla();
+
+        //--Regolazioni standard di default del bottone 'Conferma'
         fixConferma();
-    }
+    }// end of method
+
+
+    /**
+     * Data completa (estesa) del giorno di esecuzione del turno <br>
+     * Regola il valore del modello-dati di questo componente <br>
+     */
+    private void fixGiorno() {
+        String data = turnoService.getGiornoTxt(turnoEntity);
+        getModel().setGiorno(data);
+    }// end of method
+
+
+    /**
+     * Descrizione estesa del servizio <br>
+     * Regola il valore del modello-dati di questo componente <br>
+     */
+    private void fixServizio() {
+        Servizio servizio = null;
+
+        if (turnoEntity != null) {
+            servizio = turnoEntity.getServizio();
+        }// end of if cycle
+
+        if (servizio != null) {
+            getModel().setServizio(servizio.descrizione);
+        }// end of if cycle
+    }// end of method
 
 
     /**
@@ -227,14 +261,15 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * <p>
      * Se il servizio ha un orario definito, lo presenta in html come 'div' <br>
      * Se il servizio non ha un orario definito, lo presenta in html come due 'time-picker' <br>
+     * Regola il valore del modello-dati di questo componente <br>
      */
     private void fixOrario() {
-        String orario = "";
+        String orario = VUOTA;
         Servizio servizio = null;
 
         if (turnoEntity != null) {
             servizio = turnoEntity.getServizio();
-        }
+        }// end of if cycle
 
         if (servizio != null) {
             if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
@@ -248,62 +283,65 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
                     getModel().setFineExtra(servizio.getFine().toString());
                     getModel().setUsaOrarioLabel(false);
                     getModel().setUsaOrarioPicker(true);
-                }
-            }
-        }
+                }// end of if/else cycle
+            }// end of if cycle
+        }// end of if cycle
 
-    }
+    }// end of method
 
 
     /**
-     * Aggiunge al modello la lista delle iscrizioni
+     * Aggiunge al modello (e quindi alla pagina turno-edit.html) la lista delle iscrizioni <br>
+     * <p>
+     * Qui la lista viene costruita con i valori di turno ed iscrizione provenienti dal mongoDB <br>
+     * Successivamente i valori vengono regolati anche in maniera dinamica <br>
+     * Ci possono essere n iscrizioni, senza limiti (anche se probabilmente non oltre le 4) <br>
+     * <p>
+     * Ogni iscrizione (su due righe) ha:
+     * Nella prima riga un bottone con icona e sigla della funzione
+     * Nella prima riga un bottone col nome del milite
+     * Nella seconda riga un timePicker per l'inizio del servizio per il milite specifico
+     * Nella seconda riga un textEdit per eventuali note del milite specifico
+     * Nella seconda riga un timePicker per la fine del servizio per il milite specifico
      */
     private void fixIscrizioni() {
+        //--wrapper disponibile per elaborazioni
+        listaTurnoIscrizioni = tabelloneService.getTurnoIscrizioni(turnoEntity);
 
-        List<Iscrizione> iscrizioni = turnoEntity.getIscrizioni();
-        List<TurnoIscrizioneModel> turnoIscrizioni = new ArrayList<>();
+        //--modello dati per il collegamento TurnoEditPolymer con turno-edit.html
+        //--serve per tutte le property ESCLUSI i Button 'annulla' e 'conferma'
+        //--che sono oggetti creati in questa classe Java col loro @ID di collegamento
+        listaTurnoIscrizioniModello = tabelloneService.getTurnoIscrizioniModello(listaTurnoIscrizioni);
 
-        int i=0;
-        if (iscrizioni != null && iscrizioni.size()>0){
-            for (Iscrizione iscrizione : iscrizioni){
+        //--passa i dati al Client turno-edit.html
+        getModel().setIscrizioni(listaTurnoIscrizioniModello);
 
-                TurnoIscrizione turnoIscrizione = appContext.getBean(TurnoIscrizione.class, getModel(), turnoEntity, i);
-
-                TurnoIscrizioneModel tim = new TurnoIscrizioneModel();
-                tim.setFlagIscrizione(true);
-                tim.setColore(turnoIscrizione.coloreTxt);
-                tim.setIcona(turnoIscrizione.iconaTxt);
-                tim.setMilite(turnoIscrizione.militetxt);
-                tim.setFunzione(turnoIscrizione.funzioneTxt);
-                tim.setInizio(turnoIscrizione.inizioTxt);
-                tim.setNote(turnoIscrizione.noteTxt);
-                tim.setFine(turnoIscrizione.fineTxt);
-                tim.setAbilitata(true);
-                tim.setAbilitataPicker(true);
-
-                turnoIscrizioni.add(tim);
-
-                i++;
-            }
-        }
-
-        getModel().setIscrizioni(turnoIscrizioni);
-
-        fixAbilitazioneIscrizioni();
-
-    }
+        //--regolazione iniziale, successivamente richiamata ad ogni modifica dei dati del Client
+        regolaIscrizioni();
+    }// end of method
 
 
     /**
-     * Regola la visibilità di tutte le iscrizioni <br>
+     * Regola abilita/disabilita di tutte le iscrizioni <br>
+     * Chiamata ad ogni modifica dei dati del Client <br>
+     * <p>
      * Controlla se siamo loggati come developer, come admin o come user <br>
-     * Recupera le funzioni abilitate del milite loggato
+     * Recupera le funzioni abilitate del milite loggato <br>
+     * <p>
+     * L'iscrizione per cui non si hanno i permessi è disabilitata. <br>
+     * Eventualmente differenziare col colore di scadenza del turno. <br>
+     * <p>
+     * L'iscrizione per cui si hanno i permessi è abilitata se vuota.
+     * Eventualmente differenziare col colore di scadenza del turno.
+     * Se è già segnato un milite (non quello loggato) è disabilitata.
+     * Se è già segnato il milite loggato è abilitata per permettere la cancellazione (entro il tempo previsto).
+     * <p>
      * Controlla se il milite loggato è già segnato in una iscrizione. Se è così disabilita tutte le altre <br>
      * Disabilita le iscrizioni che hanno già un milite segnato <br>
      * Disabilita le iscrizioni che hanno una funzione non abilitata per il milite loggato <br>
      * Abilita le iscrizioni rimanenti <br>
      */
-    protected void fixAbilitazioneIscrizioni() {
+    protected void regolaIscrizioni() {
         Milite militeIsc;
         boolean militeLoggatoGiaSegnato = false;
 
@@ -313,62 +351,58 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         // @todo Controlla se siamo loggati come developer, come admin o come user <br>
         if (militeLoggato == null) {
             return;
-        }
+        }// end of if cycle
 
-        // Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        // @todo per adesso
+        // @todo dovrà permettere al developer e all'admin di entrare <br>
         if (tabelloneService.isStorico(turnoEntity)) {
-            abilitaIscrizioni();
+            disabilitaAll();
             return;
-        }
+        }// end of if cycle
 
-        // Controlla se il milite loggato è già segnato in una iscrizione.
-        // Quella segnata viene abilitata. Tutte le altre disabilitate.
-        if (array.isValid(turnoIscrizioneList)) {
-            for (TurnoIscrizione turnoIscr : turnoIscrizioneList) {
-                militeIsc = turnoIscr.iscrizione.getMilite();
+        //--Controlla se il milite loggato è già segnato in una iscrizione.
+        //--Quella segnata viene abilitata. Tutte le altre disabilitate.
+        if (array.isValid(listaTurnoIscrizioni)) {
+            for (TurnoIscrizione turnoIscr : listaTurnoIscrizioni) {
+                militeIsc = turnoIscr.militeEntity;
                 if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
                     militeLoggatoGiaSegnato = true;
                     turnoIscr.abilitata = true;
                     turnoIscr.abilitataPicker = true;
-                }
-            }
-        }
+                } else {
+                    turnoIscr.abilitata = false;
+                    turnoIscr.abilitataPicker = false;
+                }// end of if/else cycle
+            }// end of for cycle
+        }// end of if cycle
 
         // Se il milite loggato non è segnato nel turno
         // abilita le iscrizioni abilitate per il milite loggato e senza un altro milite già segnato
         if (!militeLoggatoGiaSegnato) {
             abilitaOnly();
-        }
+        }// end of if cycle
 
-        abilitaIscrizioni();
+        //--sincronizza il modello
+        listaTurnoIscrizioniModello = tabelloneService.getTurnoIscrizioniModello(listaTurnoIscrizioni);
+        getModel().setIscrizioni(listaTurnoIscrizioniModello);
 
-    }
+    }// end of method
 
 
-    private void abilitaIscrizioni() {
+    /**
+     * Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+     */
+    private void disabilitaAll() {
+        if (array.isValid(listaTurnoIscrizioniModello)) {
+            for (TurnoIscrizioneModel turnoModello : listaTurnoIscrizioniModello) {
+                turnoModello.setAbilitata(false);
+                turnoModello.setAbilitataPicker(false);
+            }// end of for cycle
+        }// end of if cycle
 
-
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 0) {
-//            getModel().setAbilitataPrima(turnoIscrizioneList.get(0).abilitata);
-//            getModel().setAbilitataPickerPrima(turnoIscrizioneList.get(0).abilitataPicker);
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 1) {
-//            getModel().setAbilitataSeconda(turnoIscrizioneList.get(1).abilitata);
-//            getModel().setAbilitataPickerSeconda(turnoIscrizioneList.get(1).abilitataPicker);
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 2) {
-//            getModel().setAbilitataTerza(turnoIscrizioneList.get(2).abilitata);
-//            getModel().setAbilitataPickerTerza(turnoIscrizioneList.get(2).abilitataPicker);
-//        }// end of if cycle
-//
-//        if (turnoIscrizioneList != null && turnoIscrizioneList.size() > 3) {
-//            getModel().setAbilitataQuarta(turnoIscrizioneList.get(3).abilitata);
-//            getModel().setAbilitataPickerQuarta(turnoIscrizioneList.get(3).abilitataPicker);
-//        }// end of if cycle
-
-    }
+        getModel().setIscrizioni(listaTurnoIscrizioniModello);
+    }// end of method
 
 
     /**
@@ -382,8 +416,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         boolean iscrizioneAbilitataMiliteLoggato;
         boolean iscrizioneNonSegnata;
 
-        if (array.isValid(turnoIscrizioneList)) {
-            for (TurnoIscrizione turnoIscr : turnoIscrizioneList) {
+        if (array.isValid(listaTurnoIscrizioni)) {
+            for (TurnoIscrizione turnoIscr : listaTurnoIscrizioni) {
                 iscrizioneAbilitataMiliteLoggato = listaIDFunzioniAbilitate.contains(turnoIscr.funzioneEntity.id);
                 iscrizioneNonSegnata = turnoIscr.militeEntity == null;
                 turnoIscr.abilitata = iscrizioneAbilitataMiliteLoggato && iscrizioneNonSegnata;
@@ -393,7 +427,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
 
     /**
-     * Regolazioni standard di default <br>
+     * Regolazioni standard di default del bottone 'Annulla' <br>
      * Possono essere singolarmente modificate anche esternamente <br>
      */
     private void fixAnnulla() {
@@ -420,6 +454,53 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         conferma.addClickListener(e -> handleConferma());
         conferma.setEnabled(false);
     }// end of method
+
+
+//    /**
+//     * Se era segnato, viene cancellato <br>
+//     * Se non era segnato, lo diventa <br>
+//     * Riconsidera tutte le abilitazioni <br>
+//     * Abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleClickMiliteOld() {
+//        handleClick(turnoEntity.iscrizioni.get(0));
+//    }// end of method
+
+
+    /**
+     * @todo QUESTO  NON  FUNZIONA
+     * <p>
+     * @todo PERCHÈ  ACCETTA  IL  MODELLO TurnoIscrizioneModel E  NON  TurnoEditModel ??????
+     */
+    @EventHandler
+    public void handleClickMiliteNonFunziona(@ModelItem TurnoEditModel item) {
+        List listaIscrizioni = item.getIscrizioni();
+    }
+
+
+    /**
+     * @todo QUESTO  ARRIVA  SEMPRE  CON  ITEM  VUOTO
+     * <p>
+     * @todo SE  SPAZZOLO  IL  MODELLO-DATI  DEL  SERVER  NON  È  SINCRONIZZATO  COL  CLIENT
+     */
+    @EventHandler
+    public void handleClickMilite(@ModelItem TurnoIscrizioneModel item) {
+        //@todo************** SEMPRE  VUOTO ********
+        String nomeMilite = item.getMilite();
+        //@todo************** SEMPRE  VUOTO ********
+
+
+        //@todo************** NON  SINCRONIZZATO  COL  CLIENT ********
+        List<TurnoIscrizioneModel> iscrizioni = getModel().getIscrizioni();
+        TurnoIscrizioneModel modelloUno = iscrizioni.get(0);
+        TurnoIscrizioneModel modelloDue = iscrizioni.get(1);
+        TurnoIscrizioneModel modelloTre = iscrizioni.get(2);
+        String nomeMiliteUno = modelloUno.getMilite();
+        String nomeMiliteDue = modelloDue.getMilite();
+        String nomeMiliteTre = modelloTre.getMilite();
+        //@todo************** NON  SINCRONIZZATO  COL  CLIENT ********
+    }
 
 
     /**
@@ -458,94 +539,49 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     }// end of method
 
 
-    /**
-     * Se era segnato, viene cancellato <br>
-     * Se non era segnato, lo diventa <br>
-     * Riconsidera tutte le abilitazioni <br>
-     * Abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleClickMilite() {
-        handleClick(turnoEntity.iscrizioni.get(0));
-    }// end of method
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Se era segnato, viene cancellato <br>
+//     * Se non era segnato, lo diventa <br>
+//     * Riconsidera tutte le abilitazioni <br>
+//     * Abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleClickQuarta() {
+//        handleClick(turnoEntity.iscrizioni.get(3));
+//    }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Se era segnato, viene cancellato <br>
-     * Se non era segnato, lo diventa <br>
-     * Riconsidera tutte le abilitazioni <br>
-     * Abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleClickSeconda() {
-        handleClick(turnoEntity.iscrizioni.get(1));
-    }// end of method
-
-
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Se era segnato, viene cancellato <br>
-     * Se non era segnato, lo diventa <br>
-     * Riconsidera tutte le abilitazioni <br>
-     * Abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleClickTerza() {
-        handleClick(turnoEntity.iscrizioni.get(2));
-    }// end of method
-
-
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Se era segnato, viene cancellato <br>
-     * Se non era segnato, lo diventa <br>
-     * Riconsidera tutte le abilitazioni <br>
-     * Abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleClickQuarta() {
-        handleClick(turnoEntity.iscrizioni.get(3));
-    }// end of method
-
-
-    /**
-     * Se era segnato, viene cancellato <br>
-     * Se non era segnato, lo diventa <br>
-     * Riconsidera tutte le abilitazioni <br>
-     * Abilita il bottone 'conferma' <br>
-     */
-    private void handleClick(Iscrizione iscr) {
-        Milite militeIsc;
-
-        if (iscr != null) {
-            militeIsc = iscr.milite;
-            if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
-                iscr.milite = null;
-                handleChange(iscr, turnoEntity.inizio.toString(), VUOTA, turnoEntity.fine.toString());
-            } else {
-                iscr.milite = militeLoggato;
-                fixIscrizioni();
-            }// end of if/else cycle
-        }// end of if cycle
-
-        conferma.setEnabled(true);
-    }// end of method
+    //@todo************** QUESTO  VENIVA  CHIAMATO  DA  OGNUNA  DELLE  QUATTRO  ISCRIZIONI  SEPARATE ********
+    //@todo************** CHE  ADESSO  HO  CANCELLATO ********
+//    /**
+//     * Se era segnato, viene cancellato <br>
+//     * Se non era segnato, lo diventa <br>
+//     * Riconsidera tutte le abilitazioni <br>
+//     * Abilita il bottone 'conferma' <br>
+//     */
+//    private void handleClick(Iscrizione iscr) {
+//        Milite militeIsc;
+//
+//        if (iscr != null) {
+//            militeIsc = iscr.milite;
+//            if (militeIsc != null && militeIsc.id.equals(militeLoggato.id)) {
+//                iscr.milite = null;
+//                handleChange(iscr, turnoEntity.inizio.toString(), VUOTA, turnoEntity.fine.toString());
+//            } else {
+//                iscr.milite = militeLoggato;
+//                fixIscrizioni();
+//            }// end of if/else cycle
+//        }// end of if cycle
+//
+//        conferma.setEnabled(true);
+//    }// end of method
+    //@todo************** QUESTO  VENIVA  CHIAMATO  DA  OGNUNA  DELLE  QUATTRO  ISCRIZIONI  SEPARATE ********
 
 
     /**
@@ -556,12 +592,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         String inizio = item.getInizio();
         String fine = item.getFine();
         int a = 87;
-        int b=a;
+        int b = a;
 //        String inizioText = getModel().getInizioPrima();
 //        String noteText = getModel().getNotePrima();
 //        String fineText = getModel().getFinePrima();
 //        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
     }
+
 
     /**
      * L'ora di fine è stata modificata
@@ -571,13 +608,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         String inizio = item.getInizio();
         String fine = item.getFine();
         int a = 87;
-        int b=a;
+        int b = a;
 
 //        String inizioText = getModel().getInizioPrima();
 //        String noteText = getModel().getNotePrima();
 //        String fineText = getModel().getFinePrima();
 //        handleChange(turnoEntity.iscrizioni.get(0), inizioText, noteText, fineText);
     }
+
 
     /**
      * E' stato premutp il bottone Conferma
@@ -586,12 +624,12 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     public void handleConferma() {
 
         int a = 87;
-        int b=a;
+        int b = a;
 
         TurnoEditModel model = getModel();
         List<TurnoIscrizioneModel> iscrizioni = model.getIscrizioni();
-        for(TurnoIscrizioneModel iscrizione : iscrizioni){
-            log.info(iscrizione.getInizio()+" - "+iscrizione.getFine()+" - "+iscrizione.getNote());
+        for (TurnoIscrizioneModel iscrizione : iscrizioni) {
+            log.info(iscrizione.getInizio() + " - " + iscrizione.getFine() + " - " + iscrizione.getNote());
         }
 
         // validare i dati GUI
@@ -603,6 +641,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     }
 
+
     /**
      * E' stato premutp il bottone Annulla
      */
@@ -612,63 +651,61 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     }
 
 
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeSeconda() {
+//        String inizioText = getModel().getInizioSeconda();
+//        String noteText = getModel().getNoteSeconda();
+//        String fineText = getModel().getFineSeconda();
+//
+//        handleChange(turnoEntity.iscrizioni.get(1), inizioText, noteText, fineText);
+//    }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeSeconda() {
-        String inizioText = getModel().getInizioSeconda();
-        String noteText = getModel().getNoteSeconda();
-        String fineText = getModel().getFineSeconda();
-
-        handleChange(turnoEntity.iscrizioni.get(1), inizioText, noteText, fineText);
-    }// end of method
-
-
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeTerza() {
-        String inizioText = getModel().getInizioTerza();
-        String noteText = getModel().getNoteTerza();
-        String fineText = getModel().getFineTerza();
-
-        handleChange(turnoEntity.iscrizioni.get(2), inizioText, noteText, fineText);
-    }// end of method
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeTerza() {
+//        String inizioText = getModel().getInizioTerza();
+//        String noteText = getModel().getNoteTerza();
+//        String fineText = getModel().getFineTerza();
+//
+//        handleChange(turnoEntity.iscrizioni.get(2), inizioText, noteText, fineText);
+//    }// end of method
 
 
-    /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
-     */
-    @EventHandler
-    public void handleChangeQuarta() {
-        String inizioText = getModel().getInizioQuarta();
-        String noteText = getModel().getNoteQuarta();
-        String fineText = getModel().getFineQuarta();
-
-        handleChange(turnoEntity.iscrizioni.get(3), inizioText, noteText, fineText);
-    }// end of method
+//    /**
+//     * Java event handler on the server, run asynchronously <br>
+//     * <p>
+//     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+//     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
+//     * Uno script con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
+//     * <p>
+//     * Recupera i dati (della seconda riga) dalla GUI ed abilita il bottone 'conferma' <br>
+//     */
+//    @EventHandler
+//    public void handleChangeQuarta() {
+//        String inizioText = getModel().getInizioQuarta();
+//        String noteText = getModel().getNoteQuarta();
+//        String fineText = getModel().getFineQuarta();
+//
+//        handleChange(turnoEntity.iscrizioni.get(3), inizioText, noteText, fineText);
+//    }// end of method
 
 
     /**

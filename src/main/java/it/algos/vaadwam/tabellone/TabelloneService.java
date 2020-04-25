@@ -5,6 +5,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.riga.Riga;
@@ -25,8 +26,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadwam.application.WamCost.TAG_TAB;
-import static it.algos.vaadwam.application.WamCost.TAG_TUR;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam
@@ -326,6 +327,65 @@ public class TabelloneService extends AService {
      */
     public boolean isStorico(Turno turno) {
         return isPiuRecente(turno, 0);
+    }// end of method
+
+
+    /**
+     * Costruisce una lista wrapper di iscrizioni del turno <br>
+     * Serve per regolare in maniera sincrona tutte le iscrizioni <br>
+     */
+    public List<TurnoIscrizione> getTurnoIscrizioni(Turno turnoEntity) {
+        List<TurnoIscrizione> listaTurnoIscrizioni = new ArrayList<>();
+        TurnoIscrizione turnoIscrizione = null;
+        List<Iscrizione> listaIscrizioniDelTurno = turnoEntity.getIscrizioni();
+
+        if (array.isValid(listaIscrizioniDelTurno)) {
+            for (Iscrizione iscrizioneEntity : listaIscrizioniDelTurno) {
+                turnoIscrizione = appContext.getBean(TurnoIscrizione.class, turnoEntity,iscrizioneEntity);
+                listaTurnoIscrizioni.add(turnoIscrizione);
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaTurnoIscrizioni;
+    }// end of method
+
+
+    /**
+     * Costruisce una lista modello dati per il collegamento TurnoEditPolymer con turno-edit.html <br>
+     * Serve per tutte le property ESCLUSI i Button 'annulla' e 'conferma' <br>
+     */
+    public List<TurnoIscrizioneModel> getTurnoIscrizioniModello(List<TurnoIscrizione> listaTurnoIscrizioni) {
+        List<TurnoIscrizioneModel> listaTurnoIscrizioniModello = new ArrayList<>();
+        TurnoIscrizioneModel turnoIscrizioneModello;
+
+        if (array.isValid(listaTurnoIscrizioni)) {
+            for (TurnoIscrizione turnoIscrizione : listaTurnoIscrizioni) {
+                turnoIscrizioneModello = creaItemIscrizioni(turnoIscrizione);
+                listaTurnoIscrizioniModello.add(turnoIscrizioneModello);
+            }// end of for cycle
+        }// end of if cycle
+
+        return listaTurnoIscrizioniModello;
+    }// end of method
+
+
+    /**
+     * Costruisce un singolo item del modello dati per il collegamento TurnoEditPolymer con turno-edit.html <br>
+     */
+    public TurnoIscrizioneModel creaItemIscrizioni(TurnoIscrizione turnoIscrizione) {
+        TurnoIscrizioneModel turnoIscrizioneModello = new TurnoIscrizioneModel();
+
+        turnoIscrizioneModello.setColore(turnoIscrizione.coloreTxt);
+        turnoIscrizioneModello.setIcona(turnoIscrizione.iconaTxt);
+        turnoIscrizioneModello.setMilite(turnoIscrizione.militetxt);
+        turnoIscrizioneModello.setFunzione(turnoIscrizione.funzioneTxt);
+        turnoIscrizioneModello.setInizio(turnoIscrizione.inizioTxt);
+        turnoIscrizioneModello.setNote(turnoIscrizione.noteTxt);
+        turnoIscrizioneModello.setFine(turnoIscrizione.fineTxt);
+        turnoIscrizioneModello.setAbilitata(turnoIscrizione.abilitata);
+        turnoIscrizioneModello.setAbilitataPicker(turnoIscrizione.abilitataPicker);
+
+        return turnoIscrizioneModello;
     }// end of method
 
 }// end of class

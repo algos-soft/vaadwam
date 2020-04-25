@@ -8,8 +8,6 @@ import lombok.Data;
  */
 public class TurnoIscrizioneModel {
 
-    private boolean flagIscrizione;
-
     private String inizio;
 
     private String fine;
@@ -28,14 +26,6 @@ public class TurnoIscrizioneModel {
 
     private boolean abilitataPicker;
 
-
-    public boolean isFlagIscrizione() {
-        return flagIscrizione;
-    }
-
-    public void setFlagIscrizione(boolean flagIscrizione) {
-        this.flagIscrizione = flagIscrizione;
-    }
 
     public String getInizio() {
         return inizio;

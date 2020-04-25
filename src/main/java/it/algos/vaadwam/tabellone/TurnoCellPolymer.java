@@ -196,15 +196,15 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     /**
      * Java event handler on the server, run asynchronously <br>
      * <p>
-     * Evento ricevuto dal file html collegato e che 'gira' sul Client <br>
+     * Evento ricevuto dal file turnoCellPolymer.html collegato e che 'gira' sul Client <br>
      * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
      * Uno scritp con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
      * <p>
      * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
      * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione delle Route <br>
+     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey del turno selezionato <br>
      * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via Route rimanda al Tabellone <br>
+     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
      */
     @EventHandler
     void handleClick() {
@@ -219,43 +219,21 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     /**
      * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
      * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione delle Route <br>
+     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey del turno selezionato <br>
      * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via Route rimanda al Tabellone <br>
+     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
      */
     private void handleClickTurnoEsistente() {
-        //@todo qui occorre differenziare secondo il numero di funzioni del turno
-        int numIscr = turno.iscrizioni.size();
-
-        switch (numIscr) {
-            case 1:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO + "/" + turno));
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-                break;
-            case 2:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE + "/" + turno));
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-                break;
-            case 3:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE + "/" + turno));
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-                break;
-            case 4:
-//                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO + "/" + turno));
-                getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-                break;
-            default:
-                break;
-        } // end of switch statement
+        getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
     }// end of method
 
 
     /**
      * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
      * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione delle Route <br>
+     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey=null <br>
      * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via Route rimanda al Tabellone <br>
+     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
      */
     private void handleClickTurnoVuoto() {
         Map<String, List<String>> mappa = null;
@@ -274,35 +252,12 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
             mappa.put(KEY_MAP_SERVIZIO, lista);
 
             final QueryParameters query = new QueryParameters(mappa);
-
-            //@todo qui occorre differenziare secondo il numero di funzioni del servizio
-            int numIscr = servizioService.getFunzioniAll(servizio).size();
-            switch (numIscr) {
-                case 1:
-//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_UNO, query));
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
-                    break;
-                case 2:
-//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_DUE, query));
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
-                    break;
-                case 3:
-//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_TRE, query));
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
-                    break;
-                case 4:
-//                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT_QUATTRO, query));
-                    getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
-                    break;
-                default:
-                    break;
-            } // end of switch statement
+            getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
         } else {
             String desc = servizio.descrizione;
             String giornoTxt = date.get(giorno, EATime.weekShortMese);
             Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
         }// end of if/else cycle
-
     }// end of method
 
 
