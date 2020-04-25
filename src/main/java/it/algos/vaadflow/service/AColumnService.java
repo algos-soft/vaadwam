@@ -753,7 +753,7 @@ public class AColumnService extends AbstractService {
                 width = "3em";
                 break;
             default:
-                logger.warn("Switch - caso non definito", AColumnService.class, "create");
+//                logger.warn("Switch - caso non definito", AColumnService.class, "create");
                 log.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
