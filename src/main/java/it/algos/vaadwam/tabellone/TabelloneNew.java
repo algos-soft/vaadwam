@@ -1,27 +1,24 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.*;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.AArrayService;
@@ -29,10 +26,6 @@ import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.AComboBox;
-import it.algos.vaadflow.ui.list.AGridViewList;
-import it.algos.vaadwam.WamLayout;
-import it.algos.vaadwam.migration.MigrationService;
-import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
@@ -48,7 +41,6 @@ import org.springframework.context.ApplicationContext;
 import java.time.LocalDate;
 import java.util.*;
 
-import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -63,9 +55,13 @@ import static it.algos.vaadwam.application.WamCost.*;
  */
 //@UIScope
 //@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
-@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
+//@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
+@Route(value = TAG_TAB_LIST+"new")
+//@Tag("tabellone-polymer")
+//@HtmlImport("src/views/tabellone/tabellone-polymer.html")
+
 //@Route(value = TAG_TAB_LIST)
-@PreserveOnRefresh
+//@PreserveOnRefresh
 
 @Qualifier(TAG_TAB_LIST+"new")
 @Slf4j
@@ -176,7 +172,13 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
      */
     protected Map<String, String> parametersMap = null;
 
+//    @Id("tabellonegrid")
+//    private Grid grid;
+//    @Id("host")
+//    private Div host;
+
     private Grid grid;
+
 
     private boolean inited;
 
@@ -192,12 +194,50 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
     @Autowired
     public TabelloneNew(@Qualifier(TAG_TAB) IAService service) {
 
-        setId("tabelloneGrid");
+        //setSizeUndefined();
 
+//        setId("tabelloneDIV");
+//        getStyle().set("width","500px");
+//        getStyle().set("height","400px");
+//        getStyle().set("background-color","green");
+
+
+
+        grid = new Grid(Riga.class, false);
+        //host.add(grid);
+        //grid = getElement("tabellone-grid");
+        regolaGrid();
+        //grid.setId("tabelloneGrid");
+        this.add(this.grid);
+
+        VerticalLayout comp = new VerticalLayout();
+        comp.setId("comp1");
+        comp.getStyle().set("width","250px");
+        comp.getStyle().set("height","200px");
+        comp.getStyle().set("background-color","yellow");
+        comp.getStyle().set("overflow-y","scroll");
+        comp.getStyle().set("overflow-x","scroll");
+
+
+        Div comp2 = new Div();
+        comp2.setId("comp2");
+        comp2.getStyle().set("width","800px");
+        comp2.getStyle().set("height","2000px");
+        comp2.getStyle().set("background-color","coral");
+        comp.add(comp2);
+
+        //this.add(comp);
+
+
+
+
+        //div = new Div();
+//        Label label = new Label("Ciao");
+//        this.add(label);
 
         //super(service, Riga.class);
 
-        UI.getCurrent().getPage().addJavaScript("test.js");
+        //UI.getCurrent().getPage().addJavaScript("test.js");
 
     }
 
@@ -238,14 +278,13 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
-        // create the components if not already existing
-        if (this.grid==null){
-            this.grid = creaGrid();
-            this.removeAll();
-            this.add(this.grid);
-        }
+//        // create the components if not already existing
+//        if (this.grid==null){
+//            this.grid = creaGrid();
+//            this.removeAll();
+//            this.add(this.grid);
+//        }
 
-        // always load the data
         loadDataInGrid();
 
 
@@ -353,8 +392,7 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
      * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
      * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
      */
-    private Grid creaGrid() {
-        grid = new Grid(Riga.class, false);
+    private void regolaGrid() {
 
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
@@ -373,8 +411,8 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
 //            grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
 //        }// end of if cycle
 
-        return grid;
-    }// end of method
+        //return grid;
+    }
 
 
     /**
