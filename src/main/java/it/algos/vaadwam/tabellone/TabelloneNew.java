@@ -1,11 +1,14 @@
 package it.algos.vaadwam.tabellone;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -13,6 +16,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.dom.ShadowRoot;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import it.algos.vaadflow.annotation.AIEntity;
@@ -26,6 +32,7 @@ import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
@@ -40,6 +47,9 @@ import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -54,23 +64,30 @@ import static it.algos.vaadwam.application.WamCost.*;
  * La riga è composta di oggetti 'TurnoCellPolymer' <br>
  */
 //@UIScope
+
+@JavaScript("frontend://test.js")
+@JavaScript("frontend://jquery-slim.js")
+
 //@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
-//@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
-@Route(value = TAG_TAB_LIST+"new")
-//@Tag("tabellone-polymer")
-//@HtmlImport("src/views/tabellone/tabellone-polymer.html")
+@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
+//@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
+//@Route(value = TAG_TAB_LIST+"new")
+//@ParentLayout(AppLayout.class)
+
+@Tag("tabellone-polymer")
+@HtmlImport("src/views/tabellone/tabellone-polymer.html")
 
 //@Route(value = TAG_TAB_LIST)
 //@PreserveOnRefresh
 
-@Qualifier(TAG_TAB_LIST+"new")
+//@Qualifier(TAG_TAB_LIST+"new")
 @Slf4j
-@AIEntity(company = EACompanyRequired.obbligatoria)
-@AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
+//@AIEntity(company = EACompanyRequired.obbligatoria)
+//@AIScript(sovrascrivibile = false)
+//@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
 //public class Tabellone extends AGridViewList {
 
-public class TabelloneNew extends Div implements HasUrlParameter<String>, BeforeEnterObserver, BeforeLeaveObserver, AfterNavigationObserver {
+public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements HasUrlParameter<String>, BeforeEnterObserver, BeforeLeaveObserver, AfterNavigationObserver {
 
 
     //--property
@@ -172,12 +189,13 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
      */
     protected Map<String, String> parametersMap = null;
 
-//    @Id("tabellonegrid")
-//    private Grid grid;
+    @Id("tabellonegrid")
+    private Grid grid;
+
 //    @Id("host")
 //    private Div host;
 
-    private Grid grid;
+    //private Grid grid;
 
 
     private boolean inited;
@@ -203,12 +221,12 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
 
 
 
-        grid = new Grid(Riga.class, false);
+        //grid = new Grid(Riga.class, false);
         //host.add(grid);
         //grid = getElement("tabellone-grid");
         regolaGrid();
         //grid.setId("tabelloneGrid");
-        this.add(this.grid);
+        //this.add(this.grid);
 
         VerticalLayout comp = new VerticalLayout();
         comp.setId("comp1");
@@ -238,6 +256,10 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
         //super(service, Riga.class);
 
         //UI.getCurrent().getPage().addJavaScript("test.js");
+
+        getElement().executeJs("scrollContent()");
+        UI.getCurrent().getPage().executeJs("scrollContent()");
+
 
     }
 
@@ -296,12 +318,42 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        int a = 87;
-        int b=a;
         //UI.getCurrent().getPage().executeJs("alert('After navigation')");
-        UI.getCurrent().getPage().executeJs("window.moveTo(500, 100)");
+        //UI.getCurrent().getPage().executeJs("window.moveTo(500, 100)");
         //UI.getCurrent().getPage().executeJs("window.scrollTo(500, 300)");
         //UI.getCurrent().getPage().addJavaScript();
+
+//        Optional<Component> optParent = getParent();
+//        if (optParent.isPresent()){
+//            Component comp = optParent.get();
+//            Element element = comp.getElement();
+//            Optional<ShadowRoot> osr=element.getShadowRoot();
+//            if (osr.isPresent()){
+//                ShadowRoot sr = osr.get();
+//                Stream<Element> childrenStream=sr.getChildren();
+//                ArrayList<Element> children = childrenStream.collect(Collectors.toCollection(ArrayList::new));
+//                for(Element element1 : children){
+//                    int a = 87;
+//                    int b=a;
+//                }
+//
+//            }
+//
+//        }
+
+        getElement().executeJs("scrollContent()");
+        UI.getCurrent().getPage().executeJs("scrollContent()");
+
+        grid.scrollToEnd();
+
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+
+        getElement().executeJs("scrollContent()");
+        UI.getCurrent().getPage().executeJs("scrollContent()");
 
     }
 
@@ -309,7 +361,7 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
     public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
         int a = 87;
         int b=a;
-        UI.getCurrent().getPage().executeJs("alert('Leaving page')");
+
 
     }
 
@@ -400,8 +452,8 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
         grid.addThemeNames("row-stripes");
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
-        // costruisce le colonne
-        this.setColumns(grid);
+        // aggiunge le colonne
+        this.addColumns();
 
         // costruisce le righe
         // this.updateGrid();
@@ -418,19 +470,21 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
     /**
      * Crea e aggiunge le colonne
      */
-    private void setColumns(Grid grid) {
+    private void addColumns() {
+
 //        long inizio = System.currentTimeMillis();
 
         // costruisce la colonna dei servizi
-        addColumnServizio(grid);
+        addColumnServizio();
 
         // costruisce le colonne dei turni
         for (int i = 0; i < numDays; i++) {
-            addColumnsTurni(grid, startDay.plusDays(i));
-        }// end of for cycle
+            addColumnsTurni(startDay.plusDays(i));
+        }
+
 //        log.info("Costruzione tabellone in " + (System.currentTimeMillis()-inizio));
 
-    }// end of method
+    }
 
 
 //    /**
@@ -499,7 +553,7 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
      * i servizi previsti per questa croce
      * <p>
      */
-    private void addColumnServizio(Grid grid) {
+    private void addColumnServizio() {
 
         ValueProvider<AEntity, ServizioCellPolymer> componentProvider = new ValueProvider() {
 
@@ -544,7 +598,7 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
     /**
      * Crea e aggiunge la colonna dei turni per un dato giorno
      */
-    private void addColumnsTurni(Grid<AEntity> grid, LocalDate day) {
+    private void addColumnsTurni(LocalDate day) {
         Object alfa = day;
         ValueProvider<AEntity, TurnoCellPolymer> componentProvider = new ValueProvider() {
 
@@ -552,9 +606,9 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
             public Object apply(Object obj) {
                 return appContext.getBean(TurnoCellPolymer.class, (Riga) obj, alfa);
             }
-        };//end of lambda expressions and anonymous inner class
+        };
 
-        Grid.Column column = grid.addComponentColumn(componentProvider);
+        Grid.Column column = this.grid.addComponentColumn(componentProvider);
 
         column.setHeader(date.get(day, EATime.weekShortMese));
         column.setFlexGrow(0);
@@ -584,43 +638,49 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
 
 
     /**
-     * Modifica i giorni visualizzati nel tabellonesuperato <br>
+     * Modifica il periodo visualizzato nel tabellone
      */
     private void sincroPeriodi(MenuItem itemEvent) {
-        String periodoTxt = itemEvent.getText();
-        EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
 
-        switch (eaPeriodo) {
-            case oggi:
-                startDay = LocalDate.now();
-                break;
-            case lunedi:
-                startDay = date.getFirstLunedì(LocalDate.now());
-                break;
-            case giornoPrecedente:
-                startDay = startDay.minusDays(1);
-                break;
-            case giornoSuccessivo:
-                startDay = startDay.plusDays(1);
-                break;
-            case settimanaPrecedente:
-                startDay = startDay.minusDays(GIORNI_STANDARD);
-                break;
-            case settimanaSuccessiva:
-                startDay = startDay.plusDays(GIORNI_STANDARD);
-                break;
-            case selezione:
-                apreSelezione();
-                break;
-            default:
-                log.warn("Switch - caso non definito");
-                break;
-        } // end of switch statement
+        //UI.getCurrent().getPage().executeJs("scrollContent()");
 
-        numDays = GIORNI_STANDARD;
+        //grid.scrollToEnd();
 
-        routeToTabellone(startDay, numDays);
-    }// end of method
+//        String periodoTxt = itemEvent.getText();
+//        EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
+//
+//        switch (eaPeriodo) {
+//            case oggi:
+//                startDay = LocalDate.now();
+//                break;
+//            case lunedi:
+//                startDay = date.getFirstLunedì(LocalDate.now());
+//                break;
+//            case giornoPrecedente:
+//                startDay = startDay.minusDays(1);
+//                break;
+//            case giornoSuccessivo:
+//                startDay = startDay.plusDays(1);
+//                break;
+//            case settimanaPrecedente:
+//                startDay = startDay.minusDays(GIORNI_STANDARD);
+//                break;
+//            case settimanaSuccessiva:
+//                startDay = startDay.plusDays(GIORNI_STANDARD);
+//                break;
+//            case selezione:
+//                apreSelezione();
+//                break;
+//            default:
+//                log.warn("Switch - caso non definito");
+//                break;
+//        } // end of switch statement
+//
+//        numDays = GIORNI_STANDARD;
+//
+//        routeToTabellone(startDay, numDays);
+
+    }
 
 
 //    /**
@@ -753,5 +813,6 @@ public class TabelloneNew extends Div implements HasUrlParameter<String>, Before
 //    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 ////        super.beforeEnter(beforeEnterEvent);
 //    }// end of method
+
 
 }
