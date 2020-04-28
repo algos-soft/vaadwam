@@ -8777,12 +8777,31 @@ return jQuery;
 } );
 
 
+// ======================
+
 $( window ).on( "load", function() {
     console.log( "window loaded" );
-    scrollContent();
+    //setTimeout(scrollContent, 10000);
+    //setTimeout(callServer, 1);
 });
 
+
+function storeElement(javaElem){
+    element=javaElem;
+    console.log( "element stored" );
+
+    callServer();
+    //scrollContent();
+}
+
+function callServer(){
+    element.$server.greet("ciao from client");
+    console.log( "server method called" );
+}
+
+
 function scrollContent(){
+    console.log( "scrollContent invoked" );
     let content = findContentElement();
     content.scrollTo(0,200);
 }
@@ -8793,3 +8812,5 @@ function findContentElement() {
     let content = drawer.nextElementSibling;
     return content
 }
+
+

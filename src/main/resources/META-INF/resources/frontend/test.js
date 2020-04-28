@@ -7,8 +7,8 @@
 
 document.addEventListener("load", function(event) {
     //console.log('DOM is loaded');
-    console.log('page is fully loaded');
-    scrollContent();
+    //console.log('page is fully loaded');
+    //scrollContent();
 });
 
 
@@ -19,6 +19,8 @@ function getScrollPosition(){
 function scrollContent(){
     let content = findContentElement();
     content.scrollTo(0,200);
+
+
 }
 
 function findContentElement() {
@@ -28,4 +30,9 @@ function findContentElement() {
     return content
 }
 
+
+//function greet(name) {
+//    console.log("Hi, " + name);
+//    element.$server.greet("server");
+//}
 

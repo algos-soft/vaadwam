@@ -1,9 +1,6 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -257,8 +254,11 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 
         //UI.getCurrent().getPage().addJavaScript("test.js");
 
-        getElement().executeJs("scrollContent()");
-        UI.getCurrent().getPage().executeJs("scrollContent()");
+        //getElement().executeJs("scrollContent()");
+        //UI.getCurrent().getPage().executeJs("scrollContent()");
+
+        //getElement().executeJs("greet($0, $1)", "client", getElement());
+        getElement().executeJs("storeElement($0)", getElement());
 
 
     }
@@ -341,10 +341,8 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 //
 //        }
 
-        getElement().executeJs("scrollContent()");
-        UI.getCurrent().getPage().executeJs("scrollContent()");
-
-        grid.scrollToEnd();
+        //getElement().executeJs("scrollContent()");
+        //UI.getCurrent().getPage().executeJs("scrollContent()");
 
     }
 
@@ -352,8 +350,8 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
 
-        getElement().executeJs("scrollContent()");
-        UI.getCurrent().getPage().executeJs("scrollContent()");
+        //getElement().executeJs("scrollContent()");
+        //UI.getCurrent().getPage().executeJs("scrollContent()");
 
     }
 
@@ -642,7 +640,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
      */
     private void sincroPeriodi(MenuItem itemEvent) {
 
-        //UI.getCurrent().getPage().executeJs("scrollContent()");
+        UI.getCurrent().getPage().executeJs("scrollContent()");
 
         //grid.scrollToEnd();
 
@@ -814,5 +812,12 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 ////        super.beforeEnter(beforeEnterEvent);
 //    }// end of method
 
+    @ClientCallable
+    public void greet(String name) {
+        System.out.println(name);
+
+        getElement().executeJs("scrollContent()");
+
+    }
 
 }
