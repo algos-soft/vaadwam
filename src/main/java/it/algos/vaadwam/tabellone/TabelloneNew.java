@@ -62,8 +62,8 @@ import static it.algos.vaadwam.application.WamCost.*;
  */
 //@UIScope
 
-@JavaScript("frontend://test.js")
-@JavaScript("frontend://jquery-slim.js")
+@JavaScript("frontend://js/js-comm.js")
+@JavaScript("frontend://js/tabellone.js")
 
 //@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
 @Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
@@ -209,6 +209,9 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
     @Autowired
     public TabelloneNew(@Qualifier(TAG_TAB) IAService service) {
 
+        // registra il riferimento al server Java nel client JS
+        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+
         //setSizeUndefined();
 
 //        setId("tabelloneDIV");
@@ -258,9 +261,19 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
         //UI.getCurrent().getPage().executeJs("scrollContent()");
 
         //getElement().executeJs("greet($0, $1)", "client", getElement());
-        getElement().executeJs("storeElement($0)", getElement());
 
 
+    }
+
+    /**
+     * Invoked from the JS client when is safe to invoke JS functions operating on the DOM.
+     * (The DOM is ready and the page is completely loaded).
+     * For this command to work, remember to register the server in the constructor:
+     * UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+     */
+    @ClientCallable
+    public void pageReady(){
+        getElement().executeJs("scrollTo(0, 200)");
     }
 
 
@@ -341,18 +354,12 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 //
 //        }
 
-        //getElement().executeJs("scrollContent()");
-        //UI.getCurrent().getPage().executeJs("scrollContent()");
 
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-
-        //getElement().executeJs("scrollContent()");
-        //UI.getCurrent().getPage().executeJs("scrollContent()");
-
     }
 
     @Override
@@ -640,43 +647,39 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
      */
     private void sincroPeriodi(MenuItem itemEvent) {
 
-        UI.getCurrent().getPage().executeJs("scrollContent()");
+        String periodoTxt = itemEvent.getText();
+        EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
 
-        //grid.scrollToEnd();
+        switch (eaPeriodo) {
+            case oggi:
+                startDay = LocalDate.now();
+                break;
+            case lunedi:
+                startDay = date.getFirstLunedì(LocalDate.now());
+                break;
+            case giornoPrecedente:
+                startDay = startDay.minusDays(1);
+                break;
+            case giornoSuccessivo:
+                startDay = startDay.plusDays(1);
+                break;
+            case settimanaPrecedente:
+                startDay = startDay.minusDays(GIORNI_STANDARD);
+                break;
+            case settimanaSuccessiva:
+                startDay = startDay.plusDays(GIORNI_STANDARD);
+                break;
+            case selezione:
+                apreSelezione();
+                break;
+            default:
+                log.warn("Switch - caso non definito");
+                break;
+        } // end of switch statement
 
-//        String periodoTxt = itemEvent.getText();
-//        EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
-//
-//        switch (eaPeriodo) {
-//            case oggi:
-//                startDay = LocalDate.now();
-//                break;
-//            case lunedi:
-//                startDay = date.getFirstLunedì(LocalDate.now());
-//                break;
-//            case giornoPrecedente:
-//                startDay = startDay.minusDays(1);
-//                break;
-//            case giornoSuccessivo:
-//                startDay = startDay.plusDays(1);
-//                break;
-//            case settimanaPrecedente:
-//                startDay = startDay.minusDays(GIORNI_STANDARD);
-//                break;
-//            case settimanaSuccessiva:
-//                startDay = startDay.plusDays(GIORNI_STANDARD);
-//                break;
-//            case selezione:
-//                apreSelezione();
-//                break;
-//            default:
-//                log.warn("Switch - caso non definito");
-//                break;
-//        } // end of switch statement
-//
-//        numDays = GIORNI_STANDARD;
-//
-//        routeToTabellone(startDay, numDays);
+        numDays = GIORNI_STANDARD;
+
+        routeToTabellone(startDay, numDays);
 
     }
 
@@ -812,12 +815,5 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 ////        super.beforeEnter(beforeEnterEvent);
 //    }// end of method
 
-    @ClientCallable
-    public void greet(String name) {
-        System.out.println(name);
-
-        getElement().executeJs("scrollContent()");
-
-    }
 
 }
