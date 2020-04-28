@@ -1,5 +1,5 @@
 /*!
- * Basic Java/JS communications script.
+ * Basic Java/JS lifecycle manager.
  *
  * Ensures that the Java class calls JS functions only when the page is really completed
  * and visible to the user.
@@ -19,6 +19,9 @@
  *   }
  */
 
+// reference to the Java server used to invoke methods
+var server;
+
 // called from the Java class (server) to register a reference
 // to the server itself in order to enable JavaScript
 // to call methods on the server.
@@ -28,10 +31,7 @@ function registerServer(serverElement){
     server.pageReady();
 }
 
-function callServer(){
-    server.greet("ciao from client");
-    console.log( "server method called" );
-}
+
 
 
 

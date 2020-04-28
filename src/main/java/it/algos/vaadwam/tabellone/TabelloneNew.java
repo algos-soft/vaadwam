@@ -12,12 +12,17 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.component.page.PendingJavaScriptResult;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.ShadowRoot;
+import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
+import elemental.json.JsonValue;
 import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -219,35 +224,12 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 //        getStyle().set("height","400px");
 //        getStyle().set("background-color","green");
 
-
-
         //grid = new Grid(Riga.class, false);
         //host.add(grid);
         //grid = getElement("tabellone-grid");
         regolaGrid();
         //grid.setId("tabelloneGrid");
         //this.add(this.grid);
-
-        VerticalLayout comp = new VerticalLayout();
-        comp.setId("comp1");
-        comp.getStyle().set("width","250px");
-        comp.getStyle().set("height","200px");
-        comp.getStyle().set("background-color","yellow");
-        comp.getStyle().set("overflow-y","scroll");
-        comp.getStyle().set("overflow-x","scroll");
-
-
-        Div comp2 = new Div();
-        comp2.setId("comp2");
-        comp2.getStyle().set("width","800px");
-        comp2.getStyle().set("height","2000px");
-        comp2.getStyle().set("background-color","coral");
-        comp.add(comp2);
-
-        //this.add(comp);
-
-
-
 
         //div = new Div();
 //        Label label = new Label("Ciao");
@@ -273,8 +255,34 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
      */
     @ClientCallable
     public void pageReady(){
-        getElement().executeJs("scrollTo(0, 200)");
+        //PendingJavaScriptResult jsResult=UI.getCurrent().getPage().executeJs(js);
+        //SerializableConsumer<JsonValue> jsonValueSerializableConsumer = ;
+        //jsResult.then();
+        UI.getCurrent().getPage().executeJs("setupScrollListener()");
+
+        // restore the previous scroll position
+        VaadinSession session = VaadinSession.getCurrent();
+        Object objX=session.getAttribute("tabelloneScrollX");
+        Object objY=session.getAttribute("tabelloneScrollY");
+        if (objX!=null && objY!=null){
+            int x = (Integer)objX;
+            int y = (Integer)objY;
+            UI.getCurrent().getPage().executeJs("scrollTo($0,$1)", x, y);
+        }
+
+        int a =87;
+        int b=a;
     }
+
+    @ClientCallable
+    public void tabScrolled(int x, int y){
+        log.info( "container scrolled: x="+x+", y="+y);
+        // Store the current scroll position in the current Context
+        VaadinSession session = VaadinSession.getCurrent();
+        session.setAttribute("tabelloneScrollX",x);
+        session.setAttribute("tabelloneScrollY",y);
+    }
+
 
 
     @Override
@@ -331,30 +339,6 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        //UI.getCurrent().getPage().executeJs("alert('After navigation')");
-        //UI.getCurrent().getPage().executeJs("window.moveTo(500, 100)");
-        //UI.getCurrent().getPage().executeJs("window.scrollTo(500, 300)");
-        //UI.getCurrent().getPage().addJavaScript();
-
-//        Optional<Component> optParent = getParent();
-//        if (optParent.isPresent()){
-//            Component comp = optParent.get();
-//            Element element = comp.getElement();
-//            Optional<ShadowRoot> osr=element.getShadowRoot();
-//            if (osr.isPresent()){
-//                ShadowRoot sr = osr.get();
-//                Stream<Element> childrenStream=sr.getChildren();
-//                ArrayList<Element> children = childrenStream.collect(Collectors.toCollection(ArrayList::new));
-//                for(Element element1 : children){
-//                    int a = 87;
-//                    int b=a;
-//                }
-//
-//            }
-//
-//        }
-
-
     }
 
     @Override
@@ -363,11 +347,12 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
     }
 
     @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        super.onDetach(detachEvent);
+    }
+
+    @Override
     public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
-        int a = 87;
-        int b=a;
-
-
     }
 
 
