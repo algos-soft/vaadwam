@@ -2,6 +2,7 @@ package it.algos.vaadwam.testjs;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -50,6 +51,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Route(value = "testjs")
 @Tag("testjs-polymer")
 @HtmlImport("src/views/js/testjs-polymer.html")
+@Slf4j
 public class TestJS extends PolymerTemplate<TestJSModel>  {
 
 //    @Autowired
@@ -58,6 +60,17 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
 
 //    @Id("tabellonegrid")
 //    private Grid grid;
+
+    // links to the Java buttons
+    @Id
+    private Button bwide_java;
+    @Id
+    private Button bnarrow_java;
+    @Id
+    private Button btall_java;
+    @Id
+    private Button bshort_java;
+
 
 
     @Autowired
@@ -71,7 +84,29 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
         // registra il riferimento al server Java nel client JS
         UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
+        // inizializza lo script specifico per questa pagina
         UI.getCurrent().getPage().executeJs("initTestJS()");
+
+        // aggiunge i listener ai bottoni Java che invocano le funzioni JS
+        bwide_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("wider()");
+            log.info("wider() function invoked in JS");
+        });
+        bnarrow_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("narrower()");
+            log.info("narrower() function invoked in JS");
+        });
+        btall_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("taller()");
+            log.info("taller() function invoked in JS");
+        });
+        bshort_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("shorter()");
+            log.info("shorter() function invoked in JS");
+        });
+
+
+
 
 
 //        VerticalLayout comp = new VerticalLayout();
