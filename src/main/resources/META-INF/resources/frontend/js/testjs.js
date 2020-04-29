@@ -1,4 +1,5 @@
 var scrollablediv;
+var scrollposdiv;
 var bwide_js;
 var bnarrow_js;
 var btall_js;
@@ -11,12 +12,16 @@ function initTestJS() {
     let template=document.getElementById("template");
     let container=template.shadowRoot.getElementById("container");
     scrollablediv=getElementInContainer(container,"scrollablediv")
+    scrollposdiv=getElementInContainer(container,"scrollposdiv")
 
     let buttondivjs=getElementInContainer(container,"buttondivjs")
     bwide_js=getElementInContainer(buttondivjs,"bwide_js")
     bnarrow_js=getElementInContainer(buttondivjs,"bnarrow_js")
     btall_js=getElementInContainer(buttondivjs,"btall_js")
     bshort_js=getElementInContainer(buttondivjs,"bshort_js")
+
+    // add scroll listener to the scrollablediv
+    scrollablediv.addEventListener("scroll", containerScrolled)
 
 }
 
@@ -37,8 +42,6 @@ function shorter(){
     changeHeight(-10);
 }
 
-
-
 function changeWidth(diff){
     let w = scrollablediv.offsetWidth+diff;
     scrollablediv.style.width=w+"px";
@@ -51,10 +54,6 @@ function changeHeight(diff){
     console.log( "height="+h+"px" );
 }
 
-
-
-
-
 function getElementInContainer(container, childID) {
     let elm = {};
     let elms = container.getElementsByTagName("*");
@@ -66,4 +65,27 @@ function getElementInContainer(container, childID) {
     }
     return elm;
 }
+
+function sum(n1, n2){
+    return n1+n2;
+}
+
+function javaSum(){
+    server.sum(randomInt(10,100), randomInt(10,100));
+}
+
+function showResult(n1, n2, tot){
+    let s = n1+"+"+n2+" (JS) = "+tot+" (Java)";
+    alert(s);
+}
+
+function randomInt(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function containerScrolled(){
+    scrollposdiv.textContent="scroll pos: x="+scrollablediv.scrollLeft+", y="+scrollablediv.scrollTop;
+    //server.tabScrolled(container.scrollLeft, container.scrollTop);
+}
+
 

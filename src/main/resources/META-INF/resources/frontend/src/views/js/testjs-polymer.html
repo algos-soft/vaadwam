@@ -4,35 +4,62 @@
 
 <dom-module id="testjs-polymer">
 
+    <style>
+        .div1 {
+            display: flex; flex-direction: row; margin: 1em;
+        }
+    </style>
+
     <template>
         <div id="container" style="display: flex; flex-direction: column; padding: 1em; display: inline-block">
 
-            <div id="scrollablediv" style="width: 20em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
-                <paper-input id="inputId" value="{{userInput}}"></paper-input>
+            <div><strong>JS Swiss Knife</strong></div>
+
+            <div id="scrollablediv"
+                 style="width: 22em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
+                <paper-input id="inputId" value="{{userInput}}" style="width:16em; background-color:white"></paper-input>
                 <button id="helloButton" on-click="sayHello">Say hello</button>
                 <div id="greeting">[[greeting]]</div>
             </div>
 
-            <div>Questi bottoni invocano funzioni JS precaricate nella pagina senza passare dal server<br>
-                 (L'ultimo è intenzionalmente di tipo vaadin-button ma solo graficamente)
+            <div>
+                <div>JS listener on component scroll events</div>
+                <div id="scrollposdiv"></div>
             </div>
 
-            <div id="buttondivjs" style="display: flex; flex-direction: row; margin: 1em">
+            <hr>
+
+            <div>I bottoni invocano funzioni JS precaricate nella pagina (senza passare dal server) che manipolano un elemento</div>
+            <div id="buttondivjs" class="div1">
                 <button id="bwide_js" onclick="wider()">Più largo JS</button>
                 <button id="bnarrow_js" onclick="narrower()">Più stretto JS</button>
                 <button id="btall_js" onclick="taller()">Più alto JS</button>
-                <vaadin-button id="bshort_js" onclick="shorter()">Più basso JS</vaadin-button>
+                <button id="bshort_js" onclick="shorter()">Più basso JS</button>
             </div>
 
-            <div>Questi bottoni sono intercettati da un listener sul server il quale invoca le stesse funzioni nella pagina</div>
+            <hr>
 
-            <div id="buttondivjava" style="display: flex; flex-direction: row; margin: 1em">
+            <div>I bottoni sono intercettati da un listener sul server il quale invoca le stesse funzioni JS</div>
+            <div id="buttondivjava" class="div1">
                 <vaadin-button id="bwide_java">Più largo Java</vaadin-button>
                 <vaadin-button id="bnarrow_java">Più stretto Java</vaadin-button>
                 <vaadin-button id="btall_java">Più alto Java</vaadin-button>
                 <vaadin-button id="bshort_java">Più basso Java</vaadin-button>
             </div>
 
+            <hr>
+
+            <div>Java invoca una funzione JS che accetta un parametro e ottiene un risultato</div>
+            <div class="div1">
+                <vaadin-button id="bcall_func_ret">Java, call JS now!</vaadin-button>
+            </div>
+
+            <hr>
+
+            <div>JS invoca direttamente un metodo Java (senza listener) passando dei parametri e ottiene un risultato</div>
+            <div class="div1">
+                <button id="bjs_call_java" onclick="javaSum()">JS, call Java now!</button>
+            </div>
 
         </div>
 
@@ -48,6 +75,7 @@
         }
 
         customElements.define(TestJsPolymer.is, TestJsPolymer);
+
     </script>
 
 </dom-module>

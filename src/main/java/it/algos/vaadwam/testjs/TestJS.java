@@ -11,10 +11,13 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.PendingJavaScriptResult;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -39,6 +42,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -54,13 +58,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Slf4j
 public class TestJS extends PolymerTemplate<TestJSModel>  {
 
-//    @Autowired
-//    protected ApplicationContext appContext;
-
-
-//    @Id("tabellonegrid")
-//    private Grid grid;
-
     // links to the Java buttons
     @Id
     private Button bwide_java;
@@ -70,6 +67,9 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
     private Button btall_java;
     @Id
     private Button bshort_java;
+
+    @Id
+    private Button bcall_func_ret;
 
 
 
@@ -105,19 +105,24 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
             log.info("shorter() function invoked in JS");
         });
 
+        // chiamata a funzione JS con gestione del ritorno
+        bcall_func_ret.addClickListener(e -> {
+
+            int int1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+            int int2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+
+            // !!se si vuole ottenere il valore di ritorno bisogna sempre
+            // aggiungere 'return' davanti al nome della funzione!!
+            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",int1, int2);
+            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                Notification.show(int1+"+"+int2+" (Java) = "+objRet+" (JS)");
+            };
+            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+            pResult.then(Integer.class, resultHandler);
+
+        });
 
 
-
-
-//        VerticalLayout comp = new VerticalLayout();
-//        comp.setId("comp1");
-//        comp.getStyle().set("width","250px");
-//        comp.getStyle().set("height","200px");
-//        comp.getStyle().set("background-color","yellow");
-//        comp.getStyle().set("overflow-y","scroll");
-//        comp.getStyle().set("overflow-x","scroll");
-
-        //this.add(comp);
 
     }
 
@@ -133,34 +138,34 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
 
 
     /**
-     * Invoked from the JS client when is safe to invoke JS functions operating on the DOM.
-     * (The DOM is ready and the page is completely loaded).
-     * For this command to work, remember to register the server in the constructor:
+     * Invocato dal client JS quando la pagina è completamente caricata e visibile.
+     * E' il primo momento in cui si può operare in sicurezza su tutti gli elementi del DOM.
+     * Ricordati di registrare il server nel costruttore:
      * UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
      */
     @ClientCallable
     public void pageReady(){
+        int a = 87;
+        int b = a;
         //getElement().executeJs("scrollTo(0, 200)");
     }
 
 
+    /**
+     * Metodo invocato direttamente da JS che ritorna un valore.
+     * Perché funzioni bisogna prima aver registrato il server presso il client
+     * UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+     * Il ritorno di questo metodo deve essere void.
+     * Il valore eventualmente si ritorna facendo una callback a un apposito metodo JS.
+     */
+    @ClientCallable
+    public void sum(int n1, int n2){
+        int sum = n1+n2;
 
-//    @Override
-//    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-//    }
-//
-//    @Override
-//    public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-//    }
-//
-//    @Override
-//    protected void onAttach(AttachEvent attachEvent) {
-//    }
-//
-//    @Override
-//    public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
-//    }
+        // callback
+        UI.getCurrent().getPage().executeJs("showResult($0,$1,$2)", n1, n2, sum);
 
+    }
 
 
 }
