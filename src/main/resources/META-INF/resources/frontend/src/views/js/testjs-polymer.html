@@ -1,0 +1,40 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="testjs-polymer">
+
+    <template>
+        <div id="container" style="display: flex; flex-direction: column; padding: 1em; display: inline-block">
+
+            <div id="scrollablediv" style="width: 20em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
+                <paper-input id="inputId" value="{{userInput}}"></paper-input>
+                <button id="helloButton" on-click="sayHello">Say hello</button>
+                <div id="greeting">[[greeting]]</div>
+            </div>
+
+            <div id="buttondiv" style="display: flex; flex-direction: row; margin: 1em">
+                <button id="bwide">Più largo</button>
+                <button id="bnarrow">Più stretto</button>
+                <button id="btall">Più alto</button>
+                <button id="bshort">Più basso</button>
+            </div>
+
+        </div>
+
+
+    </template>
+
+
+    <script>
+        class TestJsPolymer extends Polymer.Element {
+            static get is() {
+                return 'testjs-polymer'
+            }
+        }
+
+        customElements.define(TestJsPolymer.is, TestJsPolymer);
+    </script>
+
+</dom-module>
+
