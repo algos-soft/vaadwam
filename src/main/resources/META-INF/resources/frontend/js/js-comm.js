@@ -31,7 +31,16 @@ function registerServer(serverElement){
     server.pageReady();
 }
 
-
+// Sample invocation of a method from client to server.
+// Method to implement on server:
+//    @ClientCallable
+//    public void greet(String s){
+//        System.out.writeln(s);
+//    }
+function callOnServer(){
+    server.greet("hello from client");
+    console.log( "server method called" );
+}
 
 
 
