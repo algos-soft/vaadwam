@@ -26,7 +26,7 @@ function containerScrolled(){
 }
 
 // scrolla il tabellone alla posizione specificata
-function scrollTo(x, y){
+function scrollTabelloneTo(x, y){
     console.log( "scrollTo invoked: "+x+", "+y);
     container.scrollTo(x,y);
 }
