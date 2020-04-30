@@ -3,6 +3,7 @@ package it.algos.vaadwam.jsknife;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dependency.JavaScript;
@@ -24,10 +25,13 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @JavaScript("frontend://js/js-comm.js")
 @JavaScript("frontend://js/jsknife.js")
-//@Route(value = "testjs", layout = AppLayout.class)
+//@Route(value = "jsknife", layout = AppLayout.class)
 @Route(value = "jsknife")
 @Tag("jsknife-polymer")
 @HtmlImport("src/views/js/jsknife-polymer.html")
+//@Tag("simple-polymer")
+//@HtmlImport("src/views/js/simple-polymer.html")
+
 @Slf4j
 public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
 
@@ -48,75 +52,81 @@ public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
     private Button bcall_func_ret_err;
 
 
-    @Autowired
+    //@Autowired
     public JsKnife() {
 
-        setId("template");
+        if (true){
 
-        getModel().setGreeting("Please enter your name");
+            setId("template");
 
-
-        // registra il riferimento al server Java nel client JS
-        // necessario perché JS possa chiamare direttamente metodi Java
-        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
-
-        // inizializza lo script specifico per questa pagina
-        // (recupera i componenti nel DOM e li registra in variabili)
-        UI.getCurrent().getPage().executeJs("initTestJS()");
-
-        // aggiunge i listener ai bottoni Java che invocano le funzioni JS
-        bwide_java.addClickListener(e -> {
-            UI.getCurrent().getPage().executeJs("wider()");
-            log.info("wider() function invoked in JS");
-        });
-        bnarrow_java.addClickListener(e -> {
-            UI.getCurrent().getPage().executeJs("narrower()");
-            log.info("narrower() function invoked in JS");
-        });
-        btall_java.addClickListener(e -> {
-            UI.getCurrent().getPage().executeJs("taller()");
-            log.info("taller() function invoked in JS");
-        });
-        bshort_java.addClickListener(e -> {
-            UI.getCurrent().getPage().executeJs("shorter()");
-            log.info("shorter() function invoked in JS");
-        });
-
-        // chiamata a funzione JS con gestione del ritorno
-        bcall_func_ret.addClickListener(e -> {
-
-            int n1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
-            int n2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
-
-            // !!se si vuole ottenere il valore di ritorno bisogna sempre
-            // aggiungere 'return' davanti al nome della funzione!!
-            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",n1, n2);
-            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
-                Notification.show(n1+"+"+n2+" (Java) = "+objRet+" (JS)");
-            };
-
-            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
-            pResult.then(Integer.class, resultHandler);
-
-        });
+            getModel().setGreeting("Please enter your name");
 
 
-        // chiamata a funzione JS con gestione del ritorno e dell'errore
-        bcall_func_ret_err.addClickListener(e -> {
+            // registra il riferimento al server Java nel client JS
+            // necessario perché JS possa chiamare direttamente metodi Java
+            // è in un file .js separato per renderlo riutilizzabile
+            UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
-            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return cookEggs()");
-            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
-                Notification.show(objRet.toString());
-            };
+            // inizializza lo script specifico per questa pagina
+            // (recupera i componenti nel DOM e li registra in variabili)
+            UI.getCurrent().getPage().executeJs("initKnife()");
 
-            SerializableConsumer<String> errorHandler = (SerializableConsumer) objRet -> {
-                Notification.show("JS error says: "+objRet.toString());
-            };
 
-            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
-            pResult.then(String.class, resultHandler, errorHandler);
+            // aggiunge i listener ai bottoni Java che invocano le funzioni JS
+            bwide_java.addClickListener(e -> {
+                UI.getCurrent().getPage().executeJs("wider()");
+                log.info("wider() function invoked in JS");
+            });
+            bnarrow_java.addClickListener(e -> {
+                UI.getCurrent().getPage().executeJs("narrower()");
+                log.info("narrower() function invoked in JS");
+            });
+            btall_java.addClickListener(e -> {
+                UI.getCurrent().getPage().executeJs("taller()");
+                log.info("taller() function invoked in JS");
+            });
+            bshort_java.addClickListener(e -> {
+                UI.getCurrent().getPage().executeJs("shorter()");
+                log.info("shorter() function invoked in JS");
+            });
 
-        });
+            // chiamata a funzione JS con gestione del ritorno
+            bcall_func_ret.addClickListener(e -> {
+
+                int n1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+                int n2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+
+                // !!se si vuole ottenere il valore di ritorno bisogna sempre
+                // aggiungere 'return' davanti al nome della funzione!!
+                PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",n1, n2);
+                SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                    Notification.show(n1+"+"+n2+" (Java) = "+objRet+" (JS)");
+                };
+
+                // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+                pResult.then(Integer.class, resultHandler);
+
+            });
+
+
+            // chiamata a funzione JS con gestione del ritorno e dell'errore
+            bcall_func_ret_err.addClickListener(e -> {
+
+                PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return cookEggs()");
+                SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                    Notification.show(objRet.toString());
+                };
+
+                SerializableConsumer<String> errorHandler = (SerializableConsumer) objRet -> {
+                    Notification.show("JS error says: "+objRet.toString());
+                };
+
+                // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+                pResult.then(String.class, resultHandler, errorHandler);
+
+            });
+
+        }
 
 
 

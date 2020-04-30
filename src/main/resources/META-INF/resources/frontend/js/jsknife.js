@@ -8,7 +8,8 @@ var bshort_js;
 /**
  * Inizializzazione dello script.
  */
-function initTestJS() {
+function initKnife() {
+
     let template=document.getElementById("template");
     let container=template.shadowRoot.getElementById("container");
     scrollablediv=getElementInContainer(container,"scrollablediv")
