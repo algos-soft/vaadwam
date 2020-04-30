@@ -1,4 +1,4 @@
-package it.algos.vaadwam.testjs;
+package it.algos.vaadwam.jsknife;
 
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
@@ -23,13 +23,13 @@ import java.util.concurrent.ThreadLocalRandom;
  * Sample polymer to test JS interaction
  */
 @JavaScript("frontend://js/js-comm.js")
-@JavaScript("frontend://js/testjs.js")
+@JavaScript("frontend://js/jsknife.js")
 //@Route(value = "testjs", layout = AppLayout.class)
-@Route(value = "testjs")
-@Tag("testjs-polymer")
-@HtmlImport("src/views/js/testjs-polymer.html")
+@Route(value = "jsknife")
+@Tag("jsknife-polymer")
+@HtmlImport("src/views/js/jsknife-polymer.html")
 @Slf4j
-public class TestJS extends PolymerTemplate<TestJSModel>  {
+public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
 
     // links to the Java buttons
     @Id
@@ -44,10 +44,12 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
     @Id
     private Button bcall_func_ret;
 
+    @Id
+    private Button bcall_func_ret_err;
 
 
     @Autowired
-    public TestJS() {
+    public JsKnife() {
 
         setId("template");
 
@@ -81,22 +83,41 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
         });
 
         // chiamata a funzione JS con gestione del ritorno
-        // @todo gestire l'errore in JS!!
         bcall_func_ret.addClickListener(e -> {
 
-            int int1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
-            int int2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+            int n1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+            int n2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
 
             // !!se si vuole ottenere il valore di ritorno bisogna sempre
             // aggiungere 'return' davanti al nome della funzione!!
-            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",int1, int2);
+            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",n1, n2);
             SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
-                Notification.show(int1+"+"+int2+" (Java) = "+objRet+" (JS)");
+                Notification.show(n1+"+"+n2+" (Java) = "+objRet+" (JS)");
             };
+
             // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
             pResult.then(Integer.class, resultHandler);
 
         });
+
+
+        // chiamata a funzione JS con gestione del ritorno e dell'errore
+        bcall_func_ret_err.addClickListener(e -> {
+
+            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return cookEggs()");
+            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                Notification.show(objRet.toString());
+            };
+
+            SerializableConsumer<String> errorHandler = (SerializableConsumer) objRet -> {
+                Notification.show("JS error says: "+objRet.toString());
+            };
+
+            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+            pResult.then(String.class, resultHandler, errorHandler);
+
+        });
+
 
 
 
@@ -111,7 +132,7 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
      */
     @ClientCallable
     public void pageReady(){
-        // questa interazione col DOM non funzionerebbe prima di aver ricevutoquesta callback
+        // questa interazione col DOM non funzionerebbe prima di aver ricevuto la callback pageReady!!
         UI.getCurrent().getPage().executeJs("scrollTo($0,$1)", 0, 20);
     }
 

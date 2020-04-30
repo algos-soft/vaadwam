@@ -1,8 +1,8 @@
-package it.algos.vaadwam.testjs;
+package it.algos.vaadwam.jsknife;
 
 import com.vaadin.flow.templatemodel.TemplateModel;
 
-public interface TestJSModel extends TemplateModel {
+public interface JsKnifeModel extends TemplateModel {
 
     String getUserInput();
 

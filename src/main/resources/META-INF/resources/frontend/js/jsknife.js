@@ -22,7 +22,7 @@ function initTestJS() {
 
     // add scroll listener to the scrollablediv
     scrollablediv.addEventListener("scroll", containerScrolled)
-    containerScrolled() // first update
+    containerScrolled() // force first update
 
 }
 
@@ -90,6 +90,11 @@ function getElementInContainer(container, childID) {
 
 function sum(n1, n2){
     return n1+n2;
+}
+
+function throwError(){
+    throw "JavaScript code caused an Error!";
+    return 0;
 }
 
 function javaSum(){
