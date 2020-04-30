@@ -1,50 +1,23 @@
 package it.algos.vaadwam.testjs;
 
-import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dependency.JavaScript;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.PendingJavaScriptResult;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.SerializableConsumer;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.router.*;
-import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EATime;
-import it.algos.vaadflow.service.AArrayService;
-import it.algos.vaadflow.service.ADateService;
-import it.algos.vaadflow.service.ATextService;
-import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.fields.AComboBox;
-import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.riga.Riga;
-import it.algos.vaadwam.modules.riga.RigaService;
-import it.algos.vaadwam.modules.servizio.Servizio;
-import it.algos.vaadwam.tabellone.*;
-import it.algos.vaadwam.wam.WamLogin;
-import it.algos.vaadwam.wam.WamService;
+import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Sample polymer to test JS interaction
@@ -82,9 +55,11 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
 
 
         // registra il riferimento al server Java nel client JS
+        // necessario perché JS possa chiamare direttamente metodi Java
         UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
         // inizializza lo script specifico per questa pagina
+        // (recupera i componenti nel DOM e li registra in variabili)
         UI.getCurrent().getPage().executeJs("initTestJS()");
 
         // aggiunge i listener ai bottoni Java che invocano le funzioni JS
@@ -106,6 +81,7 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
         });
 
         // chiamata a funzione JS con gestione del ritorno
+        // @todo gestire l'errore in JS!!
         bcall_func_ret.addClickListener(e -> {
 
             int int1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
@@ -127,16 +103,6 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
     }
 
 
-    @EventHandler
-    private void sayHello() {
-        // Called from the template click handler
-        getModel().setGreeting(Optional.ofNullable(getModel().getUserInput())
-                .filter(userInput -> !userInput.isEmpty())
-                .map(greeting -> String.format("Hello %s!", greeting))
-                .orElse("Please enter your name"));
-    }
-
-
     /**
      * Invocato dal client JS quando la pagina è completamente caricata e visibile.
      * E' il primo momento in cui si può operare in sicurezza su tutti gli elementi del DOM.
@@ -145,10 +111,21 @@ public class TestJS extends PolymerTemplate<TestJSModel>  {
      */
     @ClientCallable
     public void pageReady(){
-        int a = 87;
-        int b = a;
-        //getElement().executeJs("scrollTo(0, 200)");
+        // questa interazione col DOM non funzionerebbe prima di aver ricevutoquesta callback
+        UI.getCurrent().getPage().executeJs("scrollTo($0,$1)", 0, 20);
     }
+
+
+    @EventHandler
+    private void sayHello() {
+        // Called from the template click handler
+        getModel().setGreeting(Optional.ofNullable(getModel().getUserInput())
+                .filter(userInput -> !userInput.isEmpty())
+                .map(greeting -> String.format("Hello %s!", greeting))
+                .orElse("Inserisci il nome e premi il bottone"));
+    }
+
+
 
 
     /**

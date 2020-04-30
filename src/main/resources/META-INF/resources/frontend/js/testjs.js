@@ -22,6 +22,7 @@ function initTestJS() {
 
     // add scroll listener to the scrollablediv
     scrollablediv.addEventListener("scroll", containerScrolled)
+    containerScrolled() // first update
 
 }
 
@@ -53,6 +54,27 @@ function changeHeight(diff){
     scrollablediv.style.height=h+"px";
     console.log( "height="+h+"px" );
 }
+
+
+
+function scrollUp(){
+    scrollTo(scrollablediv.scrollLeft, scrollablediv.scrollTop-10);
+}
+
+function scrollDn(){
+    scrollTo(scrollablediv.scrollLeft, scrollablediv.scrollTop+10);
+}
+
+function scrollLt(){
+    scrollTo(scrollablediv.scrollLeft-10, scrollablediv.scrollTop);
+}
+
+function scrollRt(){
+    scrollTo(scrollablediv.scrollLeft+10, scrollablediv.scrollTop);
+}
+
+
+
 
 function getElementInContainer(container, childID) {
     let elm = {};
@@ -87,5 +109,12 @@ function containerScrolled(){
     scrollposdiv.textContent="scroll pos: x="+scrollablediv.scrollLeft+", y="+scrollablediv.scrollTop;
     //server.tabScrolled(container.scrollLeft, container.scrollTop);
 }
+
+// scrolla il div alla posizione specificata
+function scrollTo(x, y){
+    console.log( "scrollTo invoked: "+x+", "+y);
+    scrollablediv.scrollTo(x,y);
+}
+
 
 

@@ -15,21 +15,9 @@
 
             <div><strong>JS Swiss Knife</strong></div>
 
-            <div id="scrollablediv"
-                 style="width: 22em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
-                <paper-input id="inputId" value="{{userInput}}" style="width:16em; background-color:white"></paper-input>
-                <button id="helloButton" on-click="sayHello">Say hello</button>
-                <div id="greeting">[[greeting]]</div>
-            </div>
-
-            <div>
-                <div>JS listener on component scroll events</div>
-                <div id="scrollposdiv"></div>
-            </div>
-
             <hr>
 
-            <div>I bottoni invocano funzioni JS precaricate nella pagina (senza passare dal server) che manipolano un elemento</div>
+            <div>I bottoni invocano funzioni JS precaricate nella pagina (senza passare dal server)<br> che manipolano un elemento del DOM</div>
             <div id="buttondivjs" class="div1">
                 <button id="bwide_js" onclick="wider()">Più largo JS</button>
                 <button id="bnarrow_js" onclick="narrower()">Più stretto JS</button>
@@ -46,6 +34,26 @@
                 <vaadin-button id="btall_java">Più alto Java</vaadin-button>
                 <vaadin-button id="bshort_java">Più basso Java</vaadin-button>
             </div>
+
+            <hr>
+
+            <div id="scrollablediv" style="width: 22em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
+                <paper-input id="inputId" value="{{userInput}}" style="width:16em; background-color:white"></paper-input>
+                <button id="helloButton" on-click="sayHello">Saluta!</button>
+                <div id="greeting">[[greeting]]</div>
+            </div>
+
+            <div>
+                <div id="scrollbtnviv" class="div1">
+                    <button id="bscrollUp" onclick="scrollUp()">Scroll up</button>
+                    <button id="bscrollDn" onclick="scrollDn()">Scroll down</button>
+                    <button id="bscrollLt" onclick="scrollLt()">Scroll left</button>
+                    <button id="bscrollRt" onclick="scrollRt()">Scroll right</button>
+                </div>
+                <div>JS listener on component scroll events</div>
+                <div id="scrollposdiv"></div>
+            </div>
+
 
             <hr>
 
