@@ -23,6 +23,7 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamLogin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -108,6 +109,10 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     @Autowired
     private WamLogin wamLogin;
 
+    @Value("${wam.tabellone.turnoInDialogo}")
+    private boolean turnoInDialogo;
+
+    private ITabellone tabellone;
 
     public TurnoCellPolymer() {
     }// end of Spring constructor
@@ -119,7 +124,17 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     public TurnoCellPolymer(Riga riga, LocalDate giorno) {
         this.riga = riga;
         this.giorno = giorno;
-    }// end of Spring constructor
+    }
+
+    /**
+     * Constructor.
+     */
+    public TurnoCellPolymer(ITabellone tabellone, Riga riga, LocalDate giorno) {
+        this.tabellone=tabellone;
+        this.riga = riga;
+        this.giorno = giorno;
+    }
+
 
 
     @PostConstruct
@@ -208,12 +223,19 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
      */
     @EventHandler
     void handleClick() {
-        if (turno != null) {
-            handleClickTurnoEsistente();
-        } else {
-            handleClickTurnoVuoto();
-        }// end of if/else cycle
-    }// end of method
+        if(turnoInDialogo){ // modalità in dialogo
+
+        }else{ // modalità in pagina separata
+
+            if (turno != null) {
+                handleClickTurnoEsistente();
+            } else {
+                handleClickTurnoVuoto();
+            }
+
+        }
+    }
+
 
 
     /**

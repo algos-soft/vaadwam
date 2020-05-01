@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Sample polymer to test JS interaction
+ * JAVA-to-JS interactions demo class
  */
 @JavaScript("frontend://js/js-comm.js")
 @JavaScript("frontend://js/jsknife.js")
@@ -29,13 +29,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Route(value = "jsknife")
 @Tag("jsknife-polymer")
 @HtmlImport("src/views/js/jsknife-polymer.html")
-//@Tag("simple-polymer")
-//@HtmlImport("src/views/js/simple-polymer.html")
 
 @Slf4j
 public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
 
-    // links to the Java buttons
+    // references to the Java buttons
     @Id
     private Button bwide_java;
     @Id
@@ -44,92 +42,80 @@ public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
     private Button btall_java;
     @Id
     private Button bshort_java;
-
     @Id
     private Button bcall_func_ret;
-
     @Id
     private Button bcall_func_ret_err;
 
-
-    //@Autowired
     public JsKnife() {
 
-        if (true){
+        setId("template");
 
-            setId("template");
-
-            getModel().setGreeting("Please enter your name");
+        getModel().setGreeting("Please enter your name");
 
 
-            // registra il riferimento al server Java nel client JS
-            // necessario perché JS possa chiamare direttamente metodi Java
-            // è in un file .js separato per renderlo riutilizzabile
-            UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+        // registra il riferimento al server Java nel client JS
+        // necessario perché JS possa chiamare direttamente metodi Java
+        // è in un file .js separato per renderlo riutilizzabile
+        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
-            // inizializza lo script specifico per questa pagina
-            // (recupera i componenti nel DOM e li registra in variabili)
-            UI.getCurrent().getPage().executeJs("initKnife()");
+        // inizializza lo script specifico per questa pagina
+        // (recupera i componenti nel DOM e li registra in variabili)
+        UI.getCurrent().getPage().executeJs("initKnife()");
 
+        // aggiunge i listener ai bottoni Java che invocano le funzioni JS
+        bwide_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("wider()");
+            log.info("wider() function invoked in JS");
+        });
+        bnarrow_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("narrower()");
+            log.info("narrower() function invoked in JS");
+        });
+        btall_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("taller()");
+            log.info("taller() function invoked in JS");
+        });
+        bshort_java.addClickListener(e -> {
+            UI.getCurrent().getPage().executeJs("shorter()");
+            log.info("shorter() function invoked in JS");
+        });
 
-            // aggiunge i listener ai bottoni Java che invocano le funzioni JS
-            bwide_java.addClickListener(e -> {
-                UI.getCurrent().getPage().executeJs("wider()");
-                log.info("wider() function invoked in JS");
-            });
-            bnarrow_java.addClickListener(e -> {
-                UI.getCurrent().getPage().executeJs("narrower()");
-                log.info("narrower() function invoked in JS");
-            });
-            btall_java.addClickListener(e -> {
-                UI.getCurrent().getPage().executeJs("taller()");
-                log.info("taller() function invoked in JS");
-            });
-            bshort_java.addClickListener(e -> {
-                UI.getCurrent().getPage().executeJs("shorter()");
-                log.info("shorter() function invoked in JS");
-            });
+        // chiamata a funzione JS con gestione del ritorno
+        bcall_func_ret.addClickListener(e -> {
 
-            // chiamata a funzione JS con gestione del ritorno
-            bcall_func_ret.addClickListener(e -> {
+            int n1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+            int n2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
 
-                int n1 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
-                int n2 = ThreadLocalRandom.current().nextInt(10, 100 + 1);
+            // !!se si vuole ottenere il valore di ritorno bisogna sempre
+            // aggiungere 'return' davanti al nome della funzione!!
+            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",n1, n2);
+            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                Notification.show(n1+"+"+n2+" (Java) = "+objRet+" (JS)");
+            };
 
-                // !!se si vuole ottenere il valore di ritorno bisogna sempre
-                // aggiungere 'return' davanti al nome della funzione!!
-                PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return sum($0,$1)",n1, n2);
-                SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
-                    Notification.show(n1+"+"+n2+" (Java) = "+objRet+" (JS)");
-                };
+            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+            pResult.then(Integer.class, resultHandler);
 
-                // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
-                pResult.then(Integer.class, resultHandler);
-
-            });
-
-
-            // chiamata a funzione JS con gestione del ritorno e dell'errore
-            bcall_func_ret_err.addClickListener(e -> {
-
-                PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return cookEggs()");
-                SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
-                    Notification.show(objRet.toString());
-                };
-
-                SerializableConsumer<String> errorHandler = (SerializableConsumer) objRet -> {
-                    Notification.show("JS error says: "+objRet.toString());
-                };
-
-                // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
-                pResult.then(String.class, resultHandler, errorHandler);
-
-            });
-
-        }
+        });
 
 
+        // chiamata a funzione JS con gestione del ritorno e dell'errore
+        bcall_func_ret_err.addClickListener(e -> {
 
+            PendingJavaScriptResult pResult = UI.getCurrent().getPage().executeJs("return cookEggs()");
+            SerializableConsumer resultHandler = (SerializableConsumer) objRet -> {
+                Notification.show(objRet.toString());
+            };
+
+            SerializableConsumer<String> errorHandler = (SerializableConsumer) objRet -> {
+                Notification.show("JS error says: "+objRet.toString());
+            };
+
+            // il risultato viene castato alla classe qui indicata. Se omessa usa Json.
+            pResult.then(String.class, resultHandler, errorHandler);
+
+        });
 
     }
 
@@ -164,13 +150,14 @@ public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
      * Perché funzioni bisogna prima aver registrato il server presso il client
      * UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
      * Il ritorno di questo metodo deve essere void.
-     * Il valore eventualmente si ritorna facendo una callback a un apposito metodo JS.
+     * Il risultato eventualmente si ritorna a JS facendo una callback a un apposito metodo.
      */
     @ClientCallable
     public void sum(int n1, int n2){
+
         int sum = n1+n2;
 
-        // callback
+        // callback a JS per ritornare il risultato
         UI.getCurrent().getPage().executeJs("showResult($0,$1,$2)", n1, n2, sum);
 
     }

@@ -12,7 +12,6 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -62,7 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
-public class Tabellone extends AGridViewList {
+public class Tabellone extends AGridViewList implements ITabellone{
 
 
     //--property

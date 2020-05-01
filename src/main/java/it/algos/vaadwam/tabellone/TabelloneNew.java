@@ -4,6 +4,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.InlineTargets;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.*;
@@ -65,7 +67,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 
 //@Qualifier(TAG_TAB_LIST+"new")
 @Slf4j
-public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements HasUrlParameter<String> {
+public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITabellone, HasUrlParameter<String> {
 
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
@@ -300,11 +302,15 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
      */
     private void addColumnsTurni(LocalDate day) {
 
+        ITabellone iTabellone = this;
+
         ValueProvider<AEntity, TurnoCellPolymer> componentProvider = new ValueProvider() {
 
             @Override
             public Object apply(Object obj) {
-                return appContext.getBean(TurnoCellPolymer.class, obj, day);
+                Riga riga = (Riga)obj;
+                TurnoCellPolymer turnoCellPolymer =  appContext.getBean(TurnoCellPolymer.class, iTabellone, riga, day);
+                return turnoCellPolymer;
             }
         };
 
@@ -366,7 +372,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
                 startDay = startDay.plusDays(7);
                 break;
             case selezione:
-                apreSelezione();
+                showDetail();
                 break;
             default:
                 log.warn("Switch - caso non definito");
@@ -381,12 +387,20 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements Has
 
 
     // mostra il dettaglio della cella cliccata
-    private void apreSelezione() {
-        Map<String, String> mappa = new HashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
-        final QueryParameters query = QueryParameters.simple(mappa);
-        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
+    private void showDetail() {
+//        Map<String, String> mappa = new HashMap<>();
+//        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
+//        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
+//        final QueryParameters query = QueryParameters.simple(mappa);
+//        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
+
+
+        Dialog dialog = new Dialog();
+        dialog.add(new Label("Close me with the esc-key or an outside click"));
+        dialog.setWidth("400px");
+        dialog.setHeight("150px");
+        dialog.open();;
+
     }
 
 
