@@ -5,6 +5,8 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.enumeration.EATime;
@@ -54,7 +56,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Tag("turno-cell")
 @HtmlImport("src/views/tabellone/turnoCellPolymer.html")
-public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
+public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
     /**
      * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
@@ -109,8 +111,6 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
     @Autowired
     private WamLogin wamLogin;
 
-    @Value("${wam.tabellone.turnoInDialogo}")
-    private boolean turnoInDialogo;
 
     private ITabellone tabellone;
 
@@ -134,6 +134,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
         this.riga = riga;
         this.giorno = giorno;
     }
+
 
 
 
@@ -223,9 +224,9 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
      */
     @EventHandler
     void handleClick() {
-        if(turnoInDialogo){ // modalità in dialogo
-
-        }else{ // modalità in pagina separata
+        if(tabellone!=null){ // nuovo tabellone, modalità in dialogo
+            tabellone.cellClicked(turno, giorno, riga.servizio);
+        }else{ // vecchio tabellone, modalità in pagina separata
 
             if (turno != null) {
                 handleClickTurnoEsistente();

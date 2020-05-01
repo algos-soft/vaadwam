@@ -8,23 +8,27 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.InlineTargets;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.*;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +80,9 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     protected RigaService rigaService;
 
     @Autowired
+    private TurnoService turnoService;
+
+    @Autowired
     private TabelloneService tabelloneService;
 
     @Autowired
@@ -120,6 +127,8 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
     private ATextService textService = ATextService.getInstance();
 
+    @Autowired
+    protected PreferenzaService preferenzaService;
 
     /**
      * Mappa chiave-valore di un singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
@@ -386,7 +395,42 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
 
-    // mostra il dettaglio della cella cliccata
+    @Override
+    public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
+
+        if (turno==null){   // crea nuovo turno
+
+            if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
+                turno = turnoService.newEntity(giorno, servizio);
+            }else{  // non può creare turni
+                String desc = servizio.descrizione;
+                String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
+                Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                return;
+            }
+
+        }
+
+        // presenta il turno (nuovo o esistente)
+        Dialog dialog = new Dialog();
+        TurnoEditPolymer polymer = appContext.getBean(TurnoEditPolymer.class,  this, dialog, turno);
+        dialog.add(polymer);
+        dialog.open();;
+
+    }
+
+    @Override
+    public void annullaDialogoTurno(Dialog dialog) {
+        dialog.close();
+    }
+
+    @Override
+    public void confermaDialogoTurno(Dialog dialog) {
+        Notification.show("confermato");
+        dialog.close();
+    }
+
+    // mostra il dettaglio della selezione periodo
     private void showDetail() {
 //        Map<String, String> mappa = new HashMap<>();
 //        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
@@ -395,11 +439,6 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 //        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
 
 
-        Dialog dialog = new Dialog();
-        dialog.add(new Label("Close me with the esc-key or an outside click"));
-        dialog.setWidth("400px");
-        dialog.setHeight("150px");
-        dialog.open();;
 
     }
 

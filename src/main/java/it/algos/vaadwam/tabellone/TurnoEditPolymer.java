@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -45,11 +47,11 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Java wrapper of the polymer element `turno-edit`
  */
 @Route(value = TAG_TURNO_EDIT)
+@Viewport("width=device-width")
 @Tag("turno-edit")
 @HtmlImport("src/views/tabellone/turno-edit.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Viewport("width=device-width")
 @Slf4j
 public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements HasUrlParameter<String> {
 
@@ -111,6 +113,28 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     //--che sono oggetti creati in questa classe Java col loro @ID di collegamento
     private List<TurnoIscrizioneModel> listaTurnoIscrizioniModello;
 
+    private ITabellone tabellone;
+
+    private Dialog dialogo;
+
+    public TurnoEditPolymer() {
+    }
+
+
+    public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno) {
+        this.tabellone=tabellone;
+        this.dialogo=dialogo;
+        this.turnoEntity=turno;
+    }
+
+
+
+    @PostConstruct
+    private void init(){
+        if (dialogo!=null){
+            layoutPolymer();
+        }
+    }
 
     /**
      * Recupera il turno arrivato come parametro nella chiamata del browser effettuata da @Route <br>
@@ -159,8 +183,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
     private void elaboraParameter(String turnoKey) {
         if (text.isValid(turnoKey)) {
             turnoEntity = turnoService.findById(turnoKey);
-        }// end of if cycle
-    }// end of method
+        }
+    }
 
 
     /**
@@ -169,6 +193,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * @param parametersMap per costruire una nuova istanza di Turno
      */
     private void elaboraParameter(Map<String, List<String>> parametersMap) {
+
         List<String> listaGiorni;
         LocalDate giorno = null;
         List<String> listaServizi;
@@ -198,7 +223,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         //--l'ID viene costruito automaticamente con newEntity() per averlo (di norma) subito disponibile
         //--ma viene in ogni caso ri-creato da beforeSave()
         turnoEntity.id = null;
-    }// end of method
+
+    }
 
 
     /**
@@ -568,8 +594,12 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     @EventHandler
     public void handleAnnulla() {
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-    }// end of method
+        if (dialogo!=null){
+            tabellone.annullaDialogoTurno(dialogo);
+        }else{
+            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+        }
+    }
 
 
     /**
@@ -588,18 +618,24 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      */
     @EventHandler
     public void handleConferma() {
+
         // validare i dati GUI
         // se non vanno bene, spiegare il perché e non uscire dalla pagina
         // se vanno bene, creare una entity per il database e salvare sul db
         if (array.isValid(listaTurnoIscrizioni)) {
             for (TurnoIscrizione turnoIscr : listaTurnoIscrizioni) {
                 turnoIscr.iscrizioneEntity.milite = turnoIscr.militeEntity;
-            }// end of for cycle
-        }// end of if cycle
+            }
+        }
 
         turnoService.save(turnoEntity);
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
-    }// end of method
+
+        if (dialogo!=null){
+            tabellone.confermaDialogoTurno(dialogo);
+        }else{
+            getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
+        }
+    }
 
 
     /**
@@ -652,4 +688,4 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         return iscrizione;
     }// end of method
 
-}// end of class
+}

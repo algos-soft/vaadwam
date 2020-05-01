@@ -61,7 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
-public class Tabellone extends AGridViewList implements ITabellone{
+public class Tabellone extends AGridViewList {
 
 
     //--property
