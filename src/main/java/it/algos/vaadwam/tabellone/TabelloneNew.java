@@ -23,6 +23,8 @@ import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -43,17 +45,8 @@ import java.util.*;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
- * Project vaadwam
- * Created by Algos
- * User: gac
- * Date: Fri, 28-Jun-2019
- * Time: 20:31
- * <p>
- * La griglia è composta di oggetti 'Riga' <br>
- * La riga è composta di oggetti 'TurnoCellPolymer' <br>
+ * Tabellone di servizi, turni e iscrizioni
  */
-//@UIScope
-
 //@JavaScript("frontend://js/js-comm.js")
 //@JavaScript("frontend://js/tabellone.js")
 
@@ -65,11 +58,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 
 @Tag("tabellone-polymer")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
-
-//@Route(value = TAG_TAB_LIST)
-//@PreserveOnRefresh
-
-//@Qualifier(TAG_TAB_LIST+"new")
 @Slf4j
 public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITabellone, HasUrlParameter<String> {
 
@@ -139,6 +127,8 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     @Id("tabellonegrid")
     private Grid grid;
 
+    private List<Riga> gridItems;
+
     public TabelloneNew() {
     }
 
@@ -190,14 +180,14 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
     }
 
-    @ClientCallable
-    public void tabScrolled(int x, int y){
-        log.info( "container scrolled: x="+x+", y="+y);
-        // Store the current scrollscroll position in the current Context
-        VaadinSession session = VaadinSession.getCurrent();
-        session.setAttribute("tabelloneScrollX",x);
-        session.setAttribute("tabelloneScrollY",y);
-    }
+//    @ClientCallable
+//    public void tabScrolled(int x, int y){
+//        log.info( "container scrolled: x="+x+", y="+y);
+//        // Store the current scrollscroll position in the current Context
+//        VaadinSession session = VaadinSession.getCurrent();
+//        session.setAttribute("tabelloneScrollX",x);
+//        session.setAttribute("tabelloneScrollY",y);
+//    }
 
 
 
@@ -237,28 +227,28 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
 
 
-    /**
-     * Crea e aggiunge le colonne
-     */
-    private void addColumns() {
-
-        // costruisce la colonna dei servizi
-        addColumnServizi();
-
-        // costruisce le colonne dei turni
-        for (int i = 0; i < numDays; i++) {
-            addColumnsTurni(startDay.plusDays(i));
-        }
-
-    }
+//    /**
+//     * Crea e aggiunge le colonne
+//     */
+//    private void addColumns() {
+//
+//        // costruisce la colonna dei servizi
+//        addColumnServizi();
+//
+//        // costruisce le colonne dei turni
+//        for (int i = 0; i < numDays; i++) {
+//            addColumnsTurni(startDay.plusDays(i));
+//        }
+//
+//    }
 
 
     /**
      * Carica gli items nella Grid, utilizzando i filtri correnti
      */
     private void loadDataInGrid() {
-        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
-        grid.setItems(items);
+        gridItems = tabelloneService.getGridRigheList(startDay, numDays);
+        grid.setItems(gridItems);
     }
 
 
@@ -426,8 +416,28 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
     @Override
     public void confermaDialogoTurno(Dialog dialog) {
-        Notification.show("confermato");
+
         dialog.close();
+
+        // ricarica il modello
+
+        Milite newMilite = militeService.findByKeyUnica("Arnonica Francesco");
+
+
+        long start = System.currentTimeMillis();
+        Riga primaRiga = gridItems.get(0);
+        List<Turno> turni = primaRiga.getTurni();
+        Turno primoTurno=turni.get(0);
+        List<Iscrizione> iscrizioni = primoTurno.getIscrizioni();
+        Iscrizione primaIscrizione = iscrizioni.get(0);
+        primaIscrizione.milite=militeService.getMilite();
+        primaIscrizione.setMilite(newMilite);
+
+        grid.setDataProvider(grid.getDataProvider());   // refresh the grid
+
+        long delta=System.currentTimeMillis()-start;
+        Notification.show("delta ms"+delta);
+
     }
 
     // mostra il dettaglio della selezione periodo
