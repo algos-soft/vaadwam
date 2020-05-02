@@ -81,6 +81,9 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     @Qualifier(TAG_CRO)
     private WamService wamService;
 
+    @Id
+    private Dialog turnodialog;
+
 
     /**
      * Primo giorno visualizzato
@@ -406,23 +409,10 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         }
 
         // presenta il turno (nuovo o esistente)
-        Dialog dialog = new Dialog();
-        dialog.setHeight("300px");
-
-        TurnoEditPolymer polymer = appContext.getBean(TurnoEditPolymer.class,  this, dialog, turno, nuovoTurno);
-        dialog.add(polymer);
-
-        Button confirmButton = new Button("Confirm", event -> {
-            //messageLabel.setText("Confirmed!");
-            dialog.close();
-        });
-        Button cancelButton = new Button("Cancel", event -> {
-            //messageLabel.setText("Cancelled...");
-            dialog.close();
-        });
-        dialog.add(confirmButton, cancelButton);
-
-        dialog.open();
+        TurnoEditPolymerNew polymer = appContext.getBean(TurnoEditPolymerNew.class,  this, turnodialog, turno, nuovoTurno);
+        turnodialog.removeAll();
+        turnodialog.add(polymer);
+        turnodialog.open();
 
     }
 

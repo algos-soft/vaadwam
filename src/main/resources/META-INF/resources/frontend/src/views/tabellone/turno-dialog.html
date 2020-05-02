@@ -1,14 +1,216 @@
-<vaadin-dialog aria-label="polymer templates">
+<link href="../../../bower_components/vaadin-button/vaadin-button.html" rel="import">
+<link href="../../../bower_components/vaadin-text-field/vaadin-text-field.html" rel="import">
+<link href="../../../bower_components/vaadin-icons/vaadin-icons.html" rel="import">
+<link href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html" rel="import">
+
+<dom-module id="turno-dialog">
+
     <template>
-        <div>This simple dialog will close by pressing the Esc key,</div>
-        <div> or by a mouse click anywhere outside the dialog area</div>
+
+        <style>
+
+            .buttondiv {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .headerRow {
+                display: flex;
+                justify-content: center;
+                font-size: 120%;
+            }
+
+            .areaiscrizioni {
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: stretch;
+                align-content: stretch;
+            }
+
+            .areabottoni {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: stretch;
+                margin-top: 1em;
+            }
+
+            .iscrizione {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: stretch;
+                align-content: stretch;
+                margin-top: 1em;
+            }
+
+            .iscrizioneRow {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: stretch;
+                vertical-align: middle;
+            }
+
+            .hgap {
+                width: 0.4em;
+            }
+
+
+        </style>
+
+
+        <!--single column centered in page-->
+        <div id="container" style="display: flex; flex-direction: column">
+
+            <!--header-->
+            <div style="display: flex; flex-direction:column; margin-top: 1em;">
+                <div class="headerRow" div>
+                    [[giorno]]
+                </div>
+
+                <div class="headerRow" style="font-weight: bold">
+                    [[servizio]]
+                </div>
+
+                <template if=[[usaOrarioLabel]] is="dom-if">
+                    <div class="headerRow">
+                        [[orario]]
+                    </div>
+                </template>
+
+            </div>
+            <!--end header-->
+
+            <!--area con tutte le iscrizioni-->
+            <div class="areaiscrizioni">
+
+                <dom-repeat items="[[iscrizioni]]">
+                    <template>
+                        <div>
+
+                            <!--singola iscrizione (ripetuta n volte con dom-repeat)-->
+                            <div class="iscrizione">
+
+                                <!--prima riga-->
+                                <div class="iscrizioneRow">
+
+                                    <vaadin-button
+                                            disabled=[[!item.abilitata]]
+                                            style="width: 8em; background-color:[[item.colore]];">
+                                        <div class="buttondiv">
+                                            <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
+                                            <label>[[item.funzione]]</label>
+                                        </div>
+                                    </vaadin-button>
+
+                                    <div class="hgap"></div>
+
+                                    <vaadin-button
+                                            disabled=[[!item.abilitata]]
+                                            on-click="handleClickMilite"
+                                            style="flex-grow: 2; background-color:[[item.colore]]; "
+                                            value="[[item.milite]]">
+                                        [[item.milite]]
+                                    </vaadin-button>
+
+                                </div>
+                                <!--end prima riga -->
+
+
+                                <!--seconda riga-->
+                                <div class="iscrizioneRow">
+
+                                    <vaadin-time-picker
+                                            disabled=[[!item.abilitataPicker]]
+                                            on-value-changed="handleChangeOraInizio"
+                                            step="900"
+                                            style="width: 6em;"
+                                            value="{{item.inizio}}">
+                                    </vaadin-time-picker>
+
+                                    <div class="hgap"></div>
+
+                                    <vaadin-text-field
+                                            disabled=[[!item.abilitataPicker]]
+                                            on-value-changed="handleChangeNote"
+                                            style="width: 7em; flex-grow: 1;"
+                                            value="{{item.note}}">
+                                    </vaadin-text-field>
+
+
+                                    <div class="hgap"></div>
+
+                                    <vaadin-time-picker
+                                            disabled=[[!item.abilitataPicker]]
+                                            on-value-changed="handleChangeOraFine"
+                                            step="900"
+                                            style="width: 6em;"
+                                            value="{{item.fine}}">
+                                    </vaadin-time-picker>
+
+                                </div>
+                                <!--end seconda riga -->
+
+
+                            </div>
+                            <!--end singola iscrizione -->
+
+
+                        </div>
+                    </template>
+                </dom-repeat>
+
+
+            </div>
+            <!--end area iscrizioni-->
+
+            <!--area dei bottoni-->
+            <div class="areabottoni">
+
+                <vaadin-button id="annulla"
+                               style="width:8em; flex-grow:1"
+                               theme="raised secondary"></vaadin-button>
+
+                <div class="hgap"></div>
+
+                <vaadin-button id="conferma"
+                               style="width:8em;flex-grow:1"
+                               theme="raised primary"></vaadin-button>
+            </div>
+            <!--end area bottoni-->
+
+
+        </div>
+        <!--end single column-->
+
     </template>
-</vaadin-dialog>
-<vaadin-button>Show dialog</vaadin-button>
-<script>
-  customElements.whenDefined('vaadin-dialog').then(function() {
-    document.querySelector('vaadin-button').addEventListener('click', function() {
-      document.querySelector('vaadin-dialog').opened = true;
-    });
-  });
-</script>
+
+    <script>
+        class TurnoDialog extends Polymer.Element {
+            static get is() {
+                return 'turno-dialog'
+            }
+        }
+
+        customElements.define(TurnoDialog.is, TurnoDialog);
+
+        // called from the Java class (server) to register a reference
+        // to the server itself in order to enable JavaScript
+        // to call methods on the server.
+        function registerServer(serverElement){
+            server=serverElement.$server;
+            server.pageReady(window.innerWidth,window.innerHeight);
+        }
+
+
+
+    </script>
+
+
+</dom-module>
