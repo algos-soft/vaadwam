@@ -117,14 +117,25 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
 
     private Dialog dialogo;
 
+    private boolean nuovo;
+
+
+
     public TurnoEditPolymer() {
     }
 
 
-    public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno) {
+    /**
+     * @param tabellone il tabellone di riferimento per effettuare le callbacks
+     * @param dialogo il dialogo contenitore
+     * @param turno il turno da mostrare
+     * @param nuovoTurno se si tratta di nuovo turno
+     */
+    public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, boolean nuovoTurno) {
         this.tabellone=tabellone;
         this.dialogo=dialogo;
         this.turnoEntity=turno;
+        this.nuovo =nuovoTurno;
     }
 
 
@@ -628,11 +639,10 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
             }
         }
 
-        turnoService.save(turnoEntity);
-
         if (dialogo!=null){
-            tabellone.confermaDialogoTurno(dialogo);
-        }else{
+            tabellone.confermaDialogoTurno(dialogo, turnoEntity, nuovo);
+        }else{  // vecchio tabellone
+            turnoService.save(turnoEntity);
             getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));
         }
     }

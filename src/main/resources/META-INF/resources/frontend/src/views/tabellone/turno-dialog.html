@@ -1,0 +1,14 @@
+<vaadin-dialog aria-label="polymer templates">
+    <template>
+        <div>This simple dialog will close by pressing the Esc key,</div>
+        <div> or by a mouse click anywhere outside the dialog area</div>
+    </template>
+</vaadin-dialog>
+<vaadin-button>Show dialog</vaadin-button>
+<script>
+  customElements.whenDefined('vaadin-dialog').then(function() {
+    document.querySelector('vaadin-button').addEventListener('click', function() {
+      document.querySelector('vaadin-dialog').opened = true;
+    });
+  });
+</script>

@@ -1,6 +1,7 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -127,7 +128,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     @Id("tabellonegrid")
     private Grid grid;
 
-    private List<Riga> gridItems;
+    private Collection<Riga> gridItems;
 
     public TabelloneNew() {
     }
@@ -388,10 +389,13 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     @Override
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
 
+        boolean nuovoTurno=false;
+
         if (turno==null){   // crea nuovo turno
 
             if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
                 turno = turnoService.newEntity(giorno, servizio);
+                nuovoTurno=true;
             }else{  // non può creare turni
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
@@ -403,9 +407,22 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
         // presenta il turno (nuovo o esistente)
         Dialog dialog = new Dialog();
-        TurnoEditPolymer polymer = appContext.getBean(TurnoEditPolymer.class,  this, dialog, turno);
+        dialog.setHeight("300px");
+
+        TurnoEditPolymer polymer = appContext.getBean(TurnoEditPolymer.class,  this, dialog, turno, nuovoTurno);
         dialog.add(polymer);
-        dialog.open();;
+
+        Button confirmButton = new Button("Confirm", event -> {
+            //messageLabel.setText("Confirmed!");
+            dialog.close();
+        });
+        Button cancelButton = new Button("Cancel", event -> {
+            //messageLabel.setText("Cancelled...");
+            dialog.close();
+        });
+        dialog.add(confirmButton, cancelButton);
+
+        dialog.open();
 
     }
 
@@ -415,28 +432,16 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
     @Override
-    public void confermaDialogoTurno(Dialog dialog) {
+    public void confermaDialogoTurno(Dialog dialog, Turno turno, boolean nuovoTurno) {
 
         dialog.close();
 
-        // ricarica il modello
+        if (nuovoTurno){
+            turnoService.save(turno);
+            loadDataInGrid();
+        }
 
-        Milite newMilite = militeService.findByKeyUnica("Arnonica Francesco");
-
-
-        long start = System.currentTimeMillis();
-        Riga primaRiga = gridItems.get(0);
-        List<Turno> turni = primaRiga.getTurni();
-        Turno primoTurno=turni.get(0);
-        List<Iscrizione> iscrizioni = primoTurno.getIscrizioni();
-        Iscrizione primaIscrizione = iscrizioni.get(0);
-        primaIscrizione.milite=militeService.getMilite();
-        primaIscrizione.setMilite(newMilite);
-
-        grid.setDataProvider(grid.getDataProvider());   // refresh the grid
-
-        long delta=System.currentTimeMillis()-start;
-        Notification.show("delta ms"+delta);
+        grid.setDataProvider(grid.getDataProvider());   // refresh
 
     }
 
