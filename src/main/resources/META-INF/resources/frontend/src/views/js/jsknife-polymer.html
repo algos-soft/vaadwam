@@ -81,7 +81,14 @@
             static get is() {
                 return 'jsknife-polymer'
             }
+
+            afterServerUpdate(){
+                console.log("The new 'greeting' value is: "+this.greeting);
+                server.afterServerUpdate();
+            }
+
         }
+
 
         customElements.define(JsKnifePolymer.is, JsKnifePolymer);
 

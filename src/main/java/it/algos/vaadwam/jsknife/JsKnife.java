@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 //@Route(value = "jsknife", layout = AppLayout.class)
 @Route(value = "jsknife")
 @Tag("jsknife-polymer")
-@HtmlImport("src/views/js/jsknife-polymer.html")
+@HtmlImport("src/views/js/dialog-content.html")
 
 @Slf4j
 public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
@@ -161,6 +161,17 @@ public class JsKnife extends PolymerTemplate<JsKnifeModel>  {
         UI.getCurrent().getPage().executeJs("showResult($0,$1,$2)", n1, n2, sum);
 
     }
+
+
+    /**
+     * In some cases you may want to execute some client-side logic after the component is updated from the server during a roundtrip.
+     * If this method is defined for the component it will be called each time after the component is updated from the server side.
+     */
+    @ClientCallable
+    public void afterServerUpdate(){
+        log.info("Client component updated from the server side!");
+    }
+
 
 
 }

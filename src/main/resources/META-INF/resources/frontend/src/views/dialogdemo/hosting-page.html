@@ -1,0 +1,30 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="hosting-page">
+
+
+    <template>
+        <div>Ciao Hosting Page!</div>
+
+        <vaadin-button id="openDialog">Open dialog!</vaadin-button>
+
+        <vaadin-dialog id="dialog" aria-label="polymer templates"></vaadin-dialog>
+
+    </template>
+
+
+
+
+    <script>
+        class HostingPage extends Polymer.Element {
+            static get is() {
+                return 'hosting-page'
+            }
+        }
+
+        customElements.define(HostingPage.is, HostingPage);
+
+    </script>
+
+</dom-module>
+
