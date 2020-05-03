@@ -36,5 +36,5 @@ public interface TurnoEditModel extends TemplateModel {
 
     void setFineExtra(String fineExtra);
 
-}// end of interface
+}
 

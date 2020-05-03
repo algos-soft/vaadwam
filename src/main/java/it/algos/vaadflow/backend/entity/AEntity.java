@@ -5,6 +5,7 @@ import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.enumeration.EAFieldAccessibility;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.role.EARoleType;
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -38,6 +39,7 @@ import java.time.LocalDateTime;
  * La gestione delle property 'dataCreazione' e 'dataModifica' è automatica in AService.save()
  */
 @Getter
+@Data
 public abstract class AEntity implements Serializable {
 
 

@@ -7,7 +7,7 @@ import com.vaadin.flow.templatemodel.AllowClientUpdates;
  */
 public class TurnoIscrizioneModel {
 
-    //--identificatore
+    //--identificatore iscrizione
     private String keyTag;
 
     private String inizio;
@@ -20,7 +20,11 @@ public class TurnoIscrizioneModel {
 
     private String icona;
 
+    private String idFunzione;
+
     private String funzione;
+
+    private String idMilite;
 
     private String milite;
 
@@ -81,6 +85,13 @@ public class TurnoIscrizioneModel {
         this.icona = icona;
     }
 
+    public String getIdFunzione() {
+        return idFunzione;
+    }
+
+    public void setIdFunzione(String idFunzione) {
+        this.idFunzione = idFunzione;
+    }
 
     public String getFunzione() {
         return funzione;
@@ -91,6 +102,13 @@ public class TurnoIscrizioneModel {
         this.funzione = funzione;
     }
 
+    public String getIdMilite() {
+        return idMilite;
+    }
+
+    public void setIdMilite(String idMilite) {
+        this.idMilite = idMilite;
+    }
 
     public String getMilite() {
         return milite;
@@ -131,4 +149,5 @@ public class TurnoIscrizioneModel {
         this.keyTag = keyTag;
     }
 
-}// end of class
+
+}

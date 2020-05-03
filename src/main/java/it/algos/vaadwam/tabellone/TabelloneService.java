@@ -380,7 +380,13 @@ public class TabelloneService extends AService {
         turnoIscrizioneModello.setKeyTag(turnoIscrizione.keyTag);
         turnoIscrizioneModello.setColore(turnoIscrizione.coloreTxt);
         turnoIscrizioneModello.setIcona(turnoIscrizione.iconaTxt);
+        if(turnoIscrizione.militeEntity!=null){
+            turnoIscrizioneModello.setIdMilite(turnoIscrizione.militeEntity.id);
+        }
         turnoIscrizioneModello.setMilite(turnoIscrizione.militetxt);
+        if (turnoIscrizione.funzioneEntity!=null){
+            turnoIscrizioneModello.setIdFunzione(turnoIscrizione.funzioneEntity.id);
+        }
         turnoIscrizioneModello.setFunzione(turnoIscrizione.funzioneTxt);
         turnoIscrizioneModello.setInizio(turnoIscrizione.inizioTxt);
         turnoIscrizioneModello.setNote(turnoIscrizione.noteTxt);

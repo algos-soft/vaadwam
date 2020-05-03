@@ -342,6 +342,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
      * Nella seconda riga un timePicker per la fine del servizio per il milite specifico
      */
     private void fixIscrizioni() {
+
         //--wrapper disponibile per elaborazioni
         listaTurnoIscrizioni = tabelloneService.getTurnoIscrizioni(turnoEntity);
 
