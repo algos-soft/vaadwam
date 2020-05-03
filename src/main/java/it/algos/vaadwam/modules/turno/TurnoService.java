@@ -154,7 +154,7 @@ public class TurnoService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Turno newEntity(LocalDate giorno, Servizio servizio) {
-        return newEntity((Croce) null, giorno, servizio, (LocalTime) null, (LocalTime) null, (List<Iscrizione>) null, "", "");
+        return newEntity((Croce) null, giorno, servizio, servizio.getInizio(), servizio.getFine(), (List<Iscrizione>) null, "", "");
     }// end of method
 
 

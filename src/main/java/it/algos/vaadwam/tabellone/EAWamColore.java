@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public enum EAWamColore {
 
     storico(EAColor.lightgray, EAColor.red, "storico", "", "Turno effettuato o non creabile", ""),
-    critico(EAColor.lightsalmon, EAColor.green, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
+    critico(EAColor.tabelloneCritico, EAColor.tabelloneCriticoContrasto, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
     urgente(EAColor.lightpink, EAColor.green, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
     normale(EAColor.lightgreen, EAColor.red, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),
     previsto(EAColor.lightskyblue, EAColor.red, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),

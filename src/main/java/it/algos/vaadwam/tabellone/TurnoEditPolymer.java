@@ -641,7 +641,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> implements
         }
 
         if (dialogo!=null){
-            tabellone.confermaDialogoTurno(dialogo, turnoEntity, nuovo);
+            tabellone.confermaDialogoTurno(dialogo, turnoEntity);
         }else{  // vecchio tabellone
             turnoService.save(turnoEntity);
             getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST));

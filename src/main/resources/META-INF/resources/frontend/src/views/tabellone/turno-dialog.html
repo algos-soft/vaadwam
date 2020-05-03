@@ -29,6 +29,8 @@
                 justify-content: flex-start;
                 align-items: stretch;
                 align-content: stretch;
+                padding-left:0.5em;
+                padding-right:0.5em;
             }
 
             .areabottoni {
@@ -69,7 +71,7 @@
         <div id="container" style="display: flex; flex-direction: column">
 
             <!--header-->
-            <div style="display: flex; flex-direction:column; margin-top: 1em;">
+            <div style="display: flex; flex-direction:column;">
                 <div class="headerRow" div>
                     [[giorno]]
                 </div>
@@ -110,7 +112,8 @@
                                     <vaadin-button
                                             disabled=[[!item.abilitata]]
                                             on-click="handleClickMilite"
-                                            style="width:10em; background-color:[[item.colore]]; "
+                                            style="width:10em; text-overflow: ellipsis;"
+                                            theme="primary"
                                             value="[[item.milite]]">
                                         [[item.milite]]
                                     </vaadin-button>

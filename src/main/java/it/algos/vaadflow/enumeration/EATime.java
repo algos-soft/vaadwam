@@ -63,7 +63,7 @@ public enum EATime {
      * Pattern: EEEE, d-MMMM-yyy <br>
      * Esempio: domenica, 5-ottobre-2014 <br>
      */
-    completa("completa", "EEEE, d-MMMM-yyy", "domenica, 5-ottobre-2014"),
+    completa("completa", "EEEE, d MMMM yyy", "domenica, 5 ottobre 2014"),
     /**
      * Pattern: MMMM yyy <br>
      * Esempio: ottobre 2014 <br>

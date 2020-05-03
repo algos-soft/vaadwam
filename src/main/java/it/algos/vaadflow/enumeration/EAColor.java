@@ -49,6 +49,11 @@ public enum EAColor {
     grigio3("grigio3", "#cccccc"),
     grigio4("grigio4", "#bbbbbb"),
     grigio5("grigio5", "#aaaaaa"),
+
+    tabelloneCritico("tabelloneCritico", "#c02f2f"),
+    tabelloneCriticoContrasto("tabelloneCriticoContrasto", "#fffdf0"),
+
+
     ;
 
     private String tag;
@@ -71,6 +76,19 @@ public enum EAColor {
 
         return lista;
     }// end of static method
+
+
+    public static EAColor getColor(String tag) {
+        EAColor color=null;
+        for (EAColor c : EAColor.values()) {
+            if(c.tag.equals(tag)){
+                color=c;
+                break;
+            }
+        }
+        return color;
+    }
+
 
 
     public String getTag() {

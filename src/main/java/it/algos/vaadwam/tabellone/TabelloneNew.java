@@ -399,13 +399,10 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     @Override
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
 
-        boolean nuovoTurno=false;
-
         if (turno==null){   // crea nuovo turno
 
             if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
                 turno = turnoService.newEntity(giorno, servizio);
-                nuovoTurno=true;
             }else{  // non può creare turni
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
@@ -416,7 +413,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         }
 
         // presenta il turno (nuovo o esistente)
-        TurnoEditPolymerNew polymer = appContext.getBean(TurnoEditPolymerNew.class,  this, turnodialog, turno, nuovoTurno);
+        TurnoEditPolymerNew polymer = appContext.getBean(TurnoEditPolymerNew.class,  this, turnodialog, turno);
         turnodialog.removeAll();
         turnodialog.add(polymer);
         turnodialog.open();
@@ -429,15 +426,11 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
     @Override
-    public void confermaDialogoTurno(Dialog dialog, Turno turno, boolean nuovoTurno) {
+    public void confermaDialogoTurno(Dialog dialog, Turno turno) {
 
         dialog.close();
-
-        if (nuovoTurno){
-            turnoService.save(turno);
-            loadDataInGrid();
-        }
-
+        turnoService.save(turno);
+        loadDataInGrid();
         grid.setDataProvider(grid.getDataProvider());   // refresh
 
     }
