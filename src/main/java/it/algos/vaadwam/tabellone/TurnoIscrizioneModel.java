@@ -3,7 +3,7 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.templatemodel.AllowClientUpdates;
 
 /**
- * Modello per un singolo elemento iscrizione nel form di edit turno
+ * Modello per un singolo elemento iscrizione nella scheda di edit turno
  */
 public class TurnoIscrizioneModel {
 

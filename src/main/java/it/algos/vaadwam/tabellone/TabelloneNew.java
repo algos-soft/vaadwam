@@ -389,6 +389,13 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
 
+    /**
+     * Cella cliccata nel tabellone.
+     * <p>
+     * @param turno, se esiste, null se non è stato ancora creato
+     * @param giorno se il turno è nullo, il giorno cliccato
+     * @param servizio se il turno è nullo, il servizio cliccato
+     */
     @Override
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
 

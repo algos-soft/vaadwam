@@ -256,7 +256,7 @@ public class TurnoEditPolymerNew extends PolymerTemplate<TurnoEditModel>  {
         //--che sono oggetti creati in questa classe Java col loro @ID di collegamento
         listaTurnoIscrizioniModello = tabelloneService.getTurnoIscrizioniModello(listaTurnoIscrizioni);
 
-        //--passa i dati al Client turno-edit.html
+        //--prepara il modello dati per la vista
         getModel().setIscrizioni(listaTurnoIscrizioniModello);
 
         //--regolazione iniziale, successivamente richiamata ad ogni modifica dei dati del Client

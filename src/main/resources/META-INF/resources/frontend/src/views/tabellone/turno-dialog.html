@@ -100,21 +100,17 @@
                                 <!--prima riga-->
                                 <div class="iscrizioneRow">
 
-                                    <vaadin-button
-                                            disabled=[[!item.abilitata]]
-                                            style="width: 8em; background-color:[[item.colore]];">
-                                        <div class="buttondiv">
-                                            <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
-                                            <label>[[item.funzione]]</label>
-                                        </div>
-                                    </vaadin-button>
+                                    <div style="display: flex; flex-direction: row; align-items:center; width: 5.7em">
+                                        <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
+                                        <label>[[item.funzione]]</label>
+                                    </div>
 
                                     <div class="hgap"></div>
 
                                     <vaadin-button
                                             disabled=[[!item.abilitata]]
                                             on-click="handleClickMilite"
-                                            style="flex-grow: 2; background-color:[[item.colore]]; "
+                                            style="width:10em; background-color:[[item.colore]]; "
                                             value="[[item.milite]]">
                                         [[item.milite]]
                                     </vaadin-button>
@@ -130,7 +126,7 @@
                                             disabled=[[!item.abilitataPicker]]
                                             on-value-changed="handleChangeOraInizio"
                                             step="900"
-                                            style="width: 6em;"
+                                            style="width: 5.7em;"
                                             value="{{item.inizio}}">
                                     </vaadin-time-picker>
 
@@ -139,7 +135,7 @@
                                     <vaadin-text-field
                                             disabled=[[!item.abilitataPicker]]
                                             on-value-changed="handleChangeNote"
-                                            style="width: 7em; flex-grow: 1;"
+                                            style="width: 2em; flex-grow: 1;"
                                             value="{{item.note}}">
                                     </vaadin-text-field>
 
@@ -150,7 +146,7 @@
                                             disabled=[[!item.abilitataPicker]]
                                             on-value-changed="handleChangeOraFine"
                                             step="900"
-                                            style="width: 6em;"
+                                            style="width: 5.7em;"
                                             value="{{item.fine}}">
                                     </vaadin-time-picker>
 
