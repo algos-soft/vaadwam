@@ -409,15 +409,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     /**
-     * Seleziona l'editor da utilizzare
+     * Seleziona l'editor di iscrizione da utilizzare
      */
     private Component getEditor(Turno turno, LocalDate giorno, Servizio servizio){
         Component editor=null;
-        String type="single";
-        //String type="multi";
+        //String type="single";
+        String type="multi";
         switch (type){
             case("single"):
-                editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
+                editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno);
                 break;
             case("multi"):
                 editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);

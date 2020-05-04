@@ -44,9 +44,9 @@
         <!--Un click nel container lancia un evento sincrono (di nome handleClick) in questo Client-->
         <!--Un click nel container lancia un evento asincrono (di nome handleClick) nel Server-->
         <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
-        <div id="container" on-click="handleClick">
+        <div id="container" >
             <template is="dom-repeat" items="[[righecella]]">
-                <button class="button" style="background-color:{{item.coloreCella}}">
+                <button class="button" style="background-color:{{item.coloreCella}}" on-click="handleClick">
                     <div class = "buttondiv">
                         <iron-icon icon={{item.nomeIcona}} style="height:4mm"></iron-icon>
                         <label style="color:{{item.coloreTesto}}">{{item.nomeMilite}}</label>

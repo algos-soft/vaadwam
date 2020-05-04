@@ -47,7 +47,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Date: mar, 05-mar-2019
  * Time: 14:48
  * <p>
- * Singola cella del tabellone <br>
+ * Singola cella del tabellone
  * 1.Icona
  * 2.Nome del milite
  * 3.Colore
@@ -197,16 +197,16 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
         if (iscr.note != null && iscr.note.length() > 0) {
             status = true;
-        }// end of if cycle
+        }
         if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
             status = true;
-        }// end of if cycle
+        }
         if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
             status = true;
-        }// end of if cycle
+        }
 
         return status;
-    }// end of method
+    }
 
 
     /**
@@ -284,4 +284,4 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     }// end of method
 
 
-}// end of class
+}
