@@ -51,11 +51,23 @@
             .ruolo {
                 display: flex;
                 height: 8mm;
-                margin-top: 0.7mm;
-                border-bottom: 0.1mm solid;
+                margin-top: 0.8mm;
                 justify-content: center;
                 align-items: center;
             }
+
+            .iconContainer {
+                height:6mm;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .icon {
+                height:4mm;
+                fill:white
+            }
+
 
 
             #button {
@@ -90,16 +102,23 @@
             <div style="width:0.5em"></div>
 
             <div id="right">
+
                 <template is="dom-repeat" items="[[iconeObbligatorie]]">
-                    <div id="ruoloObbligatorio" class="ruolo">
-                        <iron-icon icon="vaadin:{{item}}"  style="height:4mm; fill:dodgerblue"></iron-icon>
+                    <div class="ruolo">
+                        <div class="iconContainer" style="background-color: #c80000ff;" >
+                            <iron-icon icon="vaadin:{{item}}"  class="icon"></iron-icon>
+                        </div>
                     </div>
                 </template>
+
                 <template is="dom-repeat" items="[[iconeFacoltative]]">
-                    <div id="ruoloFacoltativo"  class="ruolo">
-                        <iron-icon icon="vaadin:{{item}}"  style="height:4mm; fill:forestgreen"></iron-icon>
+                    <div class="ruolo">
+                        <div class="iconContainer" style="background-color: #8ea604ff;" >
+                            <iron-icon icon="vaadin:{{item}}"  class="icon"></iron-icon>
+                        </div>
                     </div>
                 </template>
+
             </div>
 
         </div>
