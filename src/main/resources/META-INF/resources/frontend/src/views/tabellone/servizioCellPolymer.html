@@ -47,20 +47,16 @@
                 /*margin-left: 0.5em;*/
             }
 
-            #ruoloObbligatorio {
+            /* questo oggetto deve avere esattamente la stessa altezza di una cella */
+            .ruolo {
                 display: flex;
                 height: 8mm;
-                border-bottom: 0.05em solid;
+                margin-top: 0.7mm;
+                border-bottom: 0.1mm solid;
                 justify-content: center;
                 align-items: center;
             }
-            #ruoloFacoltativo {
-                display: flex;
-                height: 8mm;
-                border-bottom: 0.05em solid;
-                justify-content: center;
-                align-items: center;
-            }
+
 
             #button {
                 white-space: normal;
@@ -95,12 +91,12 @@
 
             <div id="right">
                 <template is="dom-repeat" items="[[iconeObbligatorie]]">
-                    <div id="ruoloObbligatorio">
+                    <div id="ruoloObbligatorio" class="ruolo">
                         <iron-icon icon="vaadin:{{item}}"  style="height:4mm; fill:dodgerblue"></iron-icon>
                     </div>
                 </template>
                 <template is="dom-repeat" items="[[iconeFacoltative]]">
-                    <div id="ruoloFacoltativo">
+                    <div id="ruoloFacoltativo"  class="ruolo">
                         <iron-icon icon="vaadin:{{item}}"  style="height:4mm; fill:forestgreen"></iron-icon>
                     </div>
                 </template>

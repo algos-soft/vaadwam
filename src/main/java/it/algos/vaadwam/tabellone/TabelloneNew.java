@@ -150,6 +150,15 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         grid.addThemeNames("row-stripes");
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
+        buildAllGrid();
+
+    }
+
+
+    private void buildAllGrid(){
+
+        grid.removeAllColumns();
+
         // costruisce la colonna dei servizi
         addColumnServizi();
 
@@ -159,6 +168,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         }
 
         loadDataInGrid();
+
     }
 
     /**
@@ -384,7 +394,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
         numDays = NUM_GIORNI_DEFAULT;
 
-        routeToTabellone(startDay, numDays);
+        buildAllGrid();
 
     }
 
@@ -437,27 +447,30 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
 
     // mostra il dettaglio della selezione periodo
     private void showDetail() {
-//        Map<String, String> mappa = new HashMap<>();
-//        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
-//        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
+
+        Map<String, String> mappa = new HashMap<>();
+        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
+        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
 //        final QueryParameters query = QueryParameters.simple(mappa);
 //        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
 
+        int a = 87;
+        int b=a;
 
 
     }
 
 
-    /**
-     * Ritorno al tabellone coi parametri selezionati
-     */
-    private void routeToTabellone(LocalDate startDay, int numDays) {
-        Map<String, String> mappa = new HashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNI_DURATA, numDays + "");
-        final QueryParameters query = QueryParameters.simple(mappa);
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
-    }
+//    /**
+//     * Ritorno al tabellone coi parametri selezionati
+//     */
+//    private void routeToTabellone(LocalDate startDay, int numDays) {
+//        Map<String, String> mappa = new HashMap<>();
+//        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
+//        mappa.put(KEY_MAP_GIORNI_DURATA, numDays + "");
+//        final QueryParameters query = QueryParameters.simple(mappa);
+//        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
+//    }
 
 
 
