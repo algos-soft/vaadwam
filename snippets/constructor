@@ -40,3 +40,13 @@
            * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
            * Se manca, manda in rosso il parametro del costruttore usato <br>
            */
+    /**
+     * Costruttore @Autowired <br>
+     * As of Spring 4.3, classes with a single constructor can omit the @Autowired annotation <br>
+     */
+
+    /**
+     * Costruttore base senza parametri <br>
+     * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
+     * Se manca, manda in rosso il parametro del costruttore usato <br>
+     */
