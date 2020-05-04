@@ -145,7 +145,7 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
-        grid.addThemeNames("row-stripes");
+        //grid.addThemeNames("row-stripes");    // colorazione righe alterne
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         buildAllGrid();
