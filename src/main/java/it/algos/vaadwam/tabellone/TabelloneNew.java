@@ -142,8 +142,6 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
         // registra il riferimento al server Java nel client JS
         // UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
-        //setSizeUndefined();
-
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
@@ -238,23 +236,6 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
 
-
-
-
-//    /**
-//     * Crea e aggiunge le colonne
-//     */
-//    private void addColumns() {
-//
-//        // costruisce la colonna dei servizi
-//        addColumnServizi();
-//
-//        // costruisce le colonne dei turni
-//        for (int i = 0; i < numDays; i++) {
-//            addColumnsTurni(startDay.plusDays(i));
-//        }
-//
-//    }
 
 
     /**
@@ -461,16 +442,6 @@ public class TabelloneNew extends PolymerTemplate<TabelloneModel> implements ITa
     }
 
 
-//    /**
-//     * Ritorno al tabellone coi parametri selezionati
-//     */
-//    private void routeToTabellone(LocalDate startDay, int numDays) {
-//        Map<String, String> mappa = new HashMap<>();
-//        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
-//        mappa.put(KEY_MAP_GIORNI_DURATA, numDays + "");
-//        final QueryParameters query = QueryParameters.simple(mappa);
-//        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
-//    }
 
 
 
