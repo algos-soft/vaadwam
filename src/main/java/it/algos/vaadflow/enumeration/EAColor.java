@@ -50,9 +50,24 @@ public enum EAColor {
     grigio4("grigio4", "#bbbbbb"),
     grigio5("grigio5", "#aaaaaa"),
 
-    tabelloneCritico("tabelloneCritico", "#c02f2f"),
-    tabelloneCriticoContrasto("tabelloneCriticoContrasto", "#fffdf0"),
+    // colori tabellone creati con https://coolors.co/
+    storicoTabellone("storicoTabellone", "#136f63ff"),
+    storicoTabelloneContrasto("storicoTabelloneContrasto", "#fffdf0"),
 
+    criticoTabellone("criticoTabellone", "#c80000ff"),
+    criticoTabelloneContrasto("criticoTabelloneContrasto", "#fffdf0"),
+
+    urgenteTabellone("urgenteTabellone", "#ff7700ff"),
+    urgenteTabelloneContrasto("urgenteTabelloneContrasto", "#fffdf0"),
+
+    normaleTabellone("normaleTabellone", "#8ea604ff"),
+    normaleTabelloneContrasto("normaleTabelloneContrasto", "#fffdf0"),
+
+    previstoTabellone("previstoTabellone", "#2e86abff"),
+    previstoTabelloneContrasto("previstoTabelloneContrasto", "#fffdf0"),
+
+    creabileTabellone("creabileTabellone", "#d3d4d9ff"),
+    creabileTabelloneContrasto("creabileTabelloneContrasto", "#000000"),
 
     ;
 

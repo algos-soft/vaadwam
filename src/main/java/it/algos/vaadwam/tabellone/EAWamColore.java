@@ -13,12 +13,12 @@ import java.util.ArrayList;
  */
 public enum EAWamColore {
 
-    storico(EAColor.lightgray, EAColor.red, "storico", "", "Turno effettuato o non creabile", ""),
-    critico(EAColor.tabelloneCritico, EAColor.tabelloneCriticoContrasto, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
-    urgente(EAColor.lightpink, EAColor.green, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
-    normale(EAColor.lightgreen, EAColor.red, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),
-    previsto(EAColor.lightskyblue, EAColor.red, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),
-    creabile(EAColor.lightcyan, EAColor.aquamarine, "creabile", "", "Turno creabile", ""),
+    storico(EAColor.storicoTabellone, EAColor.storicoTabelloneContrasto, "storico", "", "Turno effettuato o non creabile", ""),
+    critico(EAColor.criticoTabellone, EAColor.criticoTabelloneContrasto, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
+    urgente(EAColor.urgenteTabellone, EAColor.urgenteTabelloneContrasto, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
+    normale(EAColor.normaleTabellone, EAColor.normaleTabelloneContrasto, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),
+    previsto(EAColor.previstoTabellone, EAColor.previstoTabelloneContrasto, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),
+    creabile(EAColor.creabileTabellone, EAColor.creabileTabelloneContrasto, "creabile", "", "Turno creabile", ""),
     ;
 
 
