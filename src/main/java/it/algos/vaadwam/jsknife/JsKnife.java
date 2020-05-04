@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 //@Route(value = "jsknife", layout = AppLayout.class)
 @Route(value = "jsknife")
 @Tag("jsknife-polymer")
-@HtmlImport("src/views/js/dialog-content.html")
+@HtmlImport("src/views/js/jsknife-polymer.html")
 
 @Slf4j
 public class JsKnife extends PolymerTemplate<JsKnifeModel>  {

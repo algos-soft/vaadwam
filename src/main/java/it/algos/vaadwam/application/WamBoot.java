@@ -24,7 +24,7 @@ import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.statistica.StatisticaList;
 import it.algos.vaadwam.modules.turno.TurnoList;
-import it.algos.vaadwam.tabellone.Tabellone;
+import it.algos.vaadwam.tabellone.TabelloneOld;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -437,7 +437,7 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(CroceList.class);
 
         //--utente
-        FlowVar.menuClazzList.add(Tabellone.class);
+        FlowVar.menuClazzList.add(TabelloneOld.class);
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
         FlowVar.menuClazzList.add(MiliteList.class);

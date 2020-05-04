@@ -2,16 +2,14 @@ package it.algos.vaadwam.security;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.security.SecurityUtils;
-import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadflow.ui.login.LoginView;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
-import it.algos.vaadwam.tabellone.Tabellone;
+import it.algos.vaadwam.tabellone.TabelloneOld;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -66,13 +64,13 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
 String alfa=event.getLocation().getFirstSegment();
 
         if (alfa!=null&&alfa.equals("gaps")) {
-            event.rerouteTo(Tabellone.class);
+            event.rerouteTo(TabelloneOld.class);
         }// end of if cycle
 
         if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
             if(SecurityUtils.isUserLoggedIn()) {
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {
-                    event.rerouteTo(Tabellone.class);
+                    event.rerouteTo(TabelloneOld.class);
                 } else {
                     event.rerouteTo(LoginView.class);
                 }// end of if/else cycle

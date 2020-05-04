@@ -9,16 +9,16 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Java wrapper of the polymer element `turno-edit`
+ * Componente Editor di una singola iscrizione
  */
 @Tag("turno-dialog")
-@HtmlImport("src/views/tabellone/turno-dialog.html")
+@HtmlImport("src/views/tabellone/iscrizione-editor.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
-public class TurnoDialogPolymer extends PolymerTemplate<TurnoDialogModel>  {
+public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel>  {
 
-    public TurnoDialogPolymer() {
+    public IscrizioneEditPolymer() {
     }
 
 }

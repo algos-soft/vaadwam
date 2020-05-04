@@ -1,124 +1,95 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
-import it.algos.vaadflow.annotation.AIEntity;
-import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.*;
-import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
+import it.algos.vaadflow.service.AArrayService;
+import it.algos.vaadflow.service.ADateService;
+import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.ui.fields.AComboBox;
-import it.algos.vaadflow.ui.list.AGridViewList;
-import it.algos.vaadwam.WamLayout;
-import it.algos.vaadwam.migration.MigrationService;
-import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
 
-import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
- * Project vaadwam
- * Created by Algos
- * User: gac
- * Date: Fri, 28-Jun-2019
- * Time: 20:31
- * <p>
- * La griglia è composta di oggetti 'Riga' <br>
- * La griglia è composta di oggetti 'TurnoCellPolymer' <br>
+ * Tabellone di servizi, turni e iscrizioni
  */
-//@UIScope
-@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
-//@PreserveOnRefresh
+//@JavaScript("frontend://js/js-comm.js")
+//@JavaScript("frontend://js/tabellone.js")
 
-@Qualifier(TAG_TAB_LIST)
+//@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
+//@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
+//@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
+@Route(value = "tabnew")
+//@ParentLayout(AppLayout.class)
+
+@Tag("tabellone-polymer")
+@HtmlImport("src/views/tabellone/tabellone-polymer.html")
 @Slf4j
-@AIEntity(company = EACompanyRequired.obbligatoria)
-@AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "tabellone", menuIcon = VaadinIcon.CALENDAR, roleTypeVisibility = EARoleType.user)
-public class Tabellone extends AGridViewList {
+public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabellone, HasUrlParameter<String> {
 
+    // valore di default per il numero di giorni visualizzati nel tabellone
+    public final static int NUM_GIORNI_DEFAULT = 7;
 
-    //--property
-    public final static int GIORNI_STANDARD = 7;
-
-
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     protected RigaService rigaService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
+    @Autowired
+    private TurnoService turnoService;
+
     @Autowired
     private TabelloneService tabelloneService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     private CroceService croceService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     @Qualifier(TAG_CRO)
     private WamService wamService;
 
+    @Id
+    private Dialog turnodialog;
+
 
     /**
-     * Mantiene una property globale del tabellone <br>
-     * Primo giorno visualizzato <br>
-     * Può venire modificata (da un menu/bottone) <br>
+     * Primo giorno visualizzato
      */
     private LocalDate startDay = LocalDate.now();
 
     /**
-     * Mantiene una property globale del tabellone <br>
-     * Numero di giorni visualizzati <br>
-     * Può venire modificata (da un menu/bottone) <br>
+     * Numero di giorni visualizzati
      */
-    private int numDays = GIORNI_STANDARD;
+    private int numDays = NUM_GIORNI_DEFAULT;
 
     /**
      * Wam-Login della sessione con i dati del Milite loggato <br>
@@ -135,230 +106,151 @@ public class Tabellone extends AGridViewList {
 
     private AComboBox comboPeriodi;
 
-    private boolean inited;
-
-    /**
-     * Costruttore @Autowired <br>
-     * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
-     * Nella sottoclasse concreta si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     * Nella sottoclasse concreta si usa una costante statica, per scrivere sempre uguali i riferimenti <br>
-     * Passa nella superclasse anche la entityClazz che viene definita qui (specifica di questo mopdulo) <br>
-     *
-     * @param service business class e layer di collegamento per la Repository
-     */
     @Autowired
-    public Tabellone(@Qualifier(TAG_TAB) IAService service) {
-        super(service, Riga.class);
+    protected ApplicationContext appContext;
+
+    private AArrayService arrayService = AArrayService.getInstance();
+
+    private ADateService dateService = ADateService.getInstance();
+
+    private ATextService textService = ATextService.getInstance();
+
+    @Autowired
+    protected PreferenzaService preferenzaService;
+
+    /**
+     * Mappa chiave-valore di un singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
+     * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
+     */
+    protected Map<String, String> parametersMap = null;
+
+    @Id("tabellonegrid")
+    private Grid grid;
+
+    //private Collection<Riga> gridItems;
+
+    public Tabellone() {
     }
 
+    @PostConstruct
+    private void init(){
 
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        super.setParameter(event, parameter);
-        String isoValue;
-        LocalDate endDay;
-
-        if (array.isValid(parametersMap)) {
-            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_INIZIO)) {
-                isoValue = parametersMap.get(KEY_MAP_GIORNO_INIZIO);
-                startDay = date.localDateFromISO(isoValue);
-            }// end of if cycle
-            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_FINE)) {
-                isoValue = parametersMap.get(KEY_MAP_GIORNO_FINE);
-                endDay = date.localDateFromISO(isoValue);
-                numDays = date.differenza(endDay, startDay);
-                numDays++; //--gli estremi sono compresi
-            }// end of if cycle
-            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNI_DURATA)) {
-                numDays = Integer.decode(parametersMap.get(KEY_MAP_GIORNI_DURATA));
-            }// end of if cycle
-        }// end of if cycle
-    }// end of method
-
-
-    /**
-     * Creazione dei contenuti
-     * <p>
-     * Invocata da @Route
-     */
-    @Override
-    protected void initView() {
-
-        if (!inited){
-            // crea tutta la struttura standard della pagina compresa la grid
-            super.initView();
-
-            inited=true;
-        }
-
-
-        // crea il wam-login della sessione
-        wamLogin = wamService.fixWamLogin();
-        ALogin login = vaadinService.getLogin();
-        if (login != null) {
-            wamLogin = (WamLogin) login;
-        }
-
-        // se il login è obbligatorio e manca, la View non funziona
-        if (vaadinService.mancaLoginSeObbligatorio()) {
-            return;
-        }
-
-        // carica i dati dal db e crea le righe della griglia
-        loadDataInGrid();
-
-        //--provvisorio. Serve per prendere i dati da un vecchio backup mysql di 'amb'
-        if (pref.isBool(USA_DEBUG)) {//@todo levare
-            startDay = MigrationService.GIORNO_INIZIALE_DEBUG;
-            startDay = LocalDate.now();
-        }
-
-    }
-
-
-    /**
-     * Le preferenze standard <br>
-     * Le preferenze specifiche della sottoclasse <br>
-     * Può essere sovrascritto, per modificare le preferenze standard <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixPreferenze() {
-        super.fixPreferenze();
-
-        this.setMargin(false);
-        this.setSpacing(false);
-        this.setPadding(false);
-
-        super.searchType = EASearch.nonUsata;
-        super.usaButtonNew = false;
-        super.usaBottoneEdit = false;
-        super.usaBottomLayout = true;
-    }// end of method
-
-
-    /**
-     * Crea la grid <br>
-     * Alcune regolazioni vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse <br>
-     * Costruisce la Grid con le colonne. Gli items vengono caricati in updateItems() <br>
-     * Facoltativo (presente di default) il bottone Edit (flag da mongo eventualmente sovrascritto) <br>
-     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto <br>
-     */
-    @Override
-    protected Grid creaGrid() {
-        grid = new Grid(Riga.class, false);
+        // registra il riferimento al server Java nel client JS
+        // UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
-        grid.addThemeNames("row-stripes");
+        //grid.addThemeNames("row-stripes");    // colorazione righe alterne
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
-        // costruisce le colonne
-        this.setColumns(grid);
+        buildAllGrid();
 
-        // costruisce le righe
-        // this.updateGrid();
-        //this.loadDataInGrid();
-
-        if (pref.isBool(USA_DEBUG)) {
-            grid.getElement().getStyle().set("background-color", EAColor.blue.getEsadecimale());
-        }// end of if cycle
-
-        return grid;
-    }// end of method
+    }
 
 
-    /**
-     * Crea e aggiunge le colonne
-     */
-    public void setColumns(Grid grid) {
-//        long inizio = System.currentTimeMillis();
+    private void buildAllGrid(){
+
+        grid.removeAllColumns();
 
         // costruisce la colonna dei servizi
-        addColumnServizio(grid);
+        addColumnServizi();
 
         // costruisce le colonne dei turni
         for (int i = 0; i < numDays; i++) {
-            addColumnsTurni(grid, startDay.plusDays(i));
-        }// end of for cycle
-//        log.info("Costruzione tabellone in " + (System.currentTimeMillis()-inizio));
+            addColumnsTurni(startDay.plusDays(i));
+        }
 
-    }// end of method
+        loadDataInGrid();
 
-
-    /**
-     * Sincronizza la company in uso. <br>
-     * Chiamato dal listener di 'filtroCompany' <br>
-     * <p>
-     * Può essere sovrascritto, per modificare la gestione delle company <br>
-     */
-    protected void actionSincroCompany() {
-        Croce croceSelezionata = null;
-
-        if (filtroCompany != null) {
-            croceSelezionata = (Croce) filtroCompany.getValue();
-        }// end of if cycle
-        wamLogin.setCroce(croceSelezionata);
-
-        updateFiltri();
-        updateGrid();
-    }// end of method
-
+    }
 
     /**
-     * Aggiorna gli items della Grid, utilizzando i filtri. <br>
-     * Chiamato per modifiche effettuate ai filtri, popup, newEntity, deleteEntity, ecc... <br>
-     * <p>
-     * Sviluppato nella sottoclasse AGridViewList, oppure APaginatedGridViewList <br>
-     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
+     * Invoked from the JS client when is safe to invoke JS functions operating on the DOM.
+     * (The DOM is ready and the page is completely loaded).
+     * For this command to work, remember to register the server in the constructor:
+     * UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
      */
-    @Override
-    public void updateGrid() {
-//        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
+    @ClientCallable
+    public void pageReady(){
+
+//        UI.getCurrent().getPage().executeJs("setupScrollListener()");
 //
-//        if (items != null) {
-//            grid.setItems(items);
-//        }// end of if cycle
-    }// end of method
+//        // restore the previous scroll position
+//        VaadinSession session = VaadinSession.getCurrent();
+//        Object objX=session.getAttribute("tabelloneScrollX");
+//        Object objY=session.getAttribute("tabelloneScrollY");
+//        if (objX!=null && objY!=null){
+//            int x = (Integer)objX;
+//            int y = (Integer)objY;
+//            UI.getCurrent().getPage().executeJs("scrollTabelloneTo($0,$1)", x, y);
+//        }
+
+    }
+
+//    @ClientCallable
+//    public void tabScrolled(int x, int y){
+//        log.info( "container scrolled: x="+x+", y="+y);
+//        // Store the current scrollscroll position in the current Context
+//        VaadinSession session = VaadinSession.getCurrent();
+//        session.setAttribute("tabelloneScrollX",x);
+//        session.setAttribute("tabelloneScrollY",y);
+//    }
+
+
+
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        //super.setParameter(event, parameter);
+        String isoValue;
+        LocalDate endDay;
+
+        Location location = event.getLocation();
+        QueryParameters queryParameters = location.getQueryParameters();
+        Map<String, List<String>> params = queryParameters.getParameters();
+
+
+        if (arrayService.isValid(params)) {
+            this.parametersMap = arrayService.semplificaMappa(params);
+        }// end of if cycle
+
+        if (arrayService.isValid(parametersMap)) {
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_INIZIO)) {
+                isoValue = parametersMap.get(KEY_MAP_GIORNO_INIZIO);
+                startDay = dateService.localDateFromISO(isoValue);
+            }
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNO_FINE)) {
+                isoValue = parametersMap.get(KEY_MAP_GIORNO_FINE);
+                endDay = dateService.localDateFromISO(isoValue);
+                numDays = dateService.differenza(endDay, startDay);
+                numDays++; //--gli estremi sono compresi
+            }
+            if (parametersMap != null && parametersMap.containsKey(KEY_MAP_GIORNI_DURATA)) {
+                numDays = Integer.decode(parametersMap.get(KEY_MAP_GIORNI_DURATA));
+            }
+        }
+    }
+
+
 
 
     /**
      * Carica gli items nella Grid, utilizzando i filtri correnti
      */
     private void loadDataInGrid() {
-
-        Optional<UI> optionalUI = getUI();
-        if (optionalUI.isPresent()){
-            UI ui = optionalUI.get();
-            int a=87;
-            int b=a;
-        }
-
-        Optional<Component> optComponent = getParent();
-        if (optComponent.isPresent()){
-            Component comp = optComponent.get();
-            int a=87;
-            int b=a;
-        }
-
-        Collection items = tabelloneService.getGridRigheList(startDay, numDays);
-        grid.setItems(items);
-
+        List<Riga> gridItems = tabelloneService.getGridRigheList(startDay, numDays);
+        grid.setItems(gridItems);
     }
 
 
     /**
-     * Crea la colonna (di tipo componentProvider) per visualizzare
-     * i servizi previsti per questa croce
-     * <p>
+     * Crea la colonna per visualizzare i servizi previsti
      */
-    private void addColumnServizio(Grid grid) {
+    private void addColumnServizi() {
 
         ValueProvider<AEntity, ServizioCellPolymer> componentProvider = new ValueProvider() {
 
             String currentType = "";
-
 
             @Override
             public Object apply(Object obj) {
@@ -374,7 +266,7 @@ public class Tabellone extends AGridViewList {
                     lastInType = false; //@todo PROVVISORIO
                     servizioCell = appContext.getBean(ServizioCellPolymer.class, servizio, lastInType);
                     currentType = servizio.getCode();
-                }// end of if cycle
+                }
 
                 return servizioCell != null ? servizioCell : new Label("Manca");
             }
@@ -392,35 +284,40 @@ public class Tabellone extends AGridViewList {
         column.setResizable(false);
         column.setFrozen(true);
 
-    }// end of method
+    }
 
 
     /**
      * Crea e aggiunge la colonna dei turni per un dato giorno
      */
-    private void addColumnsTurni(Grid<AEntity> grid, LocalDate day) {
-        Object alfa = day;
+    private void addColumnsTurni(LocalDate day) {
+
+        ITabellone iTabellone = this;
+
         ValueProvider<AEntity, TurnoCellPolymer> componentProvider = new ValueProvider() {
 
             @Override
             public Object apply(Object obj) {
-                return appContext.getBean(TurnoCellPolymer.class, (Riga) obj, alfa);
+                Riga riga = (Riga)obj;
+                TurnoCellPolymer turnoCellPolymer =  appContext.getBean(TurnoCellPolymer.class, iTabellone, riga, day);
+                return turnoCellPolymer;
             }
-        };//end of lambda expressions and anonymous inner class
+        };
 
-        Grid.Column column = grid.addComponentColumn(componentProvider);
+        Grid.Column column = this.grid.addComponentColumn(componentProvider);
 
-        column.setHeader(date.get(day, EATime.weekShortMese));
+        column.setHeader(dateService.get(day, EATime.weekShortMese));
         column.setFlexGrow(0);
         column.setWidth("45mm");
         column.setSortable(false);
         column.setResizable(false);
-    }// end of method
+
+    }
 
 
     /**
-     * Crea l'header della colonna servizi <br>
-     * Contiene un listener per modificare i giorni visualizzati nel tabellonesuperato <br>
+     * Crea l'header della colonna servizi
+     * Contiene un listener per modificare i giorni visualizzati nel tabellone
      */
     private Component periodoHeader() {
         MenuBar menuBar = new MenuBar();
@@ -431,16 +328,17 @@ public class Tabellone extends AGridViewList {
 
         for (EAPeriodo periodo : EAPeriodo.values()) {
             periodoSubMenu.addItem(periodo.getTag(), event -> sincroPeriodi(event.getSource()));
-        }// end of for cycle
+        }
 
         return menuBar;
-    }// end of method
+    }
 
 
     /**
-     * Modifica i giorni visualizzati nel tabellonesuperato <br>
+     * Modifica il periodo visualizzato nel tabellone
      */
     private void sincroPeriodi(MenuItem itemEvent) {
+
         String periodoTxt = itemEvent.getText();
         EAPeriodo eaPeriodo = EAPeriodo.get(periodoTxt);
 
@@ -449,7 +347,7 @@ public class Tabellone extends AGridViewList {
                 startDay = LocalDate.now();
                 break;
             case lunedi:
-                startDay = date.getFirstLunedì(LocalDate.now());
+                startDay = dateService.getFirstLunedì(LocalDate.now());
                 break;
             case giornoPrecedente:
                 startDay = startDay.minusDays(1);
@@ -458,156 +356,112 @@ public class Tabellone extends AGridViewList {
                 startDay = startDay.plusDays(1);
                 break;
             case settimanaPrecedente:
-                startDay = startDay.minusDays(GIORNI_STANDARD);
+                startDay = startDay.minusDays(7);
                 break;
             case settimanaSuccessiva:
-                startDay = startDay.plusDays(GIORNI_STANDARD);
+                startDay = startDay.plusDays(7);
                 break;
             case selezione:
-                apreSelezione();
+                showDetail();
                 break;
             default:
                 log.warn("Switch - caso non definito");
                 break;
-        } // end of switch statement
+        }
 
-        numDays = GIORNI_STANDARD;
+        numDays = NUM_GIORNI_DEFAULT;
 
-        routeToTabellone(startDay, numDays);
-    }// end of method
+        buildAllGrid();
 
-
-    /**
-     * Modifica i giorni visualizzati nel tabellonesuperato <br>
-     */
-    @Deprecated
-    private void sincroPeriodi(HasValue.ValueChangeEvent event) {
-        EAPeriodo value = (EAPeriodo) event.getValue();
-
-        if (value != null) {
-            switch (value) {
-                case oggi:
-                    startDay = LocalDate.now();
-                    break;
-                case lunedi:
-                    startDay = date.getFirstLunedì(LocalDate.now());
-                    break;
-                case giornoPrecedente:
-                    startDay = startDay.minusDays(1);
-                    break;
-                case giornoSuccessivo:
-                    startDay = startDay.plusDays(1);
-                    break;
-                case settimanaPrecedente:
-                    startDay = startDay.minusDays(GIORNI_STANDARD);
-                    break;
-                case settimanaSuccessiva:
-                    startDay = startDay.plusDays(GIORNI_STANDARD);
-                    break;
-                case selezione:
-                    apreSelezione();
-                    break;
-                default:
-                    log.warn("Switch - caso non definito");
-                    break;
-            } // end of switch statement
-        }// end of if cycle
-
-        numDays = GIORNI_STANDARD;
-
-        routeToTabellone(startDay, numDays);
-    }// end of method
-
-
-    private void apreSelezione() {
-        Map<String, String> mappa = new HashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNO_FINE, date.getISO(startDay.plusDays(numDays - 1)));
-        final QueryParameters query = QueryParameters.simple(mappa);
-
-        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
-    }// end of method
+    }
 
 
     /**
-     * Ritorno al tabellone coi parametri selezionati
-     */
-    private void routeToTabellone(LocalDate startDay, int numDays) {
-        Map<String, String> mappa = new HashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNI_DURATA, numDays + "");
-        final QueryParameters query = QueryParameters.simple(mappa);
-
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
-    }// end of method
-
-
-    /**
-     * Ritorno al tabellone coi parametri selezionati
-     */
-    private void routeToTabellone(LocalDate startDay, LocalDate endDay) {
-        Map<String, String> mappa = new LinkedHashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, date.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNO_FINE, date.getISO(endDay));
-        final QueryParameters query = QueryParameters.simple(mappa);
-
-        getUI().ifPresent(ui -> ui.navigate(TAG_TAB_LIST, query));
-    }// end of method
-
-
-    /**
-     * Costruisce un (eventuale) layout con bottoni aggiuntivi
-     * Facoltativo (assente di default)
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
+     * Cella cliccata nel tabellone.
+     * <p>
+     * @param turno, se esiste, null se non è stato ancora creato
+     * @param giorno se il turno è nullo, il giorno cliccato
+     * @param servizio se il turno è nullo, il servizio cliccato
      */
     @Override
-    protected void creaGridBottomLayout() {
-        super.creaGridBottomLayout();
+    public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
 
-        //--legenda dei colori
-        if (pref.isBool(MOSTRA_LEGENDA_TABELLONE)) {
-            gridPlaceholder.add(appContext.getBean(LegendaPolymer.class));
-        }// end of if cycle
+        if (turno==null){   // crea nuovo turno
 
-    }// end of method
+            if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
+                turno = turnoService.newEntity(giorno, servizio);
+            }else{  // non può creare turni
+                String desc = servizio.descrizione;
+                String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
+                Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                return;
+            }
+
+        }
+
+        // presenta il turno (nuovo o esistente)
+        turnodialog.removeAll();
+        Component editor=getEditor(turno, giorno, servizio);
+        turnodialog.add(editor);
+        turnodialog.open();
+
+    }
 
 
     /**
-     * Primo ingresso dopo il click sul bottone <br>
-     *
-     * @param entityBean
-     * @param operation
+     * Seleziona l'editor da utilizzare
      */
-    @Override
-    protected void save(AEntity entityBean, EAOperation operation) {
-        entityBean = service.beforeSave(entityBean, operation);
-        switch (operation) {
-            case addNew:
-                if (service.isEsisteEntityKeyUnica(entityBean)) {
-                    Notification.show(entityBean + " non è stata registrata, perché esisteva già con lo stesso code ", 3000, Notification.Position.BOTTOM_START);
-                } else {
-                    service.save(entityBean);
-                    updateGrid();
-                    Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
-                }// end of if/else cycle
+    private Component getEditor(Turno turno, LocalDate giorno, Servizio servizio){
+        Component editor=null;
+        String type="single";
+        //String type="multi";
+        switch (type){
+            case("single"):
+                editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
                 break;
-            case edit:
-            case editDaLink:
-                service.save(entityBean);
-                Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
-                this.grid.getDataProvider().refreshAll();
+            case("multi"):
+                editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
                 break;
+
             default:
-                log.warn("Switch - caso non definito");
-                break;
-        } // end of switch statement
-    }// end of method
+
+        }
+        return editor;
+    }
+
+    @Override
+    public void annullaDialogoTurno(Dialog dialog) {
+        dialog.close();
+    }
+
+    @Override
+    public void confermaDialogoTurno(Dialog dialog, Turno turno) {
+
+        dialog.close();
+        turnoService.save(turno);
+        loadDataInGrid();
+        grid.setDataProvider(grid.getDataProvider());   // refresh
+
+    }
+
+    // mostra il dettaglio della selezione periodo
+    private void showDetail() {
+
+        Map<String, String> mappa = new HashMap<>();
+        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
+        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
+//        final QueryParameters query = QueryParameters.simple(mappa);
+//        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
+
+        int a = 87;
+        int b=a;
 
 
-//    @Override
-//    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-////        super.beforeEnter(beforeEnterEvent);
-//    }// end of method
+    }
 
-}// end of class
+
+
+
+
+
+}
