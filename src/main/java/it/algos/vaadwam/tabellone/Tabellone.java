@@ -1,12 +1,16 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -15,7 +19,7 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.*;
+import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
@@ -36,6 +40,7 @@ import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
+import org.claspina.confirmdialog.ButtonOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -43,7 +48,9 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -557,6 +564,38 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         grid.setDataProvider(grid.getDataProvider());   // refresh
 
     }
+
+    @Override
+    public void eliminaIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione) {
+
+//        ComponentEventListener<ConfirmDialog.ConfirmEvent> bDeleteListener = new ComponentEventListener() {
+//            @Override
+//            public void onComponentEvent(ComponentEvent componentEvent) {
+//                dialog.close();
+//            }
+//        };
+//
+//        ConfirmDialog dialogConf = new ConfirmDialog("Conferma cancellazione",
+//                "Sei sicuro di voler eliminare l'iscrizione?",
+//                "Elimina", bDeleteListener, "Annulla", null);
+//        dialogConf.setConfirmButtonTheme("error primary");
+//        dialogConf.open();
+
+        org.claspina.confirmdialog.ConfirmDialog
+                .createQuestion()
+                .withCaption("Conferma cancellazione")
+                .withMessage("Sei sicuro di voler eliminare l'iscrizione?")
+                .withAbortButton()
+                .withCloseButton()
+                .withIgnoreButton()
+                .withOkButton(() -> {
+                    System.out.println("YES. Implement logic here.");
+                }, ButtonOption.caption("Elimina"),  ButtonOption.style("background-color:red"))
+                .withCancelButton(ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
+                .open();
+
+    }
+
 
     // mostra il dettaglio della selezione periodo
     private void showDetail() {

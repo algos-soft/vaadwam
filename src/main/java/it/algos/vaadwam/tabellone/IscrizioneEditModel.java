@@ -14,5 +14,14 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     void setUsaOrarioPicker(boolean usaOrarioPicker);
 
+    void setIcona(String icona);
+
+    void setFunzione(String funzione);
+
+    void setMilite(String milite);
+
+    void setOraInizio(String orario);
+
+    void setOraFine(String orario);
 
 }

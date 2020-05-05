@@ -2,8 +2,10 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
+import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
+import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -15,6 +17,7 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoRepository;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +106,9 @@ public class TabelloneService extends AService {
 
     @Autowired
     private MiliteService militeService;
+
+    @Autowired
+    protected AVaadinService vaadinService;
 
 
     /**
@@ -245,12 +252,15 @@ public class TabelloneService extends AService {
      */
     public EAWamColore getColoreIscrizione(Turno turno, Iscrizione iscrizione) {
         EAWamColore colore = EAWamColore.creabile;
-        int critico = 2; //@todo valori diversi per ogni croce. Leggere da preferenze
-        int semicritico = 4;//@todo valori diversi per ogni croce. Leggere da preferenze
+
+        AContext context = vaadinService.getSessionContext();
+        WamLogin wamLogin=(WamLogin)context.getLogin();
+        int critico=wamLogin.getCroce().getGiorniCritico();
+        int semicritico=wamLogin.getCroce().getGiorniSemicritico();
 
         if (iscrizione == null) {
             return colore;
-        }// end of if/else cycle
+        }
 
         if (iscrizioneService.isValida(iscrizione)) {
             colore = EAWamColore.normale;

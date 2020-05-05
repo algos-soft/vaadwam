@@ -113,5 +113,10 @@ public class Croce extends Company {
         return getCode();
     }// end of method
 
+    // il numero di giorni considerato semicritico (arancione)
+    // TODO: 05/05/20 da gestire come preferenza
+    public int getGiorniSemicritico() {
+        return 4;
+    }
 
 }// end of entity class
