@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
+import com.vaadin.flow.component.polymertemplate.ModelItem;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -141,7 +142,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     @PostConstruct
     private void inizia() {
         colorazione();
-    }// end of method
+    }
 
 
     private void colorazione() {
@@ -159,37 +160,40 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
         if (turno != null) {
             iscrizioni = turno.getIscrizioni();
-        }// end of if cycle
+        }
 
         if (servizio != null) {
             funzioni = servizioService.getFunzioniAll(servizio);
-        }// end of if cycle
+        }
 
         if (funzioni != null) {
             for (Funzione funzServ : funzioni) {
                 icona = "vaadin:" + funzServ.icona.name().toLowerCase();
                 if (iscrizioni != null) {
                     for (Iscrizione iscr : iscrizioni) {
+
                         if (differenziata) {
                             eaColore = tabelloneService.getColoreIscrizione(turno, iscr);
-                        }// end of if cycle
+                        }
+
                         if (iscr.funzione.code.equals(funzServ.code)) {
                             if (iscr.milite != null) {
                                 aggiungeAvviso = aggiungeAvviso(iscr);
-                                righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), aggiungeAvviso));
+                                righeCella.add(new RigaCella(eaColore, icona, iscr.milite.getSigla(), iscr.funzione.code, aggiungeAvviso));
                             } else {
-                                righeCella.add(new RigaCella(eaColore, icona, ""));
-                            }// end of if/else cycle
-                        }// end of if cycle
-                    }// end of for cycle
+                                righeCella.add(new RigaCella(eaColore, icona, "", iscr.funzione.code));
+                            }
+                        }
+
+                    }
                 } else {
-                    righeCella.add(new RigaCella(eaColore, "", ""));
-                }// end of if/else cycle
-            }// end of for cycle
-        }// end of if cycle
+                    righeCella.add(new RigaCella(eaColore, "", "", funzServ.code));
+                }
+            }
+        }
 
         getModel().setRighecella(righeCella);
-    }// end of method
+    }
 
 
     private boolean aggiungeAvviso(Iscrizione iscr) {
@@ -223,9 +227,9 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
      * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
      */
     @EventHandler
-    void handleClick() {
+    void handleClick(@ModelItem RigaCella item) {
         if(tabellone!=null){ // nuovo tabellone, modalità in dialogo
-            tabellone.cellClicked(turno, giorno, riga.servizio);
+            tabellone.cellClicked(turno, giorno, riga.servizio, item.getFunzione());
         }else{ // vecchio tabellone, modalità in pagina separata
 
             if (turno != null) {
@@ -248,7 +252,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
      */
     private void handleClickTurnoEsistente() {
         getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-    }// end of method
+    }
 
 
     /**
@@ -280,8 +284,8 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
             String desc = servizio.descrizione;
             String giornoTxt = date.get(giorno, EATime.weekShortMese);
             Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
-        }// end of if/else cycle
-    }// end of method
+        }
+    }
 
 
 }

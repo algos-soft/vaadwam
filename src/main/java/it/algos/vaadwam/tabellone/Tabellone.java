@@ -13,15 +13,20 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
+import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.*;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
+import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -34,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -72,6 +78,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Autowired
     private CroceService croceService;
+
+    @Autowired
+    private FunzioneService funzioneService;
 
     @Autowired
     @Qualifier(TAG_CRO)
@@ -118,6 +127,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Autowired
     protected PreferenzaService preferenzaService;
 
+    @Autowired
+    protected AVaadinService vaadinService;
+
     /**
      * Mappa chiave-valore di un singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
      * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
@@ -127,13 +139,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id("tabellonegrid")
     private Grid grid;
 
-    //private Collection<Riga> gridItems;
-
     public Tabellone() {
     }
 
     @PostConstruct
     private void init(){
+
+        AContext context = vaadinService.getSessionContext();
+        wamLogin=(WamLogin)context.getLogin();
 
         // registra il riferimento al server Java nel client JS
         // UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
@@ -384,50 +397,151 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      * @param servizio se il turno è nullo, il servizio cliccato
      */
     @Override
-    public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio) {
+    public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione) {
 
-        if (turno==null){   // crea nuovo turno
+        boolean storico=giorno.isBefore(LocalDate.now());
+        if(!storico){
 
-            if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
-                turno = turnoService.newEntity(giorno, servizio);
-            }else{  // non può creare turni
-                String desc = servizio.descrizione;
-                String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
-                Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
-                return;
+            // crea il turno se non esiste
+            if (turno==null){
+
+                if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
+                    turno = turnoService.newEntity(giorno, servizio);
+                }else{  // non può creare turni
+                    String desc = servizio.descrizione;
+                    String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
+                    Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                    return;
+                }
+
             }
 
+            // switch della logica di controllo in funzione del tipo di editing singolo o multiplo
+            String type="single";
+            //String type="multi";
+            Component editor=null;
+            switch (type){
+
+                case("single"):// modalità iscrizione singola
+                    if(isLibera(turno, codFunzione)){   // la cella è libera
+                        log.info("Libera");
+                        if(isCompatibile(wamLogin.getMilite(), codFunzione)){   // il milite loggato ha questa funzione
+                            log.info("Compatibile");
+                            Iscrizione iscrizione = getIscrizione(turno, codFunzione);
+                            editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
+                        }else{  // il milite loggato non ha questa funzione
+                            log.info("Non compatibile");
+                            String descFunzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione).getDescrizione();
+                            String text="Non sei abilitato a iscriverti come "+descFunzione+". Per l'abilitazione rivolgiti ad un amministratore";
+                            notify(text);
+                        }
+                    }else{  // la cella è occupata
+                        log.info("Occupata");
+                        Iscrizione iscrizione =getIscrizione(turno, codFunzione);
+                        if(iscrizione.getMilite().equals(wamLogin.getMilite())){ // l'iscritto è se stesso
+                            log.info("Occupata da se stesso");
+                            boolean inTempo=!tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
+                            if(inTempo){
+                                log.info("In tempo");
+                                editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
+                            }else{
+                                log.info("Fuori tempo");
+                                notify("Il turno è bloccato e non si può più modificare, rivolgiti a un Amministratore");
+                            }
+
+                        }else{  // l'iscritto è un altro
+                            log.info("Occupata da un altro");
+                            showDetails(turno, iscrizione);
+                        }
+                    }
+                    break;
+
+                case("multi"):// modalità iscrizioni multiple
+                    editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
+                    break;
+            }
+
+
+            // presenta il dialogo
+            if (editor!=null){
+                turnodialog.removeAll();
+                turnodialog.add(editor);
+                turnodialog.open();
+            }
+
+
+        }else{
+            log.info("Storico");
         }
 
-        // presenta il turno (nuovo o esistente)
-        turnodialog.removeAll();
-        Component editor=getEditor(turno, giorno, servizio);
-        turnodialog.add(editor);
-        turnodialog.open();
-
     }
-
 
     /**
-     * Seleziona l'editor di iscrizione da utilizzare
+     * Determina se una iscrizione è libera o occupata
      */
-    private Component getEditor(Turno turno, LocalDate giorno, Servizio servizio){
-        Component editor=null;
-        //String type="single";
-        String type="multi";
-        switch (type){
-            case("single"):
-                editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno);
-                break;
-            case("multi"):
-                editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
-                break;
-
-            default:
-
-        }
-        return editor;
+    private boolean isLibera(Turno turno, String codFunzione){
+        Iscrizione iscrizione = getIscrizione(turno, codFunzione);
+        return iscrizione.getMilite()==null;
     }
+
+    /**
+     * Determina se un Milite ha una Funzione
+     */
+    private boolean isCompatibile(Milite milite, String codFunzione){
+        long count = milite.getFunzioni().stream().filter(funzione -> funzione.getCode().equals(codFunzione)).count();
+        return count > 0 ;
+    }
+
+
+    private Iscrizione getIscrizione(Turno turno, String codFunzione){
+        Iscrizione iscrizione=null;
+        for(Iscrizione i : turno.getIscrizioni()){
+            if (i.getFunzione().code.equals(codFunzione)){
+                iscrizione=i;
+                break;
+            }
+        }
+        return iscrizione;
+    }
+
+
+
+
+
+    private void notify(String text){
+        Notification notification = new Notification(text);
+        notification.setDuration(3000);
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.open();
+    }
+
+    private void showDetails(Turno turno, Iscrizione iscrizione){
+        Milite mil = iscrizione.getMilite();
+        String sData=dateService.get(turno.getGiorno(), EATime.completa);
+        String sFunzione = iscrizione.getFunzione().getDescrizione();
+        StringBuilder sb = new StringBuilder();
+        sb.append(mil.getNome()+" "+mil.getCognome());
+        sb.append(sData);
+        sb.append(sFunzione);
+
+        if (!iscrizione.getInizio().equals(turno.getInizio()) || !iscrizione.getFine().equals(turno.getFine())){
+            String h1=dateService.getOrario(iscrizione.getInizio());
+            String h2=dateService.getOrario(iscrizione.getFine());
+            sb.append("Orario modificato: "+h1+"-"+h2);
+        }
+
+        if (!StringUtils.isEmpty(iscrizione.getNote())){
+            sb.append(iscrizione.getNote());
+        }
+
+        Notification notification = new Notification(sb.toString());
+        notification.setDuration(3000);
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.open();
+    }
+
+
+
 
     @Override
     public void annullaDialogoTurno(Dialog dialog) {

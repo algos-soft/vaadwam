@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public interface ITabellone {
 
-    void cellClicked(Turno turno, LocalDate giorno, Servizio servizio);
+    void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione);
 
     void annullaDialogoTurno(Dialog dialogo);
 

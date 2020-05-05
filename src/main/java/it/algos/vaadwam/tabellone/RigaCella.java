@@ -23,55 +23,59 @@ public class RigaCella {
 
     private String nomeMilite;
 
+    private String funzione;
 
-    public RigaCella(EAWamColore eaColore, String icona, String milite) {
-        this(eaColore, icona, milite, false);
-    }// end of constructor
+    public RigaCella() {
+    }
+
+    public RigaCella(EAWamColore eaColore, String icona, String milite, String funzione) {
+        this(eaColore, icona, milite, funzione,false);
+    }
 
 
-    public RigaCella(EAWamColore eaColore, String nomeIcona, String nomeMilite, boolean aggiungiAvviso) {
+    public RigaCella(EAWamColore eaColore, String nomeIcona, String nomeMilite, String funzione, boolean aggiungiAvviso) {
         this.eaColore = eaColore;
         this.nomeIcona = nomeIcona;
         this.nomeMilite = nomeMilite;
+        this.funzione=funzione;
         if (aggiungiAvviso) {
             this.nomeIconaAvviso = AVVISO;
-        }// end of if cycle
-    }// end of constructor
+        }
+    }
 
 
     public String getColoreCella() {
         return eaColore.getEsadecimale();
-    }// end of method
+    }
 
 
     public String getColoreTesto() {
-        //return nomeIconaAvviso.equals(VUOTA) ? EAColor.black.getEsadecimale() : eaColore.getContrasto();
-        // alex 5 apr, parliamone
-        //return EAColor.black.getEsadecimale();
         String tagContrasto=eaColore.getContrasto();
         EAColor color=EAColor.getColor(tagContrasto);
         return color.getEsadecimale();
-
-    }// end of method
+    }
 
 
     public String getNomeIcona() {
         return nomeIcona;
-    }// end of method
+    }
 
 
     public String getNomeMilite() {
         return nomeMilite;
-    }// end of method
+    }
 
+    public String getFunzione() {
+        return funzione;
+    }
 
     public String getNomeIconaAvviso() {
         return nomeIconaAvviso;
-    }// end of method
+    }
 
 
     public String getColoreIconaAvviso() {
         return eaColore.getContrasto();
-    }// end of method
+    }
 
-}// end of class
+}

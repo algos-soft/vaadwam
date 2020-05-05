@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface TurnoCellModel extends TemplateModel {
 
-    @Include({"coloreCella", "coloreTesto", "nomeIcona", "nomeMilite", "nomeIconaAvviso", "coloreIconaAvviso"})
+    @Include({"coloreCella", "coloreTesto", "nomeIcona", "nomeMilite", "funzione", "nomeIconaAvviso", "coloreIconaAvviso"})
     public void setRighecella(List<RigaCella> righe);
 
 }// end of interface

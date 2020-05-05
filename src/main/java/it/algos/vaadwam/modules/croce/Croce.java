@@ -99,6 +99,12 @@ public class Croce extends Company {
     public Person presidente;
 
 
+    // il numero di giorni considerato critico per blocco iscrizioni nel tabellone
+    // TODO: 05/05/20 da gestire come preferenza
+    public int getGiorniCritico(){
+        return 2;
+    }
+
     /**
      * @return a string representation of the object.
      */
