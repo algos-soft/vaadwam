@@ -4,26 +4,28 @@
 
     <template>
 
+<!--        &lt;!&ndash;Header&ndash;&gt;-->
+<!--        <div style="display:flex; flex-direction:row; position:fixed; z-index:2; background-color:white">-->
+
+<!--            <vaadin-button id="bselperiodo" style="width:[[wCol1]]; min-width:[[wCol1]]">-->
+<!--                Periodo-->
+<!--            </vaadin-button>-->
+
+<!--            <dom-repeat items="[[headers]]">-->
+<!--                <template>-->
+<!--                    <div style="display:flex; justify-content:center; align-items:center; align-content:center; width:[[wColonne]]; min-width:[[wColonne]]">-->
+<!--                        [[item.titoloColonna]]-->
+<!--                    </div>-->
+<!--                </template>-->
+<!--            </dom-repeat>-->
+<!--        </div>-->
+<!--        &lt;!&ndash;End header&ndash;&gt;-->
+
         <vaadin-checkbox id="checkbox">Modalità iscrizione singola</vaadin-checkbox>
 
-        <!--Header-->
-        <div style="display: flex; flex-direction:row;">
-
-            <vaadin-button id="bselperiodo" style="width:[[wCol1]]; min-width:[[wCol1]]">
-                Periodo
-            </vaadin-button>
-
-            <dom-repeat items="[[headers]]">
-                <template>
-                    <div style="display:flex; justify-content:center; align-items:center; align-content:center; width:[[wColonne]]; min-width:[[wColonne]]">
-                        [[item.titoloColonna]]
-                    </div>
-                </template>
-            </dom-repeat>
+        <div style="display:flex">
+            <vaadin-grid id="tabellonegrid"></vaadin-grid>
         </div>
-        <!--End header-->
-
-        <vaadin-grid id="tabellonegrid"></vaadin-grid>
 
         <vaadin-dialog id="turnodialog" aria-label="polymer templates"></vaadin-dialog>
 
@@ -38,12 +40,6 @@
         }
 
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
-
-
-
-
-
-
 
     </script>
 </dom-module>

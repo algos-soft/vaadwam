@@ -15,8 +15,13 @@ function findContainerElement() {
 }
 
 function setupScrollListener(){
-    container = findContainerElement();
-    container.addEventListener("scroll", containerScrolled)
+
+    var runOnScroll =  function(evt) {
+        console.log(evt.target);
+    };
+
+    var tabellone = document.querySelector("#tabellonegrid");
+    tabellone.addEventListener("scroll", runOnScroll, {passive: true});
     console.log( "scroll listener added");
 }
 
@@ -30,4 +35,17 @@ function scrollTabelloneTo(x, y){
     console.log( "scrollTo invoked: "+x+", "+y);
     container.scrollTo(x,y);
 }
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
+
+    var runOnScroll =  function(evt) {
+        console.log(evt.target);
+    };
+
+    var tabellone = document.querySelector("#tabellonegrid");
+    tabellone.addEventListener("scroll", runOnScroll, {passive: true});
+
+});
 

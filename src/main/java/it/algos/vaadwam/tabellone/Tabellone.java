@@ -3,12 +3,15 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
@@ -153,21 +156,21 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
+//        // registra il riferimento al server Java nel client JS
+//        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+
         getModel().setSingola(true);
 
         AContext context = vaadinService.getSessionContext();
         wamLogin = (WamLogin) context.getLogin();
 
-        // registra il riferimento al server Java nel client JS
-        // UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
-
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
         grid.addThemeNames("no-row-borders");
-        //grid.addThemeNames("row-stripes");    // colorazione righe alterne
         grid.setSelectionMode(Grid.SelectionMode.NONE);
+//        grid.setVerticalScrollingEnabled(false);
 
-        fillHeaderModel();
+//        fillHeaderModel();
 
         buildAllGrid();
 
@@ -328,7 +331,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         Grid.Column column = this.grid.addComponentColumn(componentProvider);
 
-        column.setHeader(dateService.get(day, EATime.weekShortMese));
+
+        //column.setHeader(dateService.get(day, EATime.weekShortMese));
+        String text=dateService.get(day, EATime.weekShortMese);
+        Component comp=createHeaderComponent(text);
+        column.setHeader(comp);
+
         column.setFlexGrow(0);
         column.setWidth(wColonne);
         column.setSortable(false);
@@ -336,6 +344,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     }
 
+    private Component createHeaderComponent(String text){
+        Div div = new Div();
+        div.add(new Label(text));
+        div.setText(text);
+        div.getStyle().set("display","flex");
+        div.getStyle().set("font-size","120%");
+        div.getStyle().set("justify-content","center");
+        div.getStyle().set("align-items","center");
+        return div;
+    }
 
     /**
      * Crea l'header della colonna servizi
@@ -604,6 +622,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
+    /**
+     * Metodo di test
+     */
     private void fillHeaderModel() {
 
         getModel().setWCol1(wCol1);

@@ -283,14 +283,17 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             valid=false;
         }
 
-        if (valid){
-            if (oraInizio!=null && oraFine!=null){
-                if (oraFine.isBefore(oraInizio)){
-                    problem="L'ora di fine turno è anteriore all'ora di inizio";
-                    valid=false;
-                }
-            }
-        }
+        // questo controllo per ora non lo attiviamo perché esistono
+        // turni a cavallo della mezzanotte ed è quindi legittimo
+        // che l'ora di fine sia anteriore all'ora di inizio.
+//        if (valid){
+//            if (oraInizio!=null && oraFine!=null){
+//                if (oraFine.isBefore(oraInizio)){
+//                    problem="L'ora di fine turno è anteriore all'ora di inizio";
+//                    valid=false;
+//                }
+//            }
+//        }
 
         if (!valid){
             notify(problem);
