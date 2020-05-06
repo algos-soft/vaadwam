@@ -4,23 +4,30 @@
 
     <template>
 
-        <vaadin-checkbox id="checkbox">Singola</vaadin-checkbox>
+        <vaadin-checkbox id="checkbox">Modalità iscrizione singola</vaadin-checkbox>
 
-<!--        <table style="width:100%">-->
-<!--            <tr>-->
-<!--                <dom-repeat items="[[headers]]">-->
-<!--                    <th>Lunedì</th>-->
-<!--                </dom-repeat>-->
-<!--            </tr>-->
-<!--        </table>-->
+        <!--Header-->
+        <div style="display: flex; flex-direction:row;">
+
+            <vaadin-button id="bselperiodo" style="width:[[wCol1]]; min-width:[[wCol1]]">
+                Periodo
+            </vaadin-button>
+
+            <dom-repeat items="[[headers]]">
+                <template>
+                    <div style="display:flex; justify-content:center; align-items:center; align-content:center; width:[[wColonne]]; min-width:[[wColonne]]">
+                        [[item.titoloColonna]]
+                    </div>
+                </template>
+            </dom-repeat>
+        </div>
+        <!--End header-->
 
         <vaadin-grid id="tabellonegrid"></vaadin-grid>
 
         <vaadin-dialog id="turnodialog" aria-label="polymer templates"></vaadin-dialog>
 
     </template>
-
-
 
 
     <script>
@@ -31,6 +38,13 @@
         }
 
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
+
+
+
+
+
+
+
     </script>
 </dom-module>
 

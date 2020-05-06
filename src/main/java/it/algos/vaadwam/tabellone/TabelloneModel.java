@@ -15,9 +15,16 @@ import java.util.List;
  */
 public interface TabelloneModel extends TemplateModel {
 
-    List<String> getHeaders();
+    List<HeaderCellModel> getHeaders();
+    void setHeaders(List<HeaderCellModel> headers);
 
     boolean getSingola();
     void setSingola(boolean singola);
+
+    String getWCol1();
+    void setWCol1(String wCol1);
+
+    String getWColonne();
+    void setWColonne(String wColonne);
 
 }
