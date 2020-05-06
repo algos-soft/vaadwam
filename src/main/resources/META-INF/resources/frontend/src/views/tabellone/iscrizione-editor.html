@@ -9,35 +9,9 @@
 
         <style>
 
-            .buttondiv {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-            }
-
             .headerRow {
                 display: flex;
                 justify-content: center;
-            }
-
-            .areaiscrizioni {
-                display: flex;
-                flex-direction: column;
-                overflow: auto;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                align-items: stretch;
-                align-content: stretch;
-                padding-left:0.5em;
-                padding-right:0.5em;
-            }
-
-            .areabottoni {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: stretch;
-                margin-top: 1em;
             }
 
             .iscrizione {
@@ -111,7 +85,7 @@
                     <div class="iscrizioneRow">
 
                         <vaadin-time-picker
-                                disabled=[[!item.abilitataPicker]]
+                                disabled=[[!abilitataPicker]]
                                 on-value-changed="handleChangeOraInizio"
                                 step="900"
                                 style="width: 6em;"
@@ -121,7 +95,7 @@
                         <div class="hgap" style="flex-grow:1"></div>
 
                         <vaadin-time-picker
-                                disabled=[[!item.abilitataPicker]]
+                                disabled=[[!abilitataPicker]]
                                 on-value-changed="handleChangeOraFine"
                                 step="900"
                                 style="width: 6em;"
@@ -134,10 +108,10 @@
 
                     <!--terza riga-->
                     <vaadin-text-field
-                            disabled=[[!item.abilitataPicker]]
+                            disabled=[[!abilitataPicker]]
                             on-value-changed="handleChangeNote"
                             style="width: 100%"
-                            value="{{item.note}}">
+                            value="{{note}}">
                     </vaadin-text-field>
                     <!--end terza riga -->
 

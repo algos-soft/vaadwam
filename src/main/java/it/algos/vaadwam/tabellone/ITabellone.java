@@ -15,6 +15,4 @@ public interface ITabellone {
 
     void confermaDialogoTurno(Dialog dialogo, Turno turno);
 
-    void eliminaIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione);
-
 }

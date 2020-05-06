@@ -24,4 +24,13 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     void setOraFine(String orario);
 
+    void setNote(String note);
+
+
+    String getOraInizio();
+
+    String getOraFine();
+
+    String getNote();
+
 }

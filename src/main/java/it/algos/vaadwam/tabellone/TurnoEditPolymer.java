@@ -215,18 +215,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
 
     /**
-     * Aggiunge al modello (e quindi alla pagina turno-edit.html) la lista delle iscrizioni <br>
-     * <p>
-     * Qui la lista viene costruita con i valori di turno ed iscrizione provenienti dal mongoDB <br>
-     * Successivamente i valori vengono regolati anche in maniera dinamica <br>
-     * Ci possono essere n iscrizioni, senza limiti (anche se probabilmente non oltre le 4) <br>
-     * <p>
-     * Ogni iscrizione (su due righe) ha:
-     * Nella prima riga un bottone con icona e sigla della funzione
-     * Nella prima riga un bottone col nome del milite
-     * Nella seconda riga un timePicker per l'inizio del servizio per il milite specifico
-     * Nella seconda riga un textEdit per eventuali note del milite specifico
-     * Nella seconda riga un timePicker per la fine del servizio per il milite specifico
+     * Aggiunge al modello la lista delle iscrizioni
      */
     private void fixIscrizioni() {
 

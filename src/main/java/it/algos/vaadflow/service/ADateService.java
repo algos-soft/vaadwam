@@ -3,6 +3,7 @@ package it.algos.vaadflow.service;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.mese.EAMese;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -656,6 +657,11 @@ public class ADateService extends AbstractService {
      * @return l'orario sotto forma di stringa
      */
     public String getOrario(LocalTime localTime) {
+
+        if (localTime==null){
+            return null;
+        }
+
         String testo = "";
         int minuti;
         String tag = "0";
@@ -1601,5 +1607,37 @@ public class ADateService extends AbstractService {
 
         return periodo;
     }// end of method
+
+    /**
+     * LocalTime da stringa HH:MM
+     */
+    public LocalTime getLocalTimeHHMM(String sOra) throws Exception {
+        LocalTime time;
+        String[] parts = sOra.split(":");
+
+        String err="Malformed string "+sOra+" - must be HH:MM";
+
+        if (parts.length!=2){
+            throw new Exception(err);
+        }
+
+        String hh = parts[0];
+        if (hh.length()>2){
+            throw new Exception(err);
+        }
+        hh=StringUtils.leftPad(hh,2,"0");
+
+        String mm = parts[1];
+        if (mm.length()>2){
+            throw new Exception(err);
+        }
+        mm=StringUtils.leftPad(mm,2,"0");
+
+        String toParse=hh+":"+mm;
+        DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_TIME;
+        time=LocalTime.parse(toParse, fmt);
+
+        return time;
+    }
 
 }// end of class

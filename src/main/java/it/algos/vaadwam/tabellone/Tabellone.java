@@ -30,6 +30,7 @@ import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
@@ -79,6 +80,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Autowired
     private TurnoService turnoService;
+
+    @Autowired
+    private IscrizioneService iscrizioneService;
 
     @Autowired
     private TabelloneService tabelloneService;
@@ -423,51 +427,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
             }
 
-            // switch della logica di controllo in funzione del tipo di editing singolo o multiplo
+            // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
             String type="single";
             //String type="multi";
             Component editor=null;
             switch (type){
 
                 case("single"):// modalità iscrizione singola
-                    if(isLibera(turno, codFunzione)){   // la cella è libera
-                        log.info("Libera");
-                        if(isCompatibile(wamLogin.getMilite(), codFunzione)){   // il milite loggato ha questa funzione
-                            log.info("Compatibile");
-                            Iscrizione iscrizione = getIscrizione(turno, codFunzione);
-                            editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
-                        }else{  // il milite loggato non ha questa funzione
-                            log.info("Non compatibile");
-                            String descFunzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione).getDescrizione();
-                            String text="Non sei abilitato a iscriverti come "+descFunzione+". Per l'abilitazione rivolgiti ad un amministratore";
-                            notify(text);
-                        }
-                    }else{  // la cella è occupata
-                        log.info("Occupata");
-                        Iscrizione iscrizione =getIscrizione(turno, codFunzione);
-                        if(iscrizione.getMilite().equals(wamLogin.getMilite())){ // l'iscritto è se stesso
-                            log.info("Occupata da se stesso");
-                            boolean inTempo=!tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
-                            if(inTempo){
-                                log.info("In tempo");
-                                editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
-                            }else{
-                                log.info("Fuori tempo");
-                                notify("Il turno è bloccato e non si può più modificare, rivolgiti a un Amministratore");
-                            }
-
-                        }else{  // l'iscritto è un altro
-                            log.info("Occupata da un altro");
-                            showDetails(turno, iscrizione);
-                        }
-                    }
+                    editor=editSingle(turno, codFunzione);
                     break;
 
                 case("multi"):// modalità iscrizioni multiple
-                    editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
+                    editor=editMulti(turno);
                     break;
             }
-
 
             // presenta il dialogo
             if (editor!=null){
@@ -476,16 +449,66 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 turnodialog.open();
             }
 
-
         }else{
             log.info("Storico");
         }
 
     }
 
+
     /**
-     * Determina se una iscrizione è libera o occupata
+     * Verifica che una iscrizione sia editabile e ritorna l'editor singolo
      */
+    private Component editSingle(Turno turno, String codFunzione){
+
+        Component editor=null;
+
+        if(isLibera(turno, codFunzione)){   // la cella è libera
+            if(isCompatibile(wamLogin.getMilite(), codFunzione)){   // il milite loggato ha questa funzione
+                if(!isIscritto(turno, wamLogin.getMilite())){   // non è già iscritto a questo turno
+                    Iscrizione iscrizione = getIscrizione(turno, codFunzione);
+                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
+                }else{   // è già iscritto a questo turno
+                    String text="Sei già iscritto a questo turno";
+                    notify(text);
+                }
+            }else{  // il milite loggato non ha questa funzione
+                String descFunzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione).getDescrizione();
+                String text="Non sei abilitato a iscriverti come "+descFunzione+". Per l'abilitazione rivolgiti ad un amministratore";
+                notify(text);
+            }
+        }else{  // la cella è occupata
+            Iscrizione iscrizione =getIscrizione(turno, codFunzione);
+            if(iscrizione.getMilite().equals(wamLogin.getMilite())){ // l'iscritto è se stesso
+                boolean inTempo=!tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
+                if(inTempo){    // è in tempo
+                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
+                }else{  // non è più in tempo
+                    notify("Il turno è bloccato e non si può più modificare, rivolgiti a un Amministratore");
+                }
+
+            }else{  // l'iscritto è un altro
+                showDetails(turno, iscrizione);
+            }
+        }
+
+        return editor;
+
+    }
+
+    /**
+     * Verifica che un turno sia editabile e ritorna l'editor multiplo
+     */
+    private Component editMulti(Turno turno){
+        Component editor;
+        editor = appContext.getBean(TurnoEditPolymer.class,  this, turnodialog, turno);
+        return editor;
+    }
+
+
+        /**
+         * Determina se una iscrizione è libera o occupata
+         */
     private boolean isLibera(Turno turno, String codFunzione){
         Iscrizione iscrizione = getIscrizione(turno, codFunzione);
         return iscrizione.getMilite()==null;
@@ -500,6 +523,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
+    /**
+     * Recupera una iscrizione da un turno dato il codice funzione
+     */
     private Iscrizione getIscrizione(Turno turno, String codFunzione){
         Iscrizione iscrizione=null;
         for(Iscrizione i : turno.getIscrizioni()){
@@ -511,10 +537,28 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         return iscrizione;
     }
 
+    /**
+     * Determina se un Milite è iscritto a un Turno
+     */
+    private boolean isIscritto(Turno turno, Milite milite){
+        boolean iscritto=false;
+        for(Iscrizione iscrizione : turno.getIscrizioni()){
+            Milite mIscritto=iscrizione.getMilite();
+            if (mIscritto!=null && mIscritto.equals(milite)){
+                iscritto=true;
+                break;
+            }
+        }
+        return iscritto;
+    }
 
 
 
 
+
+    /**
+     * Mostra una notifica generica
+     */
     private void notify(String text){
         Notification notification = new Notification(text);
         notification.setDuration(3000);
@@ -522,6 +566,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         notification.open();
     }
 
+
+    /*
+    * Visualizza i dettagli di una iscrizione in read-only
+    */
     private void showDetails(Turno turno, Iscrizione iscrizione){
         Milite mil = iscrizione.getMilite();
         String sData=dateService.get(turno.getGiorno(), EATime.completa);
@@ -562,37 +610,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         turnoService.save(turno);
         loadDataInGrid();
         grid.setDataProvider(grid.getDataProvider());   // refresh
-
-    }
-
-    @Override
-    public void eliminaIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione) {
-
-//        ComponentEventListener<ConfirmDialog.ConfirmEvent> bDeleteListener = new ComponentEventListener() {
-//            @Override
-//            public void onComponentEvent(ComponentEvent componentEvent) {
-//                dialog.close();
-//            }
-//        };
-//
-//        ConfirmDialog dialogConf = new ConfirmDialog("Conferma cancellazione",
-//                "Sei sicuro di voler eliminare l'iscrizione?",
-//                "Elimina", bDeleteListener, "Annulla", null);
-//        dialogConf.setConfirmButtonTheme("error primary");
-//        dialogConf.open();
-
-        org.claspina.confirmdialog.ConfirmDialog
-                .createQuestion()
-                .withCaption("Conferma cancellazione")
-                .withMessage("Sei sicuro di voler eliminare l'iscrizione?")
-                .withAbortButton()
-                .withCloseButton()
-                .withIgnoreButton()
-                .withOkButton(() -> {
-                    System.out.println("YES. Implement logic here.");
-                }, ButtonOption.caption("Elimina"),  ButtonOption.style("background-color:red"))
-                .withCancelButton(ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
-                .open();
 
     }
 
