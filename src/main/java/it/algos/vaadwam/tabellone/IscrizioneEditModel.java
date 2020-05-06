@@ -26,6 +26,8 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     void setNote(String note);
 
+    void setReadOnly(boolean readOnly);
+
 
     String getOraInizio();
 

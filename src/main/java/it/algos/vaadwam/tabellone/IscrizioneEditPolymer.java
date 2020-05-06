@@ -56,6 +56,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     private Dialog dialogo;
 
+    private boolean readOnly;
+
     @Id("annulla")
     private Button bAnnulla;
 
@@ -79,17 +81,21 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     private WamLogin wamLogin;
 
+    private Milite milite;
+
 
     /**
      * @param tabellone  il tabellone di riferimento per effettuare le callbacks
      * @param dialogo    il dialogo contenitore
      * @param iscrizione l'iscrizione da mostrare
+     * @param readOnly interfaccia in modalità read only
      */
-    public IscrizioneEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, Iscrizione iscrizione) {
+    public IscrizioneEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, Iscrizione iscrizione, boolean readOnly) {
         this.tabellone = tabellone;
         this.dialogo = dialogo;
         this.iscrizione = iscrizione;
         this.turno = turno;
+        this.readOnly=readOnly;
     }
 
     @PostConstruct
@@ -97,6 +103,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
         AContext context = vaadinService.getSessionContext();
         wamLogin = (WamLogin) context.getLogin();
+
+        // se l'iscrizione ha già un miite lo usa, se no usa l'utente loggato
+        milite=iscrizione.getMilite();
+        if (milite==null){
+            milite = wamLogin.getMilite();
+        }
 
         populateModel();
         regolaBottoni();
@@ -106,6 +118,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      * Riempie il modello con i dati del turno
      */
     private void populateModel() {
+
+        getModel().setMilite(milite.getSigla());
 
         // data di esecuzione del turno
         String data = dateService.get(turno.getGiorno(), EATime.completa);
@@ -144,10 +158,10 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
         getModel().setFunzione(iscrizione.getFunzione().getSigla());
 
-        Milite milite = wamLogin.getMilite();
-        getModel().setMilite(milite.getSigla());
 
         getModel().setNote(iscrizione.getNote());
+
+        getModel().setReadOnly(readOnly);
 
     }
 
@@ -157,7 +171,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      */
     private void regolaBottoni() {
 
-        bAnnulla.setText("Annulla");
+        // bottone Annulla
+        bAnnulla.setText("Chiudi");
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             bAnnulla.addClickShortcut(Key.ESCAPE);
         }
@@ -165,6 +180,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             tabellone.annullaDialogoTurno(dialogo);
         });
 
+
+        // bottone Conferma
         if (iscrizione.getMilite() != null) {
             bConferma.setText("Registra");
         } else {
@@ -181,6 +198,13 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             }
         });
 
+        // se read only questo bottone non c'è
+        if (bConferma.isVisible() && readOnly){
+            bConferma.setVisible(false);
+        }
+
+
+        // bottone Elimina
         if (iscrizione.getMilite() != null) {
             bElimina.setText("Cancella iscrizione");
             bElimina.setIcon(new Icon(VaadinIcon.TRASH));
@@ -210,6 +234,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         } else {
             bElimina.setVisible(false);
         }
+
+        // se read only questo bottone non c'è
+        if (bElimina.isVisible() && readOnly){
+            bElimina.setVisible(false);
+        }
+
 
     }
 
@@ -285,7 +315,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      */
     private void syncIscrizione() {
 
-        iscrizione.setMilite(wamLogin.getMilite());
+        iscrizione.setMilite(milite);
 
         String sOra;
         LocalTime time;

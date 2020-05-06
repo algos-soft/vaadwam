@@ -3,7 +3,8 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -28,6 +29,7 @@ import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
@@ -42,16 +44,17 @@ import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -75,27 +78,27 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
 
-    @Autowired
-    protected RigaService rigaService;
+//    @Autowired
+//    protected RigaService rigaService;
 
     @Autowired
     private TurnoService turnoService;
 
-    @Autowired
-    private IscrizioneService iscrizioneService;
+//    @Autowired
+//    private IscrizioneService iscrizioneService;
 
     @Autowired
     private TabelloneService tabelloneService;
 
-    @Autowired
-    private CroceService croceService;
+//    @Autowired
+//    private CroceService croceService;
 
     @Autowired
     private FunzioneService funzioneService;
 
-    @Autowired
-    @Qualifier(TAG_CRO)
-    private WamService wamService;
+//    @Autowired
+//    @Qualifier(TAG_CRO)
+//    private WamService wamService;
 
     @Id
     private Dialog turnodialog;
@@ -116,15 +119,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private WamLogin wamLogin;
 
-    /**
-     * Devo mantenere un valore perché il comboBox viene ricostruito ad ogni modifica della Grid <br>
-     */
-    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;
+//    /**
+//     * Devo mantenere un valore perché il comboBox viene ricostruito ad ogni modifica della Grid <br>
+//     */
+//    private EAPeriodo currentPeriodValue = EAPeriodo.oggi;
 
-    @Autowired
-    private MiliteService militeService;
+//    @Autowired
+//    private MiliteService militeService;
 
-    private AComboBox comboPeriodi;
+//    private AComboBox comboPeriodi;
 
     @Autowired
     protected ApplicationContext appContext;
@@ -133,7 +136,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private ADateService dateService = ADateService.getInstance();
 
-    private ATextService textService = ATextService.getInstance();
+//    private ATextService textService = ATextService.getInstance();
 
     @Autowired
     protected PreferenzaService preferenzaService;
@@ -150,11 +153,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id("tabellonegrid")
     private Grid grid;
 
+    @Id("checkbox")
+    private Checkbox checkbox;
+
+
+
+
     public Tabellone() {
     }
 
     @PostConstruct
     private void init(){
+
+        getModel().setSingola(true);
 
         AContext context = vaadinService.getSessionContext();
         wamLogin=(WamLogin)context.getLogin();
@@ -428,8 +439,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             }
 
             // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
-            String type="single";
-            //String type="multi";
+            String type;
+            if(checkbox.getValue()){
+                type="single";
+            }else{
+                type="multi";
+            }
+
             Component editor=null;
             switch (type){
 
@@ -467,28 +483,32 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             if(isCompatibile(wamLogin.getMilite(), codFunzione)){   // il milite loggato ha questa funzione
                 if(!isIscritto(turno, wamLogin.getMilite())){   // non è già iscritto a questo turno
                     Iscrizione iscrizione = getIscrizione(turno, codFunzione);
-                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
+                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione, false);
                 }else{   // è già iscritto a questo turno
-                    String text="Sei già iscritto a questo turno";
+                    Funzione funzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione);
+                    String text="Sei già iscritto a questo turno come "+funzione.getDescrizione();
                     notify(text);
                 }
             }else{  // il milite loggato non ha questa funzione
-                String descFunzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione).getDescrizione();
-                String text="Non sei abilitato a iscriverti come "+descFunzione+". Per l'abilitazione rivolgiti ad un amministratore";
+                Funzione funzione=funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione);
+                String text="Non sei abilitato a iscriverti come "+funzione.getDescrizione();
                 notify(text);
             }
         }else{  // la cella è occupata
             Iscrizione iscrizione =getIscrizione(turno, codFunzione);
-            if(iscrizione.getMilite().equals(wamLogin.getMilite())){ // l'iscritto è se stesso
+            if(iscrizione.getMilite().equals(wamLogin.getMilite())){ // occupata da se stesso
                 boolean inTempo=!tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
-                if(inTempo){    // è in tempo
-                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione);
-                }else{  // non è più in tempo
-                    notify("Il turno è bloccato e non si può più modificare, rivolgiti a un Amministratore");
+                if(inTempo){    // è in tempo per modificare
+                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione, false);
+                }else{  // non è più in tempo per modificare
+                    // editor read-only
+                    editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione, true);
+                    //notify("Il turno è bloccato e non si può più modificare, rivolgiti a un Amministratore");
                 }
 
-            }else{  // l'iscritto è un altro
-                showDetails(turno, iscrizione);
+            }else{  // occupata da un altro
+                // editor read-only
+                editor = appContext.getBean(IscrizioneEditPolymer.class,  this, turnodialog, turno, iscrizione, true);
             }
         }
 
@@ -561,35 +581,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void notify(String text){
         Notification notification = new Notification(text);
-        notification.setDuration(3000);
-        notification.setPosition(Notification.Position.MIDDLE);
-        notification.open();
-    }
-
-
-    /*
-    * Visualizza i dettagli di una iscrizione in read-only
-    */
-    private void showDetails(Turno turno, Iscrizione iscrizione){
-        Milite mil = iscrizione.getMilite();
-        String sData=dateService.get(turno.getGiorno(), EATime.completa);
-        String sFunzione = iscrizione.getFunzione().getDescrizione();
-        StringBuilder sb = new StringBuilder();
-        sb.append(mil.getNome()+" "+mil.getCognome());
-        sb.append(sData);
-        sb.append(sFunzione);
-
-        if (!iscrizione.getInizio().equals(turno.getInizio()) || !iscrizione.getFine().equals(turno.getFine())){
-            String h1=dateService.getOrario(iscrizione.getInizio());
-            String h2=dateService.getOrario(iscrizione.getFine());
-            sb.append("Orario modificato: "+h1+"-"+h2);
-        }
-
-        if (!StringUtils.isEmpty(iscrizione.getNote())){
-            sb.append(iscrizione.getNote());
-        }
-
-        Notification notification = new Notification(sb.toString());
         notification.setDuration(3000);
         notification.setPosition(Notification.Position.MIDDLE);
         notification.open();
