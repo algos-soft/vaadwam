@@ -18,6 +18,9 @@ public interface TabelloneModel extends TemplateModel {
     List<HeaderCellModel> getHeaders();
     void setHeaders(List<HeaderCellModel> headers);
 
+    List<LegendaItemModel> getColoriLegenda();
+    void setColoriLegenda(List<LegendaItemModel> coloriLegenda);
+
     boolean getSingola();
     void setSingola(boolean singola);
 

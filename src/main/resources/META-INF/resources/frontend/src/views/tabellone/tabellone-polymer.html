@@ -4,28 +4,41 @@
 
     <template>
 
-<!--        &lt;!&ndash;Header&ndash;&gt;-->
-<!--        <div style="display:flex; flex-direction:row; position:fixed; z-index:2; background-color:white">-->
+        <!--        &lt;!&ndash;Header&ndash;&gt;-->
+        <!--        <div style="display:flex; flex-direction:row; position:fixed; z-index:2; background-color:white">-->
 
-<!--            <vaadin-button id="bselperiodo" style="width:[[wCol1]]; min-width:[[wCol1]]">-->
-<!--                Periodo-->
-<!--            </vaadin-button>-->
+        <!--            <vaadin-button id="bselperiodo" style="width:[[wCol1]]; min-width:[[wCol1]]">-->
+        <!--                Periodo-->
+        <!--            </vaadin-button>-->
 
-<!--            <dom-repeat items="[[headers]]">-->
-<!--                <template>-->
-<!--                    <div style="display:flex; justify-content:center; align-items:center; align-content:center; width:[[wColonne]]; min-width:[[wColonne]]">-->
-<!--                        [[item.titoloColonna]]-->
-<!--                    </div>-->
-<!--                </template>-->
-<!--            </dom-repeat>-->
-<!--        </div>-->
-<!--        &lt;!&ndash;End header&ndash;&gt;-->
+        <!--            <dom-repeat items="[[headers]]">-->
+        <!--                <template>-->
+        <!--                    <div style="display:flex; justify-content:center; align-items:center; align-content:center; width:[[wColonne]]; min-width:[[wColonne]]">-->
+        <!--                        [[item.titoloColonna]]-->
+        <!--                    </div>-->
+        <!--                </template>-->
+        <!--            </dom-repeat>-->
+        <!--        </div>-->
+        <!--        &lt;!&ndash;End header&ndash;&gt;-->
 
         <vaadin-checkbox id="checkbox">Modalità iscrizione singola</vaadin-checkbox>
 
         <div style="display:flex">
             <vaadin-grid id="tabellonegrid"></vaadin-grid>
         </div>
+
+<!--        &lt;!&ndash;legenda&ndash;&gt;-->
+<!--        <div style="display:flex; flex-direction:row;margin-left:1em">-->
+<!--            <dom-repeat items="[[coloriLegenda]]">-->
+<!--                <template>-->
+<!--                    <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">-->
+<!--                        <div class="iconContainer" style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>-->
+<!--                        <label>[[item.nome]]</label>-->
+<!--                    </div>-->
+<!--                </template>-->
+<!--            </dom-repeat>-->
+<!--        </div>-->
+
 
         <vaadin-dialog id="turnodialog" aria-label="polymer templates"></vaadin-dialog>
 
@@ -40,6 +53,9 @@
         }
 
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
+
+
+
 
     </script>
 </dom-module>

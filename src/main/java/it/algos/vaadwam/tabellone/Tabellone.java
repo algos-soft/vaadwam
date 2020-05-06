@@ -42,9 +42,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -160,6 +158,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 //        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
         getModel().setSingola(true);
+
+        buildColoriLegenda();
 
         AContext context = vaadinService.getSessionContext();
         wamLogin = (WamLogin) context.getLogin();
@@ -605,6 +605,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     }
 
+    /**
+     * Aggiunge i colori legenda al modello
+     */
+    private void buildColoriLegenda(){
+        List<LegendaItemModel> colori=new ArrayList<>();
+        for(EAWamColore eaw : EAWamColore.values()){
+            LegendaItemModel item = new LegendaItemModel();
+            item.setNome(eaw.getTitolo());
+            item.setColore(eaw.getEsadecimale());
+            colori.add(item);
+        }
+        getModel().setColoriLegenda(colori);
+    }
 
     // mostra il dettaglio della selezione periodo
     private void showDetail() {
