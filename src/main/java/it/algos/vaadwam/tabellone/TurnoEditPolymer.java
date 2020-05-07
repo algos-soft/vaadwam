@@ -1,12 +1,11 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
@@ -105,6 +104,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     @Id
     private Element container;
 
+    @Id
+    private Div areaiscrizioni;
 
     /**
      * @param tabellone il tabellone di riferimento per effettuare le callbacks
@@ -125,8 +126,15 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
     @PostConstruct
     private void init(){
+
         populateModel();
-        regolaBottoni();
+
+        bConferma.addClickShortcut(Key.ENTER);
+        bConferma.addClickListener(e -> handleConferma());
+
+        bAnnulla.addClickShortcut(Key.ESCAPE);
+        bAnnulla.addClickListener(e -> handleAnnulla());
+
     }
 
 
@@ -170,19 +178,6 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     }
 
 
-
-    /**
-     * Regola i bottoni Conferma e Annulla
-     */
-    private void regolaBottoni() {
-
-        //--Regolazioni standard di default del bottone 'Annulla'
-        fixAnnulla();
-
-        //--Regolazioni standard di default del bottone 'Conferma'
-        fixConferma();
-
-    }
 
 
     /**
@@ -462,8 +457,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * Possono essere singolarmente modificate anche esternamente <br>
      */
     private void fixAnnulla() {
-        bAnnulla.setText("Annulla");
-        bAnnulla.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
+        //bAnnulla.setText("Annulla");
+        //bAnnulla.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             bAnnulla.addClickShortcut(Key.ESCAPE);
         }// end of if cycle
@@ -477,13 +472,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * Possono essere singolarmente modificate anche esternamente <br>
      */
     private void fixConferma() {
-        bConferma.setText("Conferma");
-        bConferma.setIcon(new Icon(VaadinIcon.CHECK));
+        //bConferma.setText("Conferma");
+        //bConferma.setIcon(new Icon(VaadinIcon.CHECK));
         if (pref.isBool(USA_BUTTON_SHORTCUT)) {
             bConferma.addClickShortcut(Key.ENTER);
         }// end of if cycle
         bConferma.addClickListener(e -> handleConferma());
-        bConferma.setEnabled(false);
+        //bConferma.setEnabled(false);
     }
 
 
@@ -733,6 +728,20 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 //        }// end of if cycle
 //
 //        return iscrizione;
+//    }
+
+//    Component findComponentWithId(HasComponents root, String id) {
+//        for(Component child : root) {
+//            if(id.equals(child.getId())) {
+//                // found it!
+//                return child;
+//            } else if(child instanceof HasComponents) {
+//                // recursively go through all children that themselves have children
+//                return findComponentWithId((HasComponents) child, id);
+//            }
+//        }
+//        // none was found
+//        return null;
 //    }
 
 }
