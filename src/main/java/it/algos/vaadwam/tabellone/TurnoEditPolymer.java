@@ -45,7 +45,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_DIFFERENZIATA;
 
 /**
- * Java wrapper of the polymer element `turno-dialog`
+ * Editor di iscrizione riservato agli admin.
+ * Un admin può creare modificare e cancellare liberamente tutte le iscrizioni
+ * Un admin può iscrivere se stesso o chiunque altro
  */
 @Tag("turno-dialog")
 @HtmlImport("src/views/tabellone/turno-dialog.html")
@@ -152,15 +154,18 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         String data = dateService.get(turnoEntity.getGiorno(), EATime.completa);
         getModel().setGiorno(data);
 
-        //--Descrizione estesa del servizio
+        // descrizione estesa del servizio
         Servizio servizio = turnoEntity.getServizio();
         getModel().setServizio(servizio.descrizione);
 
-        //--Orario (eventuale) del turno
+        // orario (eventuale) del turno
         fixOrario();
 
-        //--Regolazione delle iscrizioni
-        fixIscrizioni();
+        // creazione delle iscrizioni
+        buildIscrizioni();
+
+        // abilitazione delle iscrizioni
+        // regolaIscrizioni();
 
     }
 
@@ -192,24 +197,27 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         Servizio servizio = null;
 
         if (turnoEntity != null) {
-            servizio = turnoEntity.getServizio();
-        }
 
-        if (servizio != null) {
-            if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-                if (servizio.isOrarioDefinito()) {
-                    orario = servizioService.getOrarioLungo(servizio);
-                    getModel().setOrario(orario);
-                    getModel().setUsaOrarioLabel(true);
-                    getModel().setUsaOrarioPicker(false);
-                } else {
-                    getModel().setInizioExtra(servizio.getInizio().toString());
-                    getModel().setFineExtra(servizio.getFine().toString());
-                    getModel().setUsaOrarioLabel(false);
-                    getModel().setUsaOrarioPicker(true);
+            servizio = turnoEntity.getServizio();
+
+            if (servizio != null) {
+                if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
+                    if (servizio.isOrarioDefinito()) {
+                        orario = servizioService.getOrarioLungo(servizio);
+                        getModel().setOrario(orario);
+                        getModel().setUsaOrarioLabel(true);
+                        getModel().setUsaOrarioPicker(false);
+                    } else {
+                        getModel().setInizioExtra(servizio.getInizio().toString());
+                        getModel().setFineExtra(servizio.getFine().toString());
+                        getModel().setUsaOrarioLabel(false);
+                        getModel().setUsaOrarioPicker(true);
+                    }
                 }
             }
+
         }
+
 
     }
 
@@ -217,7 +225,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Aggiunge al modello la lista delle iscrizioni
      */
-    private void fixIscrizioni() {
+    private void buildIscrizioni() {
 
         ArrayList<TurnoIscrizioneModel> iscrizioniModello = new ArrayList();
 
@@ -253,14 +261,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
             iscrizioneModello.setNote(iscrizione.getNote());
 
+            iscrizioneModello.setAbilitata(true);
+
             iscrizioniModello.add(iscrizioneModello);
 
         }
 
         getModel().setIscrizioni(iscrizioniModello);
 
-
-        regolaIscrizioni();
 
     }
 

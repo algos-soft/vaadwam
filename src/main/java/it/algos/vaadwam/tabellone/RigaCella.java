@@ -75,7 +75,14 @@ public class RigaCella {
 
 
     public String getColoreIconaAvviso() {
-        return eaColore.getContrasto();
+        EAColor color=EAColor.getColor(eaColore.getContrasto());
+        return color.getEsadecimale();
     }
+
+    public String getColoreIcona() {
+        EAColor color=EAColor.getColor(eaColore.getContrasto());
+        return color.getEsadecimale();
+    }
+
 
 }

@@ -86,7 +86,6 @@
 
                         <vaadin-time-picker
                                 disabled=[[readOnly]]
-                                on-value-changed="handleChangeOraInizio"
                                 step="900"
                                 style="width: 6em;"
                                 value="{{oraInizio}}">
@@ -96,7 +95,6 @@
 
                         <vaadin-time-picker
                                 disabled=[[readOnly]]
-                                on-value-changed="handleChangeOraFine"
                                 step="900"
                                 style="width: 6em;"
                                 value="{{oraFine}}">
@@ -108,8 +106,7 @@
 
                     <!--terza riga-->
                     <vaadin-text-field
-                            disabled=[readOnly]
-                            on-value-changed="handleChangeNote"
+                            disabled=[[readOnly]]
                             style="width: 100%"
                             value="{{note}}">
                     </vaadin-text-field>
