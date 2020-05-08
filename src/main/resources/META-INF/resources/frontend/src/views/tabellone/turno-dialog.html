@@ -118,7 +118,11 @@
                                         [[item.milite]]
                                     </vaadin-button>
 
-                                    <vaadin-combo-box id="[[item.milite]]" value="Value"></vaadin-combo-box>
+                                    <vaadin-combo-box id="[[item.milite]]" items=[[item.militi]]>
+                                        <template>
+                                            [[item.siglaMilite]]
+                                        </template>
+                                    </vaadin-combo-box>
 
 <!--                                    <vaadin-combo-box id="comboUser" disabled=[[!item.abilitata]] value="[[item.milite]]" style="width:10em;text-overflow: ellipsis;"></vaadin-combo-box>-->
 
@@ -172,7 +176,8 @@
             </div>
             <!--end area iscrizioni-->
 
-            <vaadin-combo-box value="Value"></vaadin-combo-box>
+            <vaadin-combo-box id ="combo-box" >
+            </vaadin-combo-box>
 
             <!--area dei bottoni-->
             <div class="areabottoni">
@@ -214,13 +219,6 @@
 
 
 
-    </script>
-
-    <script>
-  customElements.whenDefined('vaadin-combo-box').then(function() {
-    const comboBox = document.querySelectorAll('vaadin-combo-box');
-    comboBox[0].items = ['Option one', 'Option two'];
-  });
 </script>
 
 </dom-module>

@@ -1,6 +1,9 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.templatemodel.AllowClientUpdates;
+import it.algos.vaadwam.modules.milite.Milite;
+
+import java.util.List;
 
 /**
  * Modello per un singolo elemento iscrizione nella scheda di edit turno
@@ -31,6 +34,8 @@ public class TurnoIscrizioneModel {
     private boolean abilitata;
 
     private boolean abilitataPicker;
+
+    private List<MiliteComboBean> militi;
 
 
     public String getInizio() {
@@ -150,4 +155,11 @@ public class TurnoIscrizioneModel {
     }
 
 
+    public List<MiliteComboBean> getMiliti() {
+        return militi;
+    }
+
+    public void setMiliti(List<MiliteComboBean> militi) {
+        this.militi = militi;
+    }
 }

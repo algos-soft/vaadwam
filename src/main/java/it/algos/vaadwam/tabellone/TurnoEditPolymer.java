@@ -8,10 +8,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.polymertemplate.EventHandler;
-import com.vaadin.flow.component.polymertemplate.Id;
-import com.vaadin.flow.component.polymertemplate.ModelItem;
-import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.polymertemplate.*;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -128,6 +125,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     private void init(){
 
         populateModel();
+
+        getModel().setTestId("1234");
 
         bConferma.addClickShortcut(Key.ENTER);
         bConferma.addClickListener(e -> handleConferma());
@@ -257,6 +256,16 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
             iscrizioneModello.setNote(iscrizione.getNote());
 
             iscrizioneModello.setAbilitata(true);
+
+            List<Milite> militi = militeService.findAll();
+            List<MiliteComboBean> comboMiliti = new ArrayList<>();
+            for(Milite m : militi){
+                MiliteComboBean mc = new MiliteComboBean();
+                mc.setIdMilite(m.getId());
+                mc.setSiglaMilite(m.getSigla());
+                comboMiliti.add(mc);
+            }
+            iscrizioneModello.setMiliti(comboMiliti);
 
             iscrizioniModello.add(iscrizioneModello);
 
@@ -743,5 +752,11 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 //        // none was found
 //        return null;
 //    }
+
+
+    @EventHandler
+    void fireSomeButtonClick(@RepeatIndex int itemIndex) {
+        //getModel().getFuels().get(itemIndex) ...
+    }
 
 }

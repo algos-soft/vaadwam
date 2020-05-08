@@ -146,7 +146,7 @@ public class Milite extends Person {
 
 
     /**
-     * Presentazione della persona sul tabellonesuperato <br>
+     * Presentazione della persona sul tabellone <br>
      * Alcune Croci usano il cognome, altre il nome (le croci con meno persone) <br>
      * Segue la prima iniziale di nome/cognome nel caso ci siano omonimie <br>
      */
