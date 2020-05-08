@@ -1,8 +1,11 @@
 package it.algos.vaadwam.tabellone;
 
+import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -10,14 +13,17 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.turno.Turno;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
-
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +43,19 @@ public class CompIscrizione extends Div {
     @Getter
     private Iscrizione iscrizione;
 
+    private TurnoEditPolymer turnoEditPolymer;
+
     private ComboBox<MiliteComboBean> combo;
 
-    public CompIscrizione(Iscrizione iscrizione) {
+    private TimePicker pickerInizio;
+
+    private TimePicker pickerFine;
+
+    private TextField textField;
+
+    public CompIscrizione(Iscrizione iscrizione, TurnoEditPolymer turnoEditPolymer) {
         this.iscrizione = iscrizione;
+        this.turnoEditPolymer = turnoEditPolymer;
     }
 
     @PostConstruct
@@ -48,6 +63,9 @@ public class CompIscrizione extends Div {
         this.setClassName("iscrizione");
         this.add(buildPrimaRiga());
         this.add(buildSecondaRiga());
+
+        enableTimeNote(combo.getValue()!=null);
+
     }
 
     private Div buildPrimaRiga() {
@@ -97,22 +115,57 @@ public class CompIscrizione extends Div {
             }
         }
 
+        combo.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<ComboBox<MiliteComboBean>, MiliteComboBean>>) event -> {
+            MiliteComboBean value = event.getValue();
+            if(value==null){
+                resetTimeNote();
+            }
+            enableTimeNote(value!=null);
+
+            // se inserito/modificato un milite, controllo che non sia già
+            // iscritto in altra posizione
+            if(value!=null){
+                for(CompIscrizione comp : turnoEditPolymer.getCompIscrizioni()){
+                    if (comp!=this){
+                        String idAltroMilite=comp.getIdMiliteSelezionato();
+                        if(idAltroMilite!=null){
+                            String idQuestoMilite=value.getIdMilite();
+                            if (idQuestoMilite.equals(idAltroMilite)){
+                                mostraAvvisoGiaPresente(value.getSiglaMilite());
+                                combo.setValue(event.getOldValue());
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        });
+
         return combo;
+    }
+
+    private void mostraAvvisoGiaPresente(String nome){
+        ConfirmDialog
+                .createError()
+                .withMessage(nome + " è già iscritto a questo turno")
+                .withAbortButton(ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                .open();
     }
 
 
     private TimePicker buildPickerInizio() {
-        TimePicker picker = new TimePicker();
-        picker.setClassName("timePicker");
-        picker.setStep(Duration.ofSeconds(900));
+        pickerInizio = new TimePicker();
+        pickerInizio.setClassName("timePicker");
+        pickerInizio.setStep(Duration.ofSeconds(900));
         if (iscrizione.getInizio()!=null){
-            picker.setValue(iscrizione.getInizio());
+            pickerInizio.setValue(iscrizione.getInizio());
         }
-        return picker;
+        return pickerInizio;
     }
 
     private TextField buildTextFieldNote() {
-        TextField textField=new TextField();
+        textField=new TextField();
         textField.setClassName("fieldNote");
         if(iscrizione.getNote()!=null){
             textField.setValue(iscrizione.getNote());
@@ -121,14 +174,15 @@ public class CompIscrizione extends Div {
     }
 
     private TimePicker buildPickerFine() {
-        TimePicker picker = new TimePicker();
-        picker.setClassName("timePicker");
-        picker.setStep(Duration.ofSeconds(900));
+        pickerFine = new TimePicker();
+        pickerFine.setClassName("timePicker");
+        pickerFine.setStep(Duration.ofSeconds(900));
         if (iscrizione.getFine()!=null){
-            picker.setValue(iscrizione.getFine());
+            pickerFine.setValue(iscrizione.getFine());
         }
-        return picker;
+        return pickerFine;
     }
+
 
     private List<MiliteComboBean> getMilitiCombo(){
         List<MiliteComboBean> militiCombo=new ArrayList<>();
@@ -151,13 +205,44 @@ public class CompIscrizione extends Div {
         return iscrizione.getMilite();
     }
 
-    public String getIdMiliteSelezionato(){
+    String getIdMiliteSelezionato(){
         String idMilite=null;
         MiliteComboBean mc = combo.getValue();
         if (mc!=null){
             idMilite=mc.getIdMilite();
         }
         return idMilite;
+    }
+
+    LocalTime getOraInizio(){
+        return pickerInizio.getValue();
+    }
+
+    LocalTime getOraFine(){
+        return pickerFine.getValue();
+    }
+
+    String getNote(){
+        return textField.getValue();
+    }
+
+    /**
+     * Resetta orari e note
+     */
+    private void resetTimeNote(){
+        pickerInizio.setValue(getTurno().getInizio());
+        pickerFine.setValue(getTurno().getFine());
+        textField.setValue("");
+    }
+
+    private void enableTimeNote(boolean b) {
+        pickerInizio.setEnabled(b);
+        pickerFine.setEnabled(b);
+        textField.setEnabled(b);
+    }
+
+    private Turno getTurno(){
+        return turnoEditPolymer.getTurno();
     }
 
 

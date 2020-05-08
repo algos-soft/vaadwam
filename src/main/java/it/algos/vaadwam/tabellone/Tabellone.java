@@ -1,9 +1,6 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -14,12 +11,15 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.shared.Registration;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EATime;
@@ -27,6 +27,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
@@ -58,6 +59,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 //@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
 @Route(value = "tabnew")
 //@ParentLayout(AppLayout.class)
+@Push
 
 @Tag("tabellone-polymer")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
@@ -133,6 +135,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Autowired
     protected AVaadinService vaadinService;
 
+    private Registration broadcasterRegistration;
+
     /**
      * Mappa chiave-valore di un singolo parametro (opzionale) in ingresso nella chiamata del browser (da @Route oppure diretta) <br>
      * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
@@ -176,6 +180,25 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         buildAllGrid();
 
     }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        UI ui = attachEvent.getUI();
+        broadcasterRegistration = Broadcaster.register(newMessage -> {
+            ui.access(() -> {
+                if(newMessage.equals("turnosaved")){
+                    loadDataInGrid();
+                }
+            });
+        });
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        broadcasterRegistration.remove();
+        broadcasterRegistration = null;
+    }
+
 
 
     private void buildAllGrid() {
@@ -601,8 +624,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         dialog.close();
         turnoService.save(turno);
-        loadDataInGrid();
-        grid.setDataProvider(grid.getDataProvider());   // refresh
+        //loadDataInGrid();
+        //grid.setDataProvider(grid.getDataProvider());   // refresh
+        Broadcaster.broadcast("turnosaved");    // provoca l'update della GUI di questo e degli altri client
 
     }
 
