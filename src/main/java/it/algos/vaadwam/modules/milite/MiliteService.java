@@ -21,15 +21,24 @@ import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +47,7 @@ import java.util.Set;
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadwam.application.WamCost.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 
 /**
  * Project vaadwam <br>
@@ -116,6 +126,8 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     private MiliteRepository repository;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     /**
      * Costruttore @Autowired <br>
@@ -130,6 +142,7 @@ public class MiliteService extends WamService implements IUtenteService {
         super.entityClass = Milite.class;
         this.repository = (MiliteRepository) repository;
     }// end of Spring constructor
+
 
 
     /**
@@ -614,34 +627,50 @@ public class MiliteService extends WamService implements IUtenteService {
     }// end of method
 
 
+//    /**
+//     * Returns instances abilitate per la funzione <br>
+//     * Lista ordinata <br>
+//     *
+//     * @param funzione che deve essere abilitata per il milite da considerare
+//     *
+//     * @return lista ordinata delle entities selezionate
+//     */
+//    public List<Milite> findAllByFunzione(Funzione funzione) {
+//        List<Milite> lista = new ArrayList<>();
+//        List<Milite> listaAll = repository.findAllByCroceOrderByOrdineAsc(getCroce());
+//        Set<Funzione> funzioniAbilitatePerIlMilite;
+//
+//        if (array.isValid(listaAll)) {
+//            for (Milite milite : listaAll) {
+//                funzioniAbilitatePerIlMilite = milite.funzioni;
+//                if (funzioniAbilitatePerIlMilite != null) {
+//                    for (Funzione funz : funzioniAbilitatePerIlMilite) {
+//                        if (funz.code.equals(funzione.code)) {
+//                            lista.add(milite);
+//                        }// end of if cycle
+//                    }// end of for cycle
+//                }// end of if cycle
+//            }// end of for cycle
+//        }// end of if cycle
+//
+//        return lista;
+//    }// end of method
+
+
+
     /**
-     * Returns instances abilitate per la funzione <br>
-     * Lista ordinata <br>
-     *
-     * @param funzione che deve essere abilitata per il milite da considerare
-     *
-     * @return lista ordinata delle entities selezionate
+     * Restituisce i militi abilitati per una data funzione
+     * in ordine di cognome e nome.
+     * La funzione è già specifica della croce quindi tornerà solo mititi di quella croce.
      */
     public List<Milite> findAllByFunzione(Funzione funzione) {
-        List<Milite> lista = new ArrayList<>();
-        List<Milite> listaAll = repository.findAllByCroceOrderByOrdineAsc(getCroce());
-        Set<Funzione> funzioniAbilitatePerIlMilite;
-
-        if (array.isValid(listaAll)) {
-            for (Milite milite : listaAll) {
-                funzioniAbilitatePerIlMilite = milite.funzioni;
-                if (funzioniAbilitatePerIlMilite != null) {
-                    for (Funzione funz : funzioniAbilitatePerIlMilite) {
-                        if (funz.code.equals(funzione.code)) {
-                            lista.add(milite);
-                        }// end of if cycle
-                    }// end of for cycle
-                }// end of if cycle
-            }// end of for cycle
-        }// end of if cycle
-
-        return lista;
-    }// end of method
+        Query query = new Query();
+        query.addCriteria(Criteria.where("funz").elemMatch(Criteria.where("$id").is(funzione.getId())));
+        query.with(new Sort(Sort.Direction.ASC, "cognome"));
+        query.with(new Sort(Sort.Direction.ASC, "nome"));
+        List<Milite> militi = mongoTemplate.find(query, Milite.class);
+        return militi;
+    }
 
 
     /**

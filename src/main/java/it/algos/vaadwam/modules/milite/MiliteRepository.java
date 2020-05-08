@@ -54,4 +54,5 @@ public interface MiliteRepository extends MongoRepository<Milite, String> {
 
     public int countByCroce(Croce croce);
 
+
 }// end of class

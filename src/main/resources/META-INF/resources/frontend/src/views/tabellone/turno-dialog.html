@@ -10,12 +10,6 @@
 
         <style>
 
-            .buttondiv {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-            }
-
             .headerRow {
                 display: flex;
                 justify-content: center;
@@ -59,9 +53,36 @@
                 vertical-align: middle;
             }
 
+            .funzione {
+                display:flex;
+                flex-direction:row;
+                align-items:center;
+                width:5.7em
+            }
+
+            .funzioneIcona {
+                height:4mm;
+            }
+
+            .timePicker {
+               width: 5.7em;
+            }
+
+            .fieldNote{
+                width: 2em;
+                flex-grow: 1;
+                margin-left:0.2em;
+                margin-right:0.2em;
+            }
+
+            .comboMilite{
+                margin-left:0.2em;
+            }
+
             .hgap {
                 width: 0.4em;
             }
+
 
 
         </style>
@@ -89,108 +110,27 @@
             </div>
             <!--end header-->
 
-            <!--area con tutte le iscrizioni-->
+
+            <!--area con tutte le iscrizioni, popolata da Java-->
             <div id="areaiscrizioni" class="areaiscrizioni">
-
-                <dom-repeat items="[[iscrizioni]]">
-                    <template>
-                        <div>
-
-                            <!--singola iscrizione (ripetuta n volte con dom-repeat)-->
-                            <div class="iscrizione">
-
-                                <!--prima riga-->
-                                <div class="iscrizioneRow">
-
-                                    <div style="display: flex; flex-direction: row; align-items:center; width: 5.7em">
-                                        <iron-icon icon=[[item.icona]] style="height:4mm"></iron-icon>
-                                        <label>[[item.funzione]]</label>
-                                    </div>
-
-                                    <div class="hgap"></div>
-
-                                    <vaadin-button
-                                            disabled=[[!item.abilitata]]
-                                            on-click="handleClickMilite"
-                                            style="width:10em; text-overflow: ellipsis;"
-                                            theme="primary"
-                                            value="[[item.milite]]">
-                                        [[item.milite]]
-                                    </vaadin-button>
-
-                                    <vaadin-combo-box id="[[item.milite]]" items=[[item.militi]]>
-                                        <template>
-                                            [[item.siglaMilite]]
-                                        </template>
-                                    </vaadin-combo-box>
-
-<!--                                    <vaadin-combo-box id="comboUser" disabled=[[!item.abilitata]] value="[[item.milite]]" style="width:10em;text-overflow: ellipsis;"></vaadin-combo-box>-->
-
-                                </div>
-                                <!--end prima riga -->
-
-
-                                <!--seconda riga-->
-                                <div class="iscrizioneRow">
-
-                                    <vaadin-time-picker
-                                            disabled=[[!item.abilitata]]
-                                            on-value-changed="handleChangeOraInizio"
-                                            step="900"
-                                            style="width: 5.7em;"
-                                            value="{{item.inizio}}">
-                                    </vaadin-time-picker>
-
-                                    <div class="hgap"></div>
-
-                                    <vaadin-text-field
-                                            disabled=[[!item.abilitata]]
-                                            on-value-changed="handleChangeNote"
-                                            style="width: 2em; flex-grow: 1;"
-                                            value="{{item.note}}">
-                                    </vaadin-text-field>
-
-                                    <div class="hgap"></div>
-
-                                    <vaadin-time-picker
-                                            disabled=[[!item.abilitata]]
-                                            on-value-changed="handleChangeOraFine"
-                                            step="900"
-                                            style="width: 5.7em;"
-                                            value="{{item.fine}}">
-                                    </vaadin-time-picker>
-
-                                </div>
-                                <!--end seconda riga -->
-
-
-                            </div>
-                            <!--end singola iscrizione -->
-
-
-                        </div>
-                    </template>
-                </dom-repeat>
-
-
             </div>
             <!--end area iscrizioni-->
 
-            <vaadin-combo-box id ="combo-box" >
-            </vaadin-combo-box>
 
             <!--area dei bottoni-->
             <div class="areabottoni">
 
                 <vaadin-button id="annulla"
                                style="width:8em; flex-grow:1"
-                               theme="secondary">Annulla</vaadin-button>
+                               theme="secondary">Annulla
+                </vaadin-button>
 
                 <div class="hgap"></div>
 
                 <vaadin-button id="conferma"
                                style="width:8em;flex-grow:1"
-                               theme="primary">Registra</vaadin-button>
+                               theme="primary">Registra
+                </vaadin-button>
             </div>
             <!--end area bottoni-->
 
@@ -219,6 +159,8 @@
 
 
 
-</script>
+
+    </script>
+
 
 </dom-module>

@@ -37,6 +37,8 @@ public class TurnoIscrizioneModel {
 
     private List<MiliteComboBean> militi;
 
+    private List<String> sMiliti;
+
 
     public String getInizio() {
         return inizio;
@@ -161,5 +163,13 @@ public class TurnoIscrizioneModel {
 
     public void setMiliti(List<MiliteComboBean> militi) {
         this.militi = militi;
+    }
+
+    public List<String> getsMiliti() {
+        return sMiliti;
+    }
+
+    public void setsMiliti(List<String> sMiliti) {
+        this.sMiliti = sMiliti;
     }
 }

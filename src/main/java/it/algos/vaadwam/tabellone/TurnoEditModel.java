@@ -14,10 +14,6 @@ import java.util.List;
  */
 public interface TurnoEditModel extends TemplateModel {
 
-    List<TurnoIscrizioneModel> getIscrizioni();
-
-    void setIscrizioni(List<TurnoIscrizioneModel> iscrizioni);
-
     void setGiorno(String giorno);
 
     void setServizio(String servizio);
@@ -35,12 +31,6 @@ public interface TurnoEditModel extends TemplateModel {
     String getFineExtra();
 
     void setFineExtra(String fineExtra);
-
-
-    String getTestId();
-
-    void setTestId(String testId);
-
 
 
 }
