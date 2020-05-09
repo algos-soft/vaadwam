@@ -1,23 +1,16 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.IronIcon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
@@ -30,6 +23,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -47,7 +41,10 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -60,9 +57,9 @@ import static it.algos.vaadwam.application.WamCost.*;
 //@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
 //@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
 //@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
-@Route(value = "tabnew")
+@Route(value = "tabnew", layout = WamLayout.class)
 //@ParentLayout(AppLayout.class)
-@Push
+//@Push @todo  LEVATO  IL  PUSH  E  RIMESSO  IL  WamLayout.class  FUNZIONA
 
 @Tag("tabellone-polymer")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
