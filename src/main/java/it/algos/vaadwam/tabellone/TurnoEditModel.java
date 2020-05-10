@@ -38,6 +38,9 @@ public interface TurnoEditModel extends TemplateModel {
 
     void setNoteVisibili(boolean visibili);
 
+    boolean getAbilitaCancellaTurno();
+
+    void setAbilitaCancellaTurno(boolean abilita);
 
 
 //    void setUsaOrarioLabel(boolean usaOrarioLabel);

@@ -91,6 +91,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
     private Dialog dialogo;
 
+    private boolean abilitaCancellaTurno;
+
     // Componenti editor di singola iscrizione inseriti nel dialogo
     @Getter
     private List<CompIscrizione> compIscrizioni;
@@ -107,11 +109,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * @param tabellone il tabellone di riferimento per effettuare le callbacks
      * @param dialogo il dialogo contenitore
      * @param turno il turno da mostrare
+     * @param abilitaCancellaTurno abilita la funzionalità di cancellazione del turno
      */
-    public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno) {
+    public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, boolean abilitaCancellaTurno) {
         this.tabellone=tabellone;
         this.dialogo=dialogo;
         this.turno =turno;
+        this.abilitaCancellaTurno=abilitaCancellaTurno;
 
         // registra il riferimento al server Java nel client JS
         // necessario perché JS possa chiamare direttamente metodi Java
@@ -179,6 +183,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         }else{  // servizio con orario non definito
             getModel().setNoteVisibili(true);
         }
+
+        getModel().setAbilitaCancellaTurno(this.abilitaCancellaTurno);
 
     }
 

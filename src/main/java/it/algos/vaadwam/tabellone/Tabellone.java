@@ -2,7 +2,6 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -14,8 +13,6 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.data.selection.MultiSelectionEvent;
-import com.vaadin.flow.data.selection.MultiSelectionListener;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
@@ -516,31 +513,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
         // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
-        String type="multi";
-//        if (modoUtente.getValue()) {
-//            type = "single";
-//        } else {
-//            type = "multi";
-//        }
-//
-//        if (modoCentralinista.getValue()) {
-//
-//        }
-//
-//        if (modoAdmin.getValue()) {
-//
-//        }
-
-        Component editor = null;
-        switch (type) {
-
-            case ("single"):// modalità iscrizione singola
-                editor = editSingle(turno, codFunzione);
-                break;
-
-            case ("multi"):// modalità iscrizioni multiple
-                editor = editMulti(turno);
-                break;
+        Component editor;
+        if(isUtenteAbilitatoCreareTurniOrarioIndefinito()){
+            if(isUtenteAdmin()){
+                editor = editMulti(turno, true);
+            }else{
+                if(!servizio.isOrarioDefinito()){   // turno a orario indefinito
+                    editor = editMulti(turno, false);
+                }else{  // turno standard
+                    editor = editSingle(turno, codFunzione);
+                }
+            }
+        }else{
+            editor = editSingle(turno, codFunzione);
         }
 
         // presenta il dialogo
@@ -551,6 +536,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
     }
+
+    private boolean isUtenteAbilitatoCreareTurniOrarioIndefinito(){
+        return(modoAdmin.getValue() || modoCentralinista.getValue());
+    }
+
+    private boolean isUtenteAdmin(){
+        return(modoAdmin.getValue());
+    }
+
 
 
     /**
@@ -608,9 +602,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Verifica che un turno sia editabile e ritorna l'editor multiplo
      */
-    private Component editMulti(Turno turno) {
+    private Component editMulti(Turno turno, boolean abilitaCancellaTurno) {
         Component editor;
-        editor = appContext.getBean(TurnoEditPolymer.class, this, turnodialog, turno);
+        editor = appContext.getBean(TurnoEditPolymer.class, this, turnodialog, turno, abilitaCancellaTurno);
         return editor;
     }
 
