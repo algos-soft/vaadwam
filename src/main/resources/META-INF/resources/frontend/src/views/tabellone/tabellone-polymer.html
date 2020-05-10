@@ -21,7 +21,19 @@
         <!--        </div>-->
         <!--        &lt;!&ndash;End header&ndash;&gt;-->
 
-        <vaadin-checkbox id="checkbox">Modalità iscrizione singola</vaadin-checkbox>
+
+        <vaadin-checkbox-group id="boxGroup" label="Label" theme="horizontal">
+            <vaadin-checkbox id="box1" value="1" checked>User</vaadin-checkbox>
+            <vaadin-checkbox id="box2" value="2">Centralino</vaadin-checkbox>
+            <vaadin-checkbox id="box3" value="3">Admin</vaadin-checkbox>
+        </vaadin-checkbox-group>
+
+<!--        <div style="display:flex; flex-direction:row">-->
+<!--            <vaadin-checkbox id="modoUtente">User</vaadin-checkbox>-->
+<!--            <vaadin-checkbox id="modoCentralinista">Centralino</vaadin-checkbox>-->
+<!--            <vaadin-checkbox id="modoAdmin">Admin</vaadin-checkbox>-->
+<!--        </div>-->
+
 
         <div style="display:flex">
             <vaadin-grid id="tabellonegrid"></vaadin-grid>

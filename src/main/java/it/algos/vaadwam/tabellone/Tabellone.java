@@ -2,6 +2,7 @@ package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -11,9 +12,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.data.selection.MultiSelectionEvent;
+import com.vaadin.flow.data.selection.MultiSelectionListener;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
@@ -42,10 +44,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -148,8 +147,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id("tabellonegrid")
     private Grid grid;
 
-    @Id("checkbox")
-    private Checkbox checkbox;
+//    @Id
+//    private Checkbox modoUtente;
+//
+//    @Id
+//    private Checkbox modoCentralinista;
+//
+//    @Id
+//    private Checkbox modoAdmin;
+
+    @Id
+    private CheckboxGroup<String> boxGroup;
+
+
 
     private String wCol1="7em";
     private String wColonne="45mm";
@@ -160,6 +170,18 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @PostConstruct
     private void init() {
+
+
+        boxGroup.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<CheckboxGroup<String>, Set<String>>>() {
+            @Override
+            public void valueChanged(AbstractField.ComponentValueChangeEvent<CheckboxGroup<String>, Set<String>> event) {
+                Set<String> setNew = event.getValue();
+                Set<String> setOld  =event.getOldValue();
+                int a = 87;
+                int b=a;
+            }
+        });
+
 
 //        // registra il riferimento al server Java nel client JS
 //        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
@@ -482,12 +504,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
         // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
-        String type;
-        if (checkbox.getValue()) {
-            type = "single";
-        } else {
-            type = "multi";
-        }
+        String type="multi";
+//        if (modoUtente.getValue()) {
+//            type = "single";
+//        } else {
+//            type = "multi";
+//        }
+//
+//        if (modoCentralinista.getValue()) {
+//
+//        }
+//
+//        if (modoAdmin.getValue()) {
+//
+//        }
 
         Component editor = null;
         switch (type) {

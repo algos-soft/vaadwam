@@ -85,14 +85,15 @@
 
 
 
+
         </style>
 
 
         <!--single column centered in page-->
-        <div id="container" style="display: flex; flex-direction: column">
+        <div id="container" style="display: flex; flex-direction:column; ">
 
             <!--header-->
-            <div style="display: flex; flex-direction:column;">
+            <div style="display: flex; flex-direction:column; border-bottom:0.05em solid; padding-bottom: 1em">
                 <div class="headerRow" div>
                     [[giorno]]
                 </div>
@@ -101,11 +102,34 @@
                     [[servizio]]
                 </div>
 
-                <template if=[[usaOrarioLabel]] is="dom-if">
-                    <div class="headerRow">
-                        [[orario]]
-                    </div>
-                </template>
+                <!-- orario turno, mostra due picker-->
+                <div style="display:flex; flex-direction:row; justify-content:center">
+
+                    <vaadin-time-picker
+                            value="{{oraInizio}}"
+                            step="900"
+                            disabled=[[!orarioTurnoEditabile]]
+                            style="width: 6em;">
+                    </vaadin-time-picker>
+
+                    <div class="hgap"></div>
+
+                    <vaadin-time-picker
+                            value="{{oraFine}}"
+                            step="900"
+                            disabled=[[!orarioTurnoEditabile]]
+                            style="width: 6em;">
+                    </vaadin-time-picker>
+
+                </div>
+
+                <!--riga note turno (solo per turni 'extra')-->
+                <vaadin-text-field
+                        hidden=[[!noteVisibili]]
+                        style="width: 100%"
+                        placeholder="Note"
+                        value="{{note}}">
+                </vaadin-text-field>
 
             </div>
             <!--end header-->
@@ -156,6 +180,7 @@
             server=serverElement.$server;
             server.pageReady(window.innerWidth,window.innerHeight);
         }
+
 
 
 

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -31,12 +32,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
 
 /**
  * Editor di iscrizione riservato agli admin.
@@ -100,6 +101,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
     @Id
     private Div areaiscrizioni;
+
 
     /**
      * @param tabellone il tabellone di riferimento per effettuare le callbacks
@@ -170,6 +172,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         // orario (eventuale) del turno
         fixOrario();
 
+        // note del turno visibili solo per turni 'non standard'
+        getModel().setNote(turno.getNote());
+        if (servizio.isOrarioDefinito()){ // servizio con orario definito
+            getModel().setNoteVisibili(false);
+        }else{  // servizio con orario non definito
+            getModel().setNoteVisibili(true);
+        }
 
     }
 
@@ -177,37 +186,58 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
 
     /**
-     * Orario (eventuale) del turno
+     * Orario del turno
      * <p>
-     * Se il servizio ha un orario definito, lo presenta in html come 'div' <br>
-     * Se il servizio non ha un orario definito, lo presenta in html come due 'time-picker' <br>
-     * Regola il valore del modello-dati di questo componente <br>
+     * Se il servizio prevede un orario definito, usa l'orario del servizio e lo mostra disabiitato <br>
+     * Altrimenti, usa l'orario del turno, abilitato<br>
      */
     private void fixOrario() {
-        String orario;
-        Servizio servizio;
 
-        if (turno != null) {
+        Servizio servizio = turno.getServizio();
 
-            servizio = turno.getServizio();
-
-            if (servizio != null) {
-                if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-                    if (servizio.isOrarioDefinito()) {
-                        orario = servizioService.getOrarioLungo(servizio);
-                        getModel().setOrario(orario);
-                        getModel().setUsaOrarioLabel(true);
-                        getModel().setUsaOrarioPicker(false);
-                    } else {
-                        getModel().setInizioExtra(servizio.getInizio().toString());
-                        getModel().setFineExtra(servizio.getFine().toString());
-                        getModel().setUsaOrarioLabel(false);
-                        getModel().setUsaOrarioPicker(true);
-                    }
-                }
-            }
-
+        LocalTime tInizio;
+        LocalTime tFine;
+        boolean editabile;
+        if (servizio.isOrarioDefinito()){ // servizio con orario definito
+            tInizio=servizio.getInizio();
+            tFine=servizio.getFine();
+            editabile=false;
+        }else{  // servizio con orario non definito
+            tInizio=turno.getInizio();
+            tFine=turno.getFine();
+            editabile=true;
         }
+
+        // evitiamo i nulli che nel TimePicker creano problemi
+        if (tInizio==null){
+            tInizio=LocalTime.MIDNIGHT;
+        }
+        if (tFine==null){
+            tFine=LocalTime.MIDNIGHT;
+        }
+
+        getModel().setOraInizio(dateService.getOrario(tInizio));
+        getModel().setOraFine(dateService.getOrario(tFine));
+        getModel().setOrarioTurnoEditabile(editabile);
+
+//        if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
+//            if (servizio.isOrarioDefinito()) {
+//                getModel().setOrarioTurnoEditabile(false);
+//
+//                orario = servizioService.getOrarioLungo(servizio);
+//                getModel().setOrario(orario);
+//
+////                getModel().setUsaOrarioLabel(true);
+////                getModel().setUsaOrarioPicker(false);
+//            } else {
+//                getModel().setOrarioTurnoEditabile(true);
+//
+//                getModel().setInizioExtra(servizio.getInizio().toString());
+//                getModel().setFineExtra(servizio.getFine().toString());
+////                getModel().setUsaOrarioLabel(false);
+////                getModel().setUsaOrarioPicker(true);
+//            }
+//        }
 
 
     }
@@ -279,6 +309,36 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
             }
 
         }
+
+        // ora inizio turno
+        String sOra = getModel().getOraInizio();
+        LocalTime time;
+        if (!StringUtils.isEmpty(sOra)) {
+            try {
+                time = dateService.getLocalTimeHHMM(sOra);
+                turno.setInizio(time);
+            } catch (Exception e) {
+                log.error("can't parse " + sOra + "as LocalTime", e);
+            }
+        } else {
+            turno.setInizio(null);
+        }
+
+        // ora fine turno
+        sOra = getModel().getOraFine();
+        if (!StringUtils.isEmpty(sOra)) {
+            try {
+                time = dateService.getLocalTimeHHMM(sOra);
+                turno.setFine(time);
+            } catch (Exception e) {
+                log.error("can't parse " + sOra + "as LocalTime", e);
+            }
+        } else {
+            turno.setFine(null);
+        }
+
+
+        turno.setNote(getModel().getNote());
 
     }
 

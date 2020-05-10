@@ -18,11 +18,31 @@ public interface TurnoEditModel extends TemplateModel {
 
     void setServizio(String servizio);
 
-    void setOrario(String orario);
+    void setOrarioTurnoEditabile(boolean editabile);
 
-    void setUsaOrarioLabel(boolean usaOrarioLabel);
+    boolean getOrarioTurnoEditabile();
 
-    void setUsaOrarioPicker(boolean usaOrarioPicker);
+    void setOraInizio(String ora);
+
+    String getOraInizio();
+
+    void setOraFine(String ora);
+
+    String getOraFine();
+
+    void setNote(String note);
+
+    String getNote();
+
+    boolean getNoteVisibili(boolean visibili);
+
+    void setNoteVisibili(boolean visibili);
+
+
+
+//    void setUsaOrarioLabel(boolean usaOrarioLabel);
+//
+//    void setUsaOrarioPicker(boolean usaOrarioPicker);
 
     String getInizioExtra();
 
