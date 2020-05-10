@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.function.ValueProvider;
@@ -60,6 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Route(value = "tabnew", layout = WamLayout.class)
 //@ParentLayout(AppLayout.class)
 //@Push @todo  LEVATO  IL  PUSH  E  RIMESSO  IL  WamLayout.class  FUNZIONA
+//@Push
 
 @Tag("tabellone-polymer")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")

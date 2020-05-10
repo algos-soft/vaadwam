@@ -12,8 +12,10 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
+import com.vaadin.flow.theme.NoTheme;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.theme.material.Material;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
@@ -54,6 +56,8 @@ import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 @HtmlImport(value = "styles/algos-styles.html", loadMode = LoadMode.INLINE)
 @Slf4j
 @Theme(Lumo.class)
+//@Theme(Material.class)
+//@NoTheme
 public class MainLayout14 extends AppLayout {
 
     /**

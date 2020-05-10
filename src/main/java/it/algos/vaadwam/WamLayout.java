@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
@@ -34,6 +35,11 @@ import static it.algos.vaadwam.application.WamCost.TAG_MIL;
  * Date: mar, 22-ott-2019
  * Time: 18:45
  */
+
+// L'annotazione @Push va applicata al top parent
+// layout e vale per tutti i layout interni
+@Push
+
 public class WamLayout extends MainLayout14 {
 
     private static String TUTTE = "tutte le croci";
@@ -98,7 +104,7 @@ public class WamLayout extends MainLayout14 {
         tab.add(VaadinIcon.MAGIC.create(), new Label("Developer"));
         topbar.projectSubMenu.addItem(tab, menuItemClickEvent -> {
             apreDialogo();
-        });//end of lambda expressions and anonymous inner class
+        });
     }// end of method
 
 
