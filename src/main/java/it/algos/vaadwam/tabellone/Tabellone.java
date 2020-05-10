@@ -147,18 +147,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id("tabellonegrid")
     private Grid grid;
 
-//    @Id
-//    private Checkbox modoUtente;
-//
-//    @Id
-//    private Checkbox modoCentralinista;
-//
-//    @Id
-//    private Checkbox modoAdmin;
+    @Id
+    private Checkbox modoUtente;
 
     @Id
-    private CheckboxGroup<String> boxGroup;
+    private Checkbox modoCentralinista;
 
+    @Id
+    private Checkbox modoAdmin;
 
 
     private String wCol1="7em";
@@ -171,18 +167,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
-
-        boxGroup.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<CheckboxGroup<String>, Set<String>>>() {
-            @Override
-            public void valueChanged(AbstractField.ComponentValueChangeEvent<CheckboxGroup<String>, Set<String>> event) {
-                Set<String> setNew = event.getValue();
-                Set<String> setOld  =event.getOldValue();
-                int a = 87;
-                int b=a;
-            }
-        });
-
-
+        initChecks();
 //        // registra il riferimento al server Java nel client JS
 //        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
 
@@ -202,6 +187,33 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 //        fillHeaderModel();
 
         buildAllGrid();
+
+    }
+
+    private void initChecks(){
+        modoUtente.setValue(true);
+        modoUtente.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>) event -> {
+            if (event.getValue()){
+                modoCentralinista.setValue(false);
+                modoAdmin.setValue(false);
+            }
+        });
+
+        modoCentralinista.setValue(false);
+        modoCentralinista.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>) event -> {
+            if (event.getValue()){
+                modoUtente.setValue(false);
+                modoAdmin.setValue(false);
+            }
+        });
+
+        modoAdmin.setValue(false);
+        modoAdmin.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>) event -> {
+            if (event.getValue()){
+                modoUtente.setValue(false);
+                modoCentralinista.setValue(false);
+            }
+        });
 
     }
 
