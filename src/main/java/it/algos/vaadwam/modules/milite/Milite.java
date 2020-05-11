@@ -19,7 +19,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -119,6 +118,12 @@ public class Milite extends Person {
     @AIField(type = EAFieldType.checkbox)
     @AIColumn(headerIcon = VaadinIcon.USER_HEART)
     public boolean infermiere;
+
+
+    @Field("cent")
+    @AIField(type = EAFieldType.checkbox)
+    @AIColumn(headerIcon = VaadinIcon.PHONE)
+    public boolean centralinista;
 
     /**
      * Funzioni per le quali il milite è abilitato
