@@ -538,8 +538,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         if (isLibera(turno, codFunzione)) {   // la cella è libera
             if (isCompatibile(wamLogin.getMilite(), codFunzione)) {   // il milite loggato ha questa funzione
                 if (!isIscritto(turno, wamLogin.getMilite())) {   // non è già iscritto a questo turno
+
                     Iscrizione iscrizione = getIscrizione(turno, codFunzione);
+
+                    // è nuova iscrizione, assegna gli orari dal turno
+                    iscrizione.setInizio(turno.getInizio());
+                    iscrizione.setFine(turno.getFine());
+
                     editor=creaEditorSingolo(turno, iscrizione, false); // editor RW
+
                 } else {   // è già iscritto a questo turno
                     Funzione funzione = funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione);
                     String text = "Sei già iscritto a questo turno come " + funzione.getDescrizione();
