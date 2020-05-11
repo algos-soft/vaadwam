@@ -1,13 +1,11 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
@@ -28,6 +26,8 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -65,6 +65,10 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      */
     @Id("conferma")
     private Button bConferma;
+
+    @Id("elimina")
+    private Button bElimina;
+
 
     @Autowired
     private PreferenzaService pref;
@@ -142,6 +146,9 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         bAnnulla.addClickShortcut(Key.ESCAPE);
         bAnnulla.addClickListener(e -> handleAnnulla());
 
+        manageElimina();;
+
+
     }
 
 
@@ -215,35 +222,16 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         }
 
         // evitiamo i nulli che nel TimePicker creano problemi
-        if (tInizio==null){
-            tInizio=LocalTime.MIDNIGHT;
-        }
-        if (tFine==null){
-            tFine=LocalTime.MIDNIGHT;
-        }
+//        if (tInizio==null){
+//            tInizio=LocalTime.MIDNIGHT;
+//        }
+//        if (tFine==null){
+//            tFine=LocalTime.MIDNIGHT;
+//        }
 
         getModel().setOraInizio(dateService.getOrario(tInizio));
         getModel().setOraFine(dateService.getOrario(tFine));
         getModel().setOrarioTurnoEditabile(editabile);
-
-//        if (pref.isBool(MOSTRA_ORARIO_SERVIZIO)) {
-//            if (servizio.isOrarioDefinito()) {
-//                getModel().setOrarioTurnoEditabile(false);
-//
-//                orario = servizioService.getOrarioLungo(servizio);
-//                getModel().setOrario(orario);
-//
-////                getModel().setUsaOrarioLabel(true);
-////                getModel().setUsaOrarioPicker(false);
-//            } else {
-//                getModel().setOrarioTurnoEditabile(true);
-//
-//                getModel().setInizioExtra(servizio.getInizio().toString());
-//                getModel().setFineExtra(servizio.getFine().toString());
-////                getModel().setUsaOrarioLabel(false);
-////                getModel().setUsaOrarioPicker(true);
-//            }
-//        }
 
 
     }
@@ -386,6 +374,42 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
             }
         }
         return compOut;
+    }
+
+    /**
+     * Gestione bottone Elimina Turno
+     */
+    private void manageElimina(){
+        bElimina.addClickListener(e -> {
+
+            // bottone elimina del dialogo di conferma
+            Button bElimina = new Button();
+            bElimina.getStyle().set("background-color","red");
+            bElimina.getStyle().set("color","white");
+            bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
+                if (abilitaCancellaTurno){  // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
+                    tabellone.eliminaTurno(dialogo, turno);
+                }
+            });
+
+            String warningIscritti="";
+            for(CompIscrizione comp : getCompIscrizioni()){
+                if (!StringUtils.isEmpty(comp.getIdMiliteSelezionato())){
+                    warningIscritti="Attenzione! Ci sono dei militi già iscritti. ";
+                    break;
+                }
+            }
+
+            ConfirmDialog
+                    .createWarning()
+                    .withCaption("Conferma eliminazione turno")
+                    .withMessage(warningIscritti+"Sei sicuro di voler eliminare il turno?")
+                    .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
+                    .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
+                    .open();
+
+        });
+
     }
 
 }

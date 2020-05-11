@@ -219,7 +219,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(newMessage -> {
             ui.access(() -> {
-                if(newMessage.equals("turnosaved")){
+                if(newMessage.equals("turnosaved") || newMessage.equals("turnodeleted") ){
                     loadDataInGrid();
                 }
             });
@@ -499,10 +499,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione) {
 
         // crea il turno se non esiste
+        boolean nuovoTurno=false;
         if (turno == null) {
 
             if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
                 turno = turnoService.newEntity(giorno, servizio);
+                nuovoTurno=true;
             } else {  // non può creare turni
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
@@ -516,7 +518,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         Component editor;
         if(isUtenteAbilitatoCreareTurniOrarioIndefinito()){
             if(isUtenteAdmin()){
-                editor = editMulti(turno, true);
+                editor = editMulti(turno, !nuovoTurno);
             }else{
                 if(!servizio.isOrarioDefinito()){   // turno a orario indefinito
                     editor = editMulti(turno, false);
@@ -674,13 +676,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Override
     public void confermaDialogoTurno(Dialog dialog, Turno turno) {
-
         dialog.close();
         turnoService.save(turno);
-        //loadDataInGrid();
-        //grid.setDataProvider(grid.getDataProvider());   // refresh
         Broadcaster.broadcast("turnosaved");    // provoca l'update della GUI di questo e degli altri client
+    }
 
+    @Override
+    public void eliminaTurno(Dialog dialog, Turno turno) {
+        dialog.close();
+        turnoService.delete(turno);
+        Broadcaster.broadcast("turnodeleted");    // provoca l'update della GUI di questo e degli altri client
     }
 
     /**

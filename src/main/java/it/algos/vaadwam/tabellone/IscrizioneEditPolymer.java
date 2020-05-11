@@ -203,9 +203,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             bConferma.setVisible(false);
         }
 
-
         // bottone Elimina
-        if (iscrizione.getMilite() != null) {
+        if (himself()) {
             bElimina.setText("Cancella iscrizione");
             bElimina.setIcon(new Icon(VaadinIcon.TRASH));
             bElimina.addClickListener(e -> {
@@ -213,9 +212,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                 Button bElimina = new Button();
                 bElimina.getStyle().set("background-color","red");
                 bElimina.getStyle().set("color","white");
-                bElimina.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
-                    @Override
-                    public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
+                bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
+                    if (himself()){ // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
                         resetIscrizione();
                         tabellone.confermaDialogoTurno(dialogo, turno);
                     }
@@ -241,6 +239,10 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
 
+    }
+
+    private boolean himself(){
+        return iscrizione.getMilite()!=null && wamLogin.getMilite().equals(iscrizione.getMilite());
     }
 
     /**
