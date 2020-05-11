@@ -11,7 +11,10 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.QueryParameters;
+import com.vaadin.flow.router.Route;
 import it.algos.vaadflow.annotation.AIEntity;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -53,7 +56,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * La griglia è composta di oggetti 'TurnoCellPolymer' <br>
  */
 //@UIScope
-@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
+@Route(value = "pippoz", layout = WamLayout.class)
 //@PreserveOnRefresh
 
 @Qualifier(TAG_TAB_LIST)

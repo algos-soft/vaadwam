@@ -41,7 +41,10 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -54,7 +57,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 //@Route(value = TAG_TAB_LIST, layout = WamLayout.class)
 //@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
 //@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
-@Route(value = "tabnew", layout = WamLayout.class)
+@Route(value = "", layout = WamLayout.class)
 //@Route(value = "", layout = WamLayout.class)
 //@ParentLayout(AppLayout.class)
 //@Push @todo  LEVATO  IL  PUSH  E  RIMESSO  IL  WamLayout.class  FUNZIONA
