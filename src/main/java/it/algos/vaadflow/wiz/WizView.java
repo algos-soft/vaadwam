@@ -5,10 +5,13 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import it.algos.vaadflow.annotation.AIView;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.wiz.scripts.WizDialogNewProject;
 import it.algos.vaadflow.wiz.scripts.WizDialogUpdateProject;
 import it.algos.vaadflow.wiz.scripts.WizElaboraNewProject;
@@ -31,6 +34,7 @@ import static it.algos.vaadflow.wiz.scripts.WizCost.*;
  */
 @Route(value = TAG_WIZ_VIEW)
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@AIView(vaadflow = true, menuIcon = VaadinIcon.MAGIC, roleTypeVisibility = EARoleType.developer)
 public class WizView extends VerticalLayout implements BeforeEnterObserver {
 
     @Autowired
