@@ -55,6 +55,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 //@Route(value = TAG_TAB_LIST+"new", layout = AppLayout.class)
 //@Route(value = TAG_TAB_LIST+"new", layout = TabelloneAppLayout.class)
 @Route(value = "tabnew", layout = WamLayout.class)
+//@Route(value = "", layout = WamLayout.class)
 //@ParentLayout(AppLayout.class)
 //@Push @todo  LEVATO  IL  PUSH  E  RIMESSO  IL  WamLayout.class  FUNZIONA
 //@Push
