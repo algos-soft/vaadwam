@@ -122,9 +122,11 @@ public class CompIscrizione extends Div {
             }
             enableTimeNote(value!=null);
 
-            // se inserito/modificato un milite, controllo che non sia già
-            // iscritto in altra posizione
+            // inserito/modificato un milite
             if(value!=null){
+
+                // controllo che non sia già iscritto in altra posizione
+                boolean passed=true;
                 for(CompIscrizione comp : turnoEditPolymer.getCompIscrizioni()){
                     if (comp!=this){
                         String idAltroMilite=comp.getIdMiliteSelezionato();
@@ -133,11 +135,22 @@ public class CompIscrizione extends Div {
                             if (idQuestoMilite.equals(idAltroMilite)){
                                 mostraAvvisoGiaPresente(value.getSiglaMilite());
                                 combo.setValue(event.getOldValue());
+                                passed=false;
                                 break;
                             }
                         }
                     }
                 }
+
+                // assegno ora inizio e fine prendendole da quanto
+                // mostrato nei picker del turno
+                if (passed){
+                    LocalTime oraInizio = turnoEditPolymer.getOraInizioPicker();
+                    pickerInizio.setValue(oraInizio);
+                    LocalTime oraFine = turnoEditPolymer.getOraFinePicker();
+                    pickerFine.setValue(oraFine);
+                }
+
             }
 
         });
@@ -230,8 +243,8 @@ public class CompIscrizione extends Div {
      * Resetta orari e note
      */
     private void resetTimeNote(){
-        pickerInizio.setValue(getTurno().getInizio());
-        pickerFine.setValue(getTurno().getFine());
+        pickerInizio.setValue(null);
+        pickerFine.setValue(null);
         textField.setValue("");
     }
 
@@ -246,5 +259,12 @@ public class CompIscrizione extends Div {
     }
 
 
+    public void setOraInizio(LocalTime value) {
+        pickerInizio.setValue(value);
+    }
+
+    public void setOraFine(LocalTime value) {
+        pickerFine.setValue(value);
+    }
 }
 

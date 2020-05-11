@@ -99,7 +99,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
     // Componenti editor di singola iscrizione inseriti nel dialogo
     @Getter
-    private List<CompIscrizione> compIscrizioni;
+    private ListaIscrizioni compIscrizioni;
 
     // contiene tutto il contenuto visualizzato nel dialogo
     @Id
@@ -108,6 +108,11 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     @Id
     private Div areaiscrizioni;
 
+    @Id
+    private TimePicker pickerInizio;
+
+    @Id
+    private TimePicker pickerFine;
 
     /**
      * @param tabellone il tabellone di riferimento per effettuare le callbacks
@@ -139,6 +144,9 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
             areaiscrizioni.add(comp);
         }
 
+        // listeners per la modifica dell'ora inizio e fine, aggiornano la lista iscrizioni interna al dialogo
+        pickerInizio.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<TimePicker, LocalTime>>) event -> getCompIscrizioni().setOraInizio(event.getValue()));
+        pickerFine.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<TimePicker, LocalTime>>) event -> getCompIscrizioni().setOraFine(event.getValue()));
 
         bConferma.addClickShortcut(Key.ENTER);
         bConferma.addClickListener(e -> handleConferma());
@@ -240,8 +248,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Crea la lista dei componenti per editare le singole iscrizioni
      */
-    private List<CompIscrizione> buildCompIscrizioni() {
-        List<CompIscrizione> componenti = new ArrayList<>();
+    private ListaIscrizioni buildCompIscrizioni() {
+        ListaIscrizioni componenti = new ListaIscrizioni();
 
         for(Iscrizione iscrizione : turno.getIscrizioni()){
             CompIscrizione comp = appContext.getBean(CompIscrizione.class, iscrizione, this);
@@ -409,6 +417,62 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
                     .open();
 
         });
+
+    }
+
+    /**
+     * Ritorna l'ora correntemente mostrata nel picker ora inizio turno
+     */
+    public LocalTime getOraInizioPicker(){
+        LocalTime localTime=null;
+        try {
+            localTime = dateService.getLocalTimeHHMM(getModel().getOraInizio());
+        } catch (Exception e) {
+            log.error("can't parse time from picker start", e);
+        }
+        return localTime;
+    }
+
+    /**
+     * Ritorna l'ora correntemente mostrata nel picker ora fine turno
+     */
+    public LocalTime getOraFinePicker(){
+        LocalTime localTime=null;
+        try {
+            localTime = dateService.getLocalTimeHHMM(getModel().getOraFine());
+        } catch (Exception e) {
+            log.error("can't parse time from picker end", e);
+        }
+        return localTime;
+    }
+
+
+    /**
+     * Lista di oggetti CompIscrizione con funzionalità aggiuntive
+     */
+    class ListaIscrizioni extends ArrayList<CompIscrizione>{
+
+        /**
+         * Assegna l'ora di inizio a tutti i camponenti interni che hanno un iscritto
+         */
+        public void setOraInizio(LocalTime value) {
+            for(CompIscrizione comp : this){
+                if (comp.getIdMiliteSelezionato()!=null){
+                    comp.setOraInizio(value);
+                }
+            }
+        }
+
+        /**
+         * Assegna l'ora di fine a tutti i camponenti interni che hanno un iscritto
+         */
+        public void setOraFine(LocalTime value) {
+            for(CompIscrizione comp : this){
+                if (comp.getIdMiliteSelezionato()!=null){
+                    comp.setOraFine(value);
+                }
+            }
+        }
 
     }
 

@@ -106,6 +106,7 @@
                 <div style="display:flex; flex-direction:row; justify-content:center">
 
                     <vaadin-time-picker
+                            id="pickerInizio"
                             value="{{oraInizio}}"
                             step="900"
                             disabled=[[!orarioTurnoEditabile]]
@@ -115,6 +116,7 @@
                     <div class="hgap"></div>
 
                     <vaadin-time-picker
+                            id="pickerFine"
                             value="{{oraFine}}"
                             step="900"
                             disabled=[[!orarioTurnoEditabile]]
