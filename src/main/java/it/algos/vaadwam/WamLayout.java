@@ -39,7 +39,6 @@ import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 // L'annotazione @Push va applicata al top parent
 // layout e vale per tutti i layout interni
 @Push
-
 public class WamLayout extends MainLayout14 {
 
     private static String TUTTE = "tutte le croci";
