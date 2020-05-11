@@ -144,19 +144,19 @@
             <!--area bottoni-->
             <div style="display: flex; flex-direction: column; margin-top: 1em;">
 
-                <vaadin-button id="elimina"
-                               theme="secondary"
-                               hidden=[[!abilitaCancellaTurno]]
-                               style="color:white; background-color:red">Elimina turno</vaadin-button>
+                <vaadin-button id="elimina" theme="secondary" hidden=[[!abilitaCancellaTurno]] style="color:white; background-color:red">
+                    <iron-icon icon="vaadin:trash"></iron-icon>
+                    <label>Elimina turno</label>
+                </vaadin-button>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around;">
-                    <vaadin-button id="annulla"
-                                   style="flex-grow:1"
-                                   theme="secondary">Annulla</vaadin-button>
+                    <vaadin-button id="annulla" style="flex-grow:1" theme="secondary">
+                        <label>Annulla</label>
+                    </vaadin-button>
 
-                    <vaadin-button id="conferma"
-                                   style="flex-grow:1; margin-left:0.4em"
-                                   theme="raised primary">Registra</vaadin-button>
+                    <vaadin-button id="conferma" style="flex-grow:1; margin-left:0.4em" theme="raised primary">
+                        <label>Registra</label>
+                    </vaadin-button>
                 </div>
 
             </div>
