@@ -519,9 +519,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         if(isUtenteAbilitatoCreareTurniOrarioIndefinito()){
             if(isUtenteAdmin()){
                 editor = editMulti(turno, !nuovoTurno);
-            }else{
+            }else{  // abilitato ai turni indefiniti ma non admin
                 if(!servizio.isOrarioDefinito()){   // turno a orario indefinito
-                    editor = editMulti(turno, false);
+                    if(turno.getGiorno().isBefore(LocalDate.now())){    // turno storico
+                        editor = editSingle(turno, codFunzione);
+                    }else{   // turno attivo
+                        editor = editMulti(turno, false);
+                    }
                 }else{  // turno standard
                     editor = editSingle(turno, codFunzione);
                 }
