@@ -84,6 +84,7 @@
                 color:orangered;
                 background-color: gainsboro;
             }
+
         </style>
 
         <div id="container">
@@ -94,9 +95,10 @@
                 <div id="servizioservizio">{{servizio.code}}</div>
                 <template is="dom-if" if={{lastInType}}>
                     <div style="flex-grow:1"></div>
-                        <vaadin-button id="nuovo">
-                            <iron-icon icon="lumo:plus"></iron-icon><span></span>
-                        </vaadin-button>
+                    <vaadin-button id="nuovo">
+                        <iron-icon icon="lumo:plus"></iron-icon>
+                        <span></span>
+                    </vaadin-button>
                 </template>
             </div>
 
@@ -104,18 +106,25 @@
 
             <div id="right">
 
+                <!--spazio per allineamento verticale turni senza orario previsto-->
+                <template is="dom-if" if="[[!servizio.orarioDefinito]]">
+                    <div style="height:2em"/>
+                </template>
+
+                <!--funzioni obbligatorie-->
                 <template is="dom-repeat" items="[[iconeObbligatorie]]">
                     <div class="ruolo">
-                        <div class="iconContainer" style="background-color: #c80000ff;" >
-                            <iron-icon icon="vaadin:{{item}}"  class="icon"></iron-icon>
+                        <div class="iconContainer" style="background-color: #c80000ff;">
+                            <iron-icon icon="vaadin:{{item}}" class="icon"></iron-icon>
                         </div>
                     </div>
                 </template>
 
+                <!--funzioni facoltative-->
                 <template is="dom-repeat" items="[[iconeFacoltative]]">
                     <div class="ruolo">
-                        <div class="iconContainer" style="background-color: #8ea604ff;" >
-                            <iron-icon icon="vaadin:{{item}}"  class="icon"></iron-icon>
+                        <div class="iconContainer" style="background-color: #8ea604ff;">
+                            <iron-icon icon="vaadin:{{item}}" class="icon"></iron-icon>
                         </div>
                     </div>
                 </template>
@@ -134,6 +143,7 @@
         }
 
         customElements.define(ServizioCellPolymer.is, ServizioCellPolymer);
+
 
     </script>
 

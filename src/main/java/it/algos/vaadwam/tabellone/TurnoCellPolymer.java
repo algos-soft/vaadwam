@@ -98,10 +98,10 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     private TabelloneService tabelloneService;
 
     @Autowired
-    private FunzioneService funzioneService;
+    private ServizioService servizioService;
 
     @Autowired
-    private ServizioService servizioService;
+    private ADateService dateService;
 
     private Riga riga;
 
@@ -116,11 +116,12 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     private ITabellone tabellone;
 
     public TurnoCellPolymer() {
-    }// end of Spring constructor
+    }
 
 
     /**
      * Constructor.
+     * @deprecated
      */
     public TurnoCellPolymer(Riga riga, LocalDate giorno) {
         this.riga = riga;
@@ -141,7 +142,43 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
     @PostConstruct
     private void inizia() {
+
+        // eventuale header
+        if(!riga.getServizio().isOrarioDefinito()){
+            Turno turno = getTurno();
+            String text1=null;
+            String text2=null;
+            if(turno!=null){
+                String oraIni=dateService.getOrario(turno.getInizio());
+                String oraFine=dateService.getOrario(turno.getFine());
+                if(oraIni!=null && oraFine!=null){
+                    text1 = oraIni+" - "+oraFine;
+                }
+
+                text2=turno.getNote();
+
+            }
+
+            getModel().setUsaHeaders(true);
+            getModel().setHeader1(text1);
+            getModel().setHeader2(text2);
+        }
+
         colorazione();
+    }
+
+
+    private Turno getTurno(){
+        Turno turno=null;
+        List<Turno> turni = riga.getTurni();
+        for(Turno t:turni){
+            if(t.getGiorno().equals(giorno)){
+                turno=t;
+                break;
+            }
+
+        }
+        return turno;
     }
 
 
@@ -214,78 +251,18 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
 
     /**
-     * Java event handler on the server, run asynchronously <br>
-     * <p>
-     * Evento ricevuto dal file turnoCellPolymer.html collegato e che 'gira' sul Client <br>
-     * Il collegamento tra il Client sul browser e queste API del Server viene gestito da Flow <br>
-     * Uno scritp con lo stesso nome viene (eventualmente) eseguito in maniera sincrona sul Client <br>
-     * <p>
-     * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
-     * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey del turno selezionato <br>
-     * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
+     * Cella interna cliccata
      */
     @EventHandler
     void handleClick(@ModelItem RigaCella item) {
-        if(tabellone!=null){ // nuovo tabellone, modalità in dialogo
+        if(tabellone!=null){
             tabellone.cellClicked(turno, giorno, riga.servizio, item.getFunzione());
-        }else{ // vecchio tabellone, modalità in pagina separata
-
-            if (turno != null) {
-                handleClickTurnoEsistente();
-            } else {
-                handleClickTurnoVuoto();
-            }
-
         }
     }
 
 
 
-    /**
-     * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
-     * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey del turno selezionato <br>
-     * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
-     */
-    private void handleClickTurnoEsistente() {
-        getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT + "/" + turno));
-    }
 
-
-    /**
-     * Non occorre ricevere parametri perché questa istanza è già specifica di un particolare turno <br>
-     * Viene aperta una pagina per controllare/modificare le iscrizioni del turno <br>
-     * La pagina viene raggiunta con una navigazione via @Route, passando la turnoKey=null <br>
-     * La idKey del turno viene passata nell'URL <br>
-     * Alla chiusura della pagina la navigazione via @Route rimanda al Tabellone <br>
-     */
-    private void handleClickTurnoVuoto() {
-        Map<String, List<String>> mappa = null;
-        List<String> lista;
-        Servizio servizio = riga.servizio;
-
-        if (pref.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {
-            mappa = new HashMap<String, List<String>>();
-
-            lista = new ArrayList<>();
-            lista.add(giorno.format(DateTimeFormatter.ISO_DATE));
-            mappa.put(KEY_MAP_GIORNO, lista);
-
-            lista = new ArrayList<>();
-            lista.add(servizio.id);
-            mappa.put(KEY_MAP_SERVIZIO, lista);
-
-            final QueryParameters query = new QueryParameters(mappa);
-            getUI().ifPresent(ui -> ui.navigate(TAG_TURNO_EDIT, query));
-        } else {
-            String desc = servizio.descrizione;
-            String giornoTxt = date.get(giorno, EATime.weekShortMese);
-            Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
-        }
-    }
 
 
 }

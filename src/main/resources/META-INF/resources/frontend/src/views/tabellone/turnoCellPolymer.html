@@ -37,9 +37,25 @@
                 align-items: center;
             }
 
+            .headerdiv {
+                display: flex;
+                flex-direction: row;
+                font-size:80%;
+             }
+
         </style>
 
-        <div id="container" >
+        <div id="container" style="display: flex; flex-direction: column">
+
+            <!--header del turno-->
+            <template is="dom-if" if="[[usaHeaders]]">
+                <div style="display: flex; flex-direction: column-reverse; height:2em">
+                    <div class="headerdiv">[[header2]]</div>
+                    <div class="headerdiv"  style="font-weight:bold; justify-content:center">[[header1]]</div>
+                </div>
+            </template>
+
+            <!--celle interne al turno-->
             <template is="dom-repeat" items="[[righecella]]">
                 <button class="button" style="background-color:{{item.coloreCella}}" on-click="handleClick">
                     <div class = "buttondiv">

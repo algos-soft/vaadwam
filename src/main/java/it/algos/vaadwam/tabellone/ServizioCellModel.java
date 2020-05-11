@@ -16,7 +16,7 @@ import java.util.List;
 public interface ServizioCellModel extends TemplateModel {
 
 
-    @Include({"code", "descrizione"})
+    @Include({"code", "descrizione", "orarioDefinito"})
     void setServizio(Servizio servizio);
 
     void setIconeObbligatorie(List<String> iconeObbligatorie);
