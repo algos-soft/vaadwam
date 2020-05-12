@@ -208,13 +208,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
-        broadcasterRegistration = Broadcaster.register(newMessage -> {
-            ui.access(() -> {
-                if (newMessage.equals("turnosaved") || newMessage.equals("turnodeleted")) {
-                    loadDataInGrid();
-                }
-            });
-        });
+        broadcasterRegistration = Broadcaster.register(newMessage -> ui.access(() -> {
+            if (newMessage.equals("turnosaved") || newMessage.equals("turnodeleted")) {
+                loadDataInGrid();
+            }
+        }));
     }
 
 
@@ -488,14 +486,30 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione) {
 
-        // crea il turno se non esiste
+        // creazione del turno se non esiste
         boolean nuovoTurno = false;
         if (turno == null) {
 
-            if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || wamLogin.isAdminOrDev()) {   // può creare turni
+           boolean creaTurno=false;
+            if( servizio.isOrarioDefinito()){ //turni a orario definito: admin li può creare sempre, gli altri solo se la company lo prevede
+                if (isUtenteAdmin()){
+                    creaTurno=true;
+                }else{
+                    if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno)){
+                        creaTurno=true;
+                    }
+                }
+            }else {//turni a orario indefinito: li possono creare solo admin e utente specificamente abilitato
+                if(isUtenteAdmin() || isUtenteAbilitatoCreareTurniOrarioIndefinito()){
+                    creaTurno=true;
+                }
+            }
+
+            // creazione effettiva del turno, o blocco e uscita con messaggio
+            if(creaTurno){
                 turno = turnoService.newEntity(giorno, servizio);
                 nuovoTurno = true;
-            } else {  // non può creare turni
+            }else{
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
                 Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
@@ -504,7 +518,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         }
 
+
         // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
+        // se sono arrivato qui il turno esiste per forza
         Component editor;
         if (isUtenteAbilitatoCreareTurniOrarioIndefinito()) {
             if (isUtenteAdmin()) {
