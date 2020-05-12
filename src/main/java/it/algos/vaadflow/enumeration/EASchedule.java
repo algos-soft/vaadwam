@@ -103,11 +103,15 @@ public enum EASchedule {
      */
     biMensile("0 4 1,15 * *", "il primo ed il 15 di ogni mese alle ore 4 di notte."),
     /**
+     * Descrizione: ogni giorno alle ore 4 di notte
+     */
+    oreDue("5 2 * * *", "ogni giorno alle ore 2:05 di notte."),
+    /**
      * Descrizione: ogni giorno alle ore 4 di notte, escluso l'1 ed il 15
      */
     oreQuattroEscluso("0 4 2-14,16-31 * *", "ogni giorno alle ore 4 di notte, escluso l'1 ed il 15."),
     /**
-     * Descrizione: ogni giorno alle ore 4 di notte, escluso l'1 ed il 15
+     * Descrizione: ogni giorno alle ore 4 di notte
      */
     oreQuattro("5 4 * * *", "ogni giorno alle ore 4:05 di notte."),
     /**

@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.croce;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_CRO;
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_CRO)
 @Slf4j

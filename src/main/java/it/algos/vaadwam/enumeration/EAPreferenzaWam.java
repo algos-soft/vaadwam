@@ -21,15 +21,10 @@ public enum EAPreferenzaWam implements IAPreferenza {
     redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
 
     //--scheduled task suddivise per croce
-    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, true),
-    usaDaemonElabora(USA_DAEMON_ELABORA, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true),
+    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, true), usaDaemonElabora(USA_DAEMON_ELABORA, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true), usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati da tutte le croci", EAPrefType.bool, EARole.developer, false, true),
 
     //--cronologia degli import
-    lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, null),
-    lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, null),
-    lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, null),
-    lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, null),
-    lastElabora(LAST_ELABORA, "Data ultima elaborazione delle statistiche della croce", EAPrefType.localdatetime, null),
+    lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, null), lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, null), lastImportMiliti(LAST_IMPORT_MILITI, "Data ultimo import militi della croce", EAPrefType.localdatetime, null), lastImportTurni(LAST_IMPORT_TURNI, "Data ultimo import turni della croce", EAPrefType.localdatetime, null), lastElabora(LAST_ELABORA, "Data ultima elaborazione delle statistiche della croce", EAPrefType.localdatetime, null),
 
     //--durata degli import
     durataImportFunzioni(DURATA_IMPORT_FUNZIONI, "Durata ultimo import funzioni della croce, in secondi", EAPrefType.integer, 0),

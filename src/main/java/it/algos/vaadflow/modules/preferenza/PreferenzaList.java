@@ -213,10 +213,11 @@ public class PreferenzaList extends AGridViewList {
         filtri = new ArrayList<AFiltro>();
 
         if (usaFiltroCompany && filtroCompany != null && filtroCompany.getValue() != null) {
-            if (filtroCompany.getValue() != null) {
+            if (!login.isDeveloper() && filtroCompany.getValue() != null) {
                 filtri.add(new AFiltro(Criteria.where("company").is(filtroCompany.getValue())));
             }// end of if cycle
         }// end of if cycle
+
     }// end of method
 
 
@@ -233,7 +234,7 @@ public class PreferenzaList extends AGridViewList {
         String fieldSort = "code";
         EAPrefType fieldType = (EAPrefType) filtroComboBox.getValue();
 
-        if (fieldType!=null) {
+        if (fieldType != null) {
             CriteriaDefinition criteria = Criteria.where(fieldName).is(fieldType);
             Sort sort = new Sort(Sort.Direction.ASC, fieldSort);
             AFiltro filtro = new AFiltro(criteria, sort);

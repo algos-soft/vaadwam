@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.milite;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowCost;
@@ -21,24 +22,18 @@ import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +42,6 @@ import java.util.Set;
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadwam.application.WamCost.*;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 
 /**
  * Project vaadwam <br>
@@ -64,7 +58,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_MIL)
 @Slf4j
@@ -83,11 +77,9 @@ public class MiliteService extends WamService implements IUtenteService {
 
     public final static String FIELD_ATTIVO = "enabled";
 
-    public final static List<String> PROPERTIES_USER =
-            Arrays.asList("croce", "ordine", "userName", "passwordInChiaro", "locked", "nome", "cognome", "telefono", "mail", "indirizzo", "dipendente", "infermiere", "funzioni");
+    public final static List<String> PROPERTIES_USER = Arrays.asList("croce", "ordine", "userName", "passwordInChiaro", "locked", "nome", "cognome", "telefono", "mail", "indirizzo", "dipendente", "infermiere", "funzioni");
 
-    public final static List<String> PROPERTIES_ADMIN =
-            Arrays.asList("nome", "cognome", "userName", "passwordInChiaro", "telefono", "locked", "admin", "dipendente", "infermiere");
+    public final static List<String> PROPERTIES_ADMIN = Arrays.asList("nome", "cognome", "userName", "passwordInChiaro", "telefono", "locked", "admin", "dipendente", "infermiere");
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -129,6 +121,7 @@ public class MiliteService extends WamService implements IUtenteService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+
     /**
      * Costruttore @Autowired <br>
      * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
@@ -142,7 +135,6 @@ public class MiliteService extends WamService implements IUtenteService {
         super.entityClass = Milite.class;
         this.repository = (MiliteRepository) repository;
     }// end of Spring constructor
-
 
 
     /**
@@ -176,13 +168,7 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(
-            Croce croce,
-            String nome,
-            String cognome,
-            String userName,
-            String passwordInChiaro,
-            Set<Role> ruoli) {
+    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String userName, String passwordInChiaro, Set<Role> ruoli) {
 
         return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (Set<Funzione>) null);
     }// end of method
@@ -210,20 +196,7 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(
-            Croce croce,
-            String nome,
-            String cognome,
-            String telefono,
-            String userName,
-            String passwordInChiaro,
-            Set<Role> ruoli,
-            String mail,
-            boolean enabled,
-            boolean admin,
-            boolean dipendente,
-            boolean infermiere,
-            Set<Funzione> funzioni) {
+    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String telefono, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(userName)) {
@@ -294,23 +267,7 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Milite newEntity(
-            Croce croce,
-            int ordine,
-            String nome,
-            String cognome,
-            String telefono,
-            Address indirizzo,
-            String userName,
-            String passwordInChiaro,
-            Set<Role> ruoli,
-            String mail,
-            boolean enabled,
-            boolean admin,
-            boolean dipendente,
-            boolean infermiere,
-            Set<Funzione> funzioni,
-            boolean usaSuperClasse) {
+    public Milite newEntity(Croce croce, int ordine, String nome, String cognome, String telefono, Address indirizzo, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni, boolean usaSuperClasse) {
         Milite entity = null;
         Person entityDellaSuperClassePerson = null;
 
@@ -338,7 +295,7 @@ public class MiliteService extends WamService implements IUtenteService {
 
         //--poi vengono aggiunte le property specifiche di Milite
         //--regola le property di questa classe
-//        entity.company = croce;
+        //        entity.company = croce;
         entity.setCroce(croce);
         entity.setOrdine(ordine != 0 ? ordine : this.getNewOrdine(croce));
         entity.setAdmin(admin);
@@ -459,7 +416,7 @@ public class MiliteService extends WamService implements IUtenteService {
             milite = repository.findByUsername(userName);
         } catch (Exception unErrore) { // intercetta l'errore
             log.error(unErrore.toString());
-//            logger.importo("Milite - " + login.getCompany().code + "Trovati troppi militi di nome " + userName);
+            //            logger.importo("Milite - " + login.getCompany().code + "Trovati troppi militi di nome " + userName);
         }// fine del blocco try-catch
 
         return milite;
@@ -481,10 +438,14 @@ public class MiliteService extends WamService implements IUtenteService {
      * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce) {
+    public boolean importa(Croce croce) {
+        boolean eseguito;
+
         long inizio = System.currentTimeMillis();
-        migration.importMiliti(croce);
+        eseguito = migration.importMiliti(croce);
         setLastImport(croce, inizio);
+
+        return eseguito;
     }// end of method
 
 
@@ -627,35 +588,34 @@ public class MiliteService extends WamService implements IUtenteService {
     }// end of method
 
 
-//    /**
-//     * Returns instances abilitate per la funzione <br>
-//     * Lista ordinata <br>
-//     *
-//     * @param funzione che deve essere abilitata per il milite da considerare
-//     *
-//     * @return lista ordinata delle entities selezionate
-//     */
-//    public List<Milite> findAllByFunzione(Funzione funzione) {
-//        List<Milite> lista = new ArrayList<>();
-//        List<Milite> listaAll = repository.findAllByCroceOrderByOrdineAsc(getCroce());
-//        Set<Funzione> funzioniAbilitatePerIlMilite;
-//
-//        if (array.isValid(listaAll)) {
-//            for (Milite milite : listaAll) {
-//                funzioniAbilitatePerIlMilite = milite.funzioni;
-//                if (funzioniAbilitatePerIlMilite != null) {
-//                    for (Funzione funz : funzioniAbilitatePerIlMilite) {
-//                        if (funz.code.equals(funzione.code)) {
-//                            lista.add(milite);
-//                        }// end of if cycle
-//                    }// end of for cycle
-//                }// end of if cycle
-//            }// end of for cycle
-//        }// end of if cycle
-//
-//        return lista;
-//    }// end of method
-
+    //    /**
+    //     * Returns instances abilitate per la funzione <br>
+    //     * Lista ordinata <br>
+    //     *
+    //     * @param funzione che deve essere abilitata per il milite da considerare
+    //     *
+    //     * @return lista ordinata delle entities selezionate
+    //     */
+    //    public List<Milite> findAllByFunzione(Funzione funzione) {
+    //        List<Milite> lista = new ArrayList<>();
+    //        List<Milite> listaAll = repository.findAllByCroceOrderByOrdineAsc(getCroce());
+    //        Set<Funzione> funzioniAbilitatePerIlMilite;
+    //
+    //        if (array.isValid(listaAll)) {
+    //            for (Milite milite : listaAll) {
+    //                funzioniAbilitatePerIlMilite = milite.funzioni;
+    //                if (funzioniAbilitatePerIlMilite != null) {
+    //                    for (Funzione funz : funzioniAbilitatePerIlMilite) {
+    //                        if (funz.code.equals(funzione.code)) {
+    //                            lista.add(milite);
+    //                        }// end of if cycle
+    //                    }// end of for cycle
+    //                }// end of if cycle
+    //            }// end of for cycle
+    //        }// end of if cycle
+    //
+    //        return lista;
+    //    }// end of method
 
 
     /**
@@ -712,17 +672,17 @@ public class MiliteService extends WamService implements IUtenteService {
     }// end of method
 
 
-//    /**
-//     * Costruisce una lista di nomi delle properties della Grid nell'ordine:
-//     * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID)
-//     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
-//     * 3) Sovrascrive la lista nella sottoclasse specifica
-//     *
-//     * @return lista di nomi di properties
-//     */
-//    public List<String> getGridPropertyNamesList() {
-//        return USA_SECURITY ? PROPERTIES_ADMIN : PROPERTIES_USER;
-//    }// end of method
+    //    /**
+    //     * Costruisce una lista di nomi delle properties della Grid nell'ordine:
+    //     * 1) Cerca nell'annotation @AIList della Entity e usa quella lista (con o senza ID)
+    //     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+    //     * 3) Sovrascrive la lista nella sottoclasse specifica
+    //     *
+    //     * @return lista di nomi di properties
+    //     */
+    //    public List<String> getGridPropertyNamesList() {
+    //        return USA_SECURITY ? PROPERTIES_ADMIN : PROPERTIES_USER;
+    //    }// end of method
 
 
     /**
@@ -764,18 +724,18 @@ public class MiliteService extends WamService implements IUtenteService {
                 }// end of if cycle
             }// end of if cycle
         } else {
-//            if (lista.contains(FIELD_LOCKED)) {
-//                lista.remove(FIELD_LOCKED);
-//            }// end of if cycle
-//            if (lista.contains(FIELD_ADMIN)) {
-//                lista.remove(FIELD_ADMIN);
-//            }// end of if cycle
-//            if (lista.contains(FIELD_DIPENDENTE)) {
-//                lista.remove(FIELD_DIPENDENTE);
-//            }// end of if cycle
-//            if (lista.contains(FIELD_INFERMIERE)) {
-//                lista.remove(FIELD_INFERMIERE);
-//            }// end of if cycle
+            //            if (lista.contains(FIELD_LOCKED)) {
+            //                lista.remove(FIELD_LOCKED);
+            //            }// end of if cycle
+            //            if (lista.contains(FIELD_ADMIN)) {
+            //                lista.remove(FIELD_ADMIN);
+            //            }// end of if cycle
+            //            if (lista.contains(FIELD_DIPENDENTE)) {
+            //                lista.remove(FIELD_DIPENDENTE);
+            //            }// end of if cycle
+            //            if (lista.contains(FIELD_INFERMIERE)) {
+            //                lista.remove(FIELD_INFERMIERE);
+            //            }// end of if cycle
         }// end of if/else cycle
 
         return lista;
@@ -830,7 +790,7 @@ public class MiliteService extends WamService implements IUtenteService {
 
         if (milite != null && funzione != null) {
             funzioni = milite.getFunzioni();
-            if (funzioni!=null) {
+            if (funzioni != null) {
                 for (Funzione funz : milite.getFunzioni()) {
                     if (funzione.code.equals(funz.code)) {
                         status = true;

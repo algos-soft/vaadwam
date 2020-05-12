@@ -53,15 +53,21 @@ public class DaemonWam extends Scheduler {
 //     * La injection viene fatta da SpringBoot in automatico <br>
 //     */
 //    @Autowired
-//    private TaskServizi servizi;
+    //    private TaskServizi servizi;
 
 
-//    /**
-//     * La injection viene fatta da SpringBoot in automatico <br>
-//     */
-//    @Autowired
-//    private TaskMiliti militi;
+    //    /**
+    //     * La injection viene fatta da SpringBoot in automatico <br>
+    //     */
+    //    @Autowired
+    //    private TaskMiliti militi;
 
+
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private TaskImport importa;
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
@@ -77,6 +83,7 @@ public class DaemonWam extends Scheduler {
 
             // schedule(croci.getSchedule().getPattern(), croci);
             schedule(croce.getSchedule().getPattern(), croce);
+            schedule(importa.getSchedule().getPattern(), importa);
             schedule(statistica.getSchedule().getPattern(), statistica);
 
         }// fine del blocco if

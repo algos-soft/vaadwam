@@ -11,6 +11,11 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.ui.MainLayout;
+import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,6 +42,46 @@ public class ImportView extends VerticalLayout {
      * Icona visibile nel menu (facoltativa)
      */
     public static final VaadinIcon VIEW_ICON = VaadinIcon.INSERT;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public FunzioneService funzioneService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ServizioService servizioService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MiliteService militeService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TurnoService turnoService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public CroceService croceService;
 
     private Label labelUno;
 
@@ -90,12 +135,12 @@ public class ImportView extends VerticalLayout {
         labelUno = new Label("Import dei dati dal vecchio webambulanze");
         this.add(labelUno);
 
-//        this.crociOnly();
+        //        this.crociOnly();
         this.funzioniOnly();
         this.serviziOnly();
         this.militiOnly();
         this.turniOnly();
-//        this.all();
+        //        this.all();
     }// end of method
 
 
@@ -124,13 +169,7 @@ public class ImportView extends VerticalLayout {
         layoutFunzioni.setSpacing(true);
 
         buttonFunzioni = new Button("Funzioni only");
-        buttonFunzioni.addClickListener(e -> {
-            if (migration.importFunzioni()) {
-                layoutFunzioni.add(new Checkbox("Fatto", true));
-            } else {
-                layoutFunzioni.add(new Checkbox("Import non riuscito", true));
-            }// end of if/else cycle
-        });//end of lambda expressions
+        buttonFunzioni.addClickListener(e -> layoutFunzioni.add(new Checkbox(funzioneService.importAll(), true)));//end of lambda expressions
         layoutFunzioni.add(buttonFunzioni);
 
         this.add(layoutFunzioni);
@@ -143,13 +182,7 @@ public class ImportView extends VerticalLayout {
         layoutServizi.setSpacing(true);
 
         buttonServizi = new Button("Servizi only");
-        buttonServizi.addClickListener(e -> {
-            if (migration.importServizi()) {
-                layoutServizi.add(new Checkbox("Fatto", true));
-            } else {
-                layoutServizi.add(new Checkbox("Import non riuscito", true));
-            }// end of if/else cycle
-        });//end of lambda expressions
+        buttonServizi.addClickListener(e -> layoutServizi.add(new Checkbox(servizioService.importAll(), true)));//end of lambda expressions
         layoutServizi.add(buttonServizi);
 
         this.add(layoutServizi);
@@ -162,13 +195,7 @@ public class ImportView extends VerticalLayout {
         layoutMiliti.setSpacing(true);
 
         buttonMiliti = new Button("Militi only");
-        buttonMiliti.addClickListener(e -> {
-            if (migration.importMiliti()) {
-                layoutMiliti.add(new Checkbox("Fatto", true));
-            } else {
-                layoutMiliti.add(new Checkbox("Import non riuscito", true));
-            }// end of if/else cycle
-        });//end of lambda expressions
+        buttonMiliti.addClickListener(e -> layoutMiliti.add(new Checkbox(militeService.importAll(), true)));//end of lambda expressions
         layoutMiliti.add(buttonMiliti);
 
         this.add(layoutMiliti);
@@ -181,13 +208,7 @@ public class ImportView extends VerticalLayout {
         layoutTurni.setSpacing(true);
 
         buttonTurni = new Button("Turni only");
-        buttonTurni.addClickListener(e -> {
-            if (migration.importTurni()) {
-                layoutTurni.add(new Checkbox("Fatto", true));
-            } else {
-                layoutTurni.add(new Checkbox("Import non riuscito", true));
-            }// end of if/else cycle
-        });//end of lambda expressions
+        buttonTurni.addClickListener(e -> layoutTurni.add(new Checkbox(turnoService.importAll(), true)));//end of lambda expressions
         layoutTurni.add(buttonTurni);
 
         this.add(layoutTurni);
@@ -201,7 +222,10 @@ public class ImportView extends VerticalLayout {
 
         buttonAll = new Button("All");
         buttonAll.addClickListener(e -> {
-//            migration.importAll();
+            serviziOnly();
+            funzioniOnly();
+            militiOnly();
+            turniOnly();
             layoutAll.add(new Checkbox("Fatto", true));
         });//end of lambda expressions
         layoutAll.add(buttonAll);

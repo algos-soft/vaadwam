@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.turno;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,7 +49,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_TUR)
 @Slf4j
@@ -174,25 +174,9 @@ public class TurnoService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Turno newEntity(
-            Croce croce,
-            LocalDate giorno,
-            Servizio servizio,
-            LocalTime inizio,
-            LocalTime fine,
-            List<Iscrizione> iscrizioni,
-            String titoloExtra,
-            String localitaExtra) {
+    public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio, LocalTime inizio, LocalTime fine, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
 
-        Turno entity = Turno.builderTurno()
-                .giorno(giorno != null ? giorno : LocalDate.now())
-                .servizio(servizio)
-                .inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT)
-                .fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT)
-                .iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio))
-                .titoloExtra(titoloExtra.equals("") ? null : titoloExtra)
-                .localitaExtra(localitaExtra.equals("") ? null : localitaExtra)
-                .build();
+        Turno entity = Turno.builderTurno().giorno(giorno != null ? giorno : LocalDate.now()).servizio(servizio).inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT).fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT).iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio)).titoloExtra(titoloExtra.equals("") ? null : titoloExtra).localitaExtra(localitaExtra.equals("") ? null : localitaExtra).build();
 
         return (Turno) addCroce(entity, croce);
     }// end of method
@@ -288,33 +272,37 @@ public class TurnoService extends WamService {
      * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce) {
+    public boolean importa(Croce croce) {
+        boolean eseguito;
+
         long inizio = System.currentTimeMillis();
-        migration.importTurni(croce);
+        eseguito = migration.importTurni(croce);
         setLastImport(croce, inizio);
+
+        return eseguito;
     }// end of method
 
 
-//    /**
-//     * Importazione di dati <br>
-//     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
-//     *
-//     * @param croce di riferimento
-//     *
-//     * @return true se sono stati importati correttamente
-//     */
-//    @Override
-//    public ImportResult importa(Croce croce) {
-//        boolean status;
-//        super.importa();
-//        status = migration.importTurni((Croce) croce);
-//
-////        if (status) {
-//        pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
-////        }// end of if cycle
-//
-//        return null;
-//    }// end of method
+    //    /**
+    //     * Importazione di dati <br>
+    //     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+    //     *
+    //     * @param croce di riferimento
+    //     *
+    //     * @return true se sono stati importati correttamente
+    //     */
+    //    @Override
+    //    public ImportResult importa(Croce croce) {
+    //        boolean status;
+    //        super.importa();
+    //        status = migration.importTurni((Croce) croce);
+    //
+    ////        if (status) {
+    //        pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
+    ////        }// end of if cycle
+    //
+    //        return null;
+    //    }// end of method
 
 
     /**
@@ -458,33 +446,33 @@ public class TurnoService extends WamService {
     }// end of method
 
 
-//    /**
-//     * Calcola il tempo di inizio del turno in base al giorno ed al tipo di servizio <br>
-//     */
-//    public LocalDateTime getInizio(LocalDate giorno, Servizio servizio) {
-//        int anno = giorno.getYear();
-//        int mese = giorno.getMonthValue();
-//        int giornoMese = giorno.getDayOfMonth();
-//        int ora = servizio.getOraInizio();
-//        int minuti = servizio.getMinutiInizio();
-//
-//        return LocalDateTime.of(anno, mese, giornoMese, ora, minuti);
-//    }// end of method
+    //    /**
+    //     * Calcola il tempo di inizio del turno in base al giorno ed al tipo di servizio <br>
+    //     */
+    //    public LocalDateTime getInizio(LocalDate giorno, Servizio servizio) {
+    //        int anno = giorno.getYear();
+    //        int mese = giorno.getMonthValue();
+    //        int giornoMese = giorno.getDayOfMonth();
+    //        int ora = servizio.getOraInizio();
+    //        int minuti = servizio.getMinutiInizio();
+    //
+    //        return LocalDateTime.of(anno, mese, giornoMese, ora, minuti);
+    //    }// end of method
 
 
-//    /**
-//     * Calcola il tempo di fine del turno in base al giorno ed al tipo di servizio <br>
-//     */
-//    public LocalDateTime getFine(LocalDate giorno, Servizio servizio) {
-//        int anno = giorno.getYear();
-//        int mese = giorno.getMonthValue();
-//        int giornoMese = giorno.getDayOfMonth();
-//        int ora = servizio.getOraFine();
-//        int minuti = servizio.getOraInizio();
-//
-//        return LocalDateTime.of(anno, mese, giornoMese, ora, minuti);
-//    }// end of method
-//
+    //    /**
+    //     * Calcola il tempo di fine del turno in base al giorno ed al tipo di servizio <br>
+    //     */
+    //    public LocalDateTime getFine(LocalDate giorno, Servizio servizio) {
+    //        int anno = giorno.getYear();
+    //        int mese = giorno.getMonthValue();
+    //        int giornoMese = giorno.getDayOfMonth();
+    //        int ora = servizio.getOraFine();
+    //        int minuti = servizio.getOraInizio();
+    //
+    //        return LocalDateTime.of(anno, mese, giornoMese, ora, minuti);
+    //    }// end of method
+    //
 
 
     /**
@@ -542,7 +530,7 @@ public class TurnoService extends WamService {
                             trovata = true;
                         }// end of if cycle
                     } else {
-//                        log.warn("Iscrizione " + iscr + " del turno " + turno + " - Manca la funzione");
+                        //                        log.warn("Iscrizione " + iscr + " del turno " + turno + " - Manca la funzione");
                     }// end of if/else cycle
                 }// end of for cycle
             }// end of if cycle
