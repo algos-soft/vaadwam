@@ -72,7 +72,6 @@ import java.util.Set;
 @AIForm(fields = {"code", "icona", "sigla", "descrizione", "dipendenti", "note"})
 public class Funzione extends WamEntity {
 
-
     /**
      * versione della classe per la serializzazione
      */
