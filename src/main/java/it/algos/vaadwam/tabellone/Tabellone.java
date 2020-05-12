@@ -1,6 +1,7 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -32,7 +33,9 @@ import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.riga.Riga;
+import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
@@ -89,8 +92,41 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Autowired
     private FunzioneService funzioneService;
 
+    @Autowired
+    private ServizioService servizioService;
+
+    @Autowired
+    private RigaService rigaService;
+
     @Id
     private Dialog turnodialog;
+
+    @Id("tabellonegrid")
+    private Grid grid;
+
+    // modello dati per la griglia
+    private List<Riga> gridItems;
+
+    @Id
+    private Checkbox modoUtente;
+
+    @Id
+    private Checkbox modoCentralinista;
+
+    @Id
+    private Checkbox modoAdmin;
+
+    @Id
+    private Div legendaLayer;
+
+    @Id
+    private Button bColori;
+
+    @Id
+    private Button bAddServizio;
+
+    @Id
+    private Div divtabellone;
 
     /**
      * Primo giorno visualizzato
@@ -115,24 +151,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private Registration broadcasterRegistration;
 
-    @Id("tabellonegrid")
-    private Grid grid;
-
-    @Id
-    private Checkbox modoUtente;
-
-    @Id
-    private Checkbox modoCentralinista;
-
-    @Id
-    private Checkbox modoAdmin;
-
-    @Id
-    private Div legendaLayer;
-
-    @Id
-    private Div legendaLabel;
-
 
     private String wCol1 = "7em";
 
@@ -151,10 +169,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             return;
         }
 
-        initChecks();
-
         //        // registra il riferimento al server Java nel client JS
         //        UI.getCurrent().getPage().executeJs("registerServer($0)", getElement());
+
+        initChecks();
 
         getModel().setSingola(true);
 
@@ -167,9 +185,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         grid.addThemeNames("no-row-borders");
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
-        //        grid.setVerticalScrollingEnabled(false);
-        //        fillHeaderModel();
+        // quando clicco in qualsiasi punto chiudo la palette se aperta
+        divtabellone.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> legendaLayer.getStyle().set("visibility","hidden"));
 
+        // bottone Nuovo Servizio
+        bAddServizio.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickAddServizio());
+
+        // costruisce la grid
         buildAllGrid();
 
     }
@@ -310,7 +332,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      * Carica gli items nella Grid, utilizzando i filtri correnti
      */
     private void loadDataInGrid() {
-        List<Riga> gridItems = tabelloneService.getGridRigheList(startDay, numDays);
+        gridItems = tabelloneService.getGridRigheList(startDay, numDays);
         grid.setItems(gridItems);
     }
 
@@ -726,14 +748,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
         getModel().setColoriLegenda(colori);
 
-        legendaLabel.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> {
-            String oldVisibility=legendaLayer.getStyle().get("visibility");
-            if (oldVisibility==null){oldVisibility="visible";}
-            String newVisibility=oldVisibility.equals("visible")?"hidden":"visible";
-            legendaLayer.getStyle().set("visibility",newVisibility);
+        // la legenda colori si apre quando clicco l'apposito bottone e si
+        // chiude quando clicco in qualsiasi parte del tabellone
+        bColori.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
+            legendaLayer.getStyle().set("visibility","visible");
         });
-
-        legendaLayer.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> legendaLayer.getStyle().set("visibility","hidden"));
 
 
     }
@@ -756,45 +775,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     /**
-     * Metodo di test
+     * Click sul bottone Nuovo servizio
      */
-    private void fillHeaderModel() {
+    private void clickAddServizio(){
 
-        getModel().setWCol1(wCol1);
-        getModel().setWColonne(wColonne);
 
-        List<HeaderCellModel> headers = getModel().getHeaders();
-        HeaderCellModel hcm;
+        Servizio servizio=servizioService.findByKeyUnica("extra");
 
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Lunedì");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Martedì");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Mercoledì");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Giovedì");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Venerdì");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Sabato");
-        headers.add(hcm);
-
-        hcm = new HeaderCellModel();
-        hcm.setTitoloColonna("Domenica");
-        headers.add(hcm);
-
+        Riga riga = rigaService.newEntity(startDay, servizio, null);
+        gridItems.add(riga);
+        grid.setDataProvider(grid.getDataProvider());
+        //grid.getDataProvider().();
     }
+
 
 
 }

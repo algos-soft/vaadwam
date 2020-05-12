@@ -171,12 +171,13 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     private Turno getTurno(){
         Turno turno=null;
         List<Turno> turni = riga.getTurni();
-        for(Turno t:turni){
-            if(t.getGiorno().equals(giorno)){
-                turno=t;
-                break;
+        if (turni!=null){
+            for(Turno t:turni){
+                if(t.getGiorno().equals(giorno)){
+                    turno=t;
+                    break;
+                }
             }
-
         }
         return turno;
     }

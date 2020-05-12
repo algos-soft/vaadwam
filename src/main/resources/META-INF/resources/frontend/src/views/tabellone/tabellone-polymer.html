@@ -11,7 +11,7 @@
         </vaadin-checkbox-group>
 
 
-        <div style="display:flex">
+        <div id="divtabellone" style="display:flex">
             <vaadin-grid id="tabellonegrid"></vaadin-grid>
         </div>
 
@@ -32,11 +32,21 @@
             </dom-repeat>
         </div>
 
-        <div id="legendaLabel" style="display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; align-items:center">
-<!--            <img src="frontend://images/rainbow.png">-->
-            <iron-icon icon="vaadin:adjust" style="width:1em;height:1em"></iron-icon>
-            <label style="font-size:90%; margin-left:0.3em">colori...</label>
+        <!--footer-->
+        <div id="footer" style="display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; padding-bottom:0.5em; align-items:center">
+
+            <vaadin-button id="bColori" style="align-items:center">
+                <iron-icon src="frontend/images/rainbow.png"></iron-icon>
+                <label style="margin-left:0.3em; align-items:center">Colori...</label>
+            </vaadin-button>
+
+            <vaadin-button id="bAddServizio" style="margin-left:1em">
+                <iron-icon icon="vaadin:plus-circle-o"></iron-icon>
+                <label>Nuovo servizio</label>
+            </vaadin-button>
+
         </div>
+
 
 
         <!--dialogo edit turno (nascosto)-->
@@ -53,11 +63,7 @@
         }
 
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
-
-
-
-
-
     </script>
+
 </dom-module>
 

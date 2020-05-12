@@ -11,12 +11,9 @@ import java.util.List;
  * User: alex
  * Date: ven, 06-mar-2020
  * Time: 22:24
- * Modello dati per il Polymer Tabellone<br>
+ * Modello dati per il Polymer Tabellone
  */
 public interface TabelloneModel extends TemplateModel {
-
-    List<HeaderCellModel> getHeaders();
-    void setHeaders(List<HeaderCellModel> headers);
 
     List<LegendaItemModel> getColoriLegenda();
     void setColoriLegenda(List<LegendaItemModel> coloriLegenda);
