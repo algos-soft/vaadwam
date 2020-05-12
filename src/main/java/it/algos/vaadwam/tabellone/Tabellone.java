@@ -146,6 +146,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
+        AContext context = vaadinService.getSessionContext();
+        if (context == null) {
+            return;
+        }
+
         initChecks();
 
         //        // registra il riferimento al server Java nel client JS
@@ -155,10 +160,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         initLegendaColori();
 
-        AContext context = vaadinService.getSessionContext();
-        if (context == null) {
-            return;
-        }
         wamLogin = (WamLogin) context.getLogin();
 
         grid.setHeightByRows(true);
