@@ -8,7 +8,6 @@ import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -70,7 +69,7 @@ import java.util.Set;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti"})
-@AIForm(fields = {"ordine", "code", "icona", "sigla", "descrizione", "dipendenti", "note"})
+@AIForm(fields = {"code", "icona", "sigla", "descrizione", "dipendenti", "note"})
 public class Funzione extends WamEntity {
 
 

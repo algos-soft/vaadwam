@@ -12,7 +12,6 @@ import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,7 @@ import static it.algos.vaadflow.application.FlowCost.*;
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  */
 @Service
-@Slf4j
+//@Slf4j
 public class AColumnService extends AbstractService {
 
     /**
@@ -133,7 +132,7 @@ public class AColumnService extends AbstractService {
                 colonna = grid.addColumn(propertyName);
                 colonna.setSortProperty(propertyName);
             } catch (Exception unErrore) { // intercetta l'errore
-                log.error(unErrore.toString());
+                logger.error(unErrore.toString());
             }// fine del blocco try-catch
             return;
         }// end of if cycle
@@ -152,7 +151,7 @@ public class AColumnService extends AbstractService {
                             testo = (String) field.get(entity);
                         }// end of if cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -168,7 +167,7 @@ public class AColumnService extends AbstractService {
                         value = field.getInt(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -184,7 +183,7 @@ public class AColumnService extends AbstractService {
                         value = field.getLong(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -200,7 +199,7 @@ public class AColumnService extends AbstractService {
                         value = field.getInt(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -215,7 +214,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     if (status) {
@@ -239,7 +238,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     if (status) {
@@ -262,7 +261,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new ACheckBox(status);
@@ -279,7 +278,7 @@ public class AColumnService extends AbstractService {
                         status = field.getBoolean(entity);
                         testo = status ? "si" : "no";
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     if (text.isValid(testo)) {
@@ -305,7 +304,7 @@ public class AColumnService extends AbstractService {
                         status = field.getBoolean(entity);
                         testo = status ? "si" : "no";
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     if (text.isValid(testo)) {
@@ -368,7 +367,7 @@ public class AColumnService extends AbstractService {
                             }// end of if cycle
                         }// end of if cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -395,7 +394,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         testo = field.get(entity).toString();
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -411,7 +410,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getMonthLong(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -427,7 +426,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getDayWeekShort(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -443,7 +442,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getDate(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -462,10 +461,10 @@ public class AColumnService extends AbstractService {
                             timeStamp = (LocalDateTime) obj;
                             testo = date.getDateTime(timeStamp); //@todo aggiungere un selettore per modificare il format dalla annotation
                         } else {
-                            log.warn("localdatetime non definito");
+                            logger.warn("localdatetime non definito");
                         }// end of if/else cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -484,10 +483,10 @@ public class AColumnService extends AbstractService {
                             timeStamp = (LocalTime) obj;
                             testo = date.getOrario(timeStamp); //@todo aggiungere un selettore per modificare il format dalla annotation
                         } else {
-                            log.warn("localtime non definito");
+                            logger.warn("localtime non definito");
                         }// end of if/else cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -503,7 +502,7 @@ public class AColumnService extends AbstractService {
                         vaadinIcon = (VaadinIcon) field.get(entity);
                         icon = vaadinIcon.create();
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
                     if (text.isValid(colorColumnName) && icon != null) {
                         icon.getElement().setAttribute("style", "color: " + colorColumnName);
@@ -531,7 +530,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         obj = field.get(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
                     return new Label(obj != null ? obj.toString() : "");
                 }));//end of lambda expressions and anonymous inner class
@@ -549,7 +548,7 @@ public class AColumnService extends AbstractService {
                         bytes = (byte[]) field.get(entity);
                         value = typePref.bytesToObject(bytes);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     label = new Label();
@@ -592,7 +591,7 @@ public class AColumnService extends AbstractService {
                             message = enumService.convertToPresentation((String) value);
                             break;
                         default:
-                            log.warn("Switch - caso non definito");
+                            logger.warn("Switch - caso non definito");
                             break;
                     } // end of switch statement
                     label.setText(message);
@@ -609,7 +608,7 @@ public class AColumnService extends AbstractService {
                     String value = VUOTA;
 
                     if (text.isEmpty(methodName)) {
-                        log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
+                        logger.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
                         return label;
                     }// end of if cycle
 
@@ -620,7 +619,7 @@ public class AColumnService extends AbstractService {
                         value = (String) metodo.invoke(serviceInstance, entity);
                         label.setText(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return label;
@@ -634,7 +633,7 @@ public class AColumnService extends AbstractService {
                     Integer value = null;
 
                     if (text.isEmpty(methodName)) {
-                        log.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
+                        logger.error("Colonna calcolata '" + propertyName + "' - manca il methodName = ... nell'annotation @AIColumn della Entity " + entity.getClass().getSimpleName());
                         return label;
                     }// end of if cycle
 
@@ -645,14 +644,14 @@ public class AColumnService extends AbstractService {
                         value = (Integer) metodo.invoke(serviceInstance, entity);
                         label.setText("" + value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        log.error(unErrore.toString());
+                        logger.error(unErrore.toString());
                     }// fine del blocco try-catch
 
                     return label;
                 }));//end of lambda expressions and anonymous inner class
                 break;
             default:
-                log.warn("Switch - caso non definito");
+                logger.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
 
@@ -754,7 +753,7 @@ public class AColumnService extends AbstractService {
                 break;
             default:
 //                logger.warn("Switch - caso non definito", AColumnService.class, "create");
-                log.warn("Switch - caso non definito");
+                logger.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
 

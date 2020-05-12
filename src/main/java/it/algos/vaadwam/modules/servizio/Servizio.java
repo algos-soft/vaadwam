@@ -73,7 +73,7 @@ import java.util.Set;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "ripetibile", "obbligatorie", "facoltative", "colore"})
-@AIForm(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine",  "visibile", "ripetibile", "obbligatorie", "facoltative"})
+@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "ripetibile", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
