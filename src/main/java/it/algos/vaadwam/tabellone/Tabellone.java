@@ -127,6 +127,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id
     private Checkbox modoAdmin;
 
+    @Id
+    private Div legendaLayer;
+
+    @Id
+    private Div legendaLabel;
+
 
     private String wCol1 = "7em";
 
@@ -147,7 +153,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         getModel().setSingola(true);
 
-        buildColoriLegenda();
+        initLegendaColori();
 
         AContext context = vaadinService.getSessionContext();
         if (wamLogin != null) {
@@ -193,6 +199,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         });
 
     }
+
+
 
 
     @Override
@@ -688,8 +696,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     /**
      * Aggiunge i colori legenda al modello
+     * Registra i listener - esegue le azioni
      */
-    private void buildColoriLegenda() {
+    private void initLegendaColori() {
         List<LegendaItemModel> colori = new ArrayList<>();
         for (EAWamColore eaw : EAWamColore.values()) {
             LegendaItemModel item = new LegendaItemModel();
@@ -698,6 +707,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             colori.add(item);
         }
         getModel().setColoriLegenda(colori);
+
+        legendaLabel.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> {
+            String oldVisibility=legendaLayer.getStyle().get("visibility");
+            if (oldVisibility==null){oldVisibility="visible";}
+            String newVisibility=oldVisibility.equals("visible")?"hidden":"visible";
+            legendaLayer.getStyle().set("visibility",newVisibility);
+        });
+
+        legendaLayer.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> legendaLayer.getStyle().set("visibility","hidden"));
+
+
     }
 
 
