@@ -150,7 +150,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         buildColoriLegenda();
 
         AContext context = vaadinService.getSessionContext();
-        if (wamLogin != null) {
+        if (context != null) {
             wamLogin = (WamLogin) context.getLogin();
         }
 
