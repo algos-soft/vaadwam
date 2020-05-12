@@ -73,7 +73,6 @@ public class WamBoot extends ABoot {
     @Autowired
     public MigrationService migration;
 
-
     /**
      * Service (@Scope = 'singleton') iniettato da Spring <br>
      * Unico per tutta l'applicazione. Usato come libreria.
