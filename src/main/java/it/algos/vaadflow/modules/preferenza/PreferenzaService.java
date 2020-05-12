@@ -1,8 +1,10 @@
 package it.algos.vaadflow.modules.preferenza;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.company.Company;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,21 +45,18 @@ import static it.algos.vaadflow.application.FlowVar.usaCompany;
  * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
  * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_PRE)
 @Slf4j
 @AIScript(sovrascrivibile = false)
 public class PreferenzaService extends AService {
 
-    public final static List<String> LIST_PROPERTIES_MULTICOMPANY =
-            Arrays.asList("ordine", "id", "company", "code", "type", "value", "show", "companySpecifica");
+    public final static List<String> LIST_PROPERTIES_MULTICOMPANY = Arrays.asList("ordine", "id", "company", "code", "type", "value", "show", "companySpecifica");
 
-    public final static List<String> FORM_PROPERTIES_MULTICOMPANY =
-            Arrays.asList("ordine", "id", "company", "code", "type", "value", "descrizione", "show", "companySpecifica");
+    public final static List<String> FORM_PROPERTIES_MULTICOMPANY = Arrays.asList("ordine", "id", "company", "code", "type", "value", "descrizione", "show", "companySpecifica");
 
-    public final static List<String> PROPERTIES_NO_COMPANY =
-            Arrays.asList("ordine", "code", "type", "value", "descrizione", "show", "companySpecifica");
+    public final static List<String> PROPERTIES_NO_COMPANY = Arrays.asList("ordine", "code", "type", "value", "descrizione", "show", "companySpecifica");
 
     /**
      * versione della classe per la serializzazione
@@ -69,6 +67,13 @@ public class PreferenzaService extends AService {
      * Riferimento alla sottoclasse specifica di ABoot per utilizzare il metodo sovrascritto resetPreferenze() <br>
      */
     public ABoot applicationBoot;
+
+    //    /**
+    //     * Istanza (@VaadinSessionScope) inietta da Spring ed unica nella sessione <br>
+    //     */
+    //    @Autowired
+    //    @Qualifier(TAG_LOGIN)
+    public ALogin login;
 
     /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
@@ -245,15 +250,7 @@ public class PreferenzaService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Preferenza newEntity(int ordine, String code, String descrizione, EAPrefType type, EARole show, boolean companySpecifica, Company company, Object value) {
-        Preferenza entity = Preferenza.builderPreferenza()
-                .ordine(ordine != 0 ? ordine : this.getNewOrdine())
-                .code(text.isValid(code) ? code : null)
-                .descrizione(text.isValid(descrizione) ? descrizione : null)
-                .type(type != null ? type : EAPrefType.string)
-                .show(show != null ? show : EARole.developer)
-                .value(type != null ? type.objectToBytes(value) : (byte[]) null)
-                .companySpecifica(companySpecifica)
-                .build();
+        Preferenza entity = Preferenza.builderPreferenza().ordine(ordine != 0 ? ordine : this.getNewOrdine()).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).type(type != null ? type : EAPrefType.string).show(show != null ? show : EARole.developer).value(type != null ? type.objectToBytes(value) : (byte[]) null).companySpecifica(companySpecifica).build();
 
         if (company != null) {
             entity.company = company;
@@ -381,7 +378,7 @@ public class PreferenzaService extends AService {
         String keyId = "";
         Company company = null;
         String prefix = "";
-//        int numPrefCode = 0;
+        //        int numPrefCode = 0;
         List<Preferenza> lista;
 
         //--Controlla quante entities ci sono con lo stesso 'code'
@@ -403,7 +400,7 @@ public class PreferenzaService extends AService {
                 log.error("Manca il codice della preferenza");
             }// end of if cycle
         } else {
-//            pref = repository.findFirstByCode(prefCode);
+            //            pref = repository.findFirstByCode(prefCode);
             if (lista != null && lista.get(0).companySpecifica) {
                 if (text.isValid(companyPrefix)) {
                     prefix = text.primaMinuscola(companyPrefix);
@@ -429,29 +426,29 @@ public class PreferenzaService extends AService {
         }// end of if/else cycle
 
 
-//        //--Cerca la prima usando il campo 'code'
-//        pref = repository.findFirstByCode(prefCode);
+        //        //--Cerca la prima usando il campo 'code'
+        //        pref = repository.findFirstByCode(prefCode);
 
-//        if (pref != null) {
-//            //--Se la trova, controlla se è companySpecifica=true
-//            if (pref.companySpecifica) {
-//            } else {
-//                numPrefCode = repository.countByCode(prefCode);
-//
-//                //--Controlla che sia unica altrimenti lancia un errore
-//                if (true) {
-//                    //--ok
-//                } else {
-//                    //--errore
-//                }// end of if/else cycle
-//
-//
-//            }// end of if/else cycle
-//
-//
-//        } else {
-//            //-- bo?
-//        }// end of if/else cycle
+        //        if (pref != null) {
+        //            //--Se la trova, controlla se è companySpecifica=true
+        //            if (pref.companySpecifica) {
+        //            } else {
+        //                numPrefCode = repository.countByCode(prefCode);
+        //
+        //                //--Controlla che sia unica altrimenti lancia un errore
+        //                if (true) {
+        //                    //--ok
+        //                } else {
+        //                    //--errore
+        //                }// end of if/else cycle
+        //
+        //
+        //            }// end of if/else cycle
+        //
+        //
+        //        } else {
+        //            //-- bo?
+        //        }// end of if/else cycle
 
 
         return pref;
@@ -475,17 +472,17 @@ public class PreferenzaService extends AService {
     }// end of method
 
 
-//    public List<Preferenza> findAllByType(EAPrefType type) {
-//        Query query = new Query();
-//        String meseField = "mese";
-//
-//        if (mese != null) {
-//            query.addCriteria(Criteria.where(meseField).is(mese));
-//        }// end of if cycle
-//
-//        return mongo.mongoOp.find(query, Preferenza.class);
-//        return repository.findAllByTypeOrderByValue(type);
-//    }// end of method
+    //    public List<Preferenza> findAllByType(EAPrefType type) {
+    //        Query query = new Query();
+    //        String meseField = "mese";
+    //
+    //        if (mese != null) {
+    //            query.addCriteria(Criteria.where(meseField).is(mese));
+    //        }// end of if cycle
+    //
+    //        return mongo.mongoOp.find(query, Preferenza.class);
+    //        return repository.findAllByTypeOrderByValue(type);
+    //    }// end of method
 
 
     /**
@@ -507,21 +504,21 @@ public class PreferenzaService extends AService {
      */
     @Override
     public int reset() {
-//        int numRec = super.reset();
+        //        int numRec = super.reset();
         int numPref = 0;
-//        int numPref = count();
-//
-//        for (EAPreferenza eaPref : EAPreferenza.values()) {
-//            numRec = creaIfNotExist(eaPref) ? numRec + 1 : numRec;
-//        }// end of for cycle
-//
-////        if (numRec == 0) {
-////            log.info("Algos - Data. Le preferenze sono già presenti (" + numPref + ") e non ne sono state aggiunte di nuove");
-////        } else {
-////            log.warn("Algos - Data. Sono state aggiunte: " + numRec + " nuove preferenze");
-////        }// end of if/else cycle
-//
-//        return numRec;
+        //        int numPref = count();
+        //
+        //        for (EAPreferenza eaPref : EAPreferenza.values()) {
+        //            numRec = creaIfNotExist(eaPref) ? numRec + 1 : numRec;
+        //        }// end of for cycle
+        //
+        ////        if (numRec == 0) {
+        ////            log.info("Algos - Data. Le preferenze sono già presenti (" + numPref + ") e non ne sono state aggiunte di nuove");
+        ////        } else {
+        ////            log.warn("Algos - Data. Sono state aggiunte: " + numRec + " nuove preferenze");
+        ////        }// end of if/else cycle
+        //
+        //        return numRec;
 
         if (applicationBoot != null) {
             numPref = applicationBoot.resetPreferenze();
@@ -562,48 +559,48 @@ public class PreferenzaService extends AService {
         return usaCompany ? FORM_PROPERTIES_MULTICOMPANY : PROPERTIES_NO_COMPANY;
     }// end of method
 
-//    /**
-//     * Fetches the entities whose 'main text property' matches the given filter text.
-//     * <p>
-//     * The matching is case insensitive. When passed an empty filter text,
-//     * the method returns all categories. The returned list is ordered by name.
-//     * The 'main text property' is different in each entity class and chosen in the specific subclass
-//     *
-//     * @param filter the filter text
-//     *
-//     * @return the list of matching entities
-//     */
-//    @Override
-//    public List<Preferenza> findFilter(String filter) {
-//        String normalizedFilter = filter.toLowerCase();
-//        List<Preferenza> lista = findAll();
-//
-//        return lista.stream()
-//                .filter(entity -> entity.getCode().toLowerCase().contains(normalizedFilter))
-//                .collect(Collectors.toList());
-//    }// end of method
+    //    /**
+    //     * Fetches the entities whose 'main text property' matches the given filter text.
+    //     * <p>
+    //     * The matching is case insensitive. When passed an empty filter text,
+    //     * the method returns all categories. The returned list is ordered by name.
+    //     * The 'main text property' is different in each entity class and chosen in the specific subclass
+    //     *
+    //     * @param filter the filter text
+    //     *
+    //     * @return the list of matching entities
+    //     */
+    //    @Override
+    //    public List<Preferenza> findFilter(String filter) {
+    //        String normalizedFilter = filter.toLowerCase();
+    //        List<Preferenza> lista = findAll();
+    //
+    //        return lista.stream()
+    //                .filter(entity -> entity.getCode().toLowerCase().contains(normalizedFilter))
+    //                .collect(Collectors.toList());
+    //    }// end of method
 
 
-//    /**
-//     * Opportunità di controllare (per le nuove schede) che la key unica non esista già. <br>
-//     * Invocato appena prima del save(), solo per una nuova entity <br>
-//     *
-//     * @param entityBean nuova da creare
-//     */
-//    @Override
-//    public boolean isEsisteEntityKeyUnica(AEntity entityBean) {
-//        return findByKeyUnica(((Preferenza) entityBean).getCode()) != null;
-//    }// end of method
+    //    /**
+    //     * Opportunità di controllare (per le nuove schede) che la key unica non esista già. <br>
+    //     * Invocato appena prima del save(), solo per una nuova entity <br>
+    //     *
+    //     * @param entityBean nuova da creare
+    //     */
+    //    @Override
+    //    public boolean isEsisteEntityKeyUnica(AEntity entityBean) {
+    //        return findByKeyUnica(((Preferenza) entityBean).getCode()) != null;
+    //    }// end of method
 
-//    /**
-//     * Opportunità di usare una idKey specifica. <br>
-//     * Invocato appena prima del save(), solo per una nuova entity <br>
-//     *
-//     * @param entityBean da salvare
-//     */
-//    protected void creaIdKeySpecifica(AEntity entityBean) {
-//        entityBean.id = ((Preferenza) entityBean).getCode();
-//    }// end of method
+    //    /**
+    //     * Opportunità di usare una idKey specifica. <br>
+    //     * Invocato appena prima del save(), solo per una nuova entity <br>
+    //     *
+    //     * @param entityBean da salvare
+    //     */
+    //    protected void creaIdKeySpecifica(AEntity entityBean) {
+    //        entityBean.id = ((Preferenza) entityBean).getCode();
+    //    }// end of method
 
 
     /**
@@ -681,7 +678,7 @@ public class PreferenzaService extends AService {
 
 
     public Boolean isBool(String keyCode) {
-        return isBool(keyCode, VUOTA);
+        return isBool(keyCode, getPrefix());
     } // end of method
 
 
@@ -995,26 +992,33 @@ public class PreferenzaService extends AService {
         return salvata;
     } // end of method
 
-//    public  Boolean getBool(String code, Object defaultValue) {
-//        return getBool(code, CompanySessionLib.getCompany(), defaultValue);
-//    } // end of method
-//
-//    public  Boolean getBool(String code, BaseCompany company) {
-//        return getBool(code, company, "");
-//    } // end of static method
-//
-//    public  Boolean getBool(String code, BaseCompany company, Object defaultValue) {
-//        Pref pref = Pref.findByCode(code, company);
-//
-//        if (pref != null) {
-//            return (boolean) pref.getValore();
-//        }// end of if cycle
-//
-//        if (defaultValue != null && defaultValue instanceof Boolean) {
-//            return (boolean) defaultValue;
-//        }// end of if cycle
-//
-//        return false;
-//    } // end of method
+    //    public  Boolean getBool(String code, Object defaultValue) {
+    //        return getBool(code, CompanySessionLib.getCompany(), defaultValue);
+    //    } // end of method
+    //
+    //    public  Boolean getBool(String code, BaseCompany company) {
+    //        return getBool(code, company, "");
+    //    } // end of static method
+    //
+    //    public  Boolean getBool(String code, BaseCompany company, Object defaultValue) {
+    //        Pref pref = Pref.findByCode(code, company);
+    //
+    //        if (pref != null) {
+    //            return (boolean) pref.getValore();
+    //        }// end of if cycle
+    //
+    //        if (defaultValue != null && defaultValue instanceof Boolean) {
+    //            return (boolean) defaultValue;
+    //        }// end of if cycle
+    //
+    //        return false;
+    //    } // end of method
+
+
+    public String getPrefix() {
+        String companyPrefix = login != null ? login.getCompany() != null ? login.getCompany().code : VUOTA : VUOTA;
+        return companyPrefix;
+    } // end of method
+
 
 }// end of class

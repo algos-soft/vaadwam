@@ -12,10 +12,8 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.ui.LoadMode;
-import com.vaadin.flow.theme.NoTheme;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
-import com.vaadin.flow.theme.material.Material;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
@@ -99,7 +97,7 @@ public class MainLayout14 extends AppLayout {
      * Disponibile SOLO DOPO @PostConstruct o comunque dopo l'init (anche implicito) del costruttore <br>
      */
     @Autowired
-    private PreferenzaService pref;
+    protected PreferenzaService pref = StaticContextAccessor.getBean(PreferenzaService.class);
 
 
     public MainLayout14() {
@@ -130,6 +128,10 @@ public class MainLayout14 extends AppLayout {
     protected void fixSessione() {
         context = vaadinService.getSessionContext();
         login = context != null ? context.getLogin() : null;
+        if (login != null) {
+            pref.login = login;
+        }
+
     }// end of method
 
 
@@ -263,7 +265,7 @@ public class MainLayout14 extends AppLayout {
             menuLayout.add(menuService.creaRoutersUser(mappa));
 
             //--crea menu logout (sempre)
-//            menuLayout.add(menuService.creaMenuLogout());
+            //            menuLayout.add(menuService.creaMenuLogout());
         } else {
             //--crea menu indifferenziato
             menuLayout.add(menuService.creaRoutersNoSecurity(mappa));
