@@ -15,21 +15,28 @@
             <vaadin-grid id="tabellonegrid"></vaadin-grid>
         </div>
 
-<!--                &lt;!&ndash;legenda&ndash;&gt;-->
-<!--                <div style="display:flex; flex-direction:column;-->
-<!--                padding:0.5em; position:fixed;-->
-<!--                top:70%; left:10%; border-radius:0.8em;-->
-<!--                color:white; background:black; opacity:0.8;-->
-<!--                z-index: 2;">-->
-<!--                    <dom-repeat items="[[coloriLegenda]]">-->
-<!--                        <template>-->
-<!--                            <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">-->
-<!--                                <div class="iconContainer" style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>-->
-<!--                                <label>[[item.nome]]</label>-->
-<!--                            </div>-->
-<!--                        </template>-->
-<!--                    </dom-repeat>-->
-<!--                </div>-->
+        <!--layer legenda-->
+        <div id="legendaLayer" style="display:flex; flex-direction:column;
+                padding:0.5em; position:fixed;
+                top:65%; left:10%; border-radius:0.6em;
+                color:white; background:black; opacity:0.8;
+                z-index:2; visibility:hidden">
+            <dom-repeat items="[[coloriLegenda]]">
+                <template>
+                    <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">
+                        <div class="iconContainer"
+                             style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>
+                        <label style="font-size:85%">[[item.nome]]</label>
+                    </div>
+                </template>
+            </dom-repeat>
+        </div>
+
+        <div id="legendaLabel" style="display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; align-items:center">
+<!--            <img src="frontend://images/rainbow.png">-->
+            <iron-icon icon="vaadin:adjust" style="width:1em;height:1em"></iron-icon>
+            <label style="font-size:90%; margin-left:0.3em">colori...</label>
+        </div>
 
 
         <!--dialogo edit turno (nascosto)-->
@@ -46,6 +53,7 @@
         }
 
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
+
 
 
 
