@@ -150,7 +150,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         buildColoriLegenda();
 
         AContext context = vaadinService.getSessionContext();
-        wamLogin = (WamLogin) context.getLogin();
+        if (wamLogin != null) {
+            wamLogin = (WamLogin) context.getLogin();
+        }
 
         grid.setHeightByRows(true);
         grid.addThemeNames("no-border");
