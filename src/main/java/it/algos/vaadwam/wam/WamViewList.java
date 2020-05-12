@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -134,6 +135,7 @@ public abstract class WamViewList extends AGridViewList {
 
         super.usaBottoneEdit = true;
         super.usaButtonReset = false;
+        super.searchType = EASearch.nonUsata;
 
         if (login.isDeveloper()) {
             super.usaButtonDelete = true;
@@ -355,53 +357,53 @@ public abstract class WamViewList extends AGridViewList {
     }// end of method
 
 
-//    protected Button createEditButton(AEntity entityBean) {
-//        if (login.isDeveloper() || login.isAdmin()) {
-//            return super.createEditButton(entityBean);
-//        } else {
-//            Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.showOnly, context));
-//            edit.setIcon(new Icon("lumo", "edit"));
-//            edit.addClassName("review__edit");
-//            edit.getElement().setAttribute("theme", "tertiary");
-//            return edit;
-//        }// end of if/else cycle
-//    }// end of method
+    //    protected Button createEditButton(AEntity entityBean) {
+    //        if (login.isDeveloper() || login.isAdmin()) {
+    //            return super.createEditButton(entityBean);
+    //        } else {
+    //            Button edit = new Button("", event -> dialog.open(entityBean, EAOperation.showOnly, context));
+    //            edit.setIcon(new Icon("lumo", "edit"));
+    //            edit.addClassName("review__edit");
+    //            edit.getElement().setAttribute("theme", "tertiary");
+    //            return edit;
+    //        }// end of if/else cycle
+    //    }// end of method
 
 
-//    /**
-//     * Eventuali aggiustamenti finali al layout
-//     * Regolazioni finali sulla grid e sulle colonne
-//     * Sovrascritto
-//     */
-//    @Override
-//    protected void fixGridLayout() {
-//        super.fixLayout();
-//        int keyPos = 1;
-//
-//        if (login.isDeveloper()) {
-//            List<Grid.Column<AEntity>> colonne = grid.getColumns();
-//            Grid.Column<AEntity> colonna = colonne != null ? colonne.get(keyPos) : null;
-//            if (colonna != null) {
-//                colonna.setWidth("9em");
-//            }// end of if cycle
-//        }// end of if cycle
-//    }// end of method
+    //    /**
+    //     * Eventuali aggiustamenti finali al layout
+    //     * Regolazioni finali sulla grid e sulle colonne
+    //     * Sovrascritto
+    //     */
+    //    @Override
+    //    protected void fixGridLayout() {
+    //        super.fixLayout();
+    //        int keyPos = 1;
+    //
+    //        if (login.isDeveloper()) {
+    //            List<Grid.Column<AEntity>> colonne = grid.getColumns();
+    //            Grid.Column<AEntity> colonna = colonne != null ? colonne.get(keyPos) : null;
+    //            if (colonna != null) {
+    //                colonna.setWidth("9em");
+    //            }// end of if cycle
+    //        }// end of if cycle
+    //    }// end of method
 
 
-//    /**
-//     * Crea un Popup di selezione della company <br>
-//     * Creato solo se developer=true e usaCompany=true <br>
-//     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
-//     * Invocare PRIMA il metodo della superclasse <br>
-//     */
-//    protected void creaCompanyFiltro() {
-//        super.creaCompanyFiltro();
-//        filtroCompany.setItems(croceService.findAll());
-//        filtroCompany.addValueChangeListener(e -> {
-//            updateFiltri();
-//            updateGrid();
-//        });
-//    }// end of method
+    //    /**
+    //     * Crea un Popup di selezione della company <br>
+    //     * Creato solo se developer=true e usaCompany=true <br>
+    //     * Può essere sovrascritto, per caricare gli items da una sottoclasse di Company <br>
+    //     * Invocare PRIMA il metodo della superclasse <br>
+    //     */
+    //    protected void creaCompanyFiltro() {
+    //        super.creaCompanyFiltro();
+    //        filtroCompany.setItems(croceService.findAll());
+    //        filtroCompany.addValueChangeListener(e -> {
+    //            updateFiltri();
+    //            updateGrid();
+    //        });
+    //    }// end of method
 
 
     /**
@@ -422,20 +424,20 @@ public abstract class WamViewList extends AGridViewList {
         updateGrid();
     }// end of method
 
-//    public void updateItems() {
-//        Croce croce;
-//        if (filtroCompany != null) {
-//            croce = (Croce) filtroCompany.getValue();
-//
-//            if (croce != null) {
-//                items = ((WamService) service).findAllByCroce(croce);
-//            } else {
-//                items = ((WamService) service).findAllCroci();
-//            }// end of if/else cycle
-//        } else {
-//            items = ((WamService) service).findAll();
-//        }// end of if/else cycle
-//
-//    }// end of method
+    //    public void updateItems() {
+    //        Croce croce;
+    //        if (filtroCompany != null) {
+    //            croce = (Croce) filtroCompany.getValue();
+    //
+    //            if (croce != null) {
+    //                items = ((WamService) service).findAllByCroce(croce);
+    //            } else {
+    //                items = ((WamService) service).findAllCroci();
+    //            }// end of if/else cycle
+    //        } else {
+    //            items = ((WamService) service).findAll();
+    //        }// end of if/else cycle
+    //
+    //    }// end of method
 
 }// end of class
