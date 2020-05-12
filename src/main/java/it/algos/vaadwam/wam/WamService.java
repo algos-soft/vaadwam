@@ -133,15 +133,15 @@ public abstract class WamService extends AService {
     @Autowired
     protected AVaadinService vaadinService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
-    @Autowired
-    @Qualifier(TAG_CRO)
-    protected WamService wamService;
+    //    /**
+    //     * Istanza unica di una classe di servizio: <br>
+    //     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+    //     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+    //     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+    //     */
+    //    @Autowired
+    //    @Qualifier(TAG_CRO)
+    //    protected WamService wamService;
 
     /**
      * Wam-Login della sessione con i dati del Milite loggato <br>

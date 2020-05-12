@@ -1,6 +1,7 @@
 package it.algos.vaadwam.modules.funzione;
 
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
  * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_FUN)
 @Slf4j

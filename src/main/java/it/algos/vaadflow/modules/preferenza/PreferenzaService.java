@@ -622,7 +622,7 @@ public class PreferenzaService extends AService {
 
 
     public Object getValue(String keyCode) {
-        return getValue(keyCode, VUOTA);
+        return getValue(keyCode, getPrefix());
     } // end of method
 
 
@@ -639,12 +639,12 @@ public class PreferenzaService extends AService {
 
 
     public String getStr(IAPreferenza eaPref) {
-        return getStr(eaPref.getCode(), (String) eaPref.getValue(), VUOTA);
+        return getStr(eaPref.getCode(), (String) eaPref.getValue(), getPrefix());
     } // end of method
 
 
     public String getStr(String keyCode) {
-        return getStr(keyCode, VUOTA, VUOTA);
+        return getStr(keyCode, VUOTA, getPrefix());
     } // end of method
 
 
