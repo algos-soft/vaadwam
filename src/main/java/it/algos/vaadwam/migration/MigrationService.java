@@ -210,9 +210,9 @@ public class MigrationService extends AService {
             croceNew = getCroce(croceOld);
 
             if (croceNew != null) {
-//                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
-                    importCroce(croceNew);
-//                }// end of if cycle
+                //                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
+                importCroce(croceNew);
+                //                }// end of if cycle
             }// end of if cycle
         }// end of for cycle
     }// end of method
@@ -253,6 +253,7 @@ public class MigrationService extends AService {
     /**
      * Importa da webambulanze le funzioni di tutte le croci esistenti <br>
      */
+    @Deprecated
     public boolean importFunzioni() {
         boolean status = true;
         setup();
@@ -276,6 +277,7 @@ public class MigrationService extends AService {
      *
      * @param croceOld esistente su webambulanze
      */
+    @Deprecated
     private boolean importFunzioni(CroceAmb croceOld) {
         return importFunzioni(croceOld, getCroce(croceOld));
     }// end of method
@@ -284,7 +286,7 @@ public class MigrationService extends AService {
     /**
      * Importa da webambulanze le funzioni di una sola croce <br>
      *
-     * @param croceNew di waadwam
+     * @param croceNew di waadWam
      */
     public boolean importFunzioni(Croce croceNew) {
         if (croceNew != null) {
@@ -501,16 +503,16 @@ public class MigrationService extends AService {
                             }// end of if cycle
                             numRec++;
                             fine = System.currentTimeMillis();
-//                            log.info(text.primaMaiuscola(croceNew.getCode()) + " - milite numero " + numRec + " (su " + listaUtentiOld.size() + " totali) importato in " + (fine - inizioPar) + " millisecondi");
-//                            log.info("Singolo milite importato in " + date.deltaText(inizioPar));
-//                            log.info("In totale " + numRec + " militi su " + listaMilitiOld.size() + "importati in " + date.deltaText(inizio));
+                            //                            log.info(text.primaMaiuscola(croceNew.getCode()) + " - milite numero " + numRec + " (su " + listaUtentiOld.size() + " totali) importato in " + (fine - inizioPar) + " millisecondi");
+                            //                            log.info("Singolo milite importato in " + date.deltaText(inizioPar));
+                            //                            log.info("In totale " + numRec + " militi su " + listaMilitiOld.size() + "importati in " + date.deltaText(inizio));
                         } else {
                             listaUtentiOldAssenti.add(utenteOld);
                             listaMilitiOldAssenti.add(militeOld);
                         }// end of if/else cycle
                     } else {
                         //@todo rimettere
-//                        logger.debug(logtype.getImport(), "Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
+                        //                        logger.debug(logtype.getImport(), "Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
                     }// end of if/else cycle
                 }// end of for cycle
             } catch (Exception unErrore) { // intercetta l'errore
@@ -529,25 +531,25 @@ public class MigrationService extends AService {
     }// end of method
 
 
-//    /**
-//     * Importa da webambulanze i turni di tutte le croci esistenti <br>
-//     */
-//    public boolean importTurni() {
-//        boolean status = true;
-//        setup();
-//
-//        for (CroceAmb croceOld : crociOld) {
-//            if (!importTurni(croceOld)) {
-//                status = false;
-//            }// end of if cycle
-//        }// end of for cycle
-//
-//        if (status) {
-//            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
-//        }// end of if cycle
-//
-//        return status;
-//    }// end of method
+    //    /**
+    //     * Importa da webambulanze i turni di tutte le croci esistenti <br>
+    //     */
+    //    public boolean importTurni() {
+    //        boolean status = true;
+    //        setup();
+    //
+    //        for (CroceAmb croceOld : crociOld) {
+    //            if (!importTurni(croceOld)) {
+    //                status = false;
+    //            }// end of if cycle
+    //        }// end of for cycle
+    //
+    //        if (status) {
+    //            pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
+    //        }// end of if cycle
+    //
+    //        return status;
+    //    }// end of method
 
 
     /**
@@ -675,19 +677,19 @@ public class MigrationService extends AService {
         return status;
     }// end of method
 
-//    /**
-//     * Importa da webambulanze i turni per l'anno in corso <br>
-//     */
-//    public boolean importTurni(Croce croceNew) {
-//        return false;
-//    }// end of method
-//
-//    /**
-//     * Importa da webambulanze i turni per l'anno in corso <br>
-//     */
-//    public boolean importTurni(CroceAmb croceOld) {
-//        return false;
-//    }// end of method
+    //    /**
+    //     * Importa da webambulanze i turni per l'anno in corso <br>
+    //     */
+    //    public boolean importTurni(Croce croceNew) {
+    //        return false;
+    //    }// end of method
+    //
+    //    /**
+    //     * Importa da webambulanze i turni per l'anno in corso <br>
+    //     */
+    //    public boolean importTurni(CroceAmb croceOld) {
+    //        return false;
+    //    }// end of method
 
 
     /**
@@ -721,26 +723,26 @@ public class MigrationService extends AService {
         return statisticaService.elabora(croceNew);
     }// end of method
 
-//    /**
-//     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
-//     *
-//     * @param croceOld esistente su webambulanze
-//     */
-//    public boolean importTurniDebug(CroceAmb croceOld) {
-//        boolean status = true;
-//        Croce croceNew = getCroce(croceOld);
-//        List<TurnoAmb> turniOld = null;
-//        LocalDate giorno = LocalDate.now();
-//        int prima = 30;
-//        int dopo = 30;
-//
-//        turniOld = turnoAmb.findAll((int) croceOld.getId(), giorno.minusDays(prima), giorno.plusDays(dopo));
-//        for (TurnoAmb turnoOld : turniOld) {
-//            status = status && creaSingoloTurno(croceNew, turnoOld);
-//        }// end of for cycle
-//
-//        return status;
-//    }// end of method
+    //    /**
+    //     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>
+    //     *
+    //     * @param croceOld esistente su webambulanze
+    //     */
+    //    public boolean importTurniDebug(CroceAmb croceOld) {
+    //        boolean status = true;
+    //        Croce croceNew = getCroce(croceOld);
+    //        List<TurnoAmb> turniOld = null;
+    //        LocalDate giorno = LocalDate.now();
+    //        int prima = 30;
+    //        int dopo = 30;
+    //
+    //        turniOld = turnoAmb.findAll((int) croceOld.getId(), giorno.minusDays(prima), giorno.plusDays(dopo));
+    //        for (TurnoAmb turnoOld : turniOld) {
+    //            status = status && creaSingoloTurno(croceNew, turnoOld);
+    //        }// end of for cycle
+    //
+    //        return status;
+    //    }// end of method
 
 
     /**
@@ -1429,12 +1431,12 @@ public class MigrationService extends AService {
     }// end of constructor
 
 
-//    /**
-//     * Importa i turni esistenti in una croce di webambulanze
-//     */
-//    private boolean importTurni(CroceAmb croceOld) {
-//        return importTurni(getCroce(croceOld));
-//    }// end of constructor
+    //    /**
+    //     * Importa i turni esistenti in una croce di webambulanze
+    //     */
+    //    private boolean importTurni(CroceAmb croceOld) {
+    //        return importTurni(getCroce(croceOld));
+    //    }// end of constructor
 
 
     /**
@@ -1462,15 +1464,7 @@ public class MigrationService extends AService {
         turnoNew = (Turno) turnoService.findById(croceNew.code + turnoService.getPropertyUnica(giornoNew, servizio));
 
         if (turnoNew == null) {
-            turnoNew = turnoService.newEntity(
-                    croceNew,
-                    giornoNew,
-                    servizio,
-                    inizioNew,
-                    fineNew,
-                    iscrizioni,
-                    titoloExtra,
-                    localitaExtra);
+            turnoNew = turnoService.newEntity(croceNew, giornoNew, servizio, inizioNew, fineNew, iscrizioni, titoloExtra, localitaExtra);
         } else {
             return status;
         }// end of if/else cycle
@@ -1478,8 +1472,10 @@ public class MigrationService extends AService {
         //--le iscrizioni embedded vanno completate con gli orari del turno appena creato
         if (iscrizioni != null) {
             for (Iscrizione iscr : iscrizioni) {
-                iscr.inizio = inizioNew;
-                iscr.fine = fineNew;
+                if (iscr.milite != null) {
+                    iscr.inizio = inizioNew;
+                    iscr.fine = fineNew;
+                }// end of if cycle
             }// end of for cycle
         }// end of if cycle
 
@@ -1640,13 +1636,13 @@ public class MigrationService extends AService {
 
     //--registra un avviso
     public void importMilite(EALogLivello livello, String descrizione) {
-//        logger.crea(livello, (Logtype) logtype.findById(WamCost.IMPORT_MILITI), descrizione);
+        //        logger.crea(livello, (Logtype) logtype.findById(WamCost.IMPORT_MILITI), descrizione);
     }// fine del metodo
 
 
     //--registra un avviso
     public void importTurno(String descrizione) {
-//        logger.crea(EALogLivello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
+        //        logger.crea(EALogLivello.debug, (Logtype) logtype.findById(WamCost.IMPORT_TURNI), descrizione);
     }// fine del metodo
 
 

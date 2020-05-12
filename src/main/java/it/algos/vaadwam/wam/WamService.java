@@ -277,9 +277,9 @@ public abstract class WamService extends AService {
                 }// end of if cycle
             }// end of if cycle
 
-//            if (text.isEmpty(companyCode)) {
-//                companyCode = getCompanyCode();
-//            }// end of if cycle
+            //            if (text.isEmpty(companyCode)) {
+            //                companyCode = getCompanyCode();
+            //            }// end of if cycle
 
             if (text.isValid(companyCode)) {
                 keyUnica = companyCode + text.primaMaiuscola(keyCode);
@@ -298,22 +298,22 @@ public abstract class WamService extends AService {
     }// end of method
 
 
-//    /**
-//     * Recupera la sigla della company della session corrente (se esiste) <br>
-//     * Controlla che la session sia attiva <br>
-//     *
-//     * @return context della sessione
-//     */
-//    public String getCompanyCode() {
-//        String code = "";
-//        Croce croce = getCroce();
-//
-//        if (croce != null) {
-//            code = croce.getCode();
-//        }// end of if cycle
-//
-//        return code;
-//    }// end of method
+    //    /**
+    //     * Recupera la sigla della company della session corrente (se esiste) <br>
+    //     * Controlla che la session sia attiva <br>
+    //     *
+    //     * @return context della sessione
+    //     */
+    //    public String getCompanyCode() {
+    //        String code = "";
+    //        Croce croce = getCroce();
+    //
+    //        if (croce != null) {
+    //            code = croce.getCode();
+    //        }// end of if cycle
+    //
+    //        return code;
+    //    }// end of method
 
 
     /**
@@ -488,7 +488,19 @@ public abstract class WamService extends AService {
      *
      * @return true se sono stati importati correttamente
      */
-    public void importa(Croce croce) {
+    public boolean importa(Croce croce) {
+        return false;
+    }// end of method
+
+
+    public String importAll() {
+        boolean eseguito = true;
+
+        for (Croce croce : croceService.findAll()) {
+            eseguito = eseguito && importa(croce);
+        }
+
+        return eseguito ? "Fatto" : "Import non riuscito";
     }// end of method
 
 
@@ -565,13 +577,14 @@ public abstract class WamService extends AService {
      */
     public void deleteAllCroceAnno(Croce croce, int anno) {
         List<Turno> listaTurniAnno;
-
+        int cancellati = 0;
         if (WamEntity.class.isAssignableFrom(entityClass) || Milite.class.isAssignableFrom(entityClass)) {
             if (croce != null && anno > 0) {
                 listaTurniAnno = turnoService.findAllByYear(croce, anno);
-                super.delete(listaTurniAnno, entityClass);
+                cancellati = super.delete(listaTurniAnno, entityClass);
             }// end of if cycle
         }// end of if cycle
+        System.out.println(cancellati);
     }// end of method
 
 
@@ -586,7 +599,7 @@ public abstract class WamService extends AService {
      * Inserisce il wam-login come attributo nella vaadSession <br>
      */
     public WamLogin fixWamLogin() {
-//        WamLogin wamLogin;
+        //        WamLogin wamLogin;
         ALogin login = getLogin();
         VaadinSession vaadSession;
         User springUser;
@@ -610,11 +623,11 @@ public abstract class WamService extends AService {
             }// end of if/else cycle
 
 
-//            springUser = (User) securityContext.getAuthentication().getPrincipal();
-//            uniqueUserName = springUser.getUsername();
+            //            springUser = (User) securityContext.getAuthentication().getPrincipal();
+            //            uniqueUserName = springUser.getUsername();
 
-//            springUser = securityContext != null ? (User) securityContext.getAuthentication().getPrincipal() : null;
-//            uniqueUserName = springUser != null ? springUser.getUsername() : "";
+            //            springUser = securityContext != null ? (User) securityContext.getAuthentication().getPrincipal() : null;
+            //            uniqueUserName = springUser != null ? springUser.getUsername() : "";
         }// end of if/else cycle
 
         vaadSession = UI.getCurrent().getSession();
@@ -654,7 +667,7 @@ public abstract class WamService extends AService {
             utente = new Utente();
             utente.username = uniqueUserName;
             login.setUtente(utente);
-//            login.setCompany(croce);
+            //            login.setCompany(croce);
             login.setRoleType(wamLogin.getRoleType());
         }// end of if cycle
 

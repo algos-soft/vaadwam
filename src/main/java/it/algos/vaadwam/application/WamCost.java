@@ -62,6 +62,7 @@ public class WamCost {
     public final static String TAG_MIL = "milite";
 
     public final static String TAG_ISC = "iscrizione";
+
     public final static String TAG_ISC_TUR = "iscrizioneTurno";
 
     public final static String TAG_SER = "servizio";
@@ -94,6 +95,8 @@ public class WamCost {
     public final static String USA_DAEMON_ELABORA = "usaDaemonElabora";
 
     public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
+
+    public final static String USA_DAEMON_IMPORT = "usaDaemonImport";
 
     public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
 

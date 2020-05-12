@@ -156,14 +156,7 @@ public class FunzioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti) {
-        Funzione entity = Funzione.builderFunzione()
-                .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
-                .code(text.isValid(code) ? code : null)
-                .sigla(text.isValid(sigla) ? sigla : null)
-                .descrizione(text.isValid(descrizione) ? descrizione : null)
-                .icona(icona)
-                .dipendenti(dipendenti)
-                .build();
+        Funzione entity = Funzione.builderFunzione().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).sigla(text.isValid(sigla) ? sigla : null).descrizione(text.isValid(descrizione) ? descrizione : null).icona(icona).dipendenti(dipendenti).build();
 
         return (Funzione) super.addCroce(entity, croce);
     }// end of method
@@ -299,10 +292,14 @@ public class FunzioneService extends WamService {
      * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce) {
+    public boolean importa(Croce croce) {
+        boolean eseguito;
+
         long inizio = System.currentTimeMillis();
-        migration.importFunzioni(croce);
+        eseguito = migration.importFunzioni(croce);
         setLastImport(croce, inizio);
+
+        return eseguito;
     }// end of method
 
 

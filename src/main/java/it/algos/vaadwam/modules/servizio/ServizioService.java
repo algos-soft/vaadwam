@@ -1,5 +1,6 @@
 package it.algos.vaadwam.modules.servizio;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
  * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_SER)
 @Slf4j
@@ -109,17 +109,7 @@ public class ServizioService extends WamService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(
-            Croce croce,
-            String code,
-            String descrizione,
-            boolean orarioDefinito,
-            LocalTime inizio,
-            LocalTime fine,
-            boolean visibile,
-            boolean ripetibile,
-            Set<Funzione> obbligatorie,
-            Set<Funzione> facoltative) {
+    public boolean creaIfNotExist(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
@@ -161,17 +151,7 @@ public class ServizioService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(
-            Croce croce,
-            String code,
-            String descrizione,
-            boolean orarioDefinito,
-            LocalTime inizio,
-            LocalTime fine,
-            boolean visibile,
-            boolean ripetibile,
-            Set<Funzione> obbligatorie,
-            Set<Funzione> facoltative) {
+    public Servizio newEntity(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
         return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie, facoltative);
     }// end of method
 
@@ -196,30 +176,8 @@ public class ServizioService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(
-            Croce croce,
-            int ordine,
-            String code,
-            String descrizione,
-            boolean orarioDefinito,
-            LocalTime inizio,
-            LocalTime fine,
-            boolean visibile,
-            boolean ripetibile,
-            Set<Funzione> obbligatorie,
-            Set<Funzione> facoltative) {
-        Servizio entity = Servizio.builderServizio()
-                .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
-                .code(text.isValid(code) ? code : null)
-                .descrizione(text.isValid(descrizione) ? descrizione : null)
-                .orarioDefinito(orarioDefinito)
-                .inizio(inizio)
-                .fine(fine)
-                .visibile(visibile)
-                .ripetibile(ripetibile)
-                .obbligatorie(obbligatorie)
-                .facoltative(facoltative)
-                .build();
+    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
+        Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).ripetibile(ripetibile).obbligatorie(obbligatorie).facoltative(facoltative).build();
 
         return (Servizio) super.addCroce(entity, croce);
     }// end of method
@@ -246,17 +204,17 @@ public class ServizioService extends WamService {
             entity = null;
         }// end of if cycle
 
-//        //--property (ridondante) calcolata
-//        entity.durataTeorica = getDurata(entity);
+        //        //--property (ridondante) calcolata
+        //        entity.durataTeorica = getDurata(entity);
 
         //--elimina informazioni inutili dalla lista (embedded) di funzioni dipendenti
-//        if (entity.funzioni != null) {
-//            for (Funzione funz : entity.funzioni) {
-//                funz.croce = null;
-//                funz.dipendenti = null;
-//                funz.descrizione = null;
-//            }// end of for cycle
-//        }// end of if cycle
+        //        if (entity.funzioni != null) {
+        //            for (Funzione funz : entity.funzioni) {
+        //                funz.croce = null;
+        //                funz.dipendenti = null;
+        //                funz.descrizione = null;
+        //            }// end of for cycle
+        //        }// end of if cycle
 
         if (entity.getCroce() == null) {
             log.warn("Non sono riuscito a registrare il servizio " + entity.code + " perché manca la croce");
@@ -335,11 +293,16 @@ public class ServizioService extends WamService {
      * @return informazioni sul risultato
      */
     @Override
-    public void importa(Croce croce) {
+    public boolean importa(Croce croce) {
+        boolean eseguito;
+
         long inizio = System.currentTimeMillis();
-        migration.importServizi(croce);
+        eseguito = migration.importServizi(croce);
         setLastImport(croce, inizio);
+
+        return eseguito;
     }// end of method
+
 
 
     /**
@@ -424,20 +387,20 @@ public class ServizioService extends WamService {
     }// end of method
 
 
-//    private AEntity riordinaFunzioni(AEntity entityBean) {
-//        Servizio servizio = (Servizio) entityBean;
-//        List<Funzione> funzioni = servizio.getFunzioni();
-//        int pos = 0;
-//
-//        if (funzioni != null) {
-//            for (Funzione funz : funzioni) {
-//                pos++;
-//                funz.setOrdine(pos);
-//            }// end of for cycle
-//        }// end of if cycle
-//
-//        return servizio;
-//    }// end of method
+    //    private AEntity riordinaFunzioni(AEntity entityBean) {
+    //        Servizio servizio = (Servizio) entityBean;
+    //        List<Funzione> funzioni = servizio.getFunzioni();
+    //        int pos = 0;
+    //
+    //        if (funzioni != null) {
+    //            for (Funzione funz : funzioni) {
+    //                pos++;
+    //                funz.setOrdine(pos);
+    //            }// end of for cycle
+    //        }// end of if cycle
+    //
+    //        return servizio;
+    //    }// end of method
 
 
     /**
@@ -451,20 +414,20 @@ public class ServizioService extends WamService {
     }// end of method
 
 
-//    /**
-//     * Orario di inizio del servizio <br>
-//     */
-//    public String getOrarioInizio(Servizio entityBean) {
-//        return entityBean.oraInizio + ":" + text.format2(entityBean.minutiInizio);
-//    }// end of method
-//
-//
-//    /**
-//     * Orario di fine del servizio <br>
-//     */
-//    public String getOrarioFine(Servizio entityBean) {
-//        return entityBean.oraFine + ":" + text.format2(entityBean.minutiFine);
-//    }// end of method
+    //    /**
+    //     * Orario di inizio del servizio <br>
+    //     */
+    //    public String getOrarioInizio(Servizio entityBean) {
+    //        return entityBean.oraInizio + ":" + text.format2(entityBean.minutiInizio);
+    //    }// end of method
+    //
+    //
+    //    /**
+    //     * Orario di fine del servizio <br>
+    //     */
+    //    public String getOrarioFine(Servizio entityBean) {
+    //        return entityBean.oraFine + ":" + text.format2(entityBean.minutiFine);
+    //    }// end of method
 
 
     /**
@@ -559,22 +522,22 @@ public class ServizioService extends WamService {
         return lista;
     }// end of method
 
-//    /**
-//     * Orario completo del servizio (inizio e fine) <br>
-//     * Nella forma 'ore 8:00 - 12:30' <br>
-//     */
-//    public String getOre(Servizio entityBean) {
-//        return getOrarioInizio(entityBean) + "-" + getOrarioFine(entityBean);
-//    }// end of method
-//
-//
-//    /**
-//     * Orario completo del servizio (inizio e fine) <br>
-//     * Nella forma 'Dalle 8:00 alle 12:30' <br>
-//     */
-//    public String getIntervallo(Servizio entityBean) {
-//        return "Dalle " + getOrarioInizio(entityBean) + " alle " + getOrarioFine(entityBean);
-//    }// end of method
+    //    /**
+    //     * Orario completo del servizio (inizio e fine) <br>
+    //     * Nella forma 'ore 8:00 - 12:30' <br>
+    //     */
+    //    public String getOre(Servizio entityBean) {
+    //        return getOrarioInizio(entityBean) + "-" + getOrarioFine(entityBean);
+    //    }// end of method
+    //
+    //
+    //    /**
+    //     * Orario completo del servizio (inizio e fine) <br>
+    //     * Nella forma 'Dalle 8:00 alle 12:30' <br>
+    //     */
+    //    public String getIntervallo(Servizio entityBean) {
+    //        return "Dalle " + getOrarioInizio(entityBean) + " alle " + getOrarioFine(entityBean);
+    //    }// end of method
 
 
     /**
