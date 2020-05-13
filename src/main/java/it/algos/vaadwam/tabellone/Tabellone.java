@@ -10,6 +10,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -40,6 +41,8 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -779,19 +782,90 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void clickAddServizio(){
 
+        Servizio servizioScelto;
 
-        Servizio servizio=servizioService.findByKeyUnica("extra");
+        // recupera tutti i servizi extra
+        List<Servizio> serviziExtra=findServiziExtra();
 
-        Riga riga = rigaService.newEntity(startDay, servizio, null);
-        gridItems.add(riga);
+        // se non ci sono servizi di tipo extra, avvisa e ritorna
+        if (serviziExtra.size()==0){
 
-        grid.getDataProvider().refreshAll();
+            Button bClose = new Button();
+            bClose.getStyle().set("background-color","red");
+            bClose.getStyle().set("color","white");
+            bClose.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
+                return;
+            });
+
+            ConfirmDialog
+                    .createWarning()
+                    .withCaption("Selezione servizio")
+                    .withMessage("Non sono disponibili servizi di tipo extra.")
+                    .withButton(bClose, ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                    .open();
+        }
+
+
+        // seleziona solo quelli non già presenti nel tabellone
+        List<Servizio> serviziCandidati=new ArrayList<>();
+        for(Servizio servizio : serviziExtra){
+            if (!isPresenteInTabellone(servizio)){
+                serviziCandidati.add(servizio);
+            }
+        }
+
+        if (serviziCandidati.size()==1){    // esiste un solo servizio valido, lo sceglie automaticamente
+            servizioScelto=serviziExtra.get(0);
+        } else {   // esistono più servizii di tipo extra, devo scegliere
+
+        }
+
+
+//        ConfirmDialog
+//                .createQuestion()
+//                .withCaption("Selezione servizio")
+//                .withMessage("Quale servizio?")
+//                .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
+//                .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
+//                .open();
+//
+//
+//        Servizio servizio=servizioService.findByKeyUnica("extra");
+//
+//        Riga riga = rigaService.newEntity(startDay, servizio, null);
+//        gridItems.add(riga);
+//
+//        grid.getDataProvider().refreshAll();
 
         //Broadcaster.broadcast("servizioadded");    // provoca l'update della GUI di questo e degli altri client
 
         //grid.setDataProvider(grid.getDataProvider());
 
         //grid.getDataProvider().();
+    }
+
+
+    private boolean isPresenteInTabellone(Servizio servizio) {
+        return true;
+    }
+
+
+    /**
+     * Ritorna tutti i servizi extra di questa Croce
+     */
+    private List<Servizio> findServiziExtra(){
+        List<Servizio> servizi=new ArrayList<>();
+        for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())){
+            if (!servizio.isOrarioDefinito()){
+                servizi.add(servizio);
+            }
+        }
+        return servizi;
+    }
+
+
+    private void dialogoNuovoServizio(){
+
     }
 
 
