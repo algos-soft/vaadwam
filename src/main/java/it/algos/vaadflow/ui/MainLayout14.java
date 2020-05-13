@@ -164,7 +164,8 @@ public class MainLayout14 extends AppLayout {
         String style;
 
         if (text.isValid(getUserName())) {
-            topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione(), getUserName());
+            Company company=login.getCompany();
+            topbar = new TopbarComponent(FlowVar.pathLogo, company.getCode().toUpperCase(), company.getDescrizione(), getUserName());
         } else {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }
@@ -206,10 +207,10 @@ public class MainLayout14 extends AppLayout {
             desc=company.getCode().toUpperCase();
         } else {
             desc = text.primaMaiuscola(FlowVar.projectBanner);
-        }// end of if/else cycle
+        }
 
         return desc;
-    }// end of method
+    }
 
 
     /**

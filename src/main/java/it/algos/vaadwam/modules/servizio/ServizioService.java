@@ -329,10 +329,8 @@ public class ServizioService extends WamService {
 
 
     /**
-     * Returns instances <br>
-     * Lista ordinata <br>
-     *
-     * @return lista ordinata
+     * Tutti i servizi standard
+     * Lista ordinata
      */
     public List<Servizio> findAllVisibili() {
         List<Servizio> items = null;
@@ -343,12 +341,12 @@ public class ServizioService extends WamService {
             for (Servizio serv : tuttiServizi) {
                 if (serv.isVisibile()) {
                     items.add(serv);
-                }// end of if cycle
-            }// end of for cycle
-        }// end of if cycle
+                }
+            }
+        }
 
         return items;
-    }// end of method
+    }
 
 
     /**

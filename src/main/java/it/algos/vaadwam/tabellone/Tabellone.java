@@ -15,6 +15,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
@@ -782,71 +783,79 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void clickAddServizio(){
 
-        Servizio servizioScelto;
-
         // recupera tutti i servizi extra
         List<Servizio> serviziExtra=findServiziExtra();
 
-        // se non ci sono servizi di tipo extra, avvisa e ritorna
-        if (serviziExtra.size()==0){
+        if (serviziExtra.size()==0){ // non ci sono servizi di tipo extra
 
-            Button bClose = new Button();
-            bClose.getStyle().set("background-color","red");
-            bClose.getStyle().set("color","white");
-            bClose.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-                return;
-            });
-
+            // avvisa e ritorna
             ConfirmDialog
                     .createWarning()
-                    .withCaption("Selezione servizio")
                     .withMessage("Non sono disponibili servizi di tipo extra.")
-                    .withButton(bClose, ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                    .withCloseButton(ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
                     .open();
-        }
 
+        } else {    // ci sono servizi di tipo extra
 
-        // seleziona solo quelli non già presenti nel tabellone
-        List<Servizio> serviziCandidati=new ArrayList<>();
-        for(Servizio servizio : serviziExtra){
-            if (!isPresenteInTabellone(servizio)){
-                serviziCandidati.add(servizio);
+            // seleziona i servizi candidati (quelli non già presenti nel tabellone)
+            List<Servizio> serviziCandidati=new ArrayList<>();
+            for(Servizio servizio : serviziExtra){
+                if (!isPresenteInTabellone(servizio)){
+                    serviziCandidati.add(servizio);
+                }
             }
+
+            if(serviziCandidati.size()==0){ // non ci sono servizi candidati
+                ConfirmDialog
+                        .createWarning()
+                        .withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.")
+                        .withCloseButton(ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                        .open();
+
+            }else{ // ci sono uno o più servizi candidati
+
+                if (serviziCandidati.size()==1){    // esiste un solo servizio candidato
+
+                    addNuovaRiga(serviziCandidati.get(0)); // lo sceglie automaticamente
+
+                } else {   // esistono più servizi candidati
+
+                    // presento un dialogo per scegliere il servizio canditato
+
+                    Select<Servizio> select=new Select<>();
+                    select.setItems(serviziCandidati);
+                    select.setValue(serviziCandidati.get(0));
+
+                    Button bConferma = new Button();
+                    bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+                        addNuovaRiga(select.getValue());
+                    });
+
+                    ConfirmDialog
+                            .createQuestion()
+                            .withCaption("Selezione servizio")
+                            .withMessage(select)
+                            .withButton(new Button(), ButtonOption.caption("Annulla"))
+                            .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus())
+                            .open();
+                }
+
+            }
+
         }
 
-        if (serviziCandidati.size()==1){    // esiste un solo servizio valido, lo sceglie automaticamente
-            servizioScelto=serviziExtra.get(0);
-        } else {   // esistono più servizii di tipo extra, devo scegliere
-
-        }
-
-
-//        ConfirmDialog
-//                .createQuestion()
-//                .withCaption("Selezione servizio")
-//                .withMessage("Quale servizio?")
-//                .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
-//                .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
-//                .open();
-//
-//
-//        Servizio servizio=servizioService.findByKeyUnica("extra");
-//
-//        Riga riga = rigaService.newEntity(startDay, servizio, null);
-//        gridItems.add(riga);
-//
-//        grid.getDataProvider().refreshAll();
-
-        //Broadcaster.broadcast("servizioadded");    // provoca l'update della GUI di questo e degli altri client
-
-        //grid.setDataProvider(grid.getDataProvider());
-
-        //grid.getDataProvider().();
     }
 
 
     private boolean isPresenteInTabellone(Servizio servizio) {
-        return true;
+        boolean trovato=false;
+        for(Riga riga : gridItems){
+            if(riga.getServizio().equals(servizio)){
+                trovato=true;
+                break;
+            }
+        }
+        return trovato;
     }
 
 
@@ -864,7 +873,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private void dialogoNuovoServizio(){
+    private void addNuovaRiga(Servizio servizio){
+        Riga riga = rigaService.newEntity(startDay, servizio, null);
+        gridItems.add(riga);
+        grid.getDataProvider().refreshAll();
+
+        //grid.getDataProvider().refreshItem(riga);
+        //grid.setItems(gridItems);
+        //grid.setDataProvider(grid.getDataProvider());
+        // ...comunque ci si provi, la pagina scrolla sempre al top, e mi sa che c'è poco da fare...
+        // https://vaadin.com/forum/thread/17634020/reloading-vaadin-grid-makes-the-page-scroll-to-top
 
     }
 

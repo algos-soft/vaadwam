@@ -446,6 +446,31 @@ public class TurnoService extends WamService {
     }// end of method
 
 
+
+    /**
+     * Tutti i turni della croce corrente compresi in un dato periodo
+     */
+    public List<Turno> findByDate(LocalDate inizioCompresoEstremo, LocalDate fineCompresoEstremo) {
+        List<Turno> lista = null;
+        Croce croce = getCroce();
+        LocalDate inizioEsclusoEstremo;
+        LocalDate fineEsclusoEstremo;
+
+        if ((croce == null) || (inizioCompresoEstremo == null) || (fineCompresoEstremo == null)) {
+            return null;
+        }
+
+        inizioEsclusoEstremo = inizioCompresoEstremo.minusDays(1);
+        fineEsclusoEstremo = fineCompresoEstremo.plusDays(1);
+
+        if (inizioEsclusoEstremo != null && fineEsclusoEstremo != null) {
+            lista = repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizioEsclusoEstremo, fineEsclusoEstremo);
+        }
+
+        return lista;
+    }
+
+
     //    /**
     //     * Calcola il tempo di inizio del turno in base al giorno ed al tipo di servizio <br>
     //     */

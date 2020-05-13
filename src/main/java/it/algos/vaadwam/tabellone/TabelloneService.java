@@ -28,6 +28,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_TAB;
@@ -153,24 +154,67 @@ public class TabelloneService extends AService {
      * @param giorniVisualizzati nel tabellonesuperato
      */
     public List<Riga> getGridRigheList(LocalDate giornoIniziale, int giorniVisualizzati) {
-        List<Riga> gridRigheList = null;
+        List<Riga> gridRigheList;
         Riga riga;
         LocalDate giornoFinale = giornoIniziale.plusDays(giorniVisualizzati - 1);
-        List<Servizio> servizi = servizioService.findAllVisibili();
+
+        // tutti i servizi da visualizzare in tabellone:
+        // sono tutti i servizi standard
+        // più quelli extra che hanno almeno un turno definito nel periodo considerato
+        List<Servizio> servizi = getServiziPeriodo(giornoIniziale, giornoFinale);
+
         List<Turno> turni;
 
         gridRigheList = new ArrayList<>();
-
-        if (servizi != null) {
-            for (Servizio servizio : servizi) {
-                turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
-                riga = rigaService.newEntity(giornoIniziale, servizio, turni);
-                gridRigheList.add(riga);
-            }// end of for cycle
-        }// end of if cycle
+        for (Servizio servizio : servizi) {
+            turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
+            riga = rigaService.newEntity(giornoIniziale, servizio, turni);
+            gridRigheList.add(riga);
+        }
 
         return gridRigheList;
-    }// end of method
+    }
+
+
+    /**
+     * Ritorna tutti i servizi standard
+     * più quelli extra che hanno almeno un turno
+     * definito nel periodo considerato.<br>
+     * Il tutto nell'ordine di tabellone.
+     */
+    private List<Servizio> getServiziPeriodo(LocalDate data1, LocalDate data2){
+        List<Servizio> servizi = new ArrayList<>();
+        servizi.addAll(servizioService.findAllVisibili()); // quelli standard
+
+        List<Servizio> serviziExtra=new ArrayList<>();
+        List<Turno> turniPeriodo=turnoService.findByDate(data1, data2);
+        for(Turno turno : turniPeriodo){
+            Servizio servizio=turno.getServizio();
+            if(!servizio.isOrarioDefinito()){
+                if(!servizi.contains(servizio)){
+                    servizi.add(servizio);
+                }
+            }
+        }
+
+        // ordina per Ordine
+        servizi.sort((questo, altro) -> {
+            if (questo.getOrdine()==altro.getOrdine()){
+                return 0;
+            }else{
+                if(questo.getOrdine()>altro.getOrdine()){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+        });
+
+        servizi.addAll(serviziExtra);
+
+        return  servizi;
+
+    }
 
 
 //    /**

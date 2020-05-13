@@ -1,6 +1,5 @@
 package it.algos.vaadflow.ui.topbar;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Div;
@@ -10,14 +9,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.theme.AbstractTheme;
-import com.vaadin.flow.theme.ThemeDefinition;
-import com.vaadin.flow.theme.lumo.Lumo;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.service.AMenuService;
-import it.algos.vaadwam.tabellone.Tabellone;
-
-import java.util.Optional;
 
 /**
  * Componente che mostra il nome della company e l'utente loggato <br>
@@ -33,9 +26,9 @@ public class TopbarComponent extends HorizontalLayout {
 
     private static String DEFAULT_IMAGE = "frontend/images/medal.ico";
 
-    private Image image;
+//    private Image image;
 
-    private Label label;
+//    private Label label;
 
     private MenuItem itemUser;
 
@@ -46,7 +39,10 @@ public class TopbarComponent extends HorizontalLayout {
     private ProfileListener profileListener;
 
     //--property
-    private String descrizione;
+    private String titolo;
+
+    //--property
+    private String sottotitolo;
 
     //--property
     private String pathImage;
@@ -61,10 +57,10 @@ public class TopbarComponent extends HorizontalLayout {
     /**
      * Costruttore base con i parametri obbligatori <br>
      *
-     * @param descrizione della company/applicazione (obbligatorio)
+     * @param titolo della company/applicazione (obbligatorio)
      */
-    public TopbarComponent(String descrizione) {
-        this("", descrizione, "");
+    public TopbarComponent(String titolo, String sottotitolo) {
+        this("", titolo, sottotitolo,"");
     }// end of constructor
 
 
@@ -72,10 +68,10 @@ public class TopbarComponent extends HorizontalLayout {
      * Costruttore con alcuni parametri <br>
      *
      * @param pathImage   dell'immagine (facoltativo)
-     * @param descrizione della company/applicazione (obbligatorio)
+     * @param titolo della company/applicazione (obbligatorio)
      */
-    public TopbarComponent(String pathImage, String descrizione) {
-        this(pathImage, descrizione, "");
+    public TopbarComponent(String pathImage, String titolo, String sottotitolo) {
+        this(pathImage, titolo, sottotitolo,"");
     }// end of constructor
 
 
@@ -83,12 +79,13 @@ public class TopbarComponent extends HorizontalLayout {
      * Costruttore completo con tutti i parametri <br>
      *
      * @param pathImage   dell'immagine (facoltativo)
-     * @param descrizione della company/applicazione (obbligatorio)
+     * @param titolo della company/applicazione (obbligatorio)
      * @param nickName    utente loggato se multiCompany (facoltativo)
      */
-    public TopbarComponent(String pathImage, String descrizione, String nickName) {
+    public TopbarComponent(String pathImage, String titolo, String sottotitolo, String nickName) {
         this.pathImage = pathImage;
-        this.descrizione = descrizione;
+        this.titolo = titolo;
+        this.sottotitolo=sottotitolo;
         this.nickName = nickName;
 
         this.initView();
@@ -105,6 +102,7 @@ public class TopbarComponent extends HorizontalLayout {
 
 
         //--immagine eventuale
+        Image image;
         if (pathImage != null && !pathImage.isEmpty()) {
             image = new Image(pathImage, "Algos");
         } else {
@@ -113,11 +111,25 @@ public class TopbarComponent extends HorizontalLayout {
         image.setHeight("9mm");
 
 
-        //--descrizione obbligatoria
-        label = new Label(descrizione);
-        label.getStyle().set("font-size", "large");
-        label.getStyle().set("font-weight", "bold");
-        label.getStyle().set("color", "#1676F3"); //--lumo-primary-text-color
+        //--titolo su 2 righe
+        Div divTitolo=new Div();
+        divTitolo.getElement().setAttribute("style","display:flex; flex-direction:column; min-width:2em");
+
+        // (#1676F3 is --lumo-primary-text-color)
+        String commonStyle="line-height:120%; white-space:nowrap; overflow:hidden; color:#1676F3";
+
+        Label label1 = new Label(titolo);
+        label1.getElement().setAttribute("style",commonStyle);
+        label1.getStyle().set("font-size","120%");
+        label1.getStyle().set("font-weight","bold");
+
+        Label label2 = new Label(sottotitolo);
+        label2.getElement().setAttribute("style",commonStyle);
+        label2.getStyle().set("font-size","70%");
+
+        divTitolo.add(label1);
+        divTitolo.add(label2);
+
 
 
         //--menu utente eventuale
@@ -149,9 +161,9 @@ public class TopbarComponent extends HorizontalLayout {
         if (menuUser != null) {
             Div elasticSpacer = new Div();
             elasticSpacer.getStyle().set("flex-grow","1");
-            this.add(image, label, elasticSpacer, menuUser);
+            this.add(image, divTitolo, elasticSpacer, menuUser);
         } else {
-            this.add(image, label);
+            this.add(image, divTitolo);
         }
 
         //--giustifica a sinistra ed a destra
@@ -164,19 +176,19 @@ public class TopbarComponent extends HorizontalLayout {
     }
 
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
+//    public void setImage(Image image) {
+//        this.image = image;
+//    }
 
 
-    public void setLabel(String text) {
-        label.setText(text);
-    }
+//    public void setLabel(String text) {
+//        label.setText(text);
+//    }
 
 
-    public void setUsername(String username) {
-        itemUser.setText(username);
-    }
+//    public void setUsername(String username) {
+//        itemUser.setText(username);
+//    }
 
 
     public void setLogoutListener(LogoutListener listener) {
