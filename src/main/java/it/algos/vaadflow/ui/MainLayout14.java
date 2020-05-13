@@ -169,7 +169,7 @@ public class MainLayout14 extends AppLayout {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }
 
-        style = "display:inline-flex; width:100%; flex-direction:row; padding-left:0em; padding-top:0.5em; padding-bottom:0.5em; padding-right:0.5em; align-items:center";
+        style = "display:inline-flex; width:100%; flex-direction:row; padding-left:0em; padding-top:0.5em; padding-bottom:0.5em; padding-right:1em; align-items:center";
         topbar.getElement().setAttribute("style", style);
 
         topbar.setProfileListener(() -> profilePressed());

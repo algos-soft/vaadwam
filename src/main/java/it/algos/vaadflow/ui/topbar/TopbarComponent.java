@@ -1,5 +1,6 @@
 package it.algos.vaadflow.ui.topbar;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Div;
@@ -9,8 +10,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.theme.AbstractTheme;
+import com.vaadin.flow.theme.ThemeDefinition;
+import com.vaadin.flow.theme.lumo.Lumo;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.service.AMenuService;
+import it.algos.vaadwam.tabellone.Tabellone;
+
+import java.util.Optional;
 
 /**
  * Componente che mostra il nome della company e l'utente loggato <br>
@@ -106,12 +113,11 @@ public class TopbarComponent extends HorizontalLayout {
         image.setHeight("9mm");
 
 
-        //--descrizione oggligatoria
+        //--descrizione obbligatoria
         label = new Label(descrizione);
         label.getStyle().set("font-size", "large");
         label.getStyle().set("font-weight", "bold");
-        //label.getStyle().set("color", "blue");
-
+        label.getStyle().set("color", "#1676F3"); //--lumo-primary-text-color
 
 
         //--menu utente eventuale
