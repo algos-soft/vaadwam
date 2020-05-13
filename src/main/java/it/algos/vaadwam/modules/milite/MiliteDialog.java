@@ -29,7 +29,6 @@ import java.util.Set;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
-import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
 /**
  * Project vaadwam <br>
@@ -141,11 +140,12 @@ public class MiliteDialog extends WamViewDialog<Milite> {
                 comboField.setEnabled(false);
             }// end of if cycle
 
-            //--disabilita i campi admin, dipendente e infermiere
+            //--disabilita i campi admin, dipendente e infermiere e centralinista
             disabilita(FIELD_ATTIVO);
             disabilita(FIELD_ADMIN);
             disabilita(FIELD_DIPENDENTE);
             disabilita(FIELD_INFERMIERE);
+            disabilita(FIELD_CENTRALINISTA);
 
         }// end of if/else cycle
     }// end of method

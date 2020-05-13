@@ -6,7 +6,6 @@ import it.algos.vaadflow.enumeration.EAPreferenza;
 import it.algos.vaadflow.modules.address.AddressList;
 import it.algos.vaadflow.modules.anno.AnnoList;
 import it.algos.vaadflow.modules.company.CompanyList;
-import it.algos.vaadflow.modules.comune.ComuneList;
 import it.algos.vaadflow.modules.giorno.GiornoList;
 import it.algos.vaadflow.modules.log.LogList;
 import it.algos.vaadflow.modules.logtype.LogtypeList;
@@ -14,8 +13,6 @@ import it.algos.vaadflow.modules.mese.MeseList;
 import it.algos.vaadflow.modules.person.PersonList;
 import it.algos.vaadflow.modules.preferenza.PreferenzaList;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
-import it.algos.vaadflow.modules.provincia.ProvinciaList;
-import it.algos.vaadflow.modules.regione.RegioneList;
 import it.algos.vaadflow.modules.role.RoleList;
 import it.algos.vaadflow.modules.secolo.SecoloList;
 import it.algos.vaadflow.modules.utente.UtenteList;
@@ -94,33 +91,33 @@ public class ABootService extends AbstractService {
         FlowVar.menuClazzList = new ArrayList<>();
 
         //--developer
-//        if (pref.isBool(EAPreferenza.showDeveloper.getCode())) {
-//            FlowCost.MENU_CLAZZ_LIST.add(DeveloperView.class);
-//        }// end of if cycle
+        //        if (pref.isBool(EAPreferenza.showDeveloper.getCode())) {
+        //            FlowCost.MENU_CLAZZ_LIST.add(DeveloperView.class);
+        //        }// end of if cycle
         if (pref.isBool(EAPreferenza.showWizard.getCode())) {
             FlowVar.menuClazzList.add(WizView.class);
         }// end of if cycle
         if (pref.isBool(EAPreferenza.showRole.getCode())) {
             FlowVar.menuClazzList.add(RoleList.class);
         }// end of if cycle
-        if (pref.isBool(EAPreferenza.showUser.getCode())) {
-            FlowVar.menuClazzList.add(UtenteList.class);
-        }// end of if cycle
+        //        if (pref.isBool(EAPreferenza.showUser.getCode())) {
+        //            FlowVar.menuClazzList.add(UtenteList.class);
+        //        }// end of if cycle
         if (pref.isBool(EAPreferenza.showLogType.getCode())) {
             FlowVar.menuClazzList.add(LogtypeList.class);
         }// end of if cycle
         if (pref.isBool(EAPreferenza.showCompany.getCode())) {
             FlowVar.menuClazzList.add(CompanyList.class);
         }// end of if cycle
-        if (pref.isBool(EAPreferenza.showAddress.getCode())) {
-            FlowVar.menuClazzList.add(AddressList.class);
-        }// end of if cycle
-        if (pref.isBool(EAPreferenza.showPerson.getCode())) {
-            FlowVar.menuClazzList.add(PersonList.class);
-        }// end of if cycle
-        if (pref.isBool(EAPreferenza.showVersione.getCode())) {
-            FlowVar.menuClazzList.add(VersioneList.class);
-        }// end of if cycle
+        //        if (pref.isBool(EAPreferenza.showAddress.getCode())) {
+        //            FlowVar.menuClazzList.add(AddressList.class);
+        //        }// end of if cycle
+        //        if (pref.isBool(EAPreferenza.showPerson.getCode())) {
+        //            FlowVar.menuClazzList.add(PersonList.class);
+        //        }// end of if cycle
+        //        if (pref.isBool(EAPreferenza.showVersione.getCode())) {
+        //            FlowVar.menuClazzList.add(VersioneList.class);
+        //        }// end of if cycle
         if (pref.isBool(EAPreferenza.showGiorno.getCode())) {
             FlowVar.menuClazzList.add(GiornoList.class);
         }// end of if cycle
@@ -133,9 +130,9 @@ public class ABootService extends AbstractService {
         if (pref.isBool(EAPreferenza.showSecolo.getCode())) {
             FlowVar.menuClazzList.add(SecoloList.class);
         }// end of if cycle
-        FlowVar.menuClazzList.add(RegioneList.class);
-        FlowVar.menuClazzList.add(ProvinciaList.class);
-        FlowVar.menuClazzList.add(ComuneList.class);
+        //        FlowVar.menuClazzList.add(RegioneList.class);
+        //        FlowVar.menuClazzList.add(ProvinciaList.class);
+        //        FlowVar.menuClazzList.add(ComuneList.class);
 
         //--admin
         if (pref.isBool(EAPreferenza.showPreferenza.getCode())) {

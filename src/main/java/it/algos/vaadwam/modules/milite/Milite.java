@@ -69,8 +69,8 @@ import java.util.Set;
 @Builder(builderMethodName = "builderMilite")
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "funzioni", "noteWam"})
-@AIForm(fields = {"ordine", "nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "role", "locked", "admin", "dipendente", "infermiere", "centralinista", "enabled", "funzioni", "noteWam"})
+@AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "centralinista", "funzioni", "noteWam"})
+@AIForm(fields = {"nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "role", "locked", "admin", "dipendente", "infermiere", "centralinista", "enabled", "funzioni", "noteWam"})
 @AIScript(sovrascrivibile = false)
 public class Milite extends Person {
 
@@ -121,7 +121,7 @@ public class Milite extends Person {
 
 
     @Field("cent")
-    @AIField(type = EAFieldType.checkbox)
+    @AIField(type = EAFieldType.checkbox, name = "Centralinista abilitato alla creazione di turni extra")
     @AIColumn(headerIcon = VaadinIcon.PHONE)
     public boolean centralinista;
 

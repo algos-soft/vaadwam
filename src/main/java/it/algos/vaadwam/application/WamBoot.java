@@ -65,7 +65,7 @@ public class WamBoot extends ABoot {
 
     private final static double PROJECT_VERSION = 3.0;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 12);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 13);
 
     /**
      * Inietta da Spring come 'singleton'
