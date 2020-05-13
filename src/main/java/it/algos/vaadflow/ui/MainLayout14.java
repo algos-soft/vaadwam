@@ -19,6 +19,7 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAPreferenza;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
@@ -166,8 +167,9 @@ public class MainLayout14 extends AppLayout {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione(), getUserName());
         } else {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
-        }// end of if/else cycle
-        style = "display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; padding-bottom:0.5em; padding-right:0.5em; align-items:center";
+        }
+
+        style = "display:inline-flex; width:100%; flex-direction:row; padding-left:0em; padding-top:0.5em; padding-bottom:0.5em; padding-right:0.5em; align-items:center";
         topbar.getElement().setAttribute("style", style);
 
         topbar.setProfileListener(() -> profilePressed());
@@ -175,10 +177,10 @@ public class MainLayout14 extends AppLayout {
         topbar.setLogoutListener(() -> {
             VaadinSession.getCurrent().getSession().invalidate();
             UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
-        });//end of lambda expressions and anonymous inner class
+        });
 
         return topbar;
-    }// end of method
+    }
 
 
     /**
@@ -199,7 +201,9 @@ public class MainLayout14 extends AppLayout {
         String desc = "";
 
         if (usaCompany && login != null && login.getCompany() != null) {
-            desc = login.getCompany().code.toUpperCase();
+            Company company=login.getCompany();
+            //desc = company.code+" "+company.descrizione;
+            desc=company.getCode().toUpperCase();
         } else {
             desc = text.primaMaiuscola(FlowVar.projectBanner);
         }// end of if/else cycle

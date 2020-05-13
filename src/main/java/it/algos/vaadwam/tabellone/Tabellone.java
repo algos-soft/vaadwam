@@ -231,7 +231,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(newMessage -> ui.access(() -> {
-            if (newMessage.equals("turnosaved") || newMessage.equals("turnodeleted")) {
+            if (newMessage.equals("turnosaved") || newMessage.equals("turnodeleted") || newMessage.equals("servizioadded")) {
                 loadDataInGrid();
             }
         }));
@@ -784,7 +784,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         Riga riga = rigaService.newEntity(startDay, servizio, null);
         gridItems.add(riga);
-        grid.setDataProvider(grid.getDataProvider());
+
+        grid.getDataProvider().refreshAll();
+
+        //Broadcaster.broadcast("servizioadded");    // provoca l'update della GUI di questo e degli altri client
+
+        //grid.setDataProvider(grid.getDataProvider());
+
         //grid.getDataProvider().();
     }
 

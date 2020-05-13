@@ -2,6 +2,7 @@ package it.algos.vaadflow.ui.topbar;
 
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -101,19 +102,21 @@ public class TopbarComponent extends HorizontalLayout {
             image = new Image(pathImage, "Algos");
         } else {
             image = new Image(DEFAULT_IMAGE, "Algos");
-        }// end of if/else cycle
+        }
         image.setHeight("9mm");
 
 
         //--descrizione oggligatoria
         label = new Label(descrizione);
-        label.getStyle().set("font-size", "x-large");
+        label.getStyle().set("font-size", "large");
         label.getStyle().set("font-weight", "bold");
-        label.getElement().getStyle().set("color", "blue");
+        //label.getStyle().set("color", "blue");
+
 
 
         //--menu utente eventuale
         if (nickName != null && !nickName.isEmpty()) {
+
             menuUser = new MenuBar();
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
@@ -124,32 +127,35 @@ public class TopbarComponent extends HorizontalLayout {
             MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (profileListener != null) {
                     profileListener.profile();
-                }// end of if cycle
-            });//end of lambda expressions and anonymous inner class
+                }
+            });
 
             menuService = StaticContextAccessor.getBean(AMenuService.class);
             tab = menuService.creaMenuLogout();
             MenuItem logout = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (logoutListener != null) {
                     logoutListener.logout();
-                }// end of if cycle
-            });//end of lambda expressions and anonymous inner class
-        }// end of if cycle
+                }
+            });
+        }
+
 
         if (menuUser != null) {
-            this.add(image, label, menuUser);
+            Div elasticSpacer = new Div();
+            elasticSpacer.getStyle().set("flex-grow","1");
+            this.add(image, label, elasticSpacer, menuUser);
         } else {
             this.add(image, label);
-        }// end of if/else cycle
+        }
 
         //--giustifica a sinistra ed a destra
-        setFlexGrow(0, image);
-        setFlexGrow(1, label);
-        if (menuUser != null) {
-            setFlexGrow(0, menuUser);
-        }// end of if cycle
+        //setFlexGrow(0, image);
+        //setFlexGrow(1, label);
+        //if (menuUser != null) {
+        //    setFlexGrow(0, menuUser);
+        //}
 
-    }// end of method
+    }
 
 
     public void setImage(Image image) {
