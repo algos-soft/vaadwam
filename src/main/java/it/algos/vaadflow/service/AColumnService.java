@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
@@ -12,9 +13,10 @@ import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
@@ -44,7 +46,8 @@ import static it.algos.vaadflow.application.FlowCost.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, basta il 'pattern') <br>
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  */
-@Service
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 //@Slf4j
 public class AColumnService extends AbstractService {
 
@@ -64,8 +67,8 @@ public class AColumnService extends AbstractService {
      */
     public PreferenzaService pref;
 
-    @Autowired
-    protected LogService logger;
+    //    @Autowired
+    public LogService logger;
 
 
     /**
@@ -85,6 +88,18 @@ public class AColumnService extends AbstractService {
     public static AColumnService getInstance() {
         return INSTANCE;
     }// end of static method
+
+
+    /**
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, <br>
+     * ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+     */
+    @PostConstruct
+    protected void postConstruct() {
+    }
 
 
     /**
@@ -132,7 +147,7 @@ public class AColumnService extends AbstractService {
                 colonna = grid.addColumn(propertyName);
                 colonna.setSortProperty(propertyName);
             } catch (Exception unErrore) { // intercetta l'errore
-                logger.error(unErrore.toString());
+                logger.error(unErrore, this.getClass(), "create - type == null");
             }// fine del blocco try-catch
             return;
         }// end of if cycle
@@ -151,7 +166,7 @@ public class AColumnService extends AbstractService {
                             testo = (String) field.get(entity);
                         }// end of if cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case textarea");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -167,7 +182,7 @@ public class AColumnService extends AbstractService {
                         value = field.getInt(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case integer");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -183,7 +198,7 @@ public class AColumnService extends AbstractService {
                         value = field.getLong(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case lungo");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -199,7 +214,7 @@ public class AColumnService extends AbstractService {
                         value = field.getInt(entity);
                         testo = text.format(value);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case onedecimal");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -214,7 +229,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case checkbox");
                     }// fine del blocco try-catch
 
                     if (status) {
@@ -238,7 +253,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case checkboxreverse");
                     }// fine del blocco try-catch
 
                     if (status) {
@@ -261,7 +276,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         status = field.getBoolean(entity);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case booleano");
                     }// fine del blocco try-catch
 
                     return new ACheckBox(status);
@@ -278,7 +293,7 @@ public class AColumnService extends AbstractService {
                         status = field.getBoolean(entity);
                         testo = status ? "si" : "no";
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case yesno");
                     }// fine del blocco try-catch
 
                     if (text.isValid(testo)) {
@@ -304,7 +319,7 @@ public class AColumnService extends AbstractService {
                         status = field.getBoolean(entity);
                         testo = status ? "si" : "no";
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case yesnobold");
                     }// fine del blocco try-catch
 
                     if (text.isValid(testo)) {
@@ -327,28 +342,28 @@ public class AColumnService extends AbstractService {
                 }));//end of lambda expressions and anonymous inner class
                 break;
             case multicombo:
-//                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-//                    Field field = reflection.getField(entityClazz, propertyName);
-//                    String testo = "";
-//                    List valueList;
-//
-//                    try { // prova ad eseguire il codice
-//                        if (field.get(entity) instanceof List) {
-//                            valueList = (List) field.get(entity);
-//                            if (array.isValid(valueList)) {
-//                                for (Object singleValue : valueList) {
-//                                    testo += singleValue.toString();
-//                                    testo += VIRGOLA + SPAZIO;
-//                                }// end of for cycle
-//                                testo = text.levaCoda(testo.trim(), VIRGOLA).trim();
-//                            }// end of if cycle
-//                        }// end of if cycle
-//                    } catch (Exception unErrore) { // intercetta l'errore
-//                        log.error(unErrore.toString());
-//                    }// fine del blocco try-catch
-//
-//                    return new Label(testo);
-//                }));//end of lambda expressions and anonymous inner class
+                //                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                //                    Field field = reflection.getField(entityClazz, propertyName);
+                //                    String testo = "";
+                //                    List valueList;
+                //
+                //                    try { // prova ad eseguire il codice
+                //                        if (field.get(entity) instanceof List) {
+                //                            valueList = (List) field.get(entity);
+                //                            if (array.isValid(valueList)) {
+                //                                for (Object singleValue : valueList) {
+                //                                    testo += singleValue.toString();
+                //                                    testo += VIRGOLA + SPAZIO;
+                //                                }// end of for cycle
+                //                                testo = text.levaCoda(testo.trim(), VIRGOLA).trim();
+                //                            }// end of if cycle
+                //                        }// end of if cycle
+                //                    } catch (Exception unErrore) { // intercetta l'errore
+                //                        log.error(unErrore.toString());
+                //                    }// fine del blocco try-catch
+                //
+                //                    return new Label(testo);
+                //                }));//end of lambda expressions and anonymous inner class
 
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Field field = reflection.getField(entityClazz, propertyName);
@@ -367,7 +382,7 @@ public class AColumnService extends AbstractService {
                             }// end of if cycle
                         }// end of if cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case multicombo");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -375,18 +390,18 @@ public class AColumnService extends AbstractService {
                 break;
             case combo:
             case combolinkato:
-//                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-//                    ComboBox combo = new ComboBox();
-//                    Object entityBean = reflection.getPropertyValue(entity, propertyName);
-//                    IAService service = (IAService) StaticContextAccessor.getBean(clazz);
-//                    List items = ((IAService) service).findAll();
-//                    if (array.isValid(items)) {
-//                        combo.setItems(items);
-//                        combo.setValue(entityBean);
-//                    }// end of if cycle
-//                    combo.setEnabled(false);
-//                    return combo;
-//                }));
+                //                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                //                    ComboBox combo = new ComboBox();
+                //                    Object entityBean = reflection.getPropertyValue(entity, propertyName);
+                //                    IAService service = (IAService) StaticContextAccessor.getBean(clazz);
+                //                    List items = ((IAService) service).findAll();
+                //                    if (array.isValid(items)) {
+                //                        combo.setItems(items);
+                //                        combo.setValue(entityBean);
+                //                    }// end of if cycle
+                //                    combo.setEnabled(false);
+                //                    return combo;
+                //                }));
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
@@ -394,7 +409,7 @@ public class AColumnService extends AbstractService {
                     try { // prova ad eseguire il codice
                         testo = field.get(entity).toString();
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case combolinkato");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -410,7 +425,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getMonthLong(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case monthdate");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -426,7 +441,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getDayWeekShort(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case weekdate");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -442,7 +457,7 @@ public class AColumnService extends AbstractService {
                         data = (LocalDate) field.get(entity);
                         testo = date.getDate(data);
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case localdate");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -461,10 +476,9 @@ public class AColumnService extends AbstractService {
                             timeStamp = (LocalDateTime) obj;
                             testo = date.getDateTime(timeStamp); //@todo aggiungere un selettore per modificare il format dalla annotation
                         } else {
-                            logger.warn("localdatetime non definito");
                         }// end of if/else cycle
                     } catch (Exception unErrore) { // intercetta l'errore
-                        logger.error(unErrore.toString());
+                        logger.error(unErrore, this.getClass(), "create - case localdatetime");
                     }// fine del blocco try-catch
 
                     return new Label(testo);
@@ -752,7 +766,7 @@ public class AColumnService extends AbstractService {
                 width = "3em";
                 break;
             default:
-//                logger.warn("Switch - caso non definito", AColumnService.class, "create");
+                //                logger.warn("Switch - caso non definito", AColumnService.class, "create");
                 logger.warn("Switch - caso non definito");
                 break;
         } // end of switch statement
@@ -796,11 +810,11 @@ public class AColumnService extends AbstractService {
             //--di default le colonne NON sono sortable
             //--può essere modificata con sortable = true, nell'annotation @AIColumn della Entity
             colonna.setSortable(sortable);
-//            colonna.setSortProperty(propertyName);
+            //            colonna.setSortProperty(propertyName);
 
-//            if (property.equals("id")) {
-//                colonna.setWidth("1px");
-//            }// end of if cycle
+            //            if (property.equals("id")) {
+            //                colonna.setWidth("1px");
+            //            }// end of if cycle
 
             if (isFlexGrow) {
                 colonna.setFlexGrow(1);

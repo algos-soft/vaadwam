@@ -145,7 +145,7 @@ public abstract class AService extends AbstractService implements IAService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected LogService logger;
+    public LogService logger;
 
 
     /**

@@ -192,6 +192,10 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         context = vaadinService.getSessionContext();
         login = context != null ? context.getLogin() : null;
 
+        //--patch
+        columnService.logger = logger;
+        pref.logger = logger;
+
         //--se il login è obbligatorio e manca, la View non funziona
         if (vaadinService.mancaLoginSeObbligatorio()) {
             return;
@@ -393,15 +397,15 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      */
     protected void addRoute(Class<? extends AViewList> viewClazz) {
         MainLayout mainLayout = context.getMainLayout();
-//        if (specificMenuItems != null && specificMenuItems.size() > 0) {
-//            specificMenuItems.add(mainLayout.addMenu(viewClazz));
-//        }// end of if cycle
+        //        if (specificMenuItems != null && specificMenuItems.size() > 0) {
+        //            specificMenuItems.add(mainLayout.addMenu(viewClazz));
+        //        }// end of if cycle
     }// end of method
 
 
     @Override
     public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
-//        AppLayoutMenu appMenu = context.getAppMenu();
+        //        AppLayoutMenu appMenu = context.getAppMenu();
 
         if (dialog != null) {
             dialog.close();
@@ -409,11 +413,11 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         if (deleteDialog != null) {
             deleteDialog.close();
         }// end of if cycle
-//        if (specificMenuItems != null && specificMenuItems.size() > 0) {
-//            for (AppLayoutMenuItem menuItem : specificMenuItems) {
-//                appMenu.removeMenuItem(menuItem);
-//            }// end of for cycle
-//        }// end of if cycle
+        //        if (specificMenuItems != null && specificMenuItems.size() > 0) {
+        //            for (AppLayoutMenuItem menuItem : specificMenuItems) {
+        //                appMenu.removeMenuItem(menuItem);
+        //            }// end of for cycle
+        //        }// end of if cycle
     }// end of method
 
 
@@ -523,7 +527,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
             buttonEdit.addClickListener(event -> openDialog(entityBean));
         }// end of if/else cycle
 
-//        buttonEdit.setIcon(new Icon("lumo", isEntityModificabile ? "edit" : "search"));
+        //        buttonEdit.setIcon(new Icon("lumo", isEntityModificabile ? "edit" : "search"));
         buttonEdit.setIcon(new Icon("lumo", iconaTxt));
         buttonEdit.addClassName("review__edit");
         buttonEdit.getElement().setAttribute("theme", "tertiary");
@@ -625,7 +629,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
     protected void openForm(AEntity entityBean, String formRouteName, EAOperation operation) {
         HashMap mappa = new HashMap();
         mappa.put(KEY_MAPPA_FORM_TYPE, operation.name());
-        if (entityBean!=null) {
+        if (entityBean != null) {
             mappa.put(KEY_MAPPA_ENTITY_BEAN, entityBean.id);
         }// end of if cycle
         final QueryParameters query = routeService.getQuery(mappa);
