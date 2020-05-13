@@ -106,9 +106,10 @@
 
             <div id="right">
 
-                <!--spazio di compensazione verticale per turni senza orario previsto: deve essere uguale all'altezza dell'header del turno in TurnoCellPolymer-->
+                <!--spazio di compensazione verticale per header dei turni senza orario previsto:
+                deve essere uguale all'altezza dell'header del turno in TurnoCellPolymer-->
                 <template is="dom-if" if="[[!servizio.orarioDefinito]]">
-                    <div style="height:3.2em"/>
+                    <div style="height:2.8em"/>
                 </template>
 
                 <!--funzioni obbligatorie-->
