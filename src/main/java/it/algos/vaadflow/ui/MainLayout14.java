@@ -160,12 +160,15 @@ public class MainLayout14 extends AppLayout {
      */
     protected TopbarComponent createTopBar() {
         TopbarComponent topbar;
+        String style;
 
         if (text.isValid(getUserName())) {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione(), getUserName());
         } else {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }// end of if/else cycle
+        style = "display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; padding-bottom:0.5em; padding-right:0.5em; align-items:center";
+        topbar.getElement().setAttribute("style", style);
 
         topbar.setProfileListener(() -> profilePressed());
 
@@ -207,7 +210,7 @@ public class MainLayout14 extends AppLayout {
 
     /**
      * Se l'applicazione è multiUtente, visualizzo l'utente loggato <br>
-     * Alrimenti rimane vuoto (non aggiunge il componente frafico) <br>
+     * Altrimenti rimane vuoto (non aggiunge il componente grafico) <br>
      */
     private String getUserName() {
         String username = "";
