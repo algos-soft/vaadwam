@@ -1,8 +1,11 @@
 package it.algos.vaadwam.modules.milite;
 
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,9 @@ import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 @AIScript(sovrascrivibile = false)
 public class MiliteProfile extends WamViewDialog<Milite> {
 
+    private RadioButtonGroup<String> flagIscrizioniAdmin;
+
+
     /**
      * Costruttore base senza parametri <br>
      * Non usato. Serve solo per 'coprire' un piccolo bug di Idea <br>
@@ -51,6 +57,35 @@ public class MiliteProfile extends WamViewDialog<Milite> {
 
 
     /**
+     * Regola il titolo del dialogo <br>
+     * Recupera recordName dalle @Annotation della classe Entity. Non dovrebbe mai essere vuoto. <br>
+     * Costruisce il titolo con la descrizione dell'operazione (New, Edit,...) ed il recordName <br>
+     * Sostituisce interamente il titlePlaceholder <br>
+     */
+    @Override
+    protected void fixTitleLayout() {
+        titlePlaceholder.add(new H2("Profilo account"));
+    }
+
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilitare il checkBox in basso");
+        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
+
+        super.fixAlertLayout();
+    }
+
+
+    /**
      * Costruisce nell'ordine una lista di nomi di properties <br>
      * La lista viene usata per la costruzione automatica dei campi e l'inserimento nel binder <br>
      * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
@@ -62,5 +97,47 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     protected List<String> getPropertiesName() {
         return Arrays.asList("nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "noteWam");
     }// end of method
+
+
+    /**
+     * Eventuali aggiustamenti finali al layout
+     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
+     * Sovrascritto nella sottoclasse
+     */
+    @Override
+    protected void fixLayoutFinal() {
+        flagIscrizioniAdmin = new RadioButtonGroup<>();
+        flagIscrizioniAdmin.setLabel("Come admin si possono iscrivere tutti i militi");
+        flagIscrizioniAdmin.setItems("Milite", "Admin");
+        flagIscrizioniAdmin.setValue("Milite");
+
+        getFormLayout().add(flagIscrizioniAdmin);
+    }
+
+
+    /**
+     * Regola in scrittura eventuali valori NON associati al binder
+     * Dalla UI al DB
+     * Sovrascritto
+     */
+    @Override
+    protected void writeSpecificFields() {
+        String value;
+        if (flagIscrizioniAdmin != null) {
+            value = flagIscrizioniAdmin.getValue();
+            if (text.isValid(value)) {
+                switch (value) {
+                    case "Milite":
+                        wamLogin.setRoleType(EARoleType.user);
+                        break;
+                    case "Admin":
+                        wamLogin.setRoleType(EARoleType.admin);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 
 }// end of class

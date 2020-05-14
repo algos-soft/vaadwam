@@ -26,13 +26,15 @@ public class TopbarComponent extends HorizontalLayout {
 
     private static String DEFAULT_IMAGE = "frontend/images/medal.ico";
 
-//    private Image image;
+    //    private Image image;
 
-//    private Label label;
-
-    private MenuItem itemUser;
+    //    private Label label;
 
     public MenuBar menuUser;
+
+    public SubMenu projectSubMenu;
+
+    private MenuItem itemUser;
 
     private LogoutListener logoutListener;
 
@@ -52,7 +54,6 @@ public class TopbarComponent extends HorizontalLayout {
 
     private AMenuService menuService;
 
-    public SubMenu projectSubMenu;
 
     /**
      * Costruttore base con i parametri obbligatori <br>
@@ -60,32 +61,32 @@ public class TopbarComponent extends HorizontalLayout {
      * @param titolo della company/applicazione (obbligatorio)
      */
     public TopbarComponent(String titolo, String sottotitolo) {
-        this("", titolo, sottotitolo,"");
+        this("", titolo, sottotitolo, "");
     }// end of constructor
 
 
     /**
      * Costruttore con alcuni parametri <br>
      *
-     * @param pathImage   dell'immagine (facoltativo)
-     * @param titolo della company/applicazione (obbligatorio)
+     * @param pathImage dell'immagine (facoltativo)
+     * @param titolo    della company/applicazione (obbligatorio)
      */
     public TopbarComponent(String pathImage, String titolo, String sottotitolo) {
-        this(pathImage, titolo, sottotitolo,"");
+        this(pathImage, titolo, sottotitolo, "");
     }// end of constructor
 
 
     /**
      * Costruttore completo con tutti i parametri <br>
      *
-     * @param pathImage   dell'immagine (facoltativo)
-     * @param titolo della company/applicazione (obbligatorio)
-     * @param nickName    utente loggato se multiCompany (facoltativo)
+     * @param pathImage dell'immagine (facoltativo)
+     * @param titolo    della company/applicazione (obbligatorio)
+     * @param nickName  utente loggato se multiCompany (facoltativo)
      */
     public TopbarComponent(String pathImage, String titolo, String sottotitolo, String nickName) {
         this.pathImage = pathImage;
         this.titolo = titolo;
-        this.sottotitolo=sottotitolo;
+        this.sottotitolo = sottotitolo;
         this.nickName = nickName;
 
         this.initView();
@@ -112,24 +113,23 @@ public class TopbarComponent extends HorizontalLayout {
 
 
         //--titolo su 2 righe
-        Div divTitolo=new Div();
-        divTitolo.getElement().setAttribute("style","display:flex; flex-direction:column; min-width:2em");
+        Div divTitolo = new Div();
+        divTitolo.getElement().setAttribute("style", "display:flex; flex-direction:column; min-width:2em");
 
         // (#1676F3 is --lumo-primary-text-color)
-        String commonStyle="line-height:120%; white-space:nowrap; overflow:hidden; color:#1676F3";
+        String commonStyle = "line-height:120%; white-space:nowrap; overflow:hidden; color:#1676F3";
 
         Label label1 = new Label(titolo);
-        label1.getElement().setAttribute("style",commonStyle);
-        label1.getStyle().set("font-size","120%");
-        label1.getStyle().set("font-weight","bold");
+        label1.getElement().setAttribute("style", commonStyle);
+        label1.getStyle().set("font-size", "120%");
+        label1.getStyle().set("font-weight", "bold");
 
         Label label2 = new Label(sottotitolo);
-        label2.getElement().setAttribute("style",commonStyle);
-        label2.getStyle().set("font-size","70%");
+        label2.getElement().setAttribute("style", commonStyle);
+        label2.getStyle().set("font-size", "70%");
 
         divTitolo.add(label1);
         divTitolo.add(label2);
-
 
 
         //--menu utente eventuale
@@ -141,7 +141,7 @@ public class TopbarComponent extends HorizontalLayout {
 
             projectSubMenu = itemUser.getSubMenu();
             tab = new Tab();
-            tab.add(VaadinIcon.EDIT.create(),new Label("Profilo"));
+            tab.add(VaadinIcon.EDIT.create(), new Label("Profilo"));
             MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (profileListener != null) {
                     profileListener.profile();
@@ -160,7 +160,7 @@ public class TopbarComponent extends HorizontalLayout {
 
         if (menuUser != null) {
             Div elasticSpacer = new Div();
-            elasticSpacer.getStyle().set("flex-grow","1");
+            elasticSpacer.getStyle().set("flex-grow", "1");
             this.add(image, divTitolo, elasticSpacer, menuUser);
         } else {
             this.add(image, divTitolo);
@@ -176,19 +176,19 @@ public class TopbarComponent extends HorizontalLayout {
     }
 
 
-//    public void setImage(Image image) {
-//        this.image = image;
-//    }
+    //    public void setImage(Image image) {
+    //        this.image = image;
+    //    }
 
 
-//    public void setLabel(String text) {
-//        label.setText(text);
-//    }
+    //    public void setLabel(String text) {
+    //        label.setText(text);
+    //    }
 
 
-//    public void setUsername(String username) {
-//        itemUser.setText(username);
-//    }
+    //    public void setUsername(String username) {
+    //        itemUser.setText(username);
+    //    }
 
 
     public void setLogoutListener(LogoutListener listener) {
