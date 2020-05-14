@@ -48,6 +48,9 @@ import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
 @Slf4j
 public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> {
 
+    @Autowired
+    protected AVaadinService vaadinService;
+
     private Iscrizione iscrizione;
 
     private Turno turno;
@@ -76,9 +79,6 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     @Autowired
     private ServizioService servizioService;
 
-    @Autowired
-    protected AVaadinService vaadinService;
-
     private WamLogin wamLogin;
 
     private Milite milite;
@@ -88,15 +88,16 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      * @param tabellone  il tabellone di riferimento per effettuare le callbacks
      * @param dialogo    il dialogo contenitore
      * @param iscrizione l'iscrizione da mostrare
-     * @param readOnly interfaccia in modalità read only
+     * @param readOnly   interfaccia in modalità read only
      */
     public IscrizioneEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, Iscrizione iscrizione, boolean readOnly) {
         this.tabellone = tabellone;
         this.dialogo = dialogo;
         this.iscrizione = iscrizione;
         this.turno = turno;
-        this.readOnly=readOnly;
+        this.readOnly = readOnly;
     }
+
 
     @PostConstruct
     private void init() {
@@ -105,14 +106,15 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         wamLogin = (WamLogin) context.getLogin();
 
         // se l'iscrizione ha già un miite lo usa, se no usa l'utente loggato
-        milite=iscrizione.getMilite();
-        if (milite==null){
+        milite = iscrizione.getMilite();
+        if (milite == null) {
             milite = wamLogin.getMilite();
         }
 
         populateModel();
         regolaBottoni();
     }
+
 
     /**
      * Riempie il modello con i dati del turno
@@ -138,8 +140,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                 getModel().setUsaOrarioLabel(true);
                 getModel().setUsaOrarioPicker(false);
             } else {
-//                getModel().setInizioExtra(servizio.getInizio().toString());
-//                getModel().setFineExtra(servizio.getFine().toString());
+                //                getModel().setInizioExtra(servizio.getInizio().toString());
+                //                getModel().setFineExtra(servizio.getFine().toString());
                 getModel().setUsaOrarioLabel(false);
                 getModel().setUsaOrarioPicker(true);
             }
@@ -191,7 +193,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             bConferma.addClickShortcut(Key.ENTER);
         }
         bConferma.addClickListener(e -> {
-            if(validateInput()){
+            if (validateInput()) {
                 syncIscrizione();
                 // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
                 tabellone.confermaDialogoTurno(dialogo, turno);
@@ -199,7 +201,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         });
 
         // se read only questo bottone non c'è
-        if (bConferma.isVisible() && readOnly){
+        if (bConferma.isVisible() && readOnly) {
             bConferma.setVisible(false);
         }
 
@@ -210,22 +212,16 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             bElimina.addClickListener(e -> {
 
                 Button bElimina = new Button();
-                bElimina.getStyle().set("background-color","red");
-                bElimina.getStyle().set("color","white");
+                bElimina.getStyle().set("background-color", "red");
+                bElimina.getStyle().set("color", "white");
                 bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-                    if (himself()){ // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
+                    if (himself()) { // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
                         resetIscrizione();
                         tabellone.confermaDialogoTurno(dialogo, turno);
                     }
                 });
 
-                ConfirmDialog
-                        .createWarning()
-                        .withCaption("Conferma cancellazione")
-                        .withMessage("Sei sicuro di voler eliminare l'iscrizione?")
-                        .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
-                        .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
-                        .open();
+                ConfirmDialog.createWarning().withCaption("Conferma cancellazione").withMessage("Sei sicuro di voler eliminare l'iscrizione?").withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE)).withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH)).open();
 
 
             });
@@ -234,80 +230,89 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // se read only questo bottone non c'è
-        if (bElimina.isVisible() && readOnly){
+        if (bElimina.isVisible() && readOnly) {
             bElimina.setVisible(false);
         }
 
 
     }
 
-    private boolean himself(){
-        return iscrizione.getMilite()!=null && wamLogin.getMilite().equals(iscrizione.getMilite());
+
+    private boolean himself() {
+        Milite milite = wamLogin.getMilite();
+
+        if (milite != null) {
+            return iscrizione.getMilite() != null && wamLogin.getMilite().equals(iscrizione.getMilite());
+        } else {
+            return false;
+        }
     }
+
 
     /**
      * Valida il contenuto del form e avvisa se non valido
-    */
+     */
     private boolean validateInput() {
-        boolean valid=true;
-        String problem="";
-        LocalTime oraInizio=null;
-        LocalTime oraFine=null;
+        boolean valid = true;
+        String problem = "";
+        LocalTime oraInizio = null;
+        LocalTime oraFine = null;
         String sOra;
 
-        if (valid){
+        if (valid) {
             try {
-                sOra=getModel().getOraInizio();
-                if (!StringUtils.isEmpty(sOra)){
+                sOra = getModel().getOraInizio();
+                if (!StringUtils.isEmpty(sOra)) {
                     oraInizio = dateService.getLocalTimeHHMM(sOra);
                 }
             } catch (Exception e) {
-                problem="Ora inizio turno non valida";
-                valid=false;
+                problem = "Ora inizio turno non valida";
+                valid = false;
             }
         }
 
-        if (valid){
+        if (valid) {
             try {
-                sOra=getModel().getOraFine();
-                if (!StringUtils.isEmpty(sOra)){
+                sOra = getModel().getOraFine();
+                if (!StringUtils.isEmpty(sOra)) {
                     oraFine = dateService.getLocalTimeHHMM(sOra);
                 }
             } catch (Exception e) {
-                problem="Ora fine turno non valida";
-                valid=false;
+                problem = "Ora fine turno non valida";
+                valid = false;
             }
         }
 
         // no una sola valorizzata e una nulla
-        if ((oraInizio!=null && oraFine==null) || (oraInizio==null && oraFine!=null)){
-            problem="Ora inizio e ora fine devono avere entrambe un valore";
-            valid=false;
+        if ((oraInizio != null && oraFine == null) || (oraInizio == null && oraFine != null)) {
+            problem = "Ora inizio e ora fine devono avere entrambe un valore";
+            valid = false;
         }
 
         // questo controllo per ora non lo attiviamo perché esistono
         // turni a cavallo della mezzanotte ed è quindi legittimo
         // che l'ora di fine sia anteriore all'ora di inizio.
-//        if (valid){
-//            if (oraInizio!=null && oraFine!=null){
-//                if (oraFine.isBefore(oraInizio)){
-//                    problem="L'ora di fine turno è anteriore all'ora di inizio";
-//                    valid=false;
-//                }
-//            }
-//        }
+        //        if (valid){
+        //            if (oraInizio!=null && oraFine!=null){
+        //                if (oraFine.isBefore(oraInizio)){
+        //                    problem="L'ora di fine turno è anteriore all'ora di inizio";
+        //                    valid=false;
+        //                }
+        //            }
+        //        }
 
-        if (!valid){
+        if (!valid) {
             notify(problem);
         }
 
         return valid;
     }
 
+
     /**
      * Mostra una notifica generica
      */
-    private void notify(String text){
+    private void notify(String text) {
         Notification notification = new Notification(text);
         notification.setDuration(3000);
         notification.setPosition(Notification.Position.MIDDLE);
@@ -357,7 +362,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     /**
      * Resetta l'inscrizione alle condizioni di default (vuota)
      */
-    private void resetIscrizione(){
+    private void resetIscrizione() {
         iscrizione.setMilite(null);
         iscrizione.setInizio(turno.getInizio());
         iscrizione.setFine(turno.getFine());
