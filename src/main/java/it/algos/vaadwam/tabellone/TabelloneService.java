@@ -6,9 +6,12 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -23,12 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_TAB;
@@ -111,6 +117,14 @@ public class TabelloneService extends AService {
     @Autowired
     protected AVaadinService vaadinService;
 
+//    /**
+//     * Wam-Login della sessione con i dati del Milite loggato <br>
+//     */
+//    private WamLogin wamLogin;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
 
     /**
      * Costruttore @Autowired <br>
@@ -126,6 +140,15 @@ public class TabelloneService extends AService {
         this.repository = (TurnoRepository) repository;
     }// end of Spring constructor
 
+
+//    @PostConstruct
+//    private void init(){
+//        AContext context = vaadinService.getSessionContext();
+//        vaadinService.getSessionContext();
+//        if (context!=null){
+//            wamLogin = (WamLogin) context.getLogin();
+//        }
+//    }
 
     /**
      * Costruisce una lista di giorni da visualizzare nella grid <br>
@@ -148,27 +171,27 @@ public class TabelloneService extends AService {
 
 
     /**
-     * Costruisce una lista di righe da visualizzare nella grid. Una per ogni servizio visibile <br>
+     * Costruisce la lista delle righe da visualizzare nella grid per un dato periodo.
      *
-     * @param giornoIniziale     del tabellonesuperato
-     * @param giorniVisualizzati nel tabellonesuperato
+     * @param data1  data iniziale
+     * @param quantiGiorni numero di giorni da analizzare
      */
-    public List<Riga> getGridRigheList(LocalDate giornoIniziale, int giorniVisualizzati) {
+    public List<Riga> getGridRigheList(LocalDate data1, int quantiGiorni) {
         List<Riga> gridRigheList;
         Riga riga;
-        LocalDate giornoFinale = giornoIniziale.plusDays(giorniVisualizzati - 1);
+        LocalDate giornoFinale = data1.plusDays(quantiGiorni - 1);
 
         // tutti i servizi da visualizzare in tabellone:
-        // sono tutti i servizi standard
-        // più quelli extra che hanno almeno un turno definito nel periodo considerato
-        List<Servizio> servizi = getServiziPeriodo(giornoIniziale, giornoFinale);
+        // - tutti i servizi visibili
+        // - i servizi (non visibili o extra) che hanno almeno un turno definito nel periodo considerato
+        List<Servizio> servizi = getServiziPeriodo(data1, giornoFinale);
 
         List<Turno> turni;
 
         gridRigheList = new ArrayList<>();
         for (Servizio servizio : servizi) {
-            turni = turnoService.findByServizio(servizio, giornoIniziale, giornoFinale);
-            riga = rigaService.newEntity(giornoIniziale, servizio, turni);
+            turni = turnoService.findByServizio(servizio, data1, giornoFinale);
+            riga = rigaService.newEntity(data1, servizio, turni);
             gridRigheList.add(riga);
         }
 
@@ -177,44 +200,101 @@ public class TabelloneService extends AService {
 
 
     /**
-     * Ritorna tutti i servizi standard
-     * più quelli extra che hanno almeno un turno
-     * definito nel periodo considerato.<br>
-     * Il tutto nell'ordine di tabellone.
+     * Ritorna tutti i servizi da visualizzare in tabellone per un dato periodo.
+     * <br>
+     * - tutti i servizi standard (cioè a orario definito) che sono visibili<br>
+     * - più i servizi standard che sono invisibili ma hanno almeno un turno nel periodo considerato<br>
+     * - più i servizi extra (visibili o invisibili) che hanno almeno un turno nel periodo considerato<br>
+     * <br>
+     * Il tutto ordinato come segue:<br>
+     * - prima i servizi standard visibili, in ordine di servizio<br>
+     * - poi i servizi standard invisibili<br>
+     * - poi i servizi extra<br>
+     * (ogni sottogruppo in ordine di servizio.)<br>
      */
     private List<Servizio> getServiziPeriodo(LocalDate data1, LocalDate data2){
-        List<Servizio> servizi = new ArrayList<>();
-        servizi.addAll(servizioService.findAllVisibili()); // quelli standard
 
-        List<Servizio> serviziExtra=new ArrayList<>();
-        List<Turno> turniPeriodo=turnoService.findByDate(data1, data2);
-        for(Turno turno : turniPeriodo){
-            Servizio servizio=turno.getServizio();
-            if(!servizio.isOrarioDefinito()){
-                if(!servizi.contains(servizio)){
-                    servizi.add(servizio);
-                }
+        // i servizi standard che sono visibili
+        //long start0=System.currentTimeMillis();
+
+        //long start=System.currentTimeMillis();
+        List<Servizio> serviziStandardVisibili = servizioService.findAllStandardVisibili();
+//        long end=System.currentTimeMillis();
+//        log.info("tempo serviziStandardVisibili: "+(end-start)+" ms");
+
+        // i servizi standard che sono invisibili ma hanno almeno un turno nel periodo considerato
+        List<Servizio> serviziStandardInvisibiliConTurni=new ArrayList<>();
+        List<Servizio> serviziStandardInvisibili = servizioService.findAllStandardInvisibili();
+        //start=System.currentTimeMillis();
+        for(Servizio s : serviziStandardInvisibili){
+            if (countTurni(s, data1, data2)>0){
+                serviziStandardInvisibiliConTurni.add(s);
             }
         }
+        //end=System.currentTimeMillis();
+        //log.info("tempo serviziStandardInvisibiliConTurni ciclofor: "+(end-start)+" ms");
 
-        // ordina per Ordine
-        servizi.sort((questo, altro) -> {
-            if (questo.getOrdine()==altro.getOrdine()){
-                return 0;
-            }else{
-                if(questo.getOrdine()>altro.getOrdine()){
-                    return 1;
-                }else{
-                    return -1;
-                }
+
+        // i servizi extra (visibili o invisibili) che hanno almeno un turno nel periodo considerato
+        List<Servizio> serviziExtraConTurni=new ArrayList<>();
+        List<Servizio> serviziExtra = servizioService.findAllExtra();
+//        start=System.currentTimeMillis();
+        for(Servizio s : serviziExtra){
+            if (countTurni(s, data1, data2)>0){
+                serviziExtraConTurni.add(s);
             }
-        });
+        }
+//        end=System.currentTimeMillis();
+//        log.info("tempo serviziExtraConTurni ciclofor: "+(end-start)+" ms");
 
-        servizi.addAll(serviziExtra);
+
+//        end=System.currentTimeMillis();
+//        log.info("tempo totale: "+(end-start0)+" ms");
+
+        // lista completa
+        List<Servizio> servizi = new ArrayList<>();
+        servizi.addAll(serviziStandardVisibili);
+        servizi.addAll(serviziStandardInvisibiliConTurni);
+        servizi.addAll(serviziExtraConTurni);
 
         return  servizi;
 
     }
+
+
+
+
+    /**
+     * Restituisce il numero di turni della croce corrente per un dato servizio in un dato periodo.
+     */
+    private long countTurni(Servizio servizio, LocalDate data1, LocalDate data2) {
+        Croce croce=getWamLogin().getCroce();
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("croce").is(croce));
+        query.addCriteria(Criteria.where("giorno").gte(data1).andOperator(Criteria.where("giorno").lte(data2)));
+        query.addCriteria(Criteria.where("serv.$id").is(servizio.getId()));
+
+//        long start=System.currentTimeMillis();
+        long count = mongoTemplate.count(query, Turno.class);
+//        long end=System.currentTimeMillis();
+//        log.info("tempo count: "+(end-start)+" ms");
+
+        return count;
+
+    }
+
+
+    /**
+     * Recupera il login della session <br>
+     * Controlla che la session sia attiva <br>
+     *
+     * @return context della sessione
+     */
+    public WamLogin getWamLogin() {
+        return vaadinService.getSessionContext() != null ? (WamLogin) vaadinService.getSessionContext().getLogin() : null;
+    }
+
 
 
 //    /**

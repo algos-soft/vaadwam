@@ -464,7 +464,11 @@ public class TurnoService extends WamService {
         fineEsclusoEstremo = fineCompresoEstremo.plusDays(1);
 
         if (inizioEsclusoEstremo != null && fineEsclusoEstremo != null) {
+            long start=System.currentTimeMillis();
             lista = repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizioEsclusoEstremo, fineEsclusoEstremo);
+            long end=System.currentTimeMillis();
+            log.info("tempo query turni by periodo: "+(end-start)+" ms");
+
         }
 
         return lista;

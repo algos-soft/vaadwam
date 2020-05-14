@@ -10,10 +10,12 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
@@ -40,6 +42,8 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -779,19 +783,107 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void clickAddServizio(){
 
+        // recupera tutti i servizi extra
+        List<Servizio> serviziExtra= findServiziExtraVisibili();
 
-        Servizio servizio = servizioService.findByKeyUnica("extra");
+        if (serviziExtra.size()==0){ // non ci sono servizi di tipo extra
 
+            // avvisa e ritorna
+            ConfirmDialog
+                    .createWarning()
+                    .withMessage("Non sono disponibili servizi di tipo extra.")
+                    .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                    .open();
+
+        } else {    // ci sono servizi di tipo extra
+
+            // seleziona i servizi candidati (quelli non già presenti nel tabellone)
+            List<Servizio> serviziCandidati=new ArrayList<>();
+            for(Servizio servizio : serviziExtra){
+                if (!isPresenteInTabellone(servizio)){
+                    serviziCandidati.add(servizio);
+                }
+            }
+
+            if(serviziCandidati.size()==0){ // non ci sono servizi candidati
+                ConfirmDialog
+                        .createWarning()
+                        .withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.")
+                        .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
+                        .open();
+
+            }else{ // ci sono uno o più servizi candidati
+
+                if (serviziCandidati.size()==1){    // esiste un solo servizio candidato
+
+                    addNuovaRiga(serviziCandidati.get(0)); // lo sceglie automaticamente
+
+                } else {   // esistono più servizi candidati
+
+                    // presento un dialogo per scegliere il servizio canditato
+
+                    Select<Servizio> select=new Select<>();
+                    select.setItems(serviziCandidati);
+                    select.setValue(serviziCandidati.get(0));
+
+                    Button bConferma = new Button();
+                    bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+                        addNuovaRiga(select.getValue());
+                    });
+
+                    ConfirmDialog
+                            .createQuestion()
+                            .withCaption("Selezione servizio")
+                            .withMessage(select)
+                            .withButton(new Button(), ButtonOption.caption("Annulla"))
+                            .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus())
+                            .open();
+                }
+
+            }
+
+        }
+
+    }
+
+
+    private boolean isPresenteInTabellone(Servizio servizio) {
+        boolean trovato=false;
+        for(Riga riga : gridItems){
+            if(riga.getServizio().equals(servizio)){
+                trovato=true;
+                break;
+            }
+        }
+        return trovato;
+    }
+
+
+    /**
+     * Ritorna tutti i servizi extra visibili di questa Croce
+     */
+    private List<Servizio> findServiziExtraVisibili(){
+        List<Servizio> servizi=new ArrayList<>();
+        for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())){
+            if (!servizio.isOrarioDefinito() && servizio.isVisibile()){
+                servizi.add(servizio);
+            }
+        }
+        return servizi;
+    }
+
+
+    private void addNuovaRiga(Servizio servizio){
         Riga riga = rigaService.newEntity(startDay, servizio, null);
         gridItems.add(riga);
-
         grid.getDataProvider().refreshAll();
 
-        //Broadcaster.broadcast("servizioadded");    // provoca l'update della GUI di questo e degli altri client
-
+        //grid.getDataProvider().refreshItem(riga);
+        //grid.setItems(gridItems);
         //grid.setDataProvider(grid.getDataProvider());
+        // ...comunque ci si provi, la pagina scrolla sempre al top, e mi sa che c'è poco da fare...
+        // https://vaadin.com/forum/thread/17634020/reloading-vaadin-grid-makes-the-page-scroll-to-top
 
-        //grid.getDataProvider().();
     }
 
 
