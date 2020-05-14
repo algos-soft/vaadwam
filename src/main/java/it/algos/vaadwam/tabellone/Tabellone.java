@@ -262,7 +262,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
         loadDataInGrid();
-
     }
 
 

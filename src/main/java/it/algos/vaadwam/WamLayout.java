@@ -9,6 +9,7 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
+import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.ui.MainLayout14;
@@ -84,6 +85,23 @@ public class WamLayout extends MainLayout14 {
 
 
     /**
+     * Recupera i dati della sessione
+     */
+    @Override
+    protected void fixSessione() {
+        super.fixSessione();
+
+        if (login != null && login instanceof WamLogin) {
+            if (((WamLogin) login).isAdminOrDev()) {
+                FlowVar.usaDrawer = true;
+            } else {
+                FlowVar.usaDrawer = false;
+            }
+        }
+    }
+
+
+    /**
      * Se l'applicazione è multiCompany e multiUtente, li visualizzo <br>
      * Altrimenti il nome del programma <br>
      */
@@ -130,8 +148,8 @@ public class WamLayout extends MainLayout14 {
         List<Croce> croci = croceService.findAll();
         croci.add(croceAll);
         group.setItems(croci);
-//        DataProvider<Croce, ?>  data=group.getDataProvider();
-//        data.getId(croceAll);
+        //        DataProvider<Croce, ?>  data=group.getDataProvider();
+        //        data.getId(croceAll);
         group.addValueChangeListener(event -> modificaCroce(group.getValue()));
         return group;
     }// end of method
