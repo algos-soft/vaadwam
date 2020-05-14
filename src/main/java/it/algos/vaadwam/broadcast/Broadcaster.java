@@ -10,10 +10,9 @@ import java.util.function.Consumer;
 public class Broadcaster {
     static Executor executor = Executors.newSingleThreadExecutor();
 
-    static LinkedList<Consumer<String>> listeners = new LinkedList<>();
+    static LinkedList<Consumer<BroadcastMsg>> listeners = new LinkedList<>();
 
-    public static synchronized Registration register(
-            Consumer<String> listener) {
+    public static synchronized Registration register(Consumer<BroadcastMsg> listener) {
         listeners.add(listener);
 
         return () -> {
@@ -23,8 +22,8 @@ public class Broadcaster {
         };
     }
 
-    public static synchronized void broadcast(String message) {
-        for (Consumer<String> listener : listeners) {
+    public static synchronized void  broadcast(BroadcastMsg message) {
+        for (Consumer<BroadcastMsg> listener : listeners) {
             executor.execute(() -> listener.accept(message));
         }
     }

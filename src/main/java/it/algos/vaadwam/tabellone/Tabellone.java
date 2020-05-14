@@ -1,10 +1,12 @@
 package it.algos.vaadwam.tabellone;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -28,6 +30,7 @@ import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.broadcast.BroadcastMsg;
 import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -55,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 import static it.algos.vaadwam.application.WamCost.*;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * Tabellone di servizi, turni e iscrizioni
@@ -234,11 +238,23 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
-        broadcasterRegistration = Broadcaster.register(newMessage -> ui.access(() -> {
-            if (newMessage.equals("turnosaved") || newMessage.equals("turnodeleted") || newMessage.equals("servizioadded")) {
-                loadDataInGrid();
+        broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
+            String code = message.getCode();
+            if (code.equals("turnosaved") || code.equals("turnodeleted")) {
+                LocalDate giorno = (LocalDate)message.getPayload();
+                if(isInTabellone(giorno)){
+                    loadDataInGrid();
+                }
             }
         }));
+    }
+
+    /**
+     * Controlla se una data è all'interno del periodo corrente
+     */
+    boolean isInTabellone(LocalDate testDate) {
+        LocalDate endDate=startDay.plusDays(numDays-1);
+        return !(testDate.isBefore(startDay) || testDate.isAfter(endDate));
     }
 
 
@@ -427,7 +443,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     /**
      * Crea l'header della colonna servizi
-     * Contiene un listener per modificare i giorni visualizzati nel tabellone
      */
     private Component periodoHeader() {
 
@@ -468,33 +483,36 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         switch (eaPeriodo) {
             case oggi:
                 startDay = LocalDate.now();
+                buildAllGrid();
                 break;
             case lunedi:
-                startDay = dateService.getFirstLunedì(LocalDate.now());
+                startDay = dateService.getFirstLunedì(LocalDate.now());                buildAllGrid();
+                buildAllGrid();
                 break;
             case giornoPrecedente:
                 startDay = startDay.minusDays(1);
+                buildAllGrid();
                 break;
             case giornoSuccessivo:
                 startDay = startDay.plusDays(1);
+                buildAllGrid();
                 break;
             case settimanaPrecedente:
                 startDay = startDay.minusDays(7);
+                buildAllGrid();
                 break;
             case settimanaSuccessiva:
                 startDay = startDay.plusDays(7);
+                buildAllGrid();
                 break;
             case selezione:
-                showDetail();
+                selezionaPeriodoCustom();
                 break;
             default:
-                log.warn("Switch - caso non definito");
+                log.error("Switch - caso non definito");
                 break;
         }
 
-        numDays = NUM_GIORNI_DEFAULT;
-
-        buildAllGrid();
 
     }
 
@@ -725,7 +743,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     public void confermaDialogoTurno(Dialog dialog, Turno turno) {
         dialog.close();
         turnoService.save(turno);
-        Broadcaster.broadcast("turnosaved");    // provoca l'update della GUI di questo e degli altri client
+
+        BroadcastMsg msg = new BroadcastMsg("turnosaved", turno.getGiorno());
+        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+
     }
 
 
@@ -733,7 +754,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     public void eliminaTurno(Dialog dialog, Turno turno) {
         dialog.close();
         turnoService.delete(turno);
-        Broadcaster.broadcast("turnodeleted");    // provoca l'update della GUI di questo e degli altri client
+
+        BroadcastMsg msg = new BroadcastMsg("turnodeleted", turno.getGiorno());
+        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
     }
 
 
@@ -761,18 +784,56 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    // mostra il dettaglio della selezione periodo
-    private void showDetail() {
+    private void selezionaPeriodoCustom() {
 
-        Map<String, String> mappa = new HashMap<>();
-        mappa.put(KEY_MAP_GIORNO_INIZIO, dateService.getISO(startDay));
-        mappa.put(KEY_MAP_GIORNO_FINE, dateService.getISO(startDay.plusDays(numDays - 1)));
-        //        final QueryParameters query = QueryParameters.simple(mappa);
-        //        getUI().ifPresent(ui -> ui.navigate(TAG_SELEZIONE, query));
+        final ConfirmDialog dialog=ConfirmDialog.create();
+        Button bConferma = new Button();
+        bConferma.setEnabled(false);
+        DatePicker picker1 = new DatePicker();
+        DatePicker picker2 = new DatePicker();
 
-        int a = 87;
-        int b = a;
+        Div divDate = new Div();
+        divDate.getElement().setAttribute("style","display: flex; flex-direction: row");
+        picker1.getElement().setAttribute("style","width:8em");
+        picker1.setPlaceholder("dal");
+        picker1.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<DatePicker, LocalDate>>) event -> {
+            bConferma.setEnabled(event.getValue()!=null && picker2.getValue()!=null);
+        });
 
+        picker2.getElement().setAttribute("style","width:8em; margin-left:0.5em");
+        picker2.setPlaceholder("al");
+        picker2.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<DatePicker, LocalDate>>) event -> {
+            bConferma.setEnabled(event.getValue()!=null && picker1.getValue()!=null);
+        });
+
+        divDate.add(picker1);
+        divDate.add(picker2);
+
+        bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+            LocalDate data1=picker1.getValue();
+            LocalDate data2=picker2.getValue();
+            if(data1.isAfter(data2)){
+                Notification.show("Le date devono essere consecutive", 2000, Notification.Position.MIDDLE);
+            }else{
+                int quantiGiorni=(int)DAYS.between(data1, data2);
+                final int max = 31;
+                if(quantiGiorni > max){
+                    Notification.show("Il massimo periodo visualizzabile è di "+max+" giorni", 2000, Notification.Position.MIDDLE);
+                }else{
+                    dialog.close();
+                    startDay=data1;
+                    numDays = quantiGiorni+1;
+                    buildAllGrid();
+                }
+            }
+        });
+
+        dialog.withCaption("Periodo da visualizzare")
+                .withMessage(divDate)
+                .withButton(new Button(), ButtonOption.caption("Annulla"))
+                .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.closeOnClick(false));
+
+        dialog.open();
 
     }
 
