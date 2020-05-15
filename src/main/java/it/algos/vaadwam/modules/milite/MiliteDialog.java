@@ -173,7 +173,8 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     protected void addSpecificAlgosFields() {
         super.addSpecificAlgosFields();
 
-        if (((Milite) currentItem).id.equals(wamLogin.getMilite().id)) {
+        if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+            //            if (((Milite) currentItem).id.equals(wamLogin.getMilite().id)) {
             ACheckBox fieldLoggato = new ACheckBox("Collegamento al login come admin per iscrivere tutti i militi");
 
             if (fieldLoggato != null) {

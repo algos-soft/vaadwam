@@ -1,22 +1,16 @@
 package it.algos.vaadwam.security;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.croce.EACroce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -91,11 +85,15 @@ public class AUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
             if (milite != null) {
-                croce = milite.croce;
-                passwordHash = passwordEncoder.encode(milite.getPassword());
-                authorities = roleService.getAuthorities(milite);
-                FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
-                return new User(username, passwordHash, authorities);
+                if (milite.enabled) {
+                    croce = milite.croce;
+                    passwordHash = passwordEncoder.encode(milite.getPassword());
+                    authorities = roleService.getAuthorities(milite);
+                    FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
+                    return new User(username, passwordHash, authorities);
+                } else {
+                    throw new UsernameNotFoundException(username + " non è più attivo");
+                }
             } else {
                 croce = (Croce) utente.company;
                 passwordHash = passwordEncoder.encode(utente.getPassword());
