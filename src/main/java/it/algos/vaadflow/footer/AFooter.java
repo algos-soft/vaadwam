@@ -88,6 +88,7 @@ public class AFooter extends VerticalLayout  {
         this.setMargin(false);
         this.setSpacing(false);
         this.setPadding(false);
+        this.setSizeUndefined();
 
         //--Context e login della sessione
         //--Recuperato dalla sessione, quando la @route fa partire la UI. <br>
@@ -132,14 +133,14 @@ public class AFooter extends VerticalLayout  {
         if (text.isValid(projectNote)) {
             message += " " + projectNote;
         }// end of if cycle
-        if (text.isValid(companyName)) {
-            message += sep;
-            message += companyName;
-        }// end of if cycle
-        if (text.isValid(userName)) {
-            message += sep;
-            message += "loggato come " + userName;
-        }// end of if cycle
+//        if (text.isValid(companyName)) {
+//            message += sep;
+//            message += companyName;
+//        }// end of if cycle
+//        if (text.isValid(userName)) {
+//            message += sep;
+//            message += "loggato come " + userName;
+//        }// end of if cycle
         label = new Label(message);
         this.add(label);
 
@@ -171,6 +172,7 @@ public class AFooter extends VerticalLayout  {
         }
 
         this.add(label);
+
         if (pref.isBool(USA_DEBUG)) {
             labelDebug= new Label("Sei in modalità DEBUG");
             labelDebug.getStyle().set("font-size", "small");
