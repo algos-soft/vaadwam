@@ -30,6 +30,7 @@ import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.broadcast.BroadcastMsg;
 import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
@@ -71,13 +72,14 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
 @Slf4j
 @AIView(vaadflow = false, menuName = "tabellone")
+@PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabellone, HasUrlParameter<String> {
 
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
 
-    @Value("${wam.tabellone.demowatermark}")
-    private boolean demowatermark;
+    @Value("${wam.tabellone.banner}")
+    private String banner;
 
     @Autowired
     protected ApplicationContext appContext;
@@ -135,6 +137,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Id
     private Button bAddServizio;
+
+    @Id
+    private Button bGenTurni;
 
     @Id
     private Div divtabellone;
@@ -210,10 +215,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // bottone Nuovo Servizio
         bAddServizio.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickAddServizio());
 
+        // bottone Genera Turni (solo admin)
+        bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
+        bGenTurni.setVisible(wamLogin.isAdmin());
+
         // app footer
         divAppFooter.add(appFooter);
 
-        getModel().setShowDemoWatermark(demowatermark);
+        getModel().setBanner(banner);
 
         // costruisce la grid
         buildAllGrid();
@@ -926,6 +935,27 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             }
 
         }
+
+    }
+
+
+    /**
+     * Click sul bottone Genera Turni
+     */
+    private void clickGenTurni(){
+
+        ConfirmDialog.setButtonAddClosePerDefault(false);
+        final ConfirmDialog dialog=ConfirmDialog.create();
+        TurnoGenPolymer generator = appContext.getBean(TurnoGenPolymer.class);
+        generator.setCompletedListener((TurnoGenPolymer.EsitoGenerazioneTurni esito) -> {
+            dialog.close();
+            if(esito.getQuanti()>0){
+                BroadcastMsg msg = new BroadcastMsg("turnigenerati", esito);
+                Broadcaster.broadcast(msg);
+            }
+        });
+        dialog.add(generator);
+        dialog.open();
 
     }
 

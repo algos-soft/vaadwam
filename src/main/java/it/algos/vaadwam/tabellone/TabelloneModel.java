@@ -27,8 +27,8 @@ public interface TabelloneModel extends TemplateModel {
     String getWColonne();
     void setWColonne(String wColonne);
 
-    boolean getShowDemoWatermark();
-    void setShowDemoWatermark(boolean show);
+    String getBanner();
+    void setBanner(String banner);
 
 
 }

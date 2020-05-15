@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -15,6 +16,7 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +55,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "croce", menuIcon = VaadinIcon.HOSPITAL, roleTypeVisibility = EARoleType.admin)
+@PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class CroceList extends WamViewList {
 
     public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";

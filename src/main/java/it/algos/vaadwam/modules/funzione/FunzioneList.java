@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.funzione;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -11,6 +12,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "funzioni", menuIcon = VaadinIcon.LIST_OL, searchProperty = "code", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
+@PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class FunzioneList extends WamViewList {
 
 

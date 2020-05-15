@@ -140,16 +140,16 @@ public class MiliteProfile extends WamViewDialog<Milite> {
                         wamLogin.setRoleType(EARoleType.user);
                         ((Milite) currentItem).managerTabellone = false;
 
-                        msg = new BroadcastMsg("rolechanged", EARoleType.user);
-                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+//                        msg = new BroadcastMsg("rolechanged", EARoleType.user);
+//                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
 
                         break;
                     case "Admin":
                         wamLogin.setRoleType(EARoleType.admin);
                         ((Milite) currentItem).managerTabellone = true;
 
-                        msg = new BroadcastMsg("rolechanged", EARoleType.admin);
-                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+//                        msg = new BroadcastMsg("rolechanged", EARoleType.admin);
+//                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
 
                         break;
                     default:

@@ -202,4 +202,6 @@ public class WamCost {
 
     public final static String LUMO_PRIMARY_COLOR = "#1676F3";  // non riesco a reciperarlo dal context allora visto che so qual è lo ridefinisco qui
 
+    public final static String BROWSER_TAB_TITLE="WAM";
+
 }// end of static class

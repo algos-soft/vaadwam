@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.servizio;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -11,6 +12,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,7 @@ import static it.algos.vaadwam.application.WamCost.TASK_SER;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "servizi", menuIcon = VaadinIcon.DASHBOARD, searchProperty = "code", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
+@PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class ServizioList extends WamViewList {
 
 

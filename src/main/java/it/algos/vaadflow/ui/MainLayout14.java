@@ -111,25 +111,25 @@ public class MainLayout14 extends AppLayout {
     public MainLayout14() {
     }// end of constructor
 
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        UI ui = attachEvent.getUI();
-        broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
-            String code = message.getCode();
-            if (code.equals("rolechanged") ) {
-                UI currentUI = UI.getCurrent();
-                if (currentUI!=null){
-                    currentUI.getPage().reload();
-                }
-            }
-        }));
-    }
+//    @Override
+//    protected void onAttach(AttachEvent attachEvent) {
+//        UI ui = attachEvent.getUI();
+//        broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
+//            String code = message.getCode();
+//            if (code.equals("rolechanged") ) {
+//                UI currentUI = UI.getCurrent();
+//                if (currentUI!=null){
+//                    currentUI.getPage().reload();
+//                }
+//            }
+//        }));
+//    }
 
-    @Override
-    protected void onDetach(DetachEvent detachEvent) {
-        broadcasterRegistration.remove();
-        broadcasterRegistration = null;
-    }
+//    @Override
+//    protected void onDetach(DetachEvent detachEvent) {
+//        broadcasterRegistration.remove();
+//        broadcasterRegistration = null;
+//    }
 
     /**
      * Metodo invocato subito DOPO il costruttore

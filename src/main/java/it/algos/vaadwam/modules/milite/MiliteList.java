@@ -4,6 +4,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -61,6 +62,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "username", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
+@PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class MiliteList extends WamViewList {
 
     /**

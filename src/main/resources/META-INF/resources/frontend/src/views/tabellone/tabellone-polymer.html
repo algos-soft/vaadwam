@@ -14,26 +14,10 @@
         </vaadin-checkbox-group>
 
 
-        <!--watermark-->
-        <template is="dom-if" if=[[showDemoWatermark]]>
-            <div style="
-            font-size:200%;
-            display:flex;
-            position:fixed;
-            width:0em;
-            height:0;
-            top:50%;
-            left:50%;
-            margin-top:0; /* Negative half of height. */
-            margin-left:0; /* Negative half of width. */
-            opacity:0.75;
-            z-index:99;
-            color:red;
-            font-weight:bold;
-            justify-content: center;
-            align-items: center;
-            white-space: nowrap;
-            ">VERSIONE DEMO
+        <!--banner-->
+        <template is="dom-if" if=[[banner]]>
+            <div style="width:100%;font-size:200%;display:flex;color:white;background-color:red;font-weight:bold;justify-content: center;align-items: center;white-space: nowrap;">
+                [[banner]]
             </div>
         </template>
 
@@ -76,6 +60,12 @@
                     <iron-icon icon="vaadin:plus-circle-o"></iron-icon>
                     <label>Nuovo servizio</label>
                 </vaadin-button>
+
+                <vaadin-button id="bGenTurni" style="margin-left:1em">
+                    <iron-icon icon="vaadin:cog"></iron-icon>
+                    <label>Gen</label>
+                </vaadin-button>
+
 
             </div>
 

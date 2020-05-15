@@ -1,0 +1,63 @@
+<link href="../../../bower_components/vaadin-button/vaadin-button.html" rel="import">
+<link href="../../../bower_components/vaadin-text-field/vaadin-text-field.html" rel="import">
+<link href="../../../bower_components/vaadin-icons/vaadin-icons.html" rel="import">
+<link href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html" rel="import">
+<link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
+
+<dom-module id="turno-gen">
+
+    <template>
+
+        <style>
+        </style>
+
+
+        <!--single column centered in page-->
+        <div id="container" style="display: flex; flex-direction:column; ">
+
+            <!--header-->
+            <div style="display: flex; flex-direction:column; border-bottom:0.05em solid; padding-bottom: 1em">
+            </div>
+            <!--end header-->
+
+
+            <!--area contenuto-->
+            <div id="contenuto" class="contenuto">
+            </div>
+            <!--end area contenuto-->
+
+
+            <!--area bottoni-->
+            <div style="display: flex; flex-direction: column; margin-top: 1em;">
+
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">
+                    <vaadin-button id="bChiudi" style="flex-grow:1" theme="secondary">
+                        <label>Chiudi</label>
+                    </vaadin-button>
+
+                    <vaadin-button id="bEsegui" style="flex-grow:1; margin-left:0.4em" theme="raised primary">
+                        <label>Esegui</label>
+                    </vaadin-button>
+                </div>
+
+            </div>
+            <!--end area bottoni-->
+
+
+        </div>
+        <!--end single column-->
+
+    </template>
+
+
+    <script>
+        class TurnoGen extends Polymer.Element {
+            static get is() {
+                return 'turno-gen'
+            }
+        }
+        customElements.define(TurnoGen.is, TurnoGen);
+    </script>
+
+
+</dom-module>
