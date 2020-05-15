@@ -79,8 +79,9 @@ public class MiliteProfile extends WamViewDialog<Milite> {
      */
     @Override
     protected void fixAlertLayout() {
-        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilitare il checkBox in basso");
-        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
+        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilita la selezione in basso");
+        alertAdmin.add("Puoi sempre modificarla");
+        //        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
 
         super.fixAlertLayout();
     }
@@ -108,9 +109,14 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     @Override
     protected void fixLayoutFinal() {
         flagIscrizioniAdmin = new RadioButtonGroup<>();
-        flagIscrizioniAdmin.setLabel("Come admin si possono iscrivere tutti i militi");
+        flagIscrizioniAdmin.setLabel("Come milite ti puoi iscrivere solo ai tuoi turni. Come admin puoi iscrivere tutti i militi.");
         flagIscrizioniAdmin.setItems("Milite", "Admin");
-        flagIscrizioniAdmin.setValue("Admin");
+
+        if (((Milite) currentItem).loginComeAdmin) {
+            flagIscrizioniAdmin.setValue("Admin");
+        } else {
+            flagIscrizioniAdmin.setValue("Milite");
+        }
 
         getFormLayout().add(flagIscrizioniAdmin);
     }

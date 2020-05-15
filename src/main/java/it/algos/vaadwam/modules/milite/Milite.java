@@ -119,11 +119,14 @@ public class Milite extends Person {
     @AIColumn(headerIcon = VaadinIcon.USER_HEART)
     public boolean infermiere;
 
-
     @Field("cent")
     @AIField(type = EAFieldType.checkbox, name = "Milite abilitato alla creazione di turni extra")
     @AIColumn(headerIcon = VaadinIcon.PHONE)
     public boolean creatoreTurni;
+
+    @Field("lca")
+    @AIField(type = EAFieldType.checkbox, name = "Loggato come admin")
+    public boolean loginComeAdmin;
 
     /**
      * Funzioni per le quali il milite è abilitato

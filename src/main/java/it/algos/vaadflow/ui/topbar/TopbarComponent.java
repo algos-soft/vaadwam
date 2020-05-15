@@ -5,11 +5,13 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import it.algos.vaadflow.application.StaticContextAccessor;
+import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.service.AMenuService;
 
 /**
@@ -33,6 +35,8 @@ public class TopbarComponent extends HorizontalLayout {
     public MenuBar menuUser;
 
     public SubMenu projectSubMenu;
+
+    protected ALogin login;
 
     private MenuItem itemUser;
 
@@ -61,7 +65,7 @@ public class TopbarComponent extends HorizontalLayout {
      * @param titolo della company/applicazione (obbligatorio)
      */
     public TopbarComponent(String titolo, String sottotitolo) {
-        this("", titolo, sottotitolo, "");
+        this(null, "", titolo, sottotitolo, "");
     }// end of constructor
 
 
@@ -72,7 +76,7 @@ public class TopbarComponent extends HorizontalLayout {
      * @param titolo    della company/applicazione (obbligatorio)
      */
     public TopbarComponent(String pathImage, String titolo, String sottotitolo) {
-        this(pathImage, titolo, sottotitolo, "");
+        this(null, pathImage, titolo, sottotitolo, "");
     }// end of constructor
 
 
@@ -83,7 +87,8 @@ public class TopbarComponent extends HorizontalLayout {
      * @param titolo    della company/applicazione (obbligatorio)
      * @param nickName  utente loggato se multiCompany (facoltativo)
      */
-    public TopbarComponent(String pathImage, String titolo, String sottotitolo, String nickName) {
+    public TopbarComponent(ALogin login, String pathImage, String titolo, String sottotitolo, String nickName) {
+        this.login = login;
         this.pathImage = pathImage;
         this.titolo = titolo;
         this.sottotitolo = sottotitolo;
@@ -138,6 +143,12 @@ public class TopbarComponent extends HorizontalLayout {
             menuUser = new MenuBar();
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
+
+            if (login != null && login.isAdmin()) {
+                itemUser.addComponentAsFirst(new Icon(VaadinIcon.SPECIALIST));
+            } else {
+                itemUser.addComponentAsFirst(new Icon(VaadinIcon.USER));
+            }
 
             projectSubMenu = itemUser.getSubMenu();
             tab = new Tab();
