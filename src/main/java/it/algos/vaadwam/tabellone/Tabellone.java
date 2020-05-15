@@ -265,6 +265,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }));
     }
 
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        broadcasterRegistration.remove();
+        broadcasterRegistration = null;
+    }
+
     /**
      * Controlla se una data è all'interno del periodo corrente
      */
@@ -274,11 +280,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    @Override
-    protected void onDetach(DetachEvent detachEvent) {
-        broadcasterRegistration.remove();
-        broadcasterRegistration = null;
-    }
 
 
     private void buildAllGrid() {

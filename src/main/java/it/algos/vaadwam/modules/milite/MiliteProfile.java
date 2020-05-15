@@ -7,6 +7,8 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadwam.broadcast.BroadcastMsg;
+import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -132,14 +134,23 @@ public class MiliteProfile extends WamViewDialog<Milite> {
         if (flagIscrizioniAdmin != null) {
             value = flagIscrizioniAdmin.getValue();
             if (text.isValid(value)) {
+                BroadcastMsg msg;
                 switch (value) {
                     case "Milite":
                         wamLogin.setRoleType(EARoleType.user);
                         ((Milite) currentItem).loginComeAdmin = false;
+
+                        msg = new BroadcastMsg("rolechanged", EARoleType.user);
+                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+
                         break;
                     case "Admin":
                         wamLogin.setRoleType(EARoleType.admin);
                         ((Milite) currentItem).loginComeAdmin = true;
+
+                        msg = new BroadcastMsg("rolechanged", EARoleType.admin);
+                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+
                         break;
                     default:
                         break;

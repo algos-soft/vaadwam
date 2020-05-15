@@ -1,5 +1,7 @@
 package it.algos.vaadflow.ui;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.page.BodySize;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -25,10 +28,12 @@ import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadflow.ui.topbar.TopbarComponent;
+import it.algos.vaadwam.broadcast.Broadcaster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -100,10 +105,31 @@ public class MainLayout14 extends AppLayout {
     @Autowired
     protected PreferenzaService pref = StaticContextAccessor.getBean(PreferenzaService.class);
 
+    private Registration broadcasterRegistration;
+
 
     public MainLayout14() {
     }// end of constructor
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        UI ui = attachEvent.getUI();
+        broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
+            String code = message.getCode();
+            if (code.equals("rolechanged") ) {
+                UI currentUI = UI.getCurrent();
+                if (currentUI!=null){
+                    currentUI.getPage().reload();
+                }
+            }
+        }));
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        broadcasterRegistration.remove();
+        broadcasterRegistration = null;
+    }
 
     /**
      * Metodo invocato subito DOPO il costruttore
