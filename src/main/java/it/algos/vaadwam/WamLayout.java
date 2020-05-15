@@ -1,5 +1,6 @@
 package it.algos.vaadwam;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -9,9 +10,11 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.topbar.TopbarComponent;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -19,6 +22,7 @@ import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteProfile;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.topbar.WamTopbar;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,11 +110,24 @@ public class WamLayout extends MainLayout14 {
      * Altrimenti il nome del programma <br>
      */
     protected TopbarComponent createTopBar() {
-        TopbarComponent topbar = super.createTopBar();
+        TopbarComponent topbar;
+        String style;
 
-        if (login != null && login.isDeveloper()) {
-            addDeveloper(topbar);
-        }// end of if cycle
+        if (text.isValid(getUserName())) {
+            Company company = login.getCompany();
+            topbar = (TopbarComponent) new WamTopbar(login, FlowVar.pathLogo, company.getCode().toUpperCase(), "", getUserName());
+        } else {
+            topbar = (TopbarComponent) new WamTopbar(FlowVar.pathLogo, getDescrizione());
+        }
+
+        style = "display:inline-flex; width:100%; flex-direction:row; padding-left:0em; padding-top:0.5em; padding-bottom:0.5em; padding-right:1em; align-items:center";
+        topbar.getElement().setAttribute("style", style);
+        topbar.setProfileListener(() -> profilePressed());
+
+        topbar.setLogoutListener(() -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
+        });
 
         return topbar;
     }// end of method

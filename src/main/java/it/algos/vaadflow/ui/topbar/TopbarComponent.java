@@ -106,7 +106,7 @@ public class TopbarComponent extends HorizontalLayout {
         Tab tab;
         setWidth("100%");
         setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        Icon icon = new Icon(VaadinIcon.USER);
+//        Icon icon = new Icon(VaadinIcon.USER);
 
 
         //--immagine eventuale
@@ -137,7 +137,6 @@ public class TopbarComponent extends HorizontalLayout {
         divTitolo.add(label1);
         divTitolo.add(label2);
 
-
         //--menu utente eventuale
         if (nickName != null && !nickName.isEmpty()) {
 
@@ -145,15 +144,15 @@ public class TopbarComponent extends HorizontalLayout {
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
 
-            if (login != null) {
-                if (login.isDeveloper()) {
-                    icon = new Icon(VaadinIcon.MAGIC);
-                }
-                if (login.isAdmin()) {
-                    icon = new Icon(VaadinIcon.SPECIALIST);
-                }
-            }
-            itemUser.addComponentAsFirst(icon);
+            //            if (login != null) {
+            //                if (login.isDeveloper()) {
+            //                    icon = new Icon(VaadinIcon.MAGIC);
+            //                }
+            //                if (login.isAdmin()) {
+            //                    icon = new Icon(VaadinIcon.SPECIALIST);
+            //                }
+            //            }
+            itemUser.addComponentAsFirst(getIcon());
 
             projectSubMenu = itemUser.getSubMenu();
             tab = new Tab();
@@ -192,9 +191,20 @@ public class TopbarComponent extends HorizontalLayout {
     }
 
 
-    //    public void setImage(Image image) {
-    //        this.image = image;
-    //    }
+    protected Icon getIcon() {
+        Icon icon = new Icon(VaadinIcon.USER);
+
+        if (login != null) {
+            if (login.isDeveloper()) {
+                icon = new Icon(VaadinIcon.MAGIC);
+            }
+            if (login.isAdmin()) {
+                icon = new Icon(VaadinIcon.SPECIALIST);
+            }
+        }
+
+        return icon;
+    }
 
 
     //    public void setLabel(String text) {

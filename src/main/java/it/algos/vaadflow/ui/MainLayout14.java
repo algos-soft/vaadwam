@@ -197,13 +197,13 @@ public class MainLayout14 extends AppLayout {
      * Se l'applicazione è multiCompany visualizzo una sigla/descrizione della company<br>
      * Altrimenti il nome del programma <br>
      */
-    private String getDescrizione() {
+    protected String getDescrizione() {
         String desc = "";
 
         if (usaCompany && login != null && login.getCompany() != null) {
-            Company company=login.getCompany();
+            Company company = login.getCompany();
             //desc = company.code+" "+company.descrizione;
-            desc=company.getCode().toUpperCase();
+            desc = company.getCode().toUpperCase();
         } else {
             desc = text.primaMaiuscola(FlowVar.projectBanner);
         }
@@ -216,7 +216,7 @@ public class MainLayout14 extends AppLayout {
      * Se l'applicazione è multiUtente, visualizzo l'utente loggato <br>
      * Altrimenti rimane vuoto (non aggiunge il componente grafico) <br>
      */
-    private String getUserName() {
+    protected String getUserName() {
         String username = "";
 
         if (usaCompany && login != null && login.getUtente() != null) {
