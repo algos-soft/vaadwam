@@ -165,14 +165,13 @@ public class MainLayout14 extends AppLayout {
 
         if (text.isValid(getUserName())) {
             Company company=login.getCompany();
-            topbar = new TopbarComponent(FlowVar.pathLogo, company.getCode().toUpperCase(), "", getUserName());
+            topbar = new TopbarComponent(login, FlowVar.pathLogo, company.getCode().toUpperCase(), "", getUserName());
         } else {
             topbar = new TopbarComponent(FlowVar.pathLogo, getDescrizione());
         }
 
         style = "display:inline-flex; width:100%; flex-direction:row; padding-left:0em; padding-top:0.5em; padding-bottom:0.5em; padding-right:1em; align-items:center";
         topbar.getElement().setAttribute("style", style);
-
         topbar.setProfileListener(() -> profilePressed());
 
         topbar.setLogoutListener(() -> {

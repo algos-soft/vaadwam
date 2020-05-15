@@ -108,6 +108,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         super.fixAlertLayout();
     }// end of method
 
+
     /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
      * Sovrascritto nella sottoclasse
@@ -163,6 +164,32 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 
 
     /**
+     * Costruisce eventuali fields specifici (costruiti non come standard type)
+     * Aggiunge i fields specifici al binder
+     * Aggiunge i fields specifici alla fieldMap
+     * Sovrascritto nella sottoclasse
+     */
+    @Override
+    protected void addSpecificAlgosFields() {
+        super.addSpecificAlgosFields();
+
+        if (((Milite) currentItem).id.equals(wamLogin.getMilite().id)) {
+            ACheckBox fieldLoggato = new ACheckBox("Collegamento al login come admin per iscrivere tutti i militi");
+
+            if (fieldLoggato != null) {
+                if (binder != null) {
+                    binder.forField(fieldLoggato).bind(FIELD_LOGGATO);
+                }// end of if cycle
+
+                if (fieldMap != null) {
+                    fieldMap.put(FIELD_LOGGATO, fieldLoggato);
+                }// end of if cycle
+            }
+        }
+    }
+
+
+    /**
      * Aggiunge ogni singolo field della fieldMap al layout grafico
      */
     protected void addFieldsToLayout() {
@@ -184,38 +211,38 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     }// end of method
 
 
-//    /**
-//     * Regola in lettura eventuali valori NON associati al binder
-//     * Dal DB alla UI
-//     * Sovrascritto
-//     */
-//    @Override
-//    protected void readSpecificFields() {
-//        List<Funzione> listaFunzioniCroce = null;
-//        List<Funzione> listaFunzioniAbilitateMilite = getFunzioniMilite();
-//        ACheckBox checkBoxField = null;
-//
-//        if (pref.isBool(WamCost.USA_CHECK_FUNZIONI_MILITE)) {
-//            listaFunzioniCroce = funzioneService.findAll();
-//
-//            if (array.isValid(listaFunzioniCroce) && array.isValid(listaFunzioniAbilitateMilite)) {
-//                for (Funzione funz : listaFunzioniCroce) {
-//                    checkBoxField = (ACheckBox) fieldMap.get(funz.getCode());
-//                    if (contiene(listaFunzioniAbilitateMilite, funz)) {
-//                        checkBoxField.setValue(true);
-//                    } else {
-//                        checkBoxField.setValue(false);
-//                    }// end of if/else cycle
-//
-//                    if (wamLogin.isDeveloper() || login.isAdmin()) {
-//                        checkBoxField.setEnabled(true);
-//                    } else {
-//                        checkBoxField.setEnabled(false);
-//                    }// end of if/else cycle
-//                }// end of for cycle
-//            }// end of if cycle
-//        }// end of if cycle
-//    }// end of method
+    //    /**
+    //     * Regola in lettura eventuali valori NON associati al binder
+    //     * Dal DB alla UI
+    //     * Sovrascritto
+    //     */
+    //    @Override
+    //    protected void readSpecificFields() {
+    //        List<Funzione> listaFunzioniCroce = null;
+    //        List<Funzione> listaFunzioniAbilitateMilite = getFunzioniMilite();
+    //        ACheckBox checkBoxField = null;
+    //
+    //        if (pref.isBool(WamCost.USA_CHECK_FUNZIONI_MILITE)) {
+    //            listaFunzioniCroce = funzioneService.findAll();
+    //
+    //            if (array.isValid(listaFunzioniCroce) && array.isValid(listaFunzioniAbilitateMilite)) {
+    //                for (Funzione funz : listaFunzioniCroce) {
+    //                    checkBoxField = (ACheckBox) fieldMap.get(funz.getCode());
+    //                    if (contiene(listaFunzioniAbilitateMilite, funz)) {
+    //                        checkBoxField.setValue(true);
+    //                    } else {
+    //                        checkBoxField.setValue(false);
+    //                    }// end of if/else cycle
+    //
+    //                    if (wamLogin.isDeveloper() || login.isAdmin()) {
+    //                        checkBoxField.setEnabled(true);
+    //                    } else {
+    //                        checkBoxField.setEnabled(false);
+    //                    }// end of if/else cycle
+    //                }// end of for cycle
+    //            }// end of if cycle
+    //        }// end of if cycle
+    //    }// end of method
 
 
     /**
@@ -261,32 +288,32 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     }// end of method
 
 
-//    /**
-//     * Funzioni di questo milite
-//     */
-//    protected List<Funzione> getFunzioniMilite() {
-//        List<Funzione> listaFunzioniAbilitateMilite = null;
-//        List<Funzione> listaFunzioniCroce = null;
-//        ACheckBox field;
-//
-//        Milite milite = null;
-//        if (currentItem != null) {
-//            milite = (Milite) currentItem;
-//            return milite.funzioni;
-//        }// end of if cycle
-//
-//
-//        listaFunzioniCroce = funzioneService.findAll();
-//
-//        if (array.isValid(listaFunzioniCroce)) {
-//            listaFunzioniAbilitateMilite = new ArrayList<>();
-//            for (Funzione funz : listaFunzioniCroce) {
-//                listaFunzioniAbilitateMilite.add(funz);
-//            }// end of for cycle
-//        }// end of if cycle
-//
-//        return listaFunzioniAbilitateMilite;
-//    }// end of method
+    //    /**
+    //     * Funzioni di questo milite
+    //     */
+    //    protected List<Funzione> getFunzioniMilite() {
+    //        List<Funzione> listaFunzioniAbilitateMilite = null;
+    //        List<Funzione> listaFunzioniCroce = null;
+    //        ACheckBox field;
+    //
+    //        Milite milite = null;
+    //        if (currentItem != null) {
+    //            milite = (Milite) currentItem;
+    //            return milite.funzioni;
+    //        }// end of if cycle
+    //
+    //
+    //        listaFunzioniCroce = funzioneService.findAll();
+    //
+    //        if (array.isValid(listaFunzioniCroce)) {
+    //            listaFunzioniAbilitateMilite = new ArrayList<>();
+    //            for (Funzione funz : listaFunzioniCroce) {
+    //                listaFunzioniAbilitateMilite.add(funz);
+    //            }// end of for cycle
+    //        }// end of if cycle
+    //
+    //        return listaFunzioniAbilitateMilite;
+    //    }// end of method
 
 
     /**
@@ -294,8 +321,8 @@ public class MiliteDialog extends WamViewDialog<Milite> {
      */
     protected void save(AEntity entityBean, EAOperation operation) {
         if (service.save(entityBean, operation) != null) {
-//            updateItems();
-//            updateView();
+            //            updateItems();
+            //            updateView();
         }// end of if cycle
     }// end of method
 

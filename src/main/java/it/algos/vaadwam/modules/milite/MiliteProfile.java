@@ -5,6 +5,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.wam.WamViewDialog;
@@ -78,8 +79,9 @@ public class MiliteProfile extends WamViewDialog<Milite> {
      */
     @Override
     protected void fixAlertLayout() {
-        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilitare il checkBox in basso");
-        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
+        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilita la selezione in basso");
+        alertAdmin.add("Puoi sempre modificarla");
+        //        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
 
         super.fixAlertLayout();
     }
@@ -107,9 +109,14 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     @Override
     protected void fixLayoutFinal() {
         flagIscrizioniAdmin = new RadioButtonGroup<>();
-        flagIscrizioniAdmin.setLabel("Come admin si possono iscrivere tutti i militi");
+        flagIscrizioniAdmin.setLabel("Come milite ti puoi iscrivere solo ai tuoi turni. Come admin puoi iscrivere tutti i militi.");
         flagIscrizioniAdmin.setItems("Milite", "Admin");
-        flagIscrizioniAdmin.setValue("Milite");
+
+        if (((Milite) currentItem).loginComeAdmin) {
+            flagIscrizioniAdmin.setValue("Admin");
+        } else {
+            flagIscrizioniAdmin.setValue("Milite");
+        }
 
         getFormLayout().add(flagIscrizioniAdmin);
     }
@@ -138,6 +145,18 @@ public class MiliteProfile extends WamViewDialog<Milite> {
                 }
             }
         }
+    }
+
+
+    /**
+     * Azione proveniente dal click sul bottone Registra
+     * Inizio delle operazioni di registrazione
+     *
+     * @param operation
+     */
+    @Override
+    protected void saveClicked(EAOperation operation) {
+        super.saveClicked(operation);
     }
 
 }// end of class

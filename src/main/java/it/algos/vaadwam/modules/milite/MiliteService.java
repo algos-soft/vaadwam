@@ -79,6 +79,8 @@ public class MiliteService extends WamService implements IUtenteService {
 
     public final static String FIELD_ATTIVO = "enabled";
 
+    public final static String FIELD_LOGGATO = "loginComeAdmin";
+
     public final static List<String> PROPERTIES_USER = Arrays.asList("croce", "ordine", "userName", "passwordInChiaro", "locked", "nome", "cognome", "telefono", "mail", "indirizzo", "dipendente", "infermiere", "funzioni");
 
     public final static List<String> PROPERTIES_ADMIN = Arrays.asList("nome", "cognome", "userName", "passwordInChiaro", "telefono", "locked", "admin", "dipendente", "infermiere");

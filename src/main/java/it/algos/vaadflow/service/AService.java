@@ -874,6 +874,7 @@ public abstract class AService extends AbstractService implements IAService {
                 }// end of if/else cycle
                 break;
             case edit:
+            case editNoDelete:
             case editDaLink:
                 entitySaved = this.save(entityBean);
                 Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
