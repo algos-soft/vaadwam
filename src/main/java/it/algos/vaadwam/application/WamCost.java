@@ -200,4 +200,6 @@ public class WamCost {
 
     public final static List<Integer> ANNI = new ArrayList<Integer>(Arrays.asList(2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020));
 
+    public final static String LUMO_PRIMARY_COLOR = "#1676F3";  // non riesco a reciperarlo dal context allora visto che so qual è lo ridefinisco qui
+
 }// end of static class

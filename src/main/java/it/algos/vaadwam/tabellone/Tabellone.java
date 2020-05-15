@@ -1,6 +1,5 @@
 package it.algos.vaadwam.tabellone;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -25,6 +24,7 @@ import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EATime;
+import it.algos.vaadflow.footer.AFooter;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
@@ -48,12 +48,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +75,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
+
+    @Value("${wam.tabellone.demowatermark}")
+    private boolean demowatermark;
 
     @Autowired
     protected ApplicationContext appContext;
@@ -136,6 +139,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Id
     private Div divtabellone;
 
+    @Id
+    private Div divAppFooter;
+
+
     /**
      * Primo giorno visualizzato
      */
@@ -156,6 +163,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Autowired
     private ADateService dateService;
+
+    @Autowired
+    private AFooter appFooter;
+
 
     private Registration broadcasterRegistration;
 
@@ -198,6 +209,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // bottone Nuovo Servizio
         bAddServizio.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickAddServizio());
+
+        // app footer
+        divAppFooter.add(appFooter);
+
+        getModel().setShowDemoWatermark(demowatermark);
 
         // costruisce la grid
         buildAllGrid();
@@ -543,7 +559,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                     }
                 }
             }else {//turni a orario indefinito: li possono creare solo admin e utente specificamente abilitato
-                if(isUtenteAdmin() || isUtenteAbilitatoCreareTurniOrarioIndefinito()){
+                if(isUtenteAdmin() || isUtenteAbilitatoCreareTurniExtra()){
                     creaTurno=true;
                 }
             }
@@ -565,7 +581,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
         // se sono arrivato qui il turno esiste per forza
         Component editor;
-        if (isUtenteAbilitatoCreareTurniOrarioIndefinito()) {
+        if (isUtenteAbilitatoCreareTurniExtra()) {
             if (isUtenteAdmin()) {
                 editor = editMulti(turno, !nuovoTurno);
             } else {  // abilitato ai turni indefiniti ma non admin
@@ -593,13 +609,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private boolean isUtenteAbilitatoCreareTurniOrarioIndefinito() {
-        return (modoAdmin.getValue() || modoCentralinista.getValue());
+    private boolean isUtenteAbilitatoCreareTurniExtra() {
+//        return (modoAdmin.getValue() || modoCentralinista.getValue());
+        if(wamLogin.isAdmin()){
+            return true;
+        }else{
+            return wamLogin.getMilite().isCreatoreTurni();
+        }
     }
 
 
     private boolean isUtenteAdmin() {
-        return (modoAdmin.getValue());
+//        return (modoAdmin.getValue());
+        return wamLogin.isAdmin();
     }
 
 

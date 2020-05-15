@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.service.AMenuService;
+import it.algos.vaadwam.application.WamCost;
 
 /**
  * Componente che mostra il nome della company e l'utente loggato <br>
@@ -116,8 +117,7 @@ public class TopbarComponent extends HorizontalLayout {
         Div divTitolo = new Div();
         divTitolo.getElement().setAttribute("style", "display:flex; flex-direction:column; min-width:2em");
 
-        // (#1676F3 is --lumo-primary-text-color)
-        String commonStyle = "line-height:120%; white-space:nowrap; overflow:hidden; color:#1676F3";
+        String commonStyle = "line-height:120%; white-space:nowrap; overflow:hidden; color:"+ WamCost.LUMO_PRIMARY_COLOR;
 
         Label label1 = new Label(titolo);
         label1.getElement().setAttribute("style", commonStyle);

@@ -2,17 +2,11 @@ package it.algos.vaadflow.footer;
 
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.application.FlowCost;
-import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAColor;
 import it.algos.vaadflow.enumeration.EATime;
-import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ATextService;
@@ -151,23 +145,30 @@ public class AFooter extends VerticalLayout  {
 
         label.getStyle().set("font-size", "small");
         label.getStyle().set("font-weight", "bold");
+        label.getStyle().set("white-space", "nowrap");  // il footer non deve andare a capo se no porta via spazio verticale
+
         if (label != null) {
-            if (login.getRoleType() != null) {
-                switch (login.getRoleType()) {
-                    case user:
-                        label.getElement().getStyle().set("color", "green");
-                        break;
-                    case admin:
-                        label.getElement().getStyle().set("color", "blue");
-                        break;
-                    case developer:
-                        label.getElement().getStyle().set("color", "red");
-                        break;
-                    default:
-                        break;
-                } // end of switch statement
-            }// end of if cycle
-        }// end of if cycle
+//            if (login.getRoleType() != null) {
+//                switch (login.getRoleType()) {
+//                    case user:
+//                        label.getElement().getStyle().set("color", "green");
+//                        break;
+//                    case admin:
+//                        label.getElement().getStyle().set("color", "blue");
+//                        break;
+//                    case developer:
+//                        label.getElement().getStyle().set("color", "red");
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+
+            // il fatto che sia user o admin si capirà dall'icona nel bottone di login
+
+            label.getElement().getStyle().set("color", EAColor.footerApp.getEsadecimale());
+
+        }
 
         this.add(label);
         if (pref.isBool(USA_DEBUG)) {
