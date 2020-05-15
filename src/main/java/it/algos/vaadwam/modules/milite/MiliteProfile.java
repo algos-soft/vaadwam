@@ -113,7 +113,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
         flagIscrizioniAdmin.setLabel("Come milite ti puoi iscrivere solo ai tuoi turni. Come admin puoi iscrivere tutti i militi.");
         flagIscrizioniAdmin.setItems("Milite", "Admin");
 
-        if (((Milite) currentItem).loginComeAdmin) {
+        if (((Milite) currentItem).managerTabellone) {
             flagIscrizioniAdmin.setValue("Admin");
         } else {
             flagIscrizioniAdmin.setValue("Milite");
@@ -138,7 +138,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
                 switch (value) {
                     case "Milite":
                         wamLogin.setRoleType(EARoleType.user);
-                        ((Milite) currentItem).loginComeAdmin = false;
+                        ((Milite) currentItem).managerTabellone = false;
 
                         msg = new BroadcastMsg("rolechanged", EARoleType.user);
                         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
@@ -146,7 +146,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
                         break;
                     case "Admin":
                         wamLogin.setRoleType(EARoleType.admin);
-                        ((Milite) currentItem).loginComeAdmin = true;
+                        ((Milite) currentItem).managerTabellone = true;
 
                         msg = new BroadcastMsg("rolechanged", EARoleType.admin);
                         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client

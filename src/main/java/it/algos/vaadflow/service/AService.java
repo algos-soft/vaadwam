@@ -867,7 +867,7 @@ public abstract class AService extends AbstractService implements IAService {
                 } else {
                     entitySaved = this.save(entityBean);
                     try { // prova ad eseguire il codice
-                        Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
+                        //                        Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
                     } catch (Exception unErrore) { // intercetta l'errore
                         log.info(unErrore.toString());
                     }// fine del blocco try-catch
@@ -877,7 +877,7 @@ public abstract class AService extends AbstractService implements IAService {
             case editNoDelete:
             case editDaLink:
                 entitySaved = this.save(entityBean);
-                Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
+                //                Notification.show(entityBean + " successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
                 break;
             default:
                 log.warn("Switch - caso non definito");

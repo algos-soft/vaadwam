@@ -125,8 +125,8 @@ public class Milite extends Person {
     public boolean creatoreTurni;
 
     @Field("lca")
-    @AIField(type = EAFieldType.checkbox, name = "Loggato come admin")
-    public boolean loginComeAdmin;
+    @AIField(type = EAFieldType.checkbox, name = "Cancellazione turni ed iscrizioni multiple")
+    public boolean managerTabellone;
 
     /**
      * Funzioni per le quali il milite è abilitato

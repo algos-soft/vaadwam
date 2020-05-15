@@ -17,7 +17,8 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 
-import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.DEVELOPER_COMPANY;
+import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadflow.application.FlowVar.*;
 
 /**
@@ -37,7 +38,7 @@ import static it.algos.vaadflow.application.FlowVar.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AFooter extends VerticalLayout  {
+public class AFooter extends VerticalLayout {
 
 
     /**
@@ -68,6 +69,7 @@ public class AFooter extends VerticalLayout  {
     @Autowired
     private PreferenzaService pref;
 
+
     /**
      * Questa classe viene costruita partendo da @Route e non da SprinBoot <br>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() <br>
@@ -94,8 +96,11 @@ public class AFooter extends VerticalLayout  {
         //--Recuperato dalla sessione, quando la @route fa partire la UI. <br>
         //--Viene regolato nel service specifico (AVaadinService) <br>
         AContext context = vaadinService.getSessionContext();
-        ALogin login = context.getLogin();
 
+        if (context == null) {
+            return;
+        }
+        ALogin login = context.getLogin();
         String message = "";
         Label label;
         Label labelDebug;
@@ -133,14 +138,14 @@ public class AFooter extends VerticalLayout  {
         if (text.isValid(projectNote)) {
             message += " " + projectNote;
         }// end of if cycle
-//        if (text.isValid(companyName)) {
-//            message += sep;
-//            message += companyName;
-//        }// end of if cycle
-//        if (text.isValid(userName)) {
-//            message += sep;
-//            message += "loggato come " + userName;
-//        }// end of if cycle
+        //        if (text.isValid(companyName)) {
+        //            message += sep;
+        //            message += companyName;
+        //        }// end of if cycle
+        //        if (text.isValid(userName)) {
+        //            message += sep;
+        //            message += "loggato come " + userName;
+        //        }// end of if cycle
         label = new Label(message);
         this.add(label);
 
@@ -149,21 +154,21 @@ public class AFooter extends VerticalLayout  {
         label.getStyle().set("white-space", "nowrap");  // il footer non deve andare a capo se no porta via spazio verticale
 
         if (label != null) {
-//            if (login.getRoleType() != null) {
-//                switch (login.getRoleType()) {
-//                    case user:
-//                        label.getElement().getStyle().set("color", "green");
-//                        break;
-//                    case admin:
-//                        label.getElement().getStyle().set("color", "blue");
-//                        break;
-//                    case developer:
-//                        label.getElement().getStyle().set("color", "red");
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
+            //            if (login.getRoleType() != null) {
+            //                switch (login.getRoleType()) {
+            //                    case user:
+            //                        label.getElement().getStyle().set("color", "green");
+            //                        break;
+            //                    case admin:
+            //                        label.getElement().getStyle().set("color", "blue");
+            //                        break;
+            //                    case developer:
+            //                        label.getElement().getStyle().set("color", "red");
+            //                        break;
+            //                    default:
+            //                        break;
+            //                }
+            //            }
 
             // il fatto che sia user o admin si capirà dall'icona nel bottone di login
 
@@ -174,7 +179,7 @@ public class AFooter extends VerticalLayout  {
         this.add(label);
 
         if (pref.isBool(USA_DEBUG)) {
-            labelDebug= new Label("Sei in modalità DEBUG");
+            labelDebug = new Label("Sei in modalità DEBUG");
             labelDebug.getStyle().set("font-size", "small");
             labelDebug.getStyle().set("font-weight", "bold");
             labelDebug.getElement().getStyle().set("color", "red");
@@ -183,7 +188,6 @@ public class AFooter extends VerticalLayout  {
         }// end of if cycle
 
     }// end of method
-
 
 
 }// end of class

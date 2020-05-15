@@ -62,7 +62,7 @@ public class WamTopbar extends TopbarComponent {
                 wamLogin = (WamLogin) login;
                 milite = wamLogin.getMilite();
                 if (milite != null) {
-                    if (milite.loginComeAdmin) {
+                    if (milite.managerTabellone) {
                         icon = new Icon(VaadinIcon.SPECIALIST);
                     } else {
                         icon = new Icon(VaadinIcon.USER);
