@@ -105,6 +105,7 @@ public class TopbarComponent extends HorizontalLayout {
         Tab tab;
         setWidth("100%");
         setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        Icon icon = new Icon(VaadinIcon.USER);
 
 
         //--immagine eventuale
@@ -144,11 +145,15 @@ public class TopbarComponent extends HorizontalLayout {
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
 
-            if (login != null && login.isAdmin()) {
-                itemUser.addComponentAsFirst(new Icon(VaadinIcon.SPECIALIST));
-            } else {
-                itemUser.addComponentAsFirst(new Icon(VaadinIcon.USER));
+            if (login != null) {
+                if (login.isDeveloper()) {
+                    icon = new Icon(VaadinIcon.MAGIC);
+                }
+                if (login.isAdmin()) {
+                    icon = new Icon(VaadinIcon.SPECIALIST);
+                }
             }
+            itemUser.addComponentAsFirst(icon);
 
             projectSubMenu = itemUser.getSubMenu();
             tab = new Tab();
