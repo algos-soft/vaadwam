@@ -218,8 +218,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // bottone Genera Turni (solo admin e developer)
         bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
-        bGenTurni.setVisible(false); //@todo Funzionalità ancora da implementare
-        //        bGenTurni.setVisible(wamLogin.isAdminOrDev());
+        bGenTurni.setVisible(isUtenteManagerTabellone());
+        //bGenTurni.setVisible(false); //@todo Funzionalità ancora da implementare
 
         // app footer
         divAppFooter.add(appFooter);
@@ -561,16 +561,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         if (turno == null) {
 
             boolean creaTurno = false;
-            if (servizio.isOrarioDefinito()) { //turni a orario definito: admin li può creare sempre, gli altri solo se la company lo prevede
-                if (isUtenteAdmin()) {
+            if (servizio.isOrarioDefinito()) { //turni standard: manager li può creare sempre, gli altri utenti solo se la company lo prevede
+                if (isUtenteManagerTabellone()) {
                     creaTurno = true;
                 } else {
                     if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno)) {
                         creaTurno = true;
                     }
                 }
-            } else {//turni a orario indefinito: li possono creare solo admin e utente specificamente abilitato
-                if (isUtenteAdmin() || isUtenteAbilitatoCreareTurniExtra()) {
+            } else { //turni extra: li possono creare solo manager e utente abilitato
+                if (isUtenteManagerTabellone() || isUtenteAbilitatoCreareTurniExtra()) {
                     creaTurno = true;
                 }
             }
@@ -591,24 +591,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // switch dell'editor in funzione del tipo di editing (singolo o multiplo)
         // se sono arrivato qui il turno esiste per forza
-        Component editor;
-        if (isUtenteAbilitatoCreareTurniExtra()) {
-            if (isUtenteAdmin()) {
-                editor = editMulti(turno, !nuovoTurno);
-            } else {  // abilitato ai turni indefiniti ma non admin
-                if (!servizio.isOrarioDefinito()) {   // turno a orario indefinito
-                    if (turno.getGiorno().isBefore(LocalDate.now())) {    // turno storico
-                        editor = editSingle(turno, codFunzione);
-                    } else {   // turno attivo
-                        editor = editMulti(turno, false);
-                    }
-                } else {  // turno standard
-                    editor = editSingle(turno, codFunzione);
-                }
-            }
-        } else {
-            editor = editSingle(turno, codFunzione);
-        }
+        Component editor = selectTurnoEditor(turno, nuovoTurno, servizio, codFunzione);
 
         // presenta il dialogo
         if (editor != null) {
@@ -620,19 +603,85 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private boolean isUtenteAbilitatoCreareTurniExtra() {
-        //        return (modoAdmin.getValue() || modoCentralinista.getValue());
-        if (wamLogin.isDeveloper()) {
-            return true;
-        } else {
-            return wamLogin.getMilite().isCreatoreTurni();
+    /**
+     * Seleziona l'editor di turno da utilizzare
+     */
+    private Component selectTurnoEditor(Turno turno, boolean nuovoTurno, Servizio servizio, String codFunzione){
+
+        // Manager Tabellone, può fare tutto
+        if (isUtenteManagerTabellone()) {
+            return editMulti(turno, !nuovoTurno);
         }
+
+        // Utente abilitato a create turni extra.
+        // Se è un turno standard:
+        // - edit singolo
+        // Se è un turno extra:
+        // - nel periodo corrente edit multiplo senza cancella
+        // - nello storico edit singolo
+        if(isUtenteAbilitatoCreareTurniExtra()){
+            if(servizio.isOrarioDefinito()){    // turno standard
+                return editSingle(turno, codFunzione);
+            }else{  // turno extra
+                if(!isTurnoStorico(turno)){ // corrente
+                    return editMulti(turno, false);
+                }else{  // storico
+                    if(getIscrizione(turno, codFunzione).getMilite()!=null){    // c'è un iscritto
+                        return editSingle(turno, codFunzione);
+                    }else{  // nessun iscritto
+                        return null;
+                    }
+                }
+            }
+        }
+
+        // da qui in poi è utente normale, sempre editor di tipo singolo
+        if(!isTurnoStorico(turno)){ // corrente
+            return editSingle(turno, codFunzione);
+        }
+
+        // utente normale, turno storico
+        if(getIscrizione(turno, codFunzione).getMilite()!=null){    // c'è un iscritto
+            return editSingle(turno, codFunzione);
+        }else{  // nessun iscritto
+            return null;
+        }
+
     }
 
 
-    private boolean isUtenteAdmin() {
-        //        return (modoAdmin.getValue());
-        return wamLogin.isAdmin();
+    private boolean isTurnoStorico(Turno turno){
+        return turno.getGiorno().isBefore(LocalDate.now());
+    }
+
+
+    private boolean isUtenteAbilitatoCreareTurniExtra() {
+
+        if (wamLogin.isDeveloper()) {
+            return true;
+        }
+
+        if (wamLogin.getMilite().isCreatoreTurni()) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+
+    private boolean isUtenteManagerTabellone() {
+
+        if (wamLogin.isDeveloper()) {
+            return true;
+        }
+
+        if (wamLogin.getMilite().isManagerTabellone()) {
+            return true;
+        }
+
+        return false;
+
     }
 
 

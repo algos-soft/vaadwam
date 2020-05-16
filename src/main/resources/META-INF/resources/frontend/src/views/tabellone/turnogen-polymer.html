@@ -1,7 +1,8 @@
 <link href="../../../bower_components/vaadin-button/vaadin-button.html" rel="import">
-<link href="../../../bower_components/vaadin-text-field/vaadin-text-field.html" rel="import">
 <link href="../../../bower_components/vaadin-icons/vaadin-icons.html" rel="import">
-<link href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html" rel="import">
+<link href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html" rel="import">
+<link href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html" rel="import">
+<link href="../../../bower_components/vaadin-radio-group/vaadin-radio-group.html" rel="import">
 <link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
 
 <dom-module id="turno-gen">
@@ -20,11 +21,26 @@
             </div>
             <!--end header-->
 
+            <!--area setup date e operazione-->
+            <div style="display: flex; flex-direction:row;">
 
-            <!--area contenuto-->
-            <div id="contenuto" class="contenuto">
+                <vaadin-date-picker placeholder="dal"></vaadin-date-picker>
+
+                <vaadin-date-picker placeholder="al"></vaadin-date-picker>
+
+                <vaadin-radio-group label="Label" theme="vertical">
+                    <vaadin-radio-button checked>Genera</vaadin-radio-button>
+                    <vaadin-radio-button>Cancella</vaadin-radio-button>
+                </vaadin-radio-group>
+
             </div>
-            <!--end area contenuto-->
+            <!--end area setup date e operazione-->
+
+
+            <!--area setup date e operazione-->
+            <div>
+            </div>
+            <!--end setup date e operazione-->
 
 
             <!--area bottoni-->
