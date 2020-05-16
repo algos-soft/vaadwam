@@ -46,8 +46,10 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
+import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -690,7 +692,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private Component editSingle(Turno turno, String codFunzione) {
 
-        // in modalità singola lo storico è solo read-only
+        // in modalità editor singolo lo storico è sempre read-only
         if (turno.getGiorno().isBefore(LocalDate.now())) {
             Iscrizione iscrizione = getIscrizione(turno, codFunzione);
             return creaEditorSingolo(turno, iscrizione, true); // editor read-only
@@ -723,10 +725,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         } else {  // la cella è occupata
             Iscrizione iscrizione = getIscrizione(turno, codFunzione);
             if (iscrizione.getMilite().equals(wamLogin.getMilite())) { // occupata da se stesso
-                boolean inTempo = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
-                if (inTempo) {    // è in tempo per modificare
+
+                //boolean puoCancellare = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
+                String result =  tabelloneService.puoCancellareIscrizione(turno, iscrizione);
+                boolean puoCancellare = StringUtils.isEmpty(result);
+
+                if (puoCancellare) {    // può ancora modificare/cancellare
                     editor = creaEditorSingolo(turno, iscrizione, false); // editor RW
-                } else {  // non è più in tempo per modificare
+                } else {  // non può più modificare
                     editor = creaEditorSingolo(turno, iscrizione, true); // editor read-only
                 }
 

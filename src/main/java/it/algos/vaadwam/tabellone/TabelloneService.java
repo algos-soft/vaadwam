@@ -466,6 +466,56 @@ public class TabelloneService extends AService {
 
 
     /**
+     * Determina se il milite può cancellare l'iscrizione.
+     * <p>
+     * @return null se può cancellare, la motivazione se non può.
+     * @param turno
+     * @param iscrizione
+     */
+    public String puoCancellareIscrizione(Turno turno, Iscrizione iscrizione){
+
+        Croce croce=getWamLogin().getCroce();
+
+        // @todo recuperarlo dalla croce
+        EACancellazione modo = EACancellazione.mai;
+
+        switch (modo){
+            case mai:
+                return "cancellazione mai abilitata";
+            case sempre:
+                return null;
+            case tempoTrascorso:
+                // .. logica..
+                break;
+            case tempoMancante:
+                // .. logica..
+                break;
+            default:
+        }
+
+        //boolean puoCancellare = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
      * Costruisce una lista wrapper di iscrizioni del turno <br>
      * Serve per regolare in maniera sincrona tutte le iscrizioni <br>
      */
