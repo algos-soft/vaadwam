@@ -13,12 +13,12 @@ import java.util.ArrayList;
  */
 public enum EAWamColore {
 
-    storico(EAColor.storicoTabellone, EAColor.storicoTabelloneContrasto, "storico", "", "Turno effettuato o non creabile", ""),
-    critico(EAColor.criticoTabellone, EAColor.criticoTabelloneContrasto, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"),
-    urgente(EAColor.urgenteTabellone, EAColor.urgenteTabelloneContrasto, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),
-    normale(EAColor.normaleTabellone, EAColor.normaleTabelloneContrasto, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),
-    previsto(EAColor.previstoTabellone, EAColor.previstoTabelloneContrasto, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),
-    creabile(EAColor.creabileTabellone, EAColor.creabileTabelloneContrasto, "creabile", "", "Turno creabile", ""),
+    storico(EAColor.storicoTabellone, EAColor.storicoTabelloneContrasto, "storico", "", "Turno effettuato o non creabile", ""), // blu scuro
+    critico(EAColor.criticoTabellone, EAColor.criticoTabelloneContrasto, "critico", "critica", "Turno critico da assegnare subito", "Iscrizione critica da assegnare subito"), // rosso
+    urgente(EAColor.urgenteTabellone, EAColor.urgenteTabelloneContrasto, "urgente", "urgente", "Turno da assegnare nei prossimi giorni", "Iscrizione da assegnare nei prossimi giorni"),  // arancione
+    normale(EAColor.normaleTabellone, EAColor.normaleTabelloneContrasto, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),  // verde
+    previsto(EAColor.previstoTabellone, EAColor.previstoTabelloneContrasto, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),  // blu chiaro
+    creabile(EAColor.creabileTabellone, EAColor.creabileTabelloneContrasto, "creabile", "", "Turno creabile", ""),  // grigio
     ;
 
 
