@@ -386,7 +386,7 @@ public class TabelloneService extends AService {
             return colore;
         }
 
-        if (iscrizioneService.isValida(iscrizione)) {
+        if (iscrizioneService.isValida(iscrizione, turno.getServizio())) {
             colore = EAWamColore.normale;
         } else {
             if (isPiuRecente(turno, critico)) {

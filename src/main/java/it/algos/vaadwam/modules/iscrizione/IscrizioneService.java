@@ -212,19 +212,22 @@ public class IscrizioneService extends WamService {
     }// end of method
 
 
-    public boolean isValida(Iscrizione iscrizione) {
-        boolean status = false;
+    /**
+     * Verifica se una iscrizione è valida per un dato servizio.
+     * <p>
+     * Se la funzione è obbligatoria nel servizio, deve esserci un milite iscritto.
+     */
+    public boolean isValida(Iscrizione iscrizione, Servizio servizio) {
+        boolean valida = true;
 
-        if (iscrizione.funzione.obbligatoria) {
-            if (iscrizione.milite != null) {
-                status = true;
-            }// end of if cycle
-        } else {
-            status = true;
-        }// end of if/else cycle
+        if(servizio.getObbligatorie().contains(iscrizione.getFunzione())){
+            if(iscrizione.getMilite()==null){
+                valida=false;
+            }
+        }
 
-        return status;
-    }// end of method
+        return valida;
+    }
 
 
     public boolean isValida(Turno turno, Funzione funzione) {

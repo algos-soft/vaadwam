@@ -126,7 +126,6 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
         // eventuale turno (può non esserci)
         turno = rigaService.getTurno(riga, giorno);
 
-
         // recupera le eventuali iscrizioni
         List<Iscrizione> iscrizioni = null;
         if (turno != null) {
@@ -138,11 +137,14 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
         List<RigaCella> righeCella = new ArrayList<>();
 
-        // colore di base dell'intero turno (se turno nullo è colore "creabile")
-        // per determinare il colore controlla tutte le iscrizioni per vedere se è valido
-        EAWamColore coloreTurno = tabelloneService.getColoreTurno(turno);
-
         boolean colorazioneDifferenziata=pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
+
+        // colore di base dell'intero turno (se turno nullo è colore "creabile")
+        // (per determinare il colore controlla tutte le iscrizioni per vedere se il turno è valido)
+        EAWamColore coloreTurno=null;
+        if(!colorazioneDifferenziata){
+            coloreTurno = tabelloneService.getColoreTurno(turno);
+        }
 
         for (Funzione funzServ : funzioni) {
 
@@ -150,9 +152,13 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
                 for (Iscrizione iscr : iscrizioni) {
 
-                    // se usa colorazione differenziata, ricalcola la colorazione della singola iscrizione
-                    EAWamColore coloreCella=coloreTurno;
-                    if (colorazioneDifferenziata) {
+                    EAWamColore coloreCella;
+                    if (!colorazioneDifferenziata) {
+                        // se non usa colorazione differenziata, il colore l'ha già calcolato prima
+                        coloreCella=coloreTurno;
+                    } else {
+                        // se usa colorazione differenziata, calcola il colore
+                        // della cella per ogni singola iscrizione
                         coloreCella = tabelloneService.getColoreIscrizione(turno, iscr);
                     }
 
@@ -169,8 +175,16 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
                 }
 
-            } else {    // no iscizioni, colore base del turno
+            } else {    // no iscrizioni
+
+                //con colorazione differenziata, se non ci sono iscrizioni
+                // il colore è 'creabile'
+                if(colorazioneDifferenziata){
+                    coloreTurno=EAWamColore.creabile;
+                }
+
                 righeCella.add(new RigaCella(coloreTurno, "", "", funzServ.code));
+
             }
 
         }
