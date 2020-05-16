@@ -407,7 +407,7 @@ public class AColumnService extends AbstractService {
                     String testo = "";
 
                     try { // prova ad eseguire il codice
-                        testo = field.get(entity).toString();
+                        testo = field.get(entity) != null ? field.get(entity).toString() : VUOTA;
                     } catch (Exception unErrore) { // intercetta l'errore
                         logger.error(unErrore, this.getClass(), "create - case combolinkato");
                     }// fine del blocco try-catch

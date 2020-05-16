@@ -33,7 +33,8 @@ import org.vaadin.klaudeta.PaginatedGrid;
 import java.time.LocalDate;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.SPAZIO;
+import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 
@@ -68,12 +69,12 @@ import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 public class TurnoList extends WamViewList {
 
 
-//    /**
-//     * Icona visibile nel menu (facoltativa)
-//     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
-//     * Se manca il MENU_NAME, di default usa il 'name' della view
-//     */
-//    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
+    //    /**
+    //     * Icona visibile nel menu (facoltativa)
+    //     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
+    //     * Se manca il MENU_NAME, di default usa il 'name' della view
+    //     */
+    //    public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
 
     public static final String IRON_ICON = "schedule";
 
@@ -337,7 +338,7 @@ public class TurnoList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(TurnoDialog.class, service, entityClazz).openWam(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        appContext.getBean(TurnoDialog.class, service, entityClazz).openWam(entityBean, EAOperation.edit, this::save, this::delete);
     }// end of method
 
 }// end of class

@@ -306,7 +306,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         this.fixLayout();
 
         //--una o più righe di avvisi - verranno aggiunte dopo open()
-        this.add(alertPlacehorder);
+        if (alertPlacehorder != null) {
+            this.add(alertPlacehorder);
+        }
 
         //--Form placeholder standard per i campi, creati dopo open()
         this.add(creaFormLayout());
@@ -387,7 +389,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Chiamato da AViewDialog.initView() <br>
      * Placeholder per  gli avvisi
      */
-    private void fixLayout() {
+    protected void fixLayout() {
         alertPlacehorder = new VerticalLayout();
         alertPlacehorder.setMargin(false);
         alertPlacehorder.setSpacing(false);

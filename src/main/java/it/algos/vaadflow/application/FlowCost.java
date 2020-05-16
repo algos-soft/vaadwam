@@ -267,6 +267,8 @@ public abstract class FlowCost {
 
     public static final String USA_LOG_MAIL = "usaLogMail";
 
+    public static final String USA_DIVISORI_MENU = "usaDivisoriMenu";
+
     public static final String MAIL_FROM = "mailFrom";
 
     public static final String MAIL_TO = "mailTo";

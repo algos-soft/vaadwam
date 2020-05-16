@@ -10,7 +10,6 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -129,6 +128,10 @@ public class WamLayout extends MainLayout14 {
             VaadinSession.getCurrent().getSession().invalidate();
             UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
         });
+
+        if (login != null && login.isDeveloper()) {
+            addDeveloper(topbar);
+        }// end of if cycle
 
         return topbar;
     }// end of method

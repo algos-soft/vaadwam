@@ -10,6 +10,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.person.Person;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -242,7 +243,7 @@ public class CroceService extends WamService {
                 lista = repository.findAllByOrderByCodeAsc();
             } else {
                 if (context.getLogin().isAdmin()) {
-                    croce = (Croce) context.getCompany();
+                    croce = ((WamLogin) context.getLogin()).getCroce();
                     if (croce != null) {
                         lista = new ArrayList<>();
                         lista.add(croce);

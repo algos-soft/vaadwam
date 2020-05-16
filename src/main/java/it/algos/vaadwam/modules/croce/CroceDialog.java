@@ -3,36 +3,40 @@ package it.algos.vaadwam.modules.croce;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
+import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
-import it.algos.vaadflow.presenter.IAPresenter;
+import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
+import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.fields.ATextField;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.tabellone.EACancellazione;
 import it.algos.vaadwam.wam.WamLogin;
-import it.algos.vaadwam.wam.WamService;
-import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.List;
+
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.modules.croce.CroceList.NOMI;
-import static it.algos.vaadwam.modules.milite.MiliteList.*;
-import static it.algos.vaadwam.modules.milite.MiliteList.STORICO;
 
 /**
  * Project vaadwam <br>
@@ -56,7 +60,6 @@ import static it.algos.vaadwam.modules.milite.MiliteList.STORICO;
 @AIScript(sovrascrivibile = false)
 public class CroceDialog extends AViewDialog<Croce> {
 
-
     private final static int DURATION = 4000;
 
     public static String CONTATTO = "contatto";
@@ -67,6 +70,13 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     protected static String PRESIDENTE = "presidente";
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
 
     protected PersonService personService;
 
@@ -80,20 +90,20 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     protected ATextField contattoField;
 
+    /**
+     * Wam-Login della sessione con i dati del Milite loggato <br>
+     */
+    protected WamLogin wamLogin;
+
     private AComboBox organizzazioneField;
 
-
     private AddressService indirizzoService;
-
 
     private Address indirizzoTemporaneo;
 
     private ATextField indirizzoField;
 
-    /**
-     * Wam-Login della sessione con i dati del Milite loggato <br>
-     */
-    protected WamLogin wamLogin;
+    private VerticalLayout layoutPreferenze = new VerticalLayout();
 
     /**
      * Costruttore base senza parametri <br>
@@ -115,6 +125,7 @@ public class CroceDialog extends AViewDialog<Croce> {
         super(service, binderClass);
     }// end of constructor
 
+
     /**
      * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
      * <p>
@@ -129,6 +140,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
         super.fixAlertLayout();
     }// end of method
+
 
     /**
      * Regola login and context della sessione <br>
@@ -152,8 +164,6 @@ public class CroceDialog extends AViewDialog<Croce> {
     }// end of method
 
 
-
-
     /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
      * Sovrascritto nella sottoclasse
@@ -163,52 +173,135 @@ public class CroceDialog extends AViewDialog<Croce> {
         if (wamLogin.isAdmin()) {
             Object codeField = fieldMap.get("code");
             if (codeField != null) {
-                ((AbstractField)codeField).setEnabled(false);
+                ((AbstractField) codeField).setEnabled(false);
             }// end of if cycle
         }// end of if cycle
     }// end of method
 
 
     /**
-     * Aggiunge al binder eventuali fields specifici, prima di trascrivere la entityBean nel binder
-     * Sovrascritto
-     * Dopo aver creato un AField specifico, usare il metodo super.addFieldBinder() per:
-     * Inizializzare AField
+     * Costruisce eventuali fields specifici (costruiti non come standard type)
+     * Aggiunge i fields specifici al binder
+     * Aggiunge i fields specifici alla fieldMap
+     * Sovrascritto nella sottoclasse
      */
     @Override
     protected void addSpecificAlgosFields() {
-//        personPresenter = StaticContextAccessor.getBean(PersonPresenter.class);
-//        personService = (PersonService) personPresenter.getService();
-//        indirizzoPresenter = StaticContextAccessor.getBean(AddressPresenter.class);
-//        indirizzoService = (AddressService) indirizzoPresenter.getService();
-//
-//        presidenteDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
-//        presidenteDialog.setPresenter(personPresenter);
-//        presidenteDialog.fixFunzioni(this::saveUpdatePre, this::deleteUpdatePre, this::annullaPre);
-//        presidenteDialog.fixConfermaAndNotRegistrazione();
-//        presidenteField = (ATextField) getField(PRESIDENTE);
-//        if (presidenteField != null) {
-//            presidenteField.addFocusListener(e -> presidenteDialog.open(getPresidente(), EAOperation.edit, null, PRESIDENTE));
-//        }// end of if cycle
-//
-//        contattoDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
-//        contattoDialog.setPresenter(personPresenter);
-//        contattoDialog.fixFunzioni(this::saveUpdateCon, this::deleteUpdateCon, this::annullaCon);
-//        contattoDialog.fixConfermaAndNotRegistrazione();
-//        contattoField = (ATextField) getField(CONTATTO);
-//        if (contattoField != null) {
-//            contattoField.addFocusListener(e -> contattoDialog.open(getContatto(), EAOperation.edit, null, CONTATTO));
-//        }// end of if cycle
-//
-//        indirizzoDialog = StaticContextAccessor.getBean(AddressViewDialog.class);
-//        indirizzoDialog.setPresenter(indirizzoPresenter);
-//        indirizzoDialog.fixFunzioni(this::saveUpdateInd, this::deleteUpdateInd, this::annullaInd);
-//        indirizzoDialog.fixConfermaAndNotRegistrazione();
-//        indirizzoField = (ATextField) getField(INDIRIZZO);
-//        if (indirizzoField != null) {
-//            indirizzoField.addFocusListener(e -> indirizzoDialog.open(getIndirizzo(), EAOperation.edit, context));
-//        }// end of if cycle
-    }// end of method
+        EAPrefType type;
+        AbstractField propertyField = null;
+        layoutPreferenze = new VerticalLayout();
+        layoutPreferenze.setMargin(false);
+        layoutPreferenze.setSpacing(false);
+        layoutPreferenze.setPadding(false);
+        boolean isDeveloper = wamLogin.isDeveloper();
+        boolean visibileAdmin = false;
+        boolean visibileDev = false;
+
+        if (isDeveloper) {
+            layoutPreferenze.add(text.getLabelAdmin("Preferenze modificabili (admin)"));
+        } else {
+            layoutPreferenze.add(text.getLabelAdmin("Preferenze modificabili"));
+        }
+
+        for (EAPreferenzaWam eaWam : EAPreferenzaWam.values()) {
+            visibileAdmin = eaWam.getShow() == EARole.admin;
+            if (eaWam.isCompanySpecifica() && eaWam.isVisibileDialogo() && visibileAdmin) {
+                layoutPreferenze.add(fixField(eaWam));
+            }
+        }
+        formSubLayout.add(layoutPreferenze);
+
+        if (isDeveloper) {
+            layoutPreferenze.add(text.getLabelDev("Preferenze modificabili (dev)"));
+
+            for (EAPreferenzaWam eaWam : EAPreferenzaWam.values()) {
+                visibileDev = eaWam.getShow() == EARole.developer;
+                if (eaWam.isCompanySpecifica() && eaWam.isVisibileDialogo() && visibileDev) {
+                    layoutPreferenze.add(fixField(eaWam));
+                }
+            }
+            formSubLayout.add(layoutPreferenze);
+        }
+    }
+
+
+    protected AbstractField fixField(EAPreferenzaWam eaWam) {
+        EAPrefType type;
+        AbstractField propertyField = null;
+
+        type = eaWam.getType();
+        switch (type) {
+            case bool:
+                propertyField = new ACheckBox(eaWam.getDesc());
+                break;
+            case integer:
+                layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
+                propertyField = new ATextField();
+                ((ATextField) propertyField).addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+                ((ATextField) propertyField).setWidth("5em");
+                break;
+            case localdatetime:
+
+                break;
+            case enumeration:
+                layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
+                propertyField = new AComboBox();
+                ((AComboBox) propertyField).setWidth("14em");
+                List items = array.getList(EACancellazione.getValues());
+                if (array.isValid(items)) {
+                    ((AComboBox) propertyField).setItems(items);
+                }// end of if/else cycle
+
+                break;
+            default:
+                logger.warn("Switch - caso non definito: " + eaWam.name(), this.getClass(), "addSpecificAlgosFields");
+                break;
+        }
+
+        return propertyField;
+    }
+
+
+    //    /**
+    //     * Aggiunge al binder eventuali fields specifici, prima di trascrivere la entityBean nel binder
+    //     * Sovrascritto
+    //     * Dopo aver creato un AField specifico, usare il metodo super.addFieldBinder() per:
+    //     * Inizializzare AField
+    //     */
+    //    @Override
+    //    protected void addSpecificAlgosFields() {
+    //        personPresenter = StaticContextAccessor.getBean(PersonPresenter.class);
+    //        personService = (PersonService) personPresenter.getService();
+    //        indirizzoPresenter = StaticContextAccessor.getBean(AddressPresenter.class);
+    //        indirizzoService = (AddressService) indirizzoPresenter.getService();
+    //
+    //        presidenteDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
+    //        presidenteDialog.setPresenter(personPresenter);
+    //        presidenteDialog.fixFunzioni(this::saveUpdatePre, this::deleteUpdatePre, this::annullaPre);
+    //        presidenteDialog.fixConfermaAndNotRegistrazione();
+    //        presidenteField = (ATextField) getField(PRESIDENTE);
+    //        if (presidenteField != null) {
+    //            presidenteField.addFocusListener(e -> presidenteDialog.open(getPresidente(), EAOperation.edit, null, PRESIDENTE));
+    //        }// end of if cycle
+    //
+    //        contattoDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
+    //        contattoDialog.setPresenter(personPresenter);
+    //        contattoDialog.fixFunzioni(this::saveUpdateCon, this::deleteUpdateCon, this::annullaCon);
+    //        contattoDialog.fixConfermaAndNotRegistrazione();
+    //        contattoField = (ATextField) getField(CONTATTO);
+    //        if (contattoField != null) {
+    //            contattoField.addFocusListener(e -> contattoDialog.open(getContatto(), EAOperation.edit, null, CONTATTO));
+    //        }// end of if cycle
+    //
+    //        indirizzoDialog = StaticContextAccessor.getBean(AddressViewDialog.class);
+    //        indirizzoDialog.setPresenter(indirizzoPresenter);
+    //        indirizzoDialog.fixFunzioni(this::saveUpdateInd, this::deleteUpdateInd, this::annullaInd);
+    //        indirizzoDialog.fixConfermaAndNotRegistrazione();
+    //        indirizzoField = (ATextField) getField(INDIRIZZO);
+    //        if (indirizzoField != null) {
+    //            indirizzoField.addFocusListener(e -> indirizzoDialog.open(getIndirizzo(), EAOperation.edit, context));
+    //        }// end of if cycle
+    //    }// end of method
 
 
     /**
@@ -217,13 +310,13 @@ public class CroceDialog extends AViewDialog<Croce> {
      * Sovrascritto
      */
     protected void readSpecificFields() {
-//        presidenteTemporaneo = getPresidenteCorrente();
-//        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : "");
-//        contattoTemporaneo = getContattoCorrente();
-//        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : "");
-//
-//        indirizzoTemporaneo = getIndirizzoCorrente();
-//        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : "");
+        //        presidenteTemporaneo = getPresidenteCorrente();
+        //        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : "");
+        //        contattoTemporaneo = getContattoCorrente();
+        //        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : "");
+        //
+        //        indirizzoTemporaneo = getIndirizzoCorrente();
+        //        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : "");
     }// end of method
 
 
@@ -233,7 +326,7 @@ public class CroceDialog extends AViewDialog<Croce> {
      * Sovrascritto
      */
     protected void writeSpecificFields() {
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
         croce.setPresidente(presidenteTemporaneo);
         croce.setContatto(contattoTemporaneo);
         croce.setIndirizzo(indirizzoTemporaneo);
@@ -241,7 +334,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
 
     protected void saveUpdatePre(Person entityBean, EAOperation operation) {
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
         entityBean = (Person) personService.beforeSave(entityBean, operation);
         presidenteTemporaneo = entityBean;
 
@@ -254,7 +347,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
 
     protected void saveUpdateCon(Person entityBean, EAOperation operation) {
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
         entityBean = (Person) personService.beforeSave(entityBean, operation);
         contattoTemporaneo = entityBean;
 
@@ -315,7 +408,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     private Person getPresidenteCorrente() {
         Person persona = null;
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
 
         if (croce != null) {
             persona = croce.getPresidente();
@@ -327,7 +420,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     private Person getContattoCorrente() {
         Person persona = null;
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
 
         if (croce != null) {
             persona = croce.getContatto();
@@ -339,7 +432,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     private Address getIndirizzoCorrente() {
         Address indirizzo = null;
-        Croce croce = (Croce)super.getCurrentItem();
+        Croce croce = (Croce) super.getCurrentItem();
 
         if (croce != null) {
             indirizzo = croce.getIndirizzo();

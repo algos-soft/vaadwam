@@ -27,24 +27,13 @@ public enum EAPreferenza implements IAPreferenza {
     showAddress(FlowCost.SHOW_ADDRESS, showMenu(FlowCost.TAG_ADD), EAPrefType.bool, EARole.developer, false, true),
     showPerson(FlowCost.SHOW_PERSON, showMenu(FlowCost.TAG_PER), EAPrefType.bool, EARole.developer, false, true),
     showRole(FlowCost.SHOW_ROLE, showMenu(FlowCost.TAG_ROL), EAPrefType.bool, EARole.developer, false, true),
-    showUser(FlowCost.SHOW_USER, showMenu(FlowCost.TAG_UTE), EAPrefType.bool, EARole.developer, false, true),
-    showVersione(FlowCost.SHOW_VERSION, showMenu(FlowCost.TAG_VER), EAPrefType.bool, EARole.developer, false, true),
-    showLog(FlowCost.SHOW_LOG, showMenu(FlowCost.TAG_LOG), EAPrefType.bool, EARole.developer, false, true),
-    showLogType(FlowCost.SHOW_LOGTYPE, showMenu(FlowCost.TAG_TYP), EAPrefType.bool, EARole.developer, false, true),
-    showSecolo(FlowCost.SHOW_SECOLO, showMenu(FlowCost.TAG_SEC), EAPrefType.bool, EARole.developer, false, false),
-    showAnno(FlowCost.SHOW_ANNO, showMenu(FlowCost.TAG_ANN), EAPrefType.bool, EARole.developer, false, false),
-    showMese(FlowCost.SHOW_MESE, showMenu(FlowCost.TAG_MES), EAPrefType.bool, EARole.developer, false, false),
-    showGiorno(FlowCost.SHOW_GIORNO, showMenu(FlowCost.TAG_GIO), EAPrefType.bool, EARole.developer, false, false),
+    showUser(FlowCost.SHOW_USER, showMenu(FlowCost.TAG_UTE), EAPrefType.bool, EARole.developer, false, true), showVersione(FlowCost.SHOW_VERSION, showMenu(FlowCost.TAG_VER), EAPrefType.bool, EARole.developer, false, true), showLog(FlowCost.SHOW_LOG, showMenu(FlowCost.TAG_LOG), EAPrefType.bool, EARole.developer, false, true), showLogType(FlowCost.SHOW_LOGTYPE, showMenu(FlowCost.TAG_TYP), EAPrefType.bool, EARole.developer, false, true), showSecolo(FlowCost.SHOW_SECOLO, showMenu(FlowCost.TAG_SEC), EAPrefType.bool, EARole.developer, false, false), showAnno(FlowCost.SHOW_ANNO, showMenu(FlowCost.TAG_ANN), EAPrefType.bool, EARole.developer, false, false), showMese(FlowCost.SHOW_MESE, showMenu(FlowCost.TAG_MES), EAPrefType.bool, EARole.developer, false, false), showGiorno(FlowCost.SHOW_GIORNO, showMenu(FlowCost.TAG_GIO), EAPrefType.bool, EARole.developer, false, false),
 
     //--menu
-    usaMenu(FlowCost.USA_MENU, "Tipo di menu in uso", EAPrefType.enumeration, EARole.developer, false, EAMenu.tabs),
-    showAccount(FlowCost.SHOW_ACCOUNT_ON_MENU, "Mostra l'account nella barra di menu", EAPrefType.bool, EARole.developer, false, true),
-    showIcons(FlowCost.SHOW_ICONS_MENU, "Mostra le icone nella barra di menu", EAPrefType.bool, EARole.developer, false, true),
+    usaMenu(FlowCost.USA_MENU, "Tipo di menu in uso", EAPrefType.enumeration, EARole.developer, false, EAMenu.tabs), usaDivisoriMenu(FlowCost.USA_DIVISORI_MENU, "Uso dei separatori di ruoli nel menu", EAPrefType.bool, EARole.developer, false, false), showAccount(FlowCost.SHOW_ACCOUNT_ON_MENU, "Mostra l'account nella barra di menu", EAPrefType.bool, EARole.developer, false, true), showIcons(FlowCost.SHOW_ICONS_MENU, "Mostra le icone nella barra di menu", EAPrefType.bool, EARole.developer, false, true),
 
     //--mail
-    usaLogMail(FlowCost.USA_LOG_MAIL, "Uso della mail spedita da un log. Di default false", EAPrefType.bool, EARole.developer, false, false),
-    mailFrom(FlowCost.MAIL_FROM, "Email di default da cui partono i log", EAPrefType.email, EARole.developer, false, "info@algos.it"),
-    mailTo(FlowCost.MAIL_TO, "Email di default a cui spedire i log di posta", EAPrefType.email, EARole.admin, false, "gac@algos.it"),
+    usaLogMail(FlowCost.USA_LOG_MAIL, "Uso della mail spedita da un log. Di default false", EAPrefType.bool, EARole.developer, false, false), mailFrom(FlowCost.MAIL_FROM, "Email di default da cui partono i log", EAPrefType.email, EARole.developer, false, "info@algos.it"), mailTo(FlowCost.MAIL_TO, "Email di default a cui spedire i log di posta", EAPrefType.email, EARole.admin, false, "gac@algos.it"),
 
     //--grid
     maxRigheGrid(FlowCost.MAX_RIGHE_GRID, "Numero di elementi oltre il quale scatta la pagination automatica della Grid (se attiva)", EAPrefType.integer, EARole.developer, true, 20),

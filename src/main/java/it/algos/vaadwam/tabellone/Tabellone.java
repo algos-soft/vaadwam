@@ -78,9 +78,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
 
-    @Value("${wam.tabellone.banner}")
-    private String banner;
-
     @Autowired
     protected ApplicationContext appContext;
 
@@ -95,6 +92,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      * Si recupera nel metodo AViewList.setParameter(), chiamato dall'interfaccia HasUrlParameter <br>
      */
     protected Map<String, String> parametersMap = null;
+
+    @Value("${wam.tabellone.banner}")
+    private String banner;
 
     @Autowired
     private TurnoService turnoService;
@@ -210,14 +210,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // quando clicco in qualsiasi punto chiudo la palette se aperta
-        divtabellone.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> legendaLayer.getStyle().set("visibility","hidden"));
+        divtabellone.addClickListener((ComponentEventListener<ClickEvent<Div>>) divClickEvent -> legendaLayer.getStyle().set("visibility", "hidden"));
 
-        // bottone Nuovo Servizio
+        // bottone Nuovo Servizio (solo se la croce li usa)
         bAddServizio.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickAddServizio());
+        bAddServizio.setVisible(servizioService.usaExtra());
 
-        // bottone Genera Turni (solo admin)
+        // bottone Genera Turni (solo admin e developer)
         bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
-        bGenTurni.setVisible(wamLogin.isAdmin());
+        bGenTurni.setVisible(false); //@todo Funzionalità ancora da implementare
+        //        bGenTurni.setVisible(wamLogin.isAdminOrDev());
 
         // app footer
         divAppFooter.add(appFooter);
@@ -258,21 +260,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-
-
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
             String code = message.getCode();
             if (code.equals("turnosaved") || code.equals("turnodeleted")) {
-                LocalDate giorno = (LocalDate)message.getPayload();
-                if(isInTabellone(giorno)){
+                LocalDate giorno = (LocalDate) message.getPayload();
+                if (isInTabellone(giorno)) {
                     loadDataInGrid();
                 }
             }
         }));
     }
+
 
     @Override
     protected void onDetach(DetachEvent detachEvent) {
@@ -280,15 +281,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         broadcasterRegistration = null;
     }
 
+
     /**
      * Controlla se una data è all'interno del periodo corrente
      */
     boolean isInTabellone(LocalDate testDate) {
-        LocalDate endDate=startDay.plusDays(numDays-1);
+        LocalDate endDate = startDay.plusDays(numDays - 1);
         return !(testDate.isBefore(startDay) || testDate.isAfter(endDate));
     }
-
-
 
 
     private void buildAllGrid() {
@@ -512,7 +512,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 buildAllGrid();
                 break;
             case lunedi:
-                startDay = dateService.getFirstLunedì(LocalDate.now());                buildAllGrid();
+                startDay = dateService.getFirstLunedì(LocalDate.now());
+                buildAllGrid();
                 buildAllGrid();
                 break;
             case giornoPrecedente:
@@ -559,26 +560,26 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         boolean nuovoTurno = false;
         if (turno == null) {
 
-           boolean creaTurno=false;
-            if( servizio.isOrarioDefinito()){ //turni a orario definito: admin li può creare sempre, gli altri solo se la company lo prevede
-                if (isUtenteAdmin()){
-                    creaTurno=true;
-                }else{
-                    if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno)){
-                        creaTurno=true;
+            boolean creaTurno = false;
+            if (servizio.isOrarioDefinito()) { //turni a orario definito: admin li può creare sempre, gli altri solo se la company lo prevede
+                if (isUtenteAdmin()) {
+                    creaTurno = true;
+                } else {
+                    if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno)) {
+                        creaTurno = true;
                     }
                 }
-            }else {//turni a orario indefinito: li possono creare solo admin e utente specificamente abilitato
-                if(isUtenteAdmin() || isUtenteAbilitatoCreareTurniExtra()){
-                    creaTurno=true;
+            } else {//turni a orario indefinito: li possono creare solo admin e utente specificamente abilitato
+                if (isUtenteAdmin() || isUtenteAbilitatoCreareTurniExtra()) {
+                    creaTurno = true;
                 }
             }
 
             // creazione effettiva del turno, o blocco e uscita con messaggio
-            if(creaTurno){
+            if (creaTurno) {
                 turno = turnoService.newEntity(giorno, servizio);
                 nuovoTurno = true;
-            }else{
+            } else {
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
                 Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
@@ -620,17 +621,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     private boolean isUtenteAbilitatoCreareTurniExtra() {
-//        return (modoAdmin.getValue() || modoCentralinista.getValue());
-        if(wamLogin.isAdmin()){
+        //        return (modoAdmin.getValue() || modoCentralinista.getValue());
+        if (wamLogin.isDeveloper()) {
             return true;
-        }else{
+        } else {
             return wamLogin.getMilite().isCreatoreTurni();
         }
     }
 
 
     private boolean isUtenteAdmin() {
-//        return (modoAdmin.getValue());
+        //        return (modoAdmin.getValue());
         return wamLogin.isAdmin();
     }
 
@@ -809,7 +810,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // la legenda colori si apre quando clicco l'apposito bottone e si
         // chiude quando clicco in qualsiasi parte del tabellone
         bColori.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-            legendaLayer.getStyle().set("visibility","visible");
+            legendaLayer.getStyle().set("visibility", "visible");
         });
 
 
@@ -818,52 +819,49 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private void selezionaPeriodoCustom() {
 
-        final ConfirmDialog dialog=ConfirmDialog.create();
+        final ConfirmDialog dialog = ConfirmDialog.create();
         Button bConferma = new Button();
         bConferma.setEnabled(false);
         DatePicker picker1 = new DatePicker();
         DatePicker picker2 = new DatePicker();
 
         Div divDate = new Div();
-        divDate.getElement().setAttribute("style","display: flex; flex-direction: row");
-        picker1.getElement().setAttribute("style","width:8em");
+        divDate.getElement().setAttribute("style", "display: flex; flex-direction: row");
+        picker1.getElement().setAttribute("style", "width:8em");
         picker1.setPlaceholder("dal");
         picker1.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<DatePicker, LocalDate>>) event -> {
-            bConferma.setEnabled(event.getValue()!=null && picker2.getValue()!=null);
+            bConferma.setEnabled(event.getValue() != null && picker2.getValue() != null);
         });
 
-        picker2.getElement().setAttribute("style","width:8em; margin-left:0.5em");
+        picker2.getElement().setAttribute("style", "width:8em; margin-left:0.5em");
         picker2.setPlaceholder("al");
         picker2.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<DatePicker, LocalDate>>) event -> {
-            bConferma.setEnabled(event.getValue()!=null && picker1.getValue()!=null);
+            bConferma.setEnabled(event.getValue() != null && picker1.getValue() != null);
         });
 
         divDate.add(picker1);
         divDate.add(picker2);
 
         bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
-            LocalDate data1=picker1.getValue();
-            LocalDate data2=picker2.getValue();
-            if(data1.isAfter(data2)){
+            LocalDate data1 = picker1.getValue();
+            LocalDate data2 = picker2.getValue();
+            if (data1.isAfter(data2)) {
                 Notification.show("Le date devono essere consecutive", 2000, Notification.Position.MIDDLE);
-            }else{
-                int quantiGiorni=(int)DAYS.between(data1, data2);
+            } else {
+                int quantiGiorni = (int) DAYS.between(data1, data2);
                 final int max = 31;
-                if(quantiGiorni > max){
-                    Notification.show("Il massimo periodo visualizzabile è di "+max+" giorni", 2000, Notification.Position.MIDDLE);
-                }else{
+                if (quantiGiorni > max) {
+                    Notification.show("Il massimo periodo visualizzabile è di " + max + " giorni", 2000, Notification.Position.MIDDLE);
+                } else {
                     dialog.close();
-                    startDay=data1;
-                    numDays = quantiGiorni+1;
+                    startDay = data1;
+                    numDays = quantiGiorni + 1;
                     buildAllGrid();
                 }
             }
         });
 
-        dialog.withCaption("Periodo da visualizzare")
-                .withMessage(divDate)
-                .withButton(new Button(), ButtonOption.caption("Annulla"))
-                .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.closeOnClick(false));
+        dialog.withCaption("Periodo da visualizzare").withMessage(divDate).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.closeOnClick(false));
 
         dialog.open();
 
@@ -873,40 +871,32 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Click sul bottone Nuovo servizio
      */
-    private void clickAddServizio(){
+    private void clickAddServizio() {
 
         // recupera tutti i servizi extra
-        List<Servizio> serviziExtra= findServiziExtraVisibili();
+        List<Servizio> serviziExtra = findServiziExtraVisibili();
 
-        if (serviziExtra.size()==0){ // non ci sono servizi di tipo extra
+        if (serviziExtra.size() == 0) { // non ci sono servizi di tipo extra
 
             // avvisa e ritorna
-            ConfirmDialog
-                    .createWarning()
-                    .withMessage("Non sono disponibili servizi di tipo extra.")
-                    .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
-                    .open();
+            ConfirmDialog.createWarning().withMessage("Non sono disponibili servizi di tipo extra.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
 
         } else {    // ci sono servizi di tipo extra
 
             // seleziona i servizi candidati (quelli non già presenti nel tabellone)
-            List<Servizio> serviziCandidati=new ArrayList<>();
-            for(Servizio servizio : serviziExtra){
-                if (!isPresenteInTabellone(servizio)){
+            List<Servizio> serviziCandidati = new ArrayList<>();
+            for (Servizio servizio : serviziExtra) {
+                if (!isPresenteInTabellone(servizio)) {
                     serviziCandidati.add(servizio);
                 }
             }
 
-            if(serviziCandidati.size()==0){ // non ci sono servizi candidati
-                ConfirmDialog
-                        .createWarning()
-                        .withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.")
-                        .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
-                        .open();
+            if (serviziCandidati.size() == 0) { // non ci sono servizi candidati
+                ConfirmDialog.createWarning().withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
 
-            }else{ // ci sono uno o più servizi candidati
+            } else { // ci sono uno o più servizi candidati
 
-                if (serviziCandidati.size()==1){    // esiste un solo servizio candidato
+                if (serviziCandidati.size() == 1) {    // esiste un solo servizio candidato
 
                     addNuovaRiga(serviziCandidati.get(0)); // lo sceglie automaticamente
 
@@ -914,7 +904,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
                     // presento un dialogo per scegliere il servizio canditato
 
-                    Select<Servizio> select=new Select<>();
+                    Select<Servizio> select = new Select<>();
                     select.setItems(serviziCandidati);
                     select.setValue(serviziCandidati.get(0));
 
@@ -923,13 +913,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                         addNuovaRiga(select.getValue());
                     });
 
-                    ConfirmDialog
-                            .createQuestion()
-                            .withCaption("Selezione servizio")
-                            .withMessage(select)
-                            .withButton(new Button(), ButtonOption.caption("Annulla"))
-                            .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus())
-                            .open();
+                    ConfirmDialog.createQuestion().withCaption("Selezione servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
                 }
 
             }
@@ -942,14 +926,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Click sul bottone Genera Turni
      */
-    private void clickGenTurni(){
+    private void clickGenTurni() {
 
         ConfirmDialog.setButtonAddClosePerDefault(false);
-        final ConfirmDialog dialog=ConfirmDialog.create();
+        final ConfirmDialog dialog = ConfirmDialog.create();
         TurnoGenPolymer generator = appContext.getBean(TurnoGenPolymer.class);
         generator.setCompletedListener((TurnoGenPolymer.EsitoGenerazioneTurni esito) -> {
             dialog.close();
-            if(esito.getQuanti()>0){
+            if (esito.getQuanti() > 0) {
                 BroadcastMsg msg = new BroadcastMsg("turnigenerati", esito);
                 Broadcaster.broadcast(msg);
             }
@@ -961,10 +945,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     private boolean isPresenteInTabellone(Servizio servizio) {
-        boolean trovato=false;
-        for(Riga riga : gridItems){
-            if(riga.getServizio().equals(servizio)){
-                trovato=true;
+        boolean trovato = false;
+        for (Riga riga : gridItems) {
+            if (riga.getServizio().equals(servizio)) {
+                trovato = true;
                 break;
             }
         }
@@ -975,10 +959,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Ritorna tutti i servizi extra visibili di questa Croce
      */
-    private List<Servizio> findServiziExtraVisibili(){
-        List<Servizio> servizi=new ArrayList<>();
-        for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())){
-            if (!servizio.isOrarioDefinito() && servizio.isVisibile()){
+    private List<Servizio> findServiziExtraVisibili() {
+        List<Servizio> servizi = new ArrayList<>();
+        for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())) {
+            if (!servizio.isOrarioDefinito() && servizio.isVisibile()) {
                 servizi.add(servizio);
             }
         }
@@ -986,7 +970,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private void addNuovaRiga(Servizio servizio){
+    private void addNuovaRiga(Servizio servizio) {
         Riga riga = rigaService.newEntity(startDay, servizio, null);
         gridItems.add(riga);
         grid.getDataProvider().refreshAll();
@@ -998,7 +982,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // https://vaadin.com/forum/thread/17634020/reloading-vaadin-grid-makes-the-page-scroll-to-top
 
     }
-
 
 
 }

@@ -1,7 +1,6 @@
 package it.algos.vaadwam.modules.croce;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
@@ -14,7 +13,6 @@ import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.schedule.ATask;
@@ -25,7 +23,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadwam.application.WamCost.TASK_CRO;
 
 /**
  * Project vaadwam <br>
@@ -58,8 +57,6 @@ import static it.algos.vaadwam.application.WamCost.*;
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class CroceList extends WamViewList {
 
-    public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";
-
     /**
      * Icona visibile nel menu (facoltativa)
      * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
@@ -68,6 +65,8 @@ public class CroceList extends WamViewList {
     public static final VaadinIcon VIEW_ICON = VaadinIcon.ASTERISK;
 
     public static final String IRON_ICON = "camera-enhance";
+
+    public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -161,9 +160,9 @@ public class CroceList extends WamViewList {
             importButton.getElement().setAttribute("theme", "error");
             importButton.addClassName("view-toolbar__button");
             importButton.addClickListener(e -> {
-//                service.importa();
+                //                service.importa();
                 // @todo RIMETTERE
-//                updateView();
+                //                updateView();
             });//end of lambda expressions and anonymous inner class
             topPlaceholder.add(importButton);
         }// end of if cycle
@@ -174,27 +173,27 @@ public class CroceList extends WamViewList {
      * Eventuale header text
      */
     protected void fixGridHeader() {
-//        if (login.isDeveloper()) {
-            super.fixGridHeader();
-//        }// end of if cycle
+        //        if (login.isDeveloper()) {
+        super.fixGridHeader();
+        //        }// end of if cycle
     }// end of method
 
 
-//    protected Button createEditButton(AEntity entityBean) {
-//        final EAOperation operation;
-//
-//        if (context.getLogin().isDeveloper()) {
-//            operation = EAOperation.edit;
-//        } else {
-//            operation = EAOperation.editNoDelete;
-//        }// end of if/else cycle
-//
-//        Button edit = new Button("", event -> dialog.open(entityBean, operation, context));
-//        edit.setIcon(new Icon("lumo", "edit"));
-//        edit.addClassName("review__edit");
-//        edit.getElement().setAttribute("theme", "tertiary");
-//        return edit;
-//    }// end of method
+    //    protected Button createEditButton(AEntity entityBean) {
+    //        final EAOperation operation;
+    //
+    //        if (context.getLogin().isDeveloper()) {
+    //            operation = EAOperation.edit;
+    //        } else {
+    //            operation = EAOperation.editNoDelete;
+    //        }// end of if/else cycle
+    //
+    //        Button edit = new Button("", event -> dialog.open(entityBean, operation, context));
+    //        edit.setIcon(new Icon("lumo", "edit"));
+    //        edit.addClassName("review__edit");
+    //        edit.getElement().setAttribute("theme", "tertiary");
+    //        return edit;
+    //    }// end of method
 
 
     public void updateItems() {
@@ -224,7 +223,8 @@ public class CroceList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(CroceDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
+        EAOperation operation = wamLogin.isAdmin() ? EAOperation.editNoDelete : EAOperation.edit;
+        appContext.getBean(CroceDialog.class, service, entityClazz).open(entityBean, operation, this::save, this::delete);
     }// end of method
 
 }// end of class

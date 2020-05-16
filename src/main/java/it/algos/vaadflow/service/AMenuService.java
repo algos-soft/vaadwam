@@ -1,9 +1,7 @@
 package it.algos.vaadflow.service;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static it.algos.vaadflow.application.FlowCost.SHOW_ICONS_MENU;
+import static it.algos.vaadflow.application.FlowCost.USA_DIVISORI_MENU;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadflow.ui.MainLayout.*;
 
@@ -147,7 +146,7 @@ public class AMenuService extends AService {
         List<Tab> tabs = new ArrayList<>();
 
         if (array.isValid(clazzList)) {
-            if (text.isValid(titoloGruppo)) {
+            if ((pref.isBool(USA_DIVISORI_MENU) || getLogin().isDeveloper()) && text.isValid(titoloGruppo)) {
                 tabs.add(new Tab("==" + titoloGruppo + "=="));
             }// end of if cycle
 
@@ -243,7 +242,7 @@ public class AMenuService extends AService {
         icon = reflection.getIconView(viewClazz);
         linkRoute = annotation.getRouteName(viewClazz);
 
-//        appMenu.addMenuItem(new AppLayoutMenuItem(icon.create(), menuName, linkRoute));
+        //        appMenu.addMenuItem(new AppLayoutMenuItem(icon.create(), menuName, linkRoute));
     }// end of method
 
 
@@ -388,27 +387,27 @@ public class AMenuService extends AService {
     }// end of method
 
 
-//    /**
-//     * Eventuali item di menu, se collegato come admin
-//     */
-//    public void creaMenuAdmin() {
-//        if (array.isValid(adminClazzList)) {
-//            for (Class viewClazz : adminClazzList) {
-//                addItem(viewClazz);
-//            }// end of for cycle
-//        }// end of if cycle
-//    }// end of method
-//
-//
-//    /**
-//     * Item di menu (normali) sempre presenti
-//     */
-//    public void creaMenuUser() {
-//        if (array.isValid(userClazzList)) {
-//            for (Class viewClazz : userClazzList) {
-//                addItem(viewClazz);
-//            }// end of for cycle
-//        }// end of if cycle
-//    }// end of method
+    //    /**
+    //     * Eventuali item di menu, se collegato come admin
+    //     */
+    //    public void creaMenuAdmin() {
+    //        if (array.isValid(adminClazzList)) {
+    //            for (Class viewClazz : adminClazzList) {
+    //                addItem(viewClazz);
+    //            }// end of for cycle
+    //        }// end of if cycle
+    //    }// end of method
+    //
+    //
+    //    /**
+    //     * Item di menu (normali) sempre presenti
+    //     */
+    //    public void creaMenuUser() {
+    //        if (array.isValid(userClazzList)) {
+    //            for (Class viewClazz : userClazzList) {
+    //                addItem(viewClazz);
+    //            }// end of for cycle
+    //        }// end of if cycle
+    //    }// end of method
 
 }// end of class

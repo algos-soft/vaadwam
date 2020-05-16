@@ -6,6 +6,7 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.preferenza.PreferenzaList;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
@@ -433,6 +434,7 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
+        FlowVar.menuClazzList.add(PreferenzaList.class);
         FlowVar.menuClazzList.add(CroceList.class);
 
         //--utente

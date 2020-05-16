@@ -169,13 +169,14 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
      * Sovrascritto nella sottoclasse
      */
-    protected void fixStandardAlgosFields() {
+    protected void fixStandardAlgosFieldsAnte() {
         titoloExtraField = (ATextField) getField("titoloExtra");
         localitaExtraField = (ATextField) getField("localitaExtra");
 
         titoloExtraField.setEnabled(false);
         localitaExtraField.setEnabled(false);
     }// end of method
+
 
     /**
      * Aggiunge eventuali listeners ai fields che sono stati creati SENZA listeners <br>
@@ -188,6 +189,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
         servizioField = (AComboBox) getField("servizio");
         servizioField.addValueChangeListener(event -> sincroServizio((Servizio) event.getValue()));//end of lambda expressions
     }// end of method
+
 
     private void sincroServizio(Servizio servizio) {
         if (servizio.isOrarioDefinito()) {
@@ -235,6 +237,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Crea (o ricrea dopo una clonazione) il componente base
      */
     public void fixLayout() {
+        super.fixLayout();
         grid = new Grid(Iscrizione.class);
 
         for (Object column : grid.getColumns()) {
@@ -298,7 +301,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 
     private void updateItems() {
         List<Iscrizione> items;
-        items = ((Turno) currentItem).iscrizioni;
+        items = currentItem != null ? ((Turno) currentItem).iscrizioni : null;
         if (items != null) {
             grid.setItems(items);
         }// end of if cycle
