@@ -25,7 +25,6 @@ import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.turno.Turno;
-import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,18 +173,6 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
     }// end of method
 
 
-    /**
-     * Eventuali aggiustamenti finali al layout
-     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
-     * Sovrascritto nella sottoclasse
-     */
-    protected void fixLayout() {
-        //@todo POPPOPPOP
-
-//        if (currentItem != null) {
-//            this.getFormLayout().add(creaGrid(((Servizio) currentItem).funzioni));
-//        }// end of if cycle
-    }// end of method
 
 
     /**

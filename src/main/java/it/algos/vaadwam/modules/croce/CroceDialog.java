@@ -18,6 +18,7 @@ import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.role.EARole;
+import it.algos.vaadflow.service.AEnumerationService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.ui.fields.ACheckBox;
@@ -32,9 +33,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.modules.croce.CroceList.NOMI;
 
@@ -78,6 +81,15 @@ public class CroceDialog extends AViewDialog<Croce> {
     @Autowired
     public LogService logger;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    protected AEnumerationService enumService;
+
+
     protected PersonService personService;
 
 
@@ -104,6 +116,9 @@ public class CroceDialog extends AViewDialog<Croce> {
     private ATextField indirizzoField;
 
     private VerticalLayout layoutPreferenze = new VerticalLayout();
+
+    private LinkedHashMap<String, AbstractField> prefMap;
+
 
     /**
      * Costruttore base senza parametri <br>
@@ -187,8 +202,6 @@ public class CroceDialog extends AViewDialog<Croce> {
      */
     @Override
     protected void addSpecificAlgosFields() {
-        EAPrefType type;
-        AbstractField propertyField = null;
         layoutPreferenze = new VerticalLayout();
         layoutPreferenze.setMargin(false);
         layoutPreferenze.setSpacing(false);
@@ -196,6 +209,7 @@ public class CroceDialog extends AViewDialog<Croce> {
         boolean isDeveloper = wamLogin.isDeveloper();
         boolean visibileAdmin = false;
         boolean visibileDev = false;
+        prefMap = new LinkedHashMap<>();
 
         if (isDeveloper) {
             layoutPreferenze.add(text.getLabelAdmin("Preferenze modificabili (admin)"));
@@ -227,29 +241,29 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     protected AbstractField fixField(EAPreferenzaWam eaWam) {
         EAPrefType type;
-        AbstractField propertyField = null;
+        AbstractField field = null;
 
         type = eaWam.getType();
         switch (type) {
             case bool:
-                propertyField = new ACheckBox(eaWam.getDesc());
+                field = new ACheckBox(eaWam.getDesc());
                 break;
             case integer:
                 layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
-                propertyField = new ATextField();
-                ((ATextField) propertyField).addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-                ((ATextField) propertyField).setWidth("5em");
+                field = new ATextField();
+                ((ATextField) field).addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+                ((ATextField) field).setWidth("5em");
                 break;
             case localdatetime:
 
                 break;
             case enumeration:
                 layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
-                propertyField = new AComboBox();
-                ((AComboBox) propertyField).setWidth("14em");
+                field = new AComboBox();
+                ((AComboBox) field).setWidth("14em");
                 List items = array.getList(EACancellazione.getValues());
                 if (array.isValid(items)) {
-                    ((AComboBox) propertyField).setItems(items);
+                    ((AComboBox) field).setItems(items);
                 }// end of if/else cycle
 
                 break;
@@ -258,50 +272,9 @@ public class CroceDialog extends AViewDialog<Croce> {
                 break;
         }
 
-        return propertyField;
+        prefMap.put(eaWam.getCode(), field);
+        return field;
     }
-
-
-    //    /**
-    //     * Aggiunge al binder eventuali fields specifici, prima di trascrivere la entityBean nel binder
-    //     * Sovrascritto
-    //     * Dopo aver creato un AField specifico, usare il metodo super.addFieldBinder() per:
-    //     * Inizializzare AField
-    //     */
-    //    @Override
-    //    protected void addSpecificAlgosFields() {
-    //        personPresenter = StaticContextAccessor.getBean(PersonPresenter.class);
-    //        personService = (PersonService) personPresenter.getService();
-    //        indirizzoPresenter = StaticContextAccessor.getBean(AddressPresenter.class);
-    //        indirizzoService = (AddressService) indirizzoPresenter.getService();
-    //
-    //        presidenteDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
-    //        presidenteDialog.setPresenter(personPresenter);
-    //        presidenteDialog.fixFunzioni(this::saveUpdatePre, this::deleteUpdatePre, this::annullaPre);
-    //        presidenteDialog.fixConfermaAndNotRegistrazione();
-    //        presidenteField = (ATextField) getField(PRESIDENTE);
-    //        if (presidenteField != null) {
-    //            presidenteField.addFocusListener(e -> presidenteDialog.open(getPresidente(), EAOperation.edit, null, PRESIDENTE));
-    //        }// end of if cycle
-    //
-    //        contattoDialog = StaticContextAccessor.getBean(PersonViewDialog.class);
-    //        contattoDialog.setPresenter(personPresenter);
-    //        contattoDialog.fixFunzioni(this::saveUpdateCon, this::deleteUpdateCon, this::annullaCon);
-    //        contattoDialog.fixConfermaAndNotRegistrazione();
-    //        contattoField = (ATextField) getField(CONTATTO);
-    //        if (contattoField != null) {
-    //            contattoField.addFocusListener(e -> contattoDialog.open(getContatto(), EAOperation.edit, null, CONTATTO));
-    //        }// end of if cycle
-    //
-    //        indirizzoDialog = StaticContextAccessor.getBean(AddressViewDialog.class);
-    //        indirizzoDialog.setPresenter(indirizzoPresenter);
-    //        indirizzoDialog.fixFunzioni(this::saveUpdateInd, this::deleteUpdateInd, this::annullaInd);
-    //        indirizzoDialog.fixConfermaAndNotRegistrazione();
-    //        indirizzoField = (ATextField) getField(INDIRIZZO);
-    //        if (indirizzoField != null) {
-    //            indirizzoField.addFocusListener(e -> indirizzoDialog.open(getIndirizzo(), EAOperation.edit, context));
-    //        }// end of if cycle
-    //    }// end of method
 
 
     /**
@@ -310,13 +283,32 @@ public class CroceDialog extends AViewDialog<Croce> {
      * Sovrascritto
      */
     protected void readSpecificFields() {
-        //        presidenteTemporaneo = getPresidenteCorrente();
-        //        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : "");
-        //        contattoTemporaneo = getContattoCorrente();
-        //        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : "");
-        //
-        //        indirizzoTemporaneo = getIndirizzoCorrente();
-        //        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : "");
+        EAPrefType type;
+        String key = VUOTA;
+        AbstractField field = null;
+
+        for (EAPreferenzaWam eaWam : EAPreferenzaWam.values()) {
+            key = eaWam.getCode();
+
+            if (prefMap.get(key) != null) {
+                field = prefMap.get(key);
+                type = eaWam.getType();
+                switch (type) {
+                    case bool:
+                        field.setValue(pref.isBool(key));
+                        break;
+                    case integer:
+                        field.setValue("" + pref.getInt(key));
+                        break;
+                    case enumeration:
+                        field.setValue(pref.getEnumStr(key));
+                        break;
+                    default:
+                        logger.warn("Switch - caso non definito", this.getClass(), "nomeDelMetodo");
+                        break;
+                }
+            }
+        }
     }// end of method
 
 
@@ -326,10 +318,44 @@ public class CroceDialog extends AViewDialog<Croce> {
      * Sovrascritto
      */
     protected void writeSpecificFields() {
+        EAPrefType type;
+        String key = VUOTA;
+        AbstractField field = null;
+        String stringEnum;
+        List<String> listaEnum;
+
         Croce croce = (Croce) super.getCurrentItem();
         croce.setPresidente(presidenteTemporaneo);
         croce.setContatto(contattoTemporaneo);
         croce.setIndirizzo(indirizzoTemporaneo);
+
+        for (EAPreferenzaWam eaWam : EAPreferenzaWam.values()) {
+            key = eaWam.getCode();
+
+            if (prefMap.get(key) != null) {
+                field = prefMap.get(key);
+                type = eaWam.getType();
+                switch (type) {
+                    case bool:
+                        pref.saveValue(key, (Boolean) field.getValue());
+                        break;
+                    case integer:
+                        pref.saveValue(key, Integer.parseInt((String) field.getValue()));
+                        break;
+                    case enumeration:
+                        stringEnum = pref.getEnumStr(key);
+                        listaEnum = array.getList(stringEnum);
+
+                        //                        genericFieldValue = enumService.convertToModel(mongoEnumValue, (String) field.getValue());
+                        //                        pref.setEnum(key, (Integer) field.getValue());
+                        field.setValue(pref.getEnumStr(key));
+                        break;
+                    default:
+                        logger.warn("Switch - caso non definito", this.getClass(), "nomeDelMetodo");
+                        break;
+                }
+            }
+        }
     }// end of method
 
 

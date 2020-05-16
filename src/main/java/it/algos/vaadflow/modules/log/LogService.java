@@ -219,11 +219,7 @@ public class LogService extends AService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Log newEntity(Logtype type, String descrizione, long inizio) {
-        return Log.builderLog()
-                .type(type != null ? type : typeService.getEdit())
-                .descrizione(fixDesc(descrizione, inizio))
-                .evento(LocalDateTime.now())
-                .build();
+        return Log.builderLog().type(type != null ? type : typeService.getEdit()).descrizione(fixDesc(descrizione, inizio)).evento(LocalDateTime.now()).build();
     }// end of method
 
 
@@ -394,6 +390,16 @@ public class LogService extends AService {
      *
      * @param descrizione della informazione da gestire
      */
+    public void error(Exception unErrore) {
+        error(unErrore.getMessage());
+    }// end of method
+
+
+    /**
+     * Gestisce un log di error <br>
+     *
+     * @param descrizione della informazione da gestire
+     */
     public void error(String descrizione) {
         error(descrizione, null, VUOTA);
     }// end of method
@@ -423,16 +429,16 @@ public class LogService extends AService {
     }// fine del metodo
 
 
-//    /**
-//     * Gestisce un log, con le modalità fissate nelle preferenze <br>
-//     *
-//     * @param descrizione della informazione da gestire
-//     * @param clazz       di provenienza della richiesta
-//     * @param methodName  di provenienza della richiesta
-//     */
-//    public void esegue(String descrizione, Class clazz, String methodName) {
-//        esegue(EALogAction.get(pref), descrizione, EALogLivello.clazz, methodName);
-//    }// fine del metodo
+    //    /**
+    //     * Gestisce un log, con le modalità fissate nelle preferenze <br>
+    //     *
+    //     * @param descrizione della informazione da gestire
+    //     * @param clazz       di provenienza della richiesta
+    //     * @param methodName  di provenienza della richiesta
+    //     */
+    //    public void esegue(String descrizione, Class clazz, String methodName) {
+    //        esegue(EALogAction.get(pref), descrizione, EALogLivello.clazz, methodName);
+    //    }// fine del metodo
 
 
     /**
@@ -476,10 +482,10 @@ public class LogService extends AService {
     }// fine del metodo
 
 
-//    //--registra un avviso
-//    public void importo(String descrizione) {
-//        crea(EALogLivello.debug, logtype.getImport(), descrizione, 0);
-//    }// fine del metodo
+    //    //--registra un avviso
+    //    public void importo(String descrizione) {
+    //        crea(EALogLivello.debug, logtype.getImport(), descrizione, 0);
+    //    }// fine del metodo
 
 
     /**
