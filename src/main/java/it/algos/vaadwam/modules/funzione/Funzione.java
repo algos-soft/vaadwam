@@ -100,8 +100,8 @@ public class Funzione extends WamEntity {
     @Indexed()
     @Size(min = 2, max = 20)
     @Field("code")
-    @AIField(type = EAFieldType.text, required = true, widthEM = 9)
-    @AIColumn()
+    @AIField(type = EAFieldType.text, required = true, widthEM = 9, name = "Codice interno non modificabile")
+    @AIColumn(name = "Codice")
     public String code;
 
 
@@ -109,7 +109,7 @@ public class Funzione extends WamEntity {
      * icona (facoltativa)
      */
     @Field("icon")
-    @AIField(type = EAFieldType.vaadinIcon, widthEM = 8, color = "verde")
+    @AIField(type = EAFieldType.vaadinIcon, widthEM = 8, color = "verde", name = "Icona rappresentativa della funzione")
     @AIColumn(headerIcon = VaadinIcon.USERS, headerIconColor = "green")
     public VaadinIcon icona;
 
@@ -121,8 +121,8 @@ public class Funzione extends WamEntity {
     @Indexed()
     @Size(min = 2, max = 20)
     @Field("sigla")
-    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 9)
-    @AIColumn(widthEM = 8)
+    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 9, name = "Sigla breve per il tabellone")
+    @AIColumn(widthEM = 8, name = "Sigla")
     public String sigla;
 
 
@@ -132,19 +132,19 @@ public class Funzione extends WamEntity {
     @NotNull(message = "La descrizione è obbligatoria")
     @Size(min = 2, max = 50)
     @Field("desc")
-    @AIField(type = EAFieldType.text, firstCapital = true)
+    @AIField(type = EAFieldType.text, firstCapital = true, name = "Descrizione estesa")
     @AIColumn(flexGrow = true, widthEM = 16)
     public String descrizione;
 
 
-//    /**
-//     * funzione obbligatoria o facoltativa per uno specifico servizio (ha senso solo per il servizio in cui è 'embedded')
-//     * Il flag NON viene usato direttamente da questa funzione.
-//     * Quando un servizio usa una funzione, ne effettua una 'copia' e la mantiene al suo interno per uso esclusivo.
-//     * Se modifico successivamente all'interno del servizio la copia della funzione, le modifiche rimangono circostritte a quello specifico servizio
-//     * Se modifico successivamente questa funzione, le modifiche NON si estendono alle funzioni 'congelata' nei singoli servizi
-//     * Possono esserci decine di copie di questa funzione, 'embedded' nei servizi ed ognuna avere property diverse tra di loro, se sono state modifcate all'interno del singolo servizio
-//     */
+    //    /**
+    //     * funzione obbligatoria o facoltativa per uno specifico servizio (ha senso solo per il servizio in cui è 'embedded')
+    //     * Il flag NON viene usato direttamente da questa funzione.
+    //     * Quando un servizio usa una funzione, ne effettua una 'copia' e la mantiene al suo interno per uso esclusivo.
+    //     * Se modifico successivamente all'interno del servizio la copia della funzione, le modifiche rimangono circostritte a quello specifico servizio
+    //     * Se modifico successivamente questa funzione, le modifiche NON si estendono alle funzioni 'congelata' nei singoli servizi
+    //     * Possono esserci decine di copie di questa funzione, 'embedded' nei servizi ed ognuna avere property diverse tra di loro, se sono state modifcate all'interno del singolo servizio
+    //     */
     @Deprecated
     @Field("obb")
     @AIField(type = EAFieldType.checkbox)
@@ -159,7 +159,7 @@ public class Funzione extends WamEntity {
      */
     @Field("dip")
     @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, name = "funzioni dipendenti, abilitate automaticamente insieme a questa")
-    @AIColumn(name = "funzioni dipendenti", flexGrow = true, widthEM = 20)
+    @AIColumn(name = "Funzioni dipendenti", flexGrow = true, widthEM = 20)
     public Set<Funzione> dipendenti;
 
 

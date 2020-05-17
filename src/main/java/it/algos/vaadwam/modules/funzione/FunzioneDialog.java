@@ -7,6 +7,8 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.fields.AComboBox;
+import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewDialog;
@@ -21,6 +23,7 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 import java.io.Serializable;
 import java.util.List;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_FUN;
 import static it.algos.vaadwam.wam.WamViewList.USER_VISIONE;
 
@@ -83,6 +86,18 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
 
     /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+        super.usaFormDueColonne = false;
+    }
+
+
+    /**
      * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
      * <p>
      * Chiamato da AViewDialog.open() <br>
@@ -93,10 +108,38 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
     @Override
     protected void fixAlertLayout() {
         alertUser.add(USER_VISIONE);
+        alertAdmin.add("La sigla appare nelle iscrizioni dei turni e può essere liberamente modificata");
         alertAdmin.add("Questa funzione può essere cancellata solo se non è usata in nessun servizio");
+        alertAdmin.add("Le funzioni dipendenti,abilitate automaticamente, vengono indicate con la sigla");
+        alertDev.add("Il Code è utilizzato internamente e non può essere modificato una volta creata la funzione");
         alertDev.add("Devi eventualmente cancellare prima il servizio che la usa");
 
         super.fixAlertLayout();
+    }// end of method
+
+
+    /**
+     * Eventuali specifiche regolazioni aggiuntive ai fields del binder
+     * Sovrascritto nella sottoclasse
+     */
+    @Override
+    protected void fixStandardAlgosFieldsAnte() {
+        String fieldName = "dipendenti";
+        MultiselectComboBox<Funzione> comboFunzioni = null;
+        MultiselectComboBox comboField = (MultiselectComboBox) fieldMap.get(fieldName);
+        List<Funzione> funzioni = ((FunzioneService) service).findAll();
+        String caption = VUOTA;
+
+        if (comboField != null && array.isValid(funzioni)) {
+            caption = annotation.getCaption(Funzione.class, fieldName);
+            comboFunzioni = new MultiselectComboBox<>();
+            comboFunzioni.setLabel(text.primaMaiuscola(caption));
+            comboFunzioni.setItems(funzioni);
+            comboFunzioni.setItemLabelGenerator(Funzione::getSigla);
+            comboFunzioni.setValue(((Funzione) currentItem).dipendenti);
+            fieldMap.put(fieldName, comboFunzioni);
+        }// end of if cycle
+
     }// end of method
 
 
@@ -108,23 +151,47 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
     @Override
     protected void fixLayoutFinal() {
         super.fixLayoutFinal();
+
+        //--bottone icona con label/caption
+        String caption = annotation.getCaption(Funzione.class, "icona");
+        getFormLayout().add(text.getLabelAdmin(caption));
         getFormLayout().add(addButtonIcona());
+
+        if (fieldMap.get("id") != null) {
+            ((ATextField) fieldMap.get("id")).setEnabled(false);
+        }
+
+        if (fieldMap.get("croce") != null) {
+            ((AComboBox) fieldMap.get("croce")).setEnabled(false);
+        }
+
+        if (fieldMap.get("code") != null) {
+            if (wamLogin != null && wamLogin.isDeveloper()) {
+                ((ATextField) fieldMap.get("code")).setEnabled(true);
+            } else {
+                ((ATextField) fieldMap.get("code")).setEnabled(false);
+            }
+        }
+
     }// end of method
 
 
-    /**
-     * Eventuali specifiche regolazioni aggiuntive ai fields del binder
-     * Sovrascritto nella sottoclasse
-     */
-    @Override
-    protected void fixStandardAlgosFieldsAnte() {
-        Object comboField = fieldMap.get("dipendenti");
-        List funzioni = ((FunzioneService) service).findAll();
+    private Button addButtonIcona() {
+        iconButton = new Button("Icona");
 
-        if (comboField != null && array.isValid(funzioni)) {
-            ((MultiselectComboBox) comboField).setItems(funzioni);
-        }// end of if cycle
+        setIcona();
+        iconButton.setWidth("8em");//@todo Non funziona
+        iconButton.getElement().setAttribute("style", "color: verde");
+        iconButton.getElement().setAttribute("style", "width:8em");
+        iconButton.addClickListener(e -> apreDialogo());
 
+        if (wamLogin.isAdminOrDev()) {
+            iconButton.setEnabled(true);
+        } else {
+            iconButton.setEnabled(false);
+        }// end of if/else cycle
+
+        return iconButton;
     }// end of method
 
 
@@ -138,24 +205,6 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
         }// end of if/else cycle
         icona.getElement().getClassList().add("verde");
         iconButton.setIcon(icona);
-    }// end of method
-
-
-    private Button addButtonIcona() {
-        iconButton = new Button("Icona");
-
-        setIcona();
-        iconButton.setWidth("8em");//@todo Non funziona
-        iconButton.getElement().setAttribute("style", "color: verde");
-        iconButton.addClickListener(e -> apreDialogo());
-
-        if (wamLogin.isAdminOrDev()) {
-            iconButton.setEnabled(true);
-        } else {
-            iconButton.setEnabled(false);
-        }// end of if/else cycle
-
-        return iconButton;
     }// end of method
 
 
