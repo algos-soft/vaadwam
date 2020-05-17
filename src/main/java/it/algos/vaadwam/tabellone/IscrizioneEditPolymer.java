@@ -329,12 +329,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             if(iscrizioni.size()>0){
 
                 Button bConferma=new Button();
-                bConferma.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
-                    @Override
-                    public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                        syncAndConferma();
-                    }
-                });
+                bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> syncAndConferma());
 
                 ConfirmDialog dialog = ConfirmDialog.createWarning()
                         .withCaption("Attenzione! Sei già iscritto ad altri turni nello stesso giorno")
