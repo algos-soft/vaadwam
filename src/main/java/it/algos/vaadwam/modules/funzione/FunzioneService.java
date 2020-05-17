@@ -273,17 +273,41 @@ public class FunzioneService extends WamService {
      */
     @Override
     public List<String> getGridPropertyNamesList(AContext context) {
-        List<String> lista = super.getGridPropertyNamesList(context);
-        String tag = "code";
+        List<String> lista;
 
         if (context.getLogin() != null && context.getLogin().isDeveloper()) {
-            if (!lista.contains(tag)) {
-                lista.add(2, tag);
-            }// end of if cycle
-        }// end of if cycle
+            lista = array.getList("id,ordine,code,icona,sigla,descrizione,dipendenti");
+        } else {
+            lista = array.getList("sigla,descrizione,dipendenti");
+        }
 
         return lista;
     }// end of method
+
+
+    /**
+     * Costruisce una lista di nomi delle properties del Form nell'ordine:
+     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+     * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
+     * todo ancora da sviluppare
+     *
+     * @param context legato alla sessione
+     *
+     * @return lista di nomi di properties
+     */
+    @Override
+    public List<String> getFormPropertyNamesList(AContext context) {
+        List<String> lista;
+
+        if (context.getLogin() != null && context.getLogin().isDeveloper()) {
+            lista = array.getList("id,ordine,code,icona,sigla,descrizione,dipendenti");
+        } else {
+            lista = array.getList("sigla,descrizione,dipendenti");
+        }
+
+        return lista;
+    }
 
 
     /**

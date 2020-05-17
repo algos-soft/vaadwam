@@ -18,9 +18,9 @@ import it.algos.vaadflow.annotation.AIField;
 import it.algos.vaadflow.application.StaticContextAccessor;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.ui.fields.*;
 import it.algos.vaadflow.validator.*;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -299,7 +299,7 @@ public class AFieldService extends AbstractService {
                     IAService service = (IAService) StaticContextAccessor.getBean(clazz);
                     List items = ((IAService) service).findAll();
                     if (items != null) {
-                        Set<Role> hSet = new HashSet<Role>(items);
+                        Set<Funzione> hSet = new HashSet(items);
                         hSet.addAll(items);
 
                         ((MultiselectComboBox) field).setItems(hSet);
