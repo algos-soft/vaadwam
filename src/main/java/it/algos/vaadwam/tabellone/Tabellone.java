@@ -45,6 +45,7 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
@@ -55,6 +56,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -266,14 +268,24 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
             String code = message.getCode();
+
             if (code.equals("turnosaved") || code.equals("turnodeleted")) {
                 LocalDate giorno = (LocalDate) message.getPayload();
                 if (isInTabellone(giorno)) {
                     loadDataInGrid();
                 }
             }
+
+            if(code.equals("turnorange")){
+                RangeTurniPayload rangeTurni=(RangeTurniPayload)message.getPayload();
+                if(intersecaTabellone(rangeTurni.getData1(), rangeTurni.getData2())){
+                    loadDataInGrid();
+                }
+            }
+
         }));
     }
+
 
 
     @Override
@@ -290,6 +302,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         LocalDate endDate = startDay.plusDays(numDays - 1);
         return !(testDate.isBefore(startDay) || testDate.isAfter(endDate));
     }
+
+    /**
+     * Controlla se un periodo si interseca con il tabellone
+     */
+    private boolean intersecaTabellone(LocalDate data1, LocalDate data2) {
+        Period p = Period.between(data1, data2);
+        //@todo implementare...
+
+        return false;
+    }
+
 
 
     private void buildAllGrid() {
@@ -835,6 +858,37 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
 
     }
+
+    @Override
+    public void confermaDialogoIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione, boolean ripeti, int numSettimane) {
+        dialog.close();
+        turnoService.save(turno);
+
+        BroadcastMsg msg;
+        if(ripeti){
+            LocalDate data1=turno.getGiorno();
+            LocalDate data2=data1.plusWeeks(numSettimane);
+            RangeTurniPayload payload = new RangeTurniPayload(data1, data2);
+            msg = new BroadcastMsg("turnorange", payload);
+        }else{
+            msg = new BroadcastMsg("modturni", turno.getGiorno());
+        }
+
+        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+
+    }
+
+    @Data
+    class RangeTurniPayload {
+        private LocalDate data1;
+        private LocalDate data2;
+
+        public RangeTurniPayload(LocalDate data1, LocalDate data2) {
+            this.data1 = data1;
+            this.data2 = data2;
+        }
+    }
+
 
 
     @Override

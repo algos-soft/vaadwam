@@ -1,17 +1,18 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.enumeration.EATime;
@@ -73,6 +74,15 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     @Id("elimina")
     private Button bElimina;
 
+    @Id
+    private Div areaRipetizioni;
+
+    @Id
+    private Checkbox checboxRipeti;
+
+    @Id
+    private IntegerField settimaneRipeti;
+
     @Autowired
     private ADateService dateService;
 
@@ -88,6 +98,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private WamLogin wamLogin;
 
     private Milite milite;
+
+    private static final int MIN_SETTIMANE_RIPETI=1;
+    private static final int MAX_SETTIMANE_RIPETI=12;
 
 
     /**
@@ -117,8 +130,43 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             milite = wamLogin.getMilite();
         }
 
+        initRipetizioni();
+
         populateModel();
         regolaBottoni();
+    }
+
+
+    /**
+     * Inizializzazione area ripetizioni
+     * <p>
+     * Area presente solo se è nuova iscrizione
+     */
+    private void initRipetizioni(){
+
+        if(iscrizione.getMilite()==null){
+
+            areaRipetizioni.getElement().getStyle().set("display","block");
+
+            // gestione visibilità checkbox Ripeti e num settimane
+            checboxRipeti.setValue(false);
+            settimaneRipeti.getElement().getStyle().set("visibility","hidden");
+            settimaneRipeti.setValue(1);
+            checboxRipeti.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>() {
+                @Override
+                public void valueChanged(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
+                    if(event.getValue()){
+                        settimaneRipeti.getElement().getStyle().set("visibility","visible");
+                    }else{
+                        settimaneRipeti.getElement().getStyle().set("visibility","hidden");
+                    }
+                }
+            });
+
+        }else{
+            areaRipetizioni.getElement().getStyle().set("display","none");
+        }
+
     }
 
 
@@ -170,6 +218,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         getModel().setNote(iscrizione.getNote());
 
         getModel().setReadOnly(readOnly);
+
+        getModel().setMinSettimaneRipeti(MIN_SETTIMANE_RIPETI);
+        getModel().setMaxSettimaneRipeti(MAX_SETTIMANE_RIPETI);
 
     }
 
@@ -297,9 +348,26 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // no una sola ora valorizzata e una nulla
-        if ((oraInizio != null && oraFine == null) || (oraInizio == null && oraFine != null)) {
-            problem = "Ora inizio e ora fine devono avere entrambe un valore";
-            valid = false;
+        if(valid){
+            if ((oraInizio != null && oraFine == null) || (oraInizio == null && oraFine != null)) {
+                problem = "Ora inizio e ora fine devono avere entrambe un valore";
+                valid = false;
+            }
+        }
+
+        // se acceso ripeti, controlla range settimane ripetizione
+        if(valid){
+            if(checboxRipeti.getValue()){
+                int settimane=settimaneRipeti.getValue();
+                if(settimane<MIN_SETTIMANE_RIPETI){
+                    problem = "Il numero minimo di settimane di ripetizione è "+MIN_SETTIMANE_RIPETI;
+                    valid = false;
+                }
+                if(settimane>MAX_SETTIMANE_RIPETI){
+                    problem = "Il numero massimo di settimane di ripetizione è "+MAX_SETTIMANE_RIPETI;
+                    valid = false;
+                }
+            }
         }
 
         // questo controllo per ora non lo attiviamo perché esistono
@@ -355,7 +423,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private void syncAndConferma(){
         syncIscrizione();
         // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-        tabellone.confermaDialogoTurno(dialogo, turno);
+        boolean ripeti=checboxRipeti.getValue();
+        int settimane=0;
+        if (ripeti){
+            settimane=settimaneRipeti.getValue();
+        }
+        tabellone.confermaDialogoIscrizione(dialogo, turno, iscrizione, ripeti, settimane);
     }
 
 

@@ -1,7 +1,12 @@
+<!--Editor di singola iscrizione-->
 <link href="../../../bower_components/vaadin-button/vaadin-button.html" rel="import">
 <link href="../../../bower_components/vaadin-text-field/vaadin-text-field.html" rel="import">
 <link href="../../../bower_components/vaadin-icons/vaadin-icons.html" rel="import">
 <link href="../../../bower_components/vaadin-time-picker/vaadin-time-picker.html" rel="import">
+<link href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html" rel="import">
+<link href="../../../bower_components/vaadin-text-field/vaadin-integer-field.html" rel="import">
+<link href="../../../bower_components/vaadin-custom-field/vaadin-custom-field.html" rel="import">
+
 
 <dom-module id="iscrizione-editor">
 
@@ -120,6 +125,23 @@
 
             </div>
             <!--end area iscrizione-->
+
+
+            <!--area ripetizioni-->
+            <div id="areaRipetizioni">
+
+                <vaadin-custom-field>
+
+                    <vaadin-checkbox id="checboxRipeti">Ripeti</vaadin-checkbox>
+
+                    <vaadin-integer-field id="settimaneRipeti" label="quante settimane" has-controls value="1" min="[[minSettimaneRipeti]]" max="[[maxSettimaneRipeti]]"></vaadin-integer-field>
+
+                </vaadin-custom-field>
+
+
+            </div>
+            <!--end area ripetizioni-->
+
 
             <!--area bottoni-->
             <div style="display: flex; flex-direction: column; margin-top: 1em;">
