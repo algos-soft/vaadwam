@@ -8,10 +8,8 @@ import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
-import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -26,14 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,36 +75,15 @@ public class TabelloneService extends AService {
     @Autowired
     protected RigaService rigaService;
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     */
     @Autowired
     protected ServizioService servizioService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     protected TurnoService turnoService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     protected IscrizioneService iscrizioneService;
 
-    /**
-     * Istanza unica di una classe di servizio: <br>
-     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
-     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
-     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
     @Autowired
     protected CroceService croceService;
 
@@ -116,11 +92,6 @@ public class TabelloneService extends AService {
 
     @Autowired
     protected AVaadinService vaadinService;
-
-//    /**
-//     * Wam-Login della sessione con i dati del Milite loggato <br>
-//     */
-//    private WamLogin wamLogin;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -297,77 +268,6 @@ public class TabelloneService extends AService {
 
 
 
-//    /**
-//     * Costruisce una lista di selezione dei giorni da visualizzare
-//     *
-//     * @param giornoIniziale del tabellonesuperato
-//     */
-//    public List<String> getPeriodi(LocalDate giornoIniziale) {
-//        List<String> lista = new ArrayList<>();
-//
-//        lista.add(getPresente(giornoIniziale));
-//        lista.add(getIndietro(giornoIniziale));
-//        lista.add(getAvanti(giornoIniziale));
-//        lista.add(OGGI);
-//        lista.add(LUNEDI);
-//        lista.add(PRECEDENTE);
-//        lista.add(SUCCESSIVO);
-//        lista.add(SELEZIONE);
-//
-//        return lista;
-//    }// end of method
-
-
-//    /**
-//     * Costruisce la stringa del periodo attuale
-//     *
-//     * @param giornoIniziale del tabellonesuperato
-//     */
-//    public String getPresente(LocalDate giornoIniziale) {
-//        String label = "";
-//
-//        if (giornoIniziale != null) {
-//            label = date.get(giornoIniziale, EATime.meseCorrente);
-//        }// end of if cycle
-//
-//        return label;
-//    }// end of method
-
-
-//    /**
-//     * Costruisce la stringa del periodo precedente
-//     *
-//     * @param giornoIniziale del tabellonesuperato
-//     */
-//    public String getIndietro(LocalDate giornoIniziale) {
-//        String label = "";
-//        LocalDate inizio = giornoIniziale.minusDays(GridTabellone.GIORNI_STANDARD);
-//        LocalDate fine = giornoIniziale.minusDays(1);
-//
-//        if (giornoIniziale != null) {
-//            label = date.get(inizio, EATime.meseLong) + SEP + date.get(fine, EATime.meseLong);
-//        }// end of if cycle
-//
-//        return label;
-//    }// end of method
-
-
-//    /**
-//     * Costruisce la stringa del periodo successivo
-//     *
-//     * @param giornoIniziale del tabellonesuperato
-//     */
-//    public String getAvanti(LocalDate giornoIniziale) {
-//        String label = "";
-//        LocalDate inizio = giornoIniziale.plusDays(GridTabellone.GIORNI_STANDARD);
-//        LocalDate fine = giornoIniziale.plusDays(GridTabellone.GIORNI_STANDARD + GridTabellone.GIORNI_STANDARD - 1);
-//
-//        if (giornoIniziale != null) {
-//            label = date.get(inizio, EATime.meseLong) + SEP + date.get(fine, EATime.meseLong);
-//        }// end of if cycle
-//
-//        return label;
-//    }// end of method
 
 
     /**
@@ -389,10 +289,10 @@ public class TabelloneService extends AService {
         if (iscrizioneService.isValida(iscrizione, turno.getServizio())) {
             colore = EAWamColore.normale;
         } else {
-            if (isPiuRecente(turno, critico)) {
+            if (mancaMenoDi(turno, critico)) {
                 colore = EAWamColore.critico;
             } else {
-                if (isPiuRecente(turno, semicritico)) {
+                if (mancaMenoDi(turno, semicritico)) {
                     colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
@@ -423,10 +323,10 @@ public class TabelloneService extends AService {
         if (turnoService.isValido(turno)) {
             colore = EAWamColore.normale;
         } else {
-            if (isPiuRecente(turno, critico)) {
+            if (mancaMenoDi(turno, critico)) {
                 colore = EAWamColore.critico;
             } else {
-                if (isPiuRecente(turno, semicritico)) {
+                if (mancaMenoDi(turno, semicritico)) {
                     colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
@@ -443,25 +343,38 @@ public class TabelloneService extends AService {
 
 
     /**
-     * Turno previsto prima dei giorni indicati
+     * Turno previsto prima del numero di giorni indicati
      */
-    public boolean isPiuRecente(Turno turno, int giorni) {
+    public boolean mancaMenoDi(Turno turno, int giorni) {
         boolean status = false;
         LocalDate limite = LocalDate.now().plusDays(giorni);
-
         if (turno.giorno.isBefore(limite)) {
             status = true;
-        }// end of if cycle
-
+        }
         return status;
-    }// end of method
+    }
+
+    /**
+     * Passato più di un certo numero di giorni dalla data di iscrizione
+     */
+    public boolean passatoPiuDi(Iscrizione iscrizione, int giorni) {
+        LocalDateTime dataCreazione=iscrizione.getCreazione();
+        if(dataCreazione!=null){
+            LocalDate dataCreato = dataCreazione.toLocalDate();
+            if(LocalDate.now().minusDays(giorni).isAfter(dataCreato)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     /**
      * Turno già effettuato
      */
     public boolean isStorico(Turno turno) {
-        return isPiuRecente(turno, 0);
+        return mancaMenoDi(turno, 0);
     }// end of method
 
 
@@ -477,23 +390,32 @@ public class TabelloneService extends AService {
         Croce croce=getWamLogin().getCroce();
 
         // @todo recuperarlo dalla croce
-        EACancellazione modo = EACancellazione.mai;
+        EACancellazione modo = EACancellazione.tempoMancante;
+
+        String ret;
+        int giorni;
 
         switch (modo){
             case mai:
-                return "cancellazione mai abilitata";
+                return "cancellazione iscrizioni non abilitata";
             case sempre:
                 return null;
             case tempoTrascorso:
-                // .. logica..
-                break;
+                ret=null;
+                giorni=3;
+                if(passatoPiuDi(iscrizione,giorni)){
+                    ret="sono passati più di "+giorni+" giorni dall'iscrizione";
+                }
+                return ret;
             case tempoMancante:
-                // .. logica..
-                break;
+                ret=null;
+                giorni=2;
+                if(mancaMenoDi(turno, giorni)){
+                    ret="mancano meno di "+giorni+" giorni alla data di esecuzione del turno";
+                }
+                return ret;
             default:
         }
-
-        //boolean puoCancellare = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
 
         return null;
     }
