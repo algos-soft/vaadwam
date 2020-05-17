@@ -22,13 +22,15 @@ public enum EAPreferenzaWam implements IAPreferenza {
     redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
 
     //--scheduled task suddivise per croce
-    usaDaemonCroce(USA_DAEMON_CROCE, "Crono per download completo della croce specifica", EAPrefType.bool, true, true),
+    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download completo di tutte le croci", EAPrefType.bool, false, true),
 
     usaDaemonElabora(USA_DAEMON_ELABORA, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true, true),
 
     usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati da tutte le croci", EAPrefType.bool, EARole.developer, false, true, true),
 
     //--cronologia degli import
+    lastImportCroci(LAST_IMPORT_CROCI, "Data ultimo import di tutte le croci", EAPrefType.localdatetime, null),
+
     lastImportFunzioni(LAST_IMPORT_FUNZIONI, "Data ultimo import funzioni della croce", EAPrefType.localdatetime, null),
 
     lastImportServizi(LAST_IMPORT_SERVIZI, "Data ultimo import servizi della croce", EAPrefType.localdatetime, null),
@@ -40,6 +42,8 @@ public enum EAPreferenzaWam implements IAPreferenza {
     lastElabora(LAST_ELABORA, "Data ultima elaborazione delle statistiche della croce", EAPrefType.localdatetime, null),
 
     //--durata degli import
+    durataImportCroci(DURATA_IMPORT_CROCI, "Durata ultimo import di tutte le croci, in secondi", EAPrefType.integer, 0),
+
     durataImportFunzioni(DURATA_IMPORT_FUNZIONI, "Durata ultimo import funzioni della croce, in secondi", EAPrefType.integer, 0),
 
     durataImportServizi(DURATA_IMPORT_SERVIZI, "Durata ultimo import servizi della croce, in secondi", EAPrefType.integer, 0),

@@ -5,20 +5,21 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadwam.broadcast.BroadcastMsg;
-import it.algos.vaadwam.broadcast.Broadcaster;
+import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.wam.WamViewDialog;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.modules.milite.MiliteService.MANAGER_TABELLONE;
 
 /**
  * Project vaadwam
@@ -33,6 +34,14 @@ import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 @Slf4j
 @AIScript(sovrascrivibile = false)
 public class MiliteProfile extends WamViewDialog<Milite> {
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MiliteService militeService;
 
     private RadioButtonGroup<String> flagIscrizioniAdmin;
 
@@ -103,61 +112,111 @@ public class MiliteProfile extends WamViewDialog<Milite> {
 
 
     /**
-     * Eventuali aggiustamenti finali al layout
-     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
+     * Costruisce eventuali fields specifici (costruiti non come standard type)
+     * Aggiunge i fields specifici al binder
+     * Aggiunge i fields specifici alla fieldMap
      * Sovrascritto nella sottoclasse
      */
     @Override
-    protected void fixLayoutFinal() {
-        flagIscrizioniAdmin = new RadioButtonGroup<>();
-        flagIscrizioniAdmin.setLabel("Come milite ti puoi iscrivere solo ai tuoi turni. Come admin puoi iscrivere tutti i militi.");
-        flagIscrizioniAdmin.setItems("Milite", "Admin");
+    protected void addSpecificAlgosFields() {
+        String message;
+        ACheckBox fieldLoggato;
+        Field reflectionJavaField;
+        String publicFieldName = "managerTabellone";
 
-        if (((Milite) currentItem).managerTabellone) {
-            flagIscrizioniAdmin.setValue("Admin");
-        } else {
-            flagIscrizioniAdmin.setValue("Milite");
-        }
+        super.addSpecificAlgosFields();
 
-        getFormLayout().add(flagIscrizioniAdmin);
-    }
+        if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+            reflectionJavaField = reflection.getField(binderClass, publicFieldName);
+            message = annotation.getFormFieldName(reflectionJavaField);
+            fieldLoggato = new ACheckBox(message);
 
+            if (fieldLoggato != null) {
+                if (binder != null) {
+                    binder.forField(fieldLoggato).bind(MANAGER_TABELLONE);
+                }// end of if cycle
 
-    /**
-     * Regola in scrittura eventuali valori NON associati al binder
-     * Dalla UI al DB
-     * Sovrascritto
-     */
-    @Override
-    protected void writeSpecificFields() {
-        String value;
-        if (flagIscrizioniAdmin != null) {
-            value = flagIscrizioniAdmin.getValue();
-            if (text.isValid(value)) {
-                BroadcastMsg msg;
-                switch (value) {
-                    case "Milite":
-                        wamLogin.setRoleType(EARoleType.user);
-                        ((Milite) currentItem).managerTabellone = false;
-
-//                        msg = new BroadcastMsg("rolechanged", EARoleType.user);
-//                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
-
-                        break;
-                    case "Admin":
-                        wamLogin.setRoleType(EARoleType.admin);
-                        ((Milite) currentItem).managerTabellone = true;
-
-//                        msg = new BroadcastMsg("rolechanged", EARoleType.admin);
-//                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
-
-                        break;
-                    default:
-                        break;
-                }
+                if (fieldMap != null) {
+                    fieldMap.put(MANAGER_TABELLONE, fieldLoggato);
+                }// end of if cycle
             }
         }
     }
+
+    //    /**
+    //     * Eventuali aggiustamenti finali al layout
+    //     * Aggiunge eventuali altri componenti direttamente al layout grafico (senza binder e senza fieldMap)
+    //     * Sovrascritto nella sottoclasse
+    //     */
+    //    @Override
+    //    protected void fixLayoutFinal() {
+    //        flagIscrizioniAdmin = new RadioButtonGroup<>();
+    //        flagIscrizioniAdmin.setLabel("Come milite ti puoi iscrivere solo ai tuoi turni. Come admin puoi iscrivere tutti i militi.");
+    //        flagIscrizioniAdmin.setItems("Milite", "Admin");
+    //
+    //        if (((Milite) currentItem).managerTabellone) {
+    //            flagIscrizioniAdmin.setValue("Admin");
+    //        } else {
+    //            flagIscrizioniAdmin.setValue("Milite");
+    //        }
+    //
+    //        getFormLayout().add(flagIscrizioniAdmin);
+    //    }
+
+
+    //    /**
+    //     * Regola in scrittura eventuali valori NON associati al binder
+    //     * Dalla UI al DB
+    //     * Sovrascritto
+    //     */
+    //    @Override
+    //    protected void writeSpecificFields() {
+    //        String value;
+    //        if (flagIscrizioniAdmin != null) {
+    //            value = flagIscrizioniAdmin.getValue();
+    //            if (text.isValid(value)) {
+    //                BroadcastMsg msg;
+    //                switch (value) {
+    //                    case "Milite":
+    //                        wamLogin.setRoleType(EARoleType.user);
+    //                        ((Milite) currentItem).managerTabellone = false;
+    //
+    ////                        msg = new BroadcastMsg("rolechanged", EARoleType.user);
+    ////                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+    //
+    //                        break;
+    //                    case "Admin":
+    //                        wamLogin.setRoleType(EARoleType.admin);
+    //                        ((Milite) currentItem).managerTabellone = true;
+    //
+    ////                        msg = new BroadcastMsg("rolechanged", EARoleType.admin);
+    ////                        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+    //
+    //                        break;
+    //                    default:
+    //                        break;
+    //                }
+    //            }
+    //        }
+    //    }
+    //    /**
+    //     * Azione proveniente dal click sul bottone Registra
+    //     * Inizio delle operazioni di registrazione
+    //     *
+    //     * @param operation
+    //     */
+    //    @Override
+    //    protected void saveClicked(EAOperation operation) {
+    //        super.saveClicked(operation);
+    //    }
+
+
+    //    /**
+    //     * Primo ingresso dopo il click sul bottone <br>
+    //     */
+    //    protected void save(AEntity entityBean, EAOperation operation) {
+    //        militeService.save(entityBean, EAOperation.editNoDelete);
+    //    }// end of method
 
 
 }// end of class

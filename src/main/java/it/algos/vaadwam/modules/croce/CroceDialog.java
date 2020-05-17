@@ -13,9 +13,11 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.address.Address;
+import it.algos.vaadflow.modules.address.AddressDialog;
 import it.algos.vaadflow.modules.address.AddressService;
 import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
+import it.algos.vaadflow.modules.person.PersonDialog;
 import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.service.AEnumerationService;
@@ -89,16 +91,27 @@ public class CroceDialog extends AViewDialog<Croce> {
     @Autowired
     protected AEnumerationService enumService;
 
-
+    @Autowired
     protected PersonService personService;
 
+    @Autowired
+    protected AddressService addressService;
+
+    protected PersonDialog presidenteDialog;
+
+    protected PersonDialog contattoDialog;
+
+    protected AddressDialog indirizzoDialog;
+
+    protected Address indirizzoPresidenteTemporaneo;
+
+    protected Address indirizzoContattoTemporaneo;
 
     protected Person presidenteTemporaneo;
 
-    protected ATextField presidenteField;
-
-
     protected Person contattoTemporaneo;
+
+    protected ATextField presidenteField;
 
     protected ATextField contattoField;
 
@@ -107,9 +120,11 @@ public class CroceDialog extends AViewDialog<Croce> {
      */
     protected WamLogin wamLogin;
 
+    @Autowired
+    private AddressService indirizzoService;
+
     private AComboBox organizzazioneField;
 
-    private AddressService indirizzoService;
 
     private Address indirizzoTemporaneo;
 
@@ -138,6 +153,8 @@ public class CroceDialog extends AViewDialog<Croce> {
      */
     public CroceDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
+        //        contattoService = StaticContextAccessor.getBean(PersonService.class);
+        //        contattoDialog = StaticContextAccessor.getBean(PersonDialog.class);
     }// end of constructor
 
 
@@ -202,6 +219,48 @@ public class CroceDialog extends AViewDialog<Croce> {
      */
     @Override
     protected void addSpecificAlgosFields() {
+        addPresidente();
+        addPreferenze();
+    }// end of method
+
+
+    /**
+     * Aggiunge al binder eventuali fields specifici, prima di trascrivere la entityBean nel binder
+     * Sovrascritto
+     * Dopo aver creato un AField specifico, usare il metodo super.addFieldBinder() per:
+     * Inizializzare AField
+     */
+    protected void addPresidente() {
+        presidenteDialog = appContext.getBean(PersonDialog.class, personService, Person.class);
+        presidenteDialog.fixConfermaAndNotRegistrazione();
+        presidenteField = (ATextField) getField(PRESIDENTE);
+        if (presidenteField != null) {
+            presidenteField.addFocusListener(e -> presidenteDialog.open(getPresidente(), EAOperation.edit, this::saveUpdatePre, null));
+        }// end of if cycle
+
+        contattoDialog = appContext.getBean(PersonDialog.class, personService, Person.class);
+        contattoDialog.fixConfermaAndNotRegistrazione();
+        contattoField = (ATextField) getField(CONTATTO);
+        if (contattoField != null) {
+            contattoField.addFocusListener(e -> contattoDialog.open(getContatto(), EAOperation.edit, this::saveUpdateCon, null));
+        }// end of if cycle
+
+        indirizzoDialog = appContext.getBean(AddressDialog.class, addressService, Address.class);
+        indirizzoDialog.fixConfermaAndNotRegistrazione();
+        indirizzoField = (ATextField) getField(INDIRIZZO);
+        if (indirizzoField != null) {
+            indirizzoField.addFocusListener(e -> indirizzoDialog.open(getIndirizzo(), EAOperation.edit, this::saveUpdateInd, null));
+        }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Costruisce eventuali fields specifici (costruiti non come standard type)
+     * Aggiunge i fields specifici al binder
+     * Aggiunge i fields specifici alla fieldMap
+     * Sovrascritto nella sottoclasse
+     */
+    protected void addPreferenze() {
         layoutPreferenze = new VerticalLayout();
         layoutPreferenze.setMargin(false);
         layoutPreferenze.setSpacing(false);
@@ -287,6 +346,15 @@ public class CroceDialog extends AViewDialog<Croce> {
         String key = VUOTA;
         AbstractField field = null;
 
+        presidenteTemporaneo = getPresidenteCorrente();
+        presidenteField.setValue(presidenteTemporaneo != null ? presidenteTemporaneo.toString() : VUOTA);
+
+        contattoTemporaneo = getContattoCorrente();
+        contattoField.setValue(contattoTemporaneo != null ? contattoTemporaneo.toString() : VUOTA);
+
+        indirizzoTemporaneo = getIndirizzoCorrente();
+        indirizzoField.setValue(indirizzoTemporaneo != null ? indirizzoTemporaneo.toString() : VUOTA);
+
         for (EAPreferenzaWam eaWam : EAPreferenzaWam.values()) {
             key = eaWam.getCode();
 
@@ -340,7 +408,11 @@ public class CroceDialog extends AViewDialog<Croce> {
                         pref.saveValue(key, (Boolean) field.getValue());
                         break;
                     case integer:
-                        pref.saveValue(key, Integer.parseInt((String) field.getValue()));
+                        try {
+                            pref.saveValue(key, field.getValue() != null ? Integer.parseInt((String) field.getValue()) : 0);
+                        } catch (Exception unErrore) {
+                            logger.error(unErrore, this.getClass(), "writeSpecificFields");
+                        }
                         break;
                     case enumeration:
                         stringEnum = pref.getEnumStr(key);

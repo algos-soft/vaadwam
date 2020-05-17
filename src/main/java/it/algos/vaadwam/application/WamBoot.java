@@ -64,9 +64,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 3.0;
+    private final static double PROJECT_VERSION = 0.9;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 13);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 17);
 
     /**
      * Inietta da Spring come 'singleton'

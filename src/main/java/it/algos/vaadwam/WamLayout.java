@@ -198,11 +198,18 @@ public class WamLayout extends MainLayout14 {
     }// end of method
 
 
+    /**
+     * Occorre sincronizzare i dati <br>
+     * L'entityBean di milite contenuta nel wamLogin è quella caricata al login del programma <br>
+     * Nel frattempo le property del milite potrebbero essere state cambiate nel form MiliteDialog <br>
+     * Ricarico quindi dal database la versione aggiornata dei dati <br>
+     */
     protected void profilePressed() {
         //--Crea il wam-login della sessione
         WamLogin wamLogin = wamService.fixWamLogin();
         Milite milite = wamLogin.getMilite();
 
+        milite = militeService.findById(milite.id);
         appContext.getBean(MiliteProfile.class, militeService, Milite.class).openWam(milite, EAOperation.editNoDelete, this::save, null);
     }// end of method
 

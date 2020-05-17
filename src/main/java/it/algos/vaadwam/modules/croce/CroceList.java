@@ -1,7 +1,5 @@
 package it.algos.vaadwam.modules.croce;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -9,7 +7,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
@@ -138,45 +135,45 @@ public class CroceList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Placeholder (eventuale, presente di default) SOPRA la Grid
-     * - con o senza campo edit search, regolato da preferenza o da parametro
-     * - con o senza bottone New, regolato da preferenza o da parametro
-     * - con eventuali altri bottoni specifici
-     * Può essere sovrascritto, per aggiungere informazioni
-     * Invocare PRIMA il metodo della superclasse
-     */
-    @Override
-    protected void creaTopLayout() {
-        super.creaTopLayout();
-        ALogin login = context.getLogin();
-
-        if (importButton != null) {
-            topPlaceholder.remove(importButton);
-        }// end of if cycle
-
-        if (login.isDeveloper()) {
-            importButton = new Button("Import all", new Icon(VaadinIcon.CLOSE_CIRCLE));
-            importButton.getElement().setAttribute("theme", "error");
-            importButton.addClassName("view-toolbar__button");
-            importButton.addClickListener(e -> {
-                //                service.importa();
-                // @todo RIMETTERE
-                //                updateView();
-            });//end of lambda expressions and anonymous inner class
-            topPlaceholder.add(importButton);
-        }// end of if cycle
-    }// end of method
-
-
-    /**
-     * Eventuale header text
-     */
-    protected void fixGridHeader() {
-        //        if (login.isDeveloper()) {
-        super.fixGridHeader();
-        //        }// end of if cycle
-    }// end of method
+    //    /**
+    //     * Placeholder (eventuale, presente di default) SOPRA la Grid
+    //     * - con o senza campo edit search, regolato da preferenza o da parametro
+    //     * - con o senza bottone New, regolato da preferenza o da parametro
+    //     * - con eventuali altri bottoni specifici
+    //     * Può essere sovrascritto, per aggiungere informazioni
+    //     * Invocare PRIMA il metodo della superclasse
+    //     */
+    //    @Override
+    //    protected void creaTopLayout() {
+    //        super.creaTopLayout();
+    //        ALogin login = context.getLogin();
+    //
+    //        if (importButton != null) {
+    //            topPlaceholder.remove(importButton);
+    //        }// end of if cycle
+    //
+    //        if (login.isDeveloper()) {
+    //            importButton = new Button("Import", new Icon(VaadinIcon.CLOSE_CIRCLE));
+    //            importButton.getElement().setAttribute("theme", "error");
+    //            importButton.addClassName("view-toolbar__button");
+    //            importButton.addClickListener(e -> {
+    //                //                service.importa();
+    //                // @todo RIMETTERE
+    //                //                updateView();
+    //            });//end of lambda expressions and anonymous inner class
+    //            topPlaceholder.add(importButton);
+    //        }// end of if cycle
+    //    }// end of method
+    //
+    //
+    //    /**
+    //     * Eventuale header text
+    //     */
+    //    protected void fixGridHeader() {
+    //        //        if (login.isDeveloper()) {
+    //        super.fixGridHeader();
+    //        //        }// end of if cycle
+    //    }// end of method
 
 
     //    protected Button createEditButton(AEntity entityBean) {

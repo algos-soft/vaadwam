@@ -61,6 +61,8 @@ public abstract class WamService extends AService {
 
     public final static String FIELD_NAME_CROCE = "croce";
 
+    public String usaDaemon;
+
     public String lastImport;
 
     public String durataLastImport;
@@ -167,6 +169,7 @@ public abstract class WamService extends AService {
      * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
+        this.usaDaemon = USA_DAEMON_CROCI;
         this.lastImport = VUOTA;
         this.durataLastImport = VUOTA;
         this.eaTempoTypeImport = EATempo.nessuno;
