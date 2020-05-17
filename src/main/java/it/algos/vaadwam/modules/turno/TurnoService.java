@@ -474,6 +474,23 @@ public class TurnoService extends WamService {
     }
 
 
+    public Turno findByDateAndServizio(LocalDate giorno, Servizio servizio) throws Exception {
+        Turno turno=null;
+        Croce croce = getCroce();
+        List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(croce, servizio, giorno);
+        if(turni.size()>1){
+            throw new Exception("Numero di turni inatteso (atteso:1, trovati:"+turni.size()+")");
+        }
+
+        if(turni.size()==1){
+            turno=turni.get(0);
+        }
+
+        return turno;
+    }
+
+
+
     //    /**
     //     * Calcola il tempo di inizio del turno in base al giorno ed al tipo di servizio <br>
     //     */

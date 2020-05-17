@@ -124,7 +124,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         AContext context = vaadinService.getSessionContext();
         wamLogin = (WamLogin) context.getLogin();
 
-        // se l'iscrizione ha già un miite lo usa, se no usa l'utente loggato
+        // se l'iscrizione ha già un milite lo usa, se no usa l'utente loggato
         milite = iscrizione.getMilite();
         if (milite == null) {
             milite = wamLogin.getMilite();
@@ -483,7 +483,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
 
     /**
-     * Resetta l'inscrizione alle condizioni di default (vuota)
+     * Resetta l'iscrizione alle condizioni di default (vuota)
      */
     private void resetIscrizione() {
         iscrizione.setMilite(null);
