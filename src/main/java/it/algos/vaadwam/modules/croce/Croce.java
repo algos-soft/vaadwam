@@ -1,23 +1,18 @@
 package it.algos.vaadwam.modules.croce;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.person.Person;
+import it.algos.vaadflow.modules.person.PersonDialog;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Entity;
-
-import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
  * Project vaadwam <br>
@@ -94,7 +89,7 @@ public class Croce extends Company {
      * riferimento statico SENZA @DBRef
      */
     @Field("presidente")
-    @AIField(type = EAFieldType.link)
+    @AIField(type = EAFieldType.link, linkClazz = PersonDialog.class, help = "Riferimento")
     @AIColumn(widthEM = 14)
     public Person presidente;
 

@@ -49,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
-import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -970,11 +969,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
                     ConfirmDialog.createQuestion().withCaption("Selezione servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
                 }
-
             }
-
         }
-
     }
 
 

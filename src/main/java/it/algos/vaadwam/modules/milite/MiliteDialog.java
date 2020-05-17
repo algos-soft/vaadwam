@@ -22,10 +22,12 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
@@ -171,19 +173,25 @@ public class MiliteDialog extends WamViewDialog<Milite> {
      */
     @Override
     protected void addSpecificAlgosFields() {
+        String message = VUOTA;
+        ACheckBox fieldLoggato;
+        Field reflectionJavaField;
+        String publicFieldName = "managerTabellone";
+
         super.addSpecificAlgosFields();
 
         if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
-            //            if (((Milite) currentItem).id.equals(wamLogin.getMilite().id)) {
-            ACheckBox fieldLoggato = new ACheckBox("Collegamento al login come admin per iscrivere tutti i militi");
+            reflectionJavaField = reflection.getField(binderClass, publicFieldName);
+            message = annotation.getFormFieldName(reflectionJavaField);
+            fieldLoggato = new ACheckBox(message);
 
             if (fieldLoggato != null) {
                 if (binder != null) {
-                    binder.forField(fieldLoggato).bind(FIELD_LOGGATO);
+                    binder.forField(fieldLoggato).bind(MANAGER_TABELLONE);
                 }// end of if cycle
 
                 if (fieldMap != null) {
-                    fieldMap.put(FIELD_LOGGATO, fieldLoggato);
+                    fieldMap.put(MANAGER_TABELLONE, fieldLoggato);
                 }// end of if cycle
             }
         }

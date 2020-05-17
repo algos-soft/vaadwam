@@ -90,11 +90,9 @@ public class WamCost {
 
     public final static String USA_DAEMON_CROCE_PAP = "usaDaemonCrocePap";
 
-    public final static String USA_DAEMON_CROCE = "usaDaemonCroce";
+    public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
 
     public final static String USA_DAEMON_ELABORA = "usaDaemonElabora";
-
-    public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
 
     public final static String USA_DAEMON_IMPORT = "usaDaemonImport";
 
@@ -107,10 +105,11 @@ public class WamCost {
     public final static String USA_DAEMON_TURNI = "usaDaemonTurni";
 
 
+    public final static String LAST_IMPORT_CROCI = "lastImportCroci";
+
     public final static String LAST_IMPORT_FUNZIONI = "lastImportFunzioni";
 
     public final static String LAST_ELABORA = "lastElabora";
-
 
     public final static String LAST_IMPORT_SERVIZI = "lastImportServizi";
 
@@ -120,6 +119,8 @@ public class WamCost {
 
     public final static String LAST_IMPORT_TURNI = "lastImportTurni";
 
+
+    public final static String DURATA_IMPORT_CROCI = "durataImportCroci";
 
     public final static String DURATA_IMPORT_FUNZIONI = "durataImportFunzioni";
 
@@ -135,7 +136,6 @@ public class WamCost {
     public final static String DURATA_ELABORA = "durataElabora";
 
 
-    public final static String LAST_IMPORT_CROCI = "lastImportCroci";
 
     public final static String NUMERO_ORE_TURNO_STANDARD = "numeroOreTurno";
 
@@ -202,6 +202,6 @@ public class WamCost {
 
     public final static String LUMO_PRIMARY_COLOR = "#1676F3";  // non riesco a reciperarlo dal context allora visto che so qual è lo ridefinisco qui
 
-    public final static String BROWSER_TAB_TITLE="WAM";
+    public final static String BROWSER_TAB_TITLE = "WAM";
 
 }// end of static class

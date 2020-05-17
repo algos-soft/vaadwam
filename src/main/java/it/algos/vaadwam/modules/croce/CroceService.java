@@ -7,6 +7,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.person.Person;
@@ -23,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadwam.application.WamCost.*;
 
 /**
  * Project vaadwam <br>
@@ -79,6 +81,23 @@ public class CroceService extends WamService {
         super.entityClass = Croce.class;
         this.repository = (CroceRepository) repository;
     }// end of Spring constructor
+
+
+    /**
+     * Le preferenze standard
+     * Può essere sovrascritto, per aggiungere informazioni
+     * Invocare PRIMA il metodo della superclasse
+     * Le preferenze vengono (eventualmente) lette da mongo e (eventualmente) sovrascritte nella sottoclasse
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.usaDaemon = VUOTA;
+        super.lastImport = LAST_IMPORT_CROCI;
+        super.durataLastImport = DURATA_IMPORT_CROCI;
+        super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
 
 
     /**
@@ -288,10 +307,9 @@ public class CroceService extends WamService {
      */
     @Override
     public void importa() {
-         super.importa();
-//        return migration.importOnlyCroci();
-// @todo RIMETTERE
-//        return null;
+        long inizio = System.currentTimeMillis();
+        migration.importOnlyCroci();
+        setLastImport(getCroce(), inizio);
     }// end of method
 
 

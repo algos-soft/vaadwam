@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.router.PageTitle;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
@@ -24,7 +23,8 @@ import java.util.List;
 import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadwam.application.WamCost.TASK_CROCE;
 
 /**
  * Project vaadwam
@@ -155,7 +155,6 @@ public abstract class WamViewList extends AGridViewList {
         }// end of if/else cycle
 
         this.usaImportButton = true;
-
         super.usaPagination = true;
 
         alertUser = new ArrayList<>();
@@ -254,7 +253,7 @@ public abstract class WamViewList extends AGridViewList {
                     for (String alert : alertDev) {
                         alertPlacehorder.add(text.getLabelDev(alert));
                     }// end of for cycle
-                    alertPlacehorder.add(getInfoImport(((WamService) service).lastImport, ((WamService) service).durataLastImport));
+                    alertPlacehorder.add(getInfoImport(((WamService) service).usaDaemon, ((WamService) service).lastImport, ((WamService) service).durataLastImport));
                 }// end of if cycle
             } else {
                 if (alertDevAll != null) {
@@ -323,29 +322,38 @@ public abstract class WamViewList extends AGridViewList {
     /**
      * Costruisce le info di import <br>
      * Può essere attivo lo scheduler della croce <br>
+     * Tre possibilità:
+     * Non previsto
+     * Disattivato
+     * Scheduled alle....
      */
-    protected Label getInfoImport(String flagLastImport, String flagDurataLastImport) {
+    protected Label getInfoImport(String flagDaemon, String flagLastImport, String flagDurataLastImport) {
         Label label = null;
         String testo = "";
-        String tag = "Import automatico: ";
+        String tag = "Import automatico ";
         String nota = taskCroce != null ? taskCroce.getSchedule().getNota() : VUOTA;
         int durata = text.isValid(flagDurataLastImport) ? pref.getInt(flagDurataLastImport) : 0;
-        boolean importAutomaticoDiQuestaCroce = pref.isBool(USA_DAEMON_CROCE);
+        boolean previsto = text.isValid(flagDaemon);
+        boolean importAutomatico = pref.isBool(flagDaemon);
 
         if (login.isDeveloper()) {
             LocalDateTime lastImport = text.isValid(flagLastImport) ? pref.getDateTime(flagLastImport) : START_DATE_TIME;
             testo = tag;
 
-            if (importAutomaticoDiQuestaCroce) {
-                testo += nota;
+            if (previsto) {
+                if (importAutomatico) {
+                    testo += nota;
+                } else {
+                    testo += "disattivato.";
+                }// end of if/else cycle
             } else {
-                testo += "disattivato.";
-            }// end of if/else cycle
+                testo += "non previsto.";
+            }
 
             if (lastImport != null) {
                 label = text.getLabelDev(testo + " Ultimo import il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
             } else {
-                if (importAutomaticoDiQuestaCroce) {
+                if (previsto && importAutomatico) {
                     label = text.getLabelDev(tag + nota + " Non ancora effettuato.");
                 } else {
                     label = text.getLabelDev(testo);
