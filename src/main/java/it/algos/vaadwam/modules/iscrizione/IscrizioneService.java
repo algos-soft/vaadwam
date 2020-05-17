@@ -15,8 +15,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_ISC;
@@ -312,4 +314,24 @@ public class IscrizioneService extends WamService {
         }// end of if cycle
     }// end of method
 
-}// end of class
+
+    /**
+     * Tutte le iscrizioni di un milite in un dato giorno
+     */
+    public List<Iscrizione> getByMiliteAndGiorno(Milite milite, LocalDate giorno) {
+        List<Iscrizione> iscrizioni = new ArrayList<>();
+        List<Turno> turni = turnoService.findByDate(giorno);
+        for(Turno turno : turni){
+            List<Iscrizione> turnoIscrizioni = turno.getIscrizioni();
+            if(turnoIscrizioni!=null){
+                for(Iscrizione iscrizione : turnoIscrizioni){
+                    if(iscrizione.getMilite()!=null && iscrizione.getMilite().equals(milite)){
+                        iscrizioni.add(iscrizione);
+                    }
+                }
+            }
+        }
+        return iscrizioni;
+    }
+
+}

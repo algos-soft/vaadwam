@@ -150,7 +150,6 @@ public class TurnoService extends WamService {
      *
      * @param giorno   di inizio turno (obbligatorio, calcolato da inizio - serve per le query)
      * @param servizio di riferimento (obbligatorio)
-     *
      * @return la nuova entity appena creata (non salvata)
      */
     public Turno newEntity(LocalDate giorno, Servizio servizio) {
@@ -171,7 +170,6 @@ public class TurnoService extends WamService {
      * @param iscrizioni    dei volontari a questo turno (obbligatorio per un turno valido)
      * @param titoloExtra   motivazione del turno extra (facoltativo)
      * @param localitaExtra nome evidenziato della località per turni extra (facoltativo)
-     *
      * @return la nuova entity appena creata (non salvata)
      */
     public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio, LocalTime inizio, LocalTime fine, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
@@ -188,7 +186,6 @@ public class TurnoService extends WamService {
      *
      * @param entityBean da regolare prima del save
      * @param operation  del dialogo (NEW, EDIT)
-     *
      * @return the modified entity
      */
     @Override
@@ -212,9 +209,7 @@ public class TurnoService extends WamService {
      * Retrieves an entity by its id.
      *
      * @param id must not be {@literal null}.
-     *
      * @return the entity with the given id or {@literal null} if none found
-     *
      * @throws IllegalArgumentException if {@code id} is {@literal null}
      */
     @Override
@@ -325,7 +320,6 @@ public class TurnoService extends WamService {
      * Returns the number of entities available for the current company
      *
      * @param croce di appartenenza (obbligatoria)
-     *
      * @return the number of entities
      */
     public int countByCroce(Croce croce) {
@@ -342,7 +336,6 @@ public class TurnoService extends WamService {
      * The 'main text property' is different in each entity class and chosen in the specific subclass
      *
      * @param filter the filter text
-     *
      * @return the list of matching entities
      */
     @Override
@@ -446,6 +439,12 @@ public class TurnoService extends WamService {
     }// end of method
 
 
+    /**
+     * Tutti i turni della croce corrente in un dato giorno
+     */
+    public List<Turno> findByDate(LocalDate date) {
+        return findByDate(date, date);
+    }
 
     /**
      * Tutti i turni della croce corrente compresi in un dato periodo
@@ -464,10 +463,10 @@ public class TurnoService extends WamService {
         fineEsclusoEstremo = fineCompresoEstremo.plusDays(1);
 
         if (inizioEsclusoEstremo != null && fineEsclusoEstremo != null) {
-            long start=System.currentTimeMillis();
+            long start = System.currentTimeMillis();
             lista = repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizioEsclusoEstremo, fineEsclusoEstremo);
-            long end=System.currentTimeMillis();
-            log.info("tempo query turni by periodo: "+(end-start)+" ms");
+            long end = System.currentTimeMillis();
+            log.info("tempo query turni by periodo: " + (end - start) + " ms");
 
         }
 
@@ -535,7 +534,6 @@ public class TurnoService extends WamService {
      * Con la funzione e senza milite
      *
      * @param turno di riferimento
-     *
      * @return lista (Iscrizione) di iscrizioni del turno
      */
     public List<Iscrizione> getIscrizioni(Turno turno) {
@@ -579,7 +577,6 @@ public class TurnoService extends WamService {
      * Con la funzione e senza milite <br>
      *
      * @param servizio di riferimento
-     *
      * @return lista (Iscrizione) di iscrizioni per un turno con questo servizio
      */
     public List<Iscrizione> getIscrizioni(Servizio servizio) {
@@ -600,7 +597,6 @@ public class TurnoService extends WamService {
      * Turno valido se tutte le funzioni obbligatorie hanno un milite segnato <br>
      *
      * @param turno di riferimento
-     *
      * @return true se valido
      */
     public boolean isValido(Turno turno) {

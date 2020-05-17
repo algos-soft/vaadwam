@@ -19,6 +19,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -33,7 +34,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.USA_BUTTON_SHORTCUT;
 import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
@@ -78,6 +81,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     @Autowired
     private ServizioService servizioService;
+
+    @Autowired
+    private IscrizioneService iscrizioneService;
 
     private WamLogin wamLogin;
 
@@ -193,11 +199,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             bConferma.addClickShortcut(Key.ENTER);
         }
         bConferma.addClickListener(e -> {
-            if (validateInput()) {
-                syncIscrizione();
-                // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-                tabellone.confermaDialogoTurno(dialogo, turno);
-            }
+            validateInputAndProceed();
+//            if (validateInputAndProceed()) {
+//                syncIscrizione();
+//                // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
+//                tabellone.confermaDialogoTurno(dialogo, turno);
+//            }
         });
 
         // se read only questo bottone non c'è
@@ -221,7 +228,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                     }
                 });
 
-                ConfirmDialog.createWarning().withCaption("Conferma cancellazione").withMessage("Sei sicuro di voler eliminare l'iscrizione?").withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE)).withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH)).open();
+                ConfirmDialog.createWarning()
+                        .withCaption("Conferma cancellazione")
+                        .withMessage("Sei sicuro di voler eliminare l'iscrizione?")
+                        .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
+                        .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
+                        .open();
 
 
             });
@@ -250,9 +262,10 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
 
     /**
-     * Valida il contenuto del form e avvisa se non valido
+     * Valida il contenuto del form, se valido sincronizza i dati
+     * del turno e procede alla notifica al tabellone.
      */
-    private boolean validateInput() {
+    private void validateInputAndProceed() {
         boolean valid = true;
         String problem = "";
         LocalTime oraInizio = null;
@@ -283,7 +296,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             }
         }
 
-        // no una sola valorizzata e una nulla
+        // no una sola ora valorizzata e una nulla
         if ((oraInizio != null && oraFine == null) || (oraInizio == null && oraFine != null)) {
             problem = "Ora inizio e ora fine devono avere entrambe un valore";
             valid = false;
@@ -301,11 +314,53 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         //            }
         //        }
 
+        // se ci sono problemi notifica e ritorna
         if (!valid) {
             notify(problem);
+            return;
         }
 
-        return valid;
+        // se si tratta di nuova iscrizione ed esistono già
+        // altre iscrizioni del milite nello stesso giorno, chiede conferma per proseguire
+        if(iscrizione.getMilite()==null){
+            LocalDate giorno = turno.getGiorno();
+            List<Iscrizione> iscrizioni = iscrizioneService.getByMiliteAndGiorno(wamLogin.getMilite(), giorno);
+
+            if(iscrizioni.size()>0){
+
+                Button bConferma=new Button();
+                bConferma.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+                    @Override
+                    public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
+                        syncAndConferma();
+                    }
+                });
+
+                ConfirmDialog dialog = ConfirmDialog.createWarning()
+                        .withCaption("Attenzione! Sei già iscritto ad altri turni nello stesso giorno")
+                        .withMessage("Procedo ugualmente?")
+                        .withButton(new Button(),ButtonOption.caption("Annulla"), ButtonOption.closeOnClick(true))
+                        .withButton(bConferma, ButtonOption.caption("Procedi"), ButtonOption.closeOnClick(true));
+
+                dialog.open();
+
+            }else{
+                syncAndConferma();
+            }
+        } else {
+            syncAndConferma();
+        }
+
+
+    }
+
+    /**
+     * Sincronizza il turno con i dati della iscrizione e invia conferma al tabellone
+     */
+    private void syncAndConferma(){
+        syncIscrizione();
+        // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
+        tabellone.confermaDialogoTurno(dialogo, turno);
     }
 
 
