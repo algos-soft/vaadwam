@@ -157,6 +157,7 @@ public class TopbarComponent extends HorizontalLayout {
             projectSubMenu = itemUser.getSubMenu();
             tab = new Tab();
             tab.add(VaadinIcon.EDIT.create(), new Label("Profilo"));
+
             MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
                 if (profileListener != null) {
                     profileListener.profile();

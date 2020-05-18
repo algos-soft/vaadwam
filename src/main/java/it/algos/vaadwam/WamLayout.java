@@ -209,8 +209,11 @@ public class WamLayout extends MainLayout14 {
         WamLogin wamLogin = wamService.fixWamLogin();
         Milite milite = wamLogin.getMilite();
 
-        milite = militeService.findById(milite.id);
-        appContext.getBean(MiliteProfile.class, militeService, Milite.class).openWam(milite, EAOperation.editNoDelete, this::save, null);
+        if (milite != null) {
+            milite = militeService.findById(milite.id);
+            appContext.getBean(MiliteProfile.class, militeService, Milite.class).openWam(milite, EAOperation.editNoDelete, this::save, null);
+        }
+
     }// end of method
 
 
