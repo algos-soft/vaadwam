@@ -37,6 +37,7 @@ import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -45,6 +46,7 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
@@ -55,6 +57,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +102,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Autowired
     private TurnoService turnoService;
+
+    @Autowired
+    private IscrizioneService iscrizioneService;
 
     @Autowired
     private TabelloneService tabelloneService;
@@ -266,14 +272,24 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(message -> ui.access(() -> {
             String code = message.getCode();
+
             if (code.equals("turnosaved") || code.equals("turnodeleted")) {
                 LocalDate giorno = (LocalDate) message.getPayload();
                 if (isInTabellone(giorno)) {
                     loadDataInGrid();
                 }
             }
+
+//            if(code.equals("turnorange")){
+//                RangeTurniPayload rangeTurni=(RangeTurniPayload)message.getPayload();
+//                if(intersecaTabellone(rangeTurni.getData1(), rangeTurni.getData2())){
+//                    loadDataInGrid();
+//                }
+//            }
+
         }));
     }
+
 
 
     @Override
@@ -290,6 +306,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         LocalDate endDate = startDay.plusDays(numDays - 1);
         return !(testDate.isBefore(startDay) || testDate.isAfter(endDate));
     }
+
+//    /**
+//     * Controlla se un dato periodo interseca il periodo del tabellone
+//     */
+//    private boolean intersecaTabellone(LocalDate data1, LocalDate data2) {
+//        LocalDateRange rangeToCheck = LocalDateRange.ofClosed(data1, data2);
+//        LocalDateRange rangeTabellone = LocalDateRange.ofClosed(startDay, startDay.plusDays(numDays));
+//        LocalDateRange intersection = rangeToCheck.intersection(rangeTabellone);
+//        return !intersection.isEmpty();
+//    }
 
 
     private void buildAllGrid() {
@@ -607,7 +633,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Seleziona l'editor di turno da utilizzare
      */
-    private Component selectTurnoEditor(Turno turno, boolean nuovoTurno, Servizio servizio, String codFunzione){
+    private Component selectTurnoEditor(Turno turno, boolean nuovoTurno, Servizio servizio, String codFunzione) {
 
         // Manager Tabellone, può fare tutto
         if (isUtenteManagerTabellone()) {
@@ -620,16 +646,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // Se è un turno extra:
         // - nel periodo corrente edit multiplo senza cancella
         // - nello storico edit singolo
-        if(isUtenteAbilitatoCreareTurniExtra()){
-            if(servizio.isOrarioDefinito()){    // turno standard
+        if (isUtenteAbilitatoCreareTurniExtra()) {
+            if (servizio.isOrarioDefinito()) {    // turno standard
                 return editSingle(turno, codFunzione);
-            }else{  // turno extra
-                if(!isTurnoStorico(turno)){ // corrente
+            } else {  // turno extra
+                if (!isTurnoStorico(turno)) { // corrente
                     return editMulti(turno, false);
-                }else{  // storico
-                    if(getIscrizione(turno, codFunzione).getMilite()!=null){    // c'è un iscritto
+                } else {  // storico
+                    if (getIscrizione(turno, codFunzione).getMilite() != null) {    // c'è un iscritto
                         return editSingle(turno, codFunzione);
-                    }else{  // nessun iscritto
+                    } else {  // nessun iscritto
                         return null;
                     }
                 }
@@ -637,21 +663,21 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
         // da qui in poi è utente normale, sempre editor di tipo singolo
-        if(!isTurnoStorico(turno)){ // corrente
+        if (!isTurnoStorico(turno)) { // corrente
             return editSingle(turno, codFunzione);
         }
 
         // utente normale, turno storico
-        if(getIscrizione(turno, codFunzione).getMilite()!=null){    // c'è un iscritto
+        if (getIscrizione(turno, codFunzione).getMilite() != null) {    // c'è un iscritto
             return editSingle(turno, codFunzione);
-        }else{  // nessun iscritto
+        } else {  // nessun iscritto
             return null;
         }
 
     }
 
 
-    private boolean isTurnoStorico(Turno turno){
+    private boolean isTurnoStorico(Turno turno) {
         return turno.getGiorno().isBefore(LocalDate.now());
     }
 
@@ -726,7 +752,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             if (iscrizione.getMilite().equals(wamLogin.getMilite())) { // occupata da se stesso
 
                 //boolean puoCancellare = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
-                String result =  tabelloneService.puoCancellareIscrizione(turno, iscrizione);
+                String result = tabelloneService.puoCancellareIscrizione(turno, iscrizione);
                 boolean puoCancellare = StringUtils.isEmpty(result);
 
                 if (puoCancellare) {    // può ancora modificare/cancellare
@@ -836,6 +862,41 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     }
 
+    @Override
+    public void confermaDialogoIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione, boolean ripeti, int numSettimane) {
+        dialog.close();
+
+        turnoService.save(turno);
+
+        // effettuo le eventuali ripetizioni
+        BroadcastMsg msg;
+        if (ripeti) {
+            List<Turno> turniMod = ripetiTurno(turno.getServizio(), iscrizione, turno.getGiorno().plusWeeks(1), numSettimane);
+            // todo continuare da qui...
+            //            LocalDate data1=turno.getGiorno();
+//            LocalDate data2=data1.plusWeeks(numSettimane);
+//            RangeTurniPayload payload = new RangeTurniPayload(data1, data2);
+            msg = new BroadcastMsg("turnorange", null);
+        } else {
+            msg = new BroadcastMsg("turnosaved", turno.getGiorno());
+        }
+
+        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+
+    }
+
+
+    @Data
+    class RangeTurniPayload {
+        private LocalDate data1;
+        private LocalDate data2;
+
+        public RangeTurniPayload(LocalDate data1, LocalDate data2) {
+            this.data1 = data1;
+            this.data2 = data2;
+        }
+    }
+
 
     @Override
     public void eliminaTurno(Dialog dialog, Turno turno) {
@@ -844,6 +905,80 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         BroadcastMsg msg = new BroadcastMsg("turnodeleted", turno.getGiorno());
         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+    }
+
+
+    /**
+     * Ripete una iscrizione esistente nello stesso giorno per un dato numero di settimane.
+     * <p>
+     * Crea i turni necessari se mancanti e se l'utente ha il premesso<br>
+     * Non sovrascrive iscrizioni esistenti a meno che non siano di se stesso<br>
+     * Se non riesce a crere turni o iscrizioni, effettua comunque quelli dove riesce.
+     *
+     * @param servizio         al quale iscriversi
+     * @param iscrizioneMaster da ripetere
+     * @param giornoInizio     il giorno nel quale creare la prima iscrizione
+     * @param numSettimane     per quante settimane ripetere l'iscrizione (prima compresa)
+     * @return la lista dei turni nei quali l'iscrizione è stata effettuata
+     */
+    private List<Turno> ripetiTurno(Servizio servizio, Iscrizione iscrizioneMaster, LocalDate giornoInizio, int numSettimane) {
+        List<Turno> turniModificati = new ArrayList<>();
+        LocalDate giorno = giornoInizio;
+        for (int i = 0; i < numSettimane; i++) {
+
+            // incrementa il giorno dal secondo ciclo in poi
+            if (i > 0) {
+                giorno = giorno.plusWeeks(1);
+            }
+
+            // recupera il turno
+            try {
+                Turno turno = turnoService.findByDateAndServizio(giorno, servizio);
+
+                // se il turno non esiste va creato ora
+                if (turno == null) {
+                    Milite milite = wamLogin.getMilite();
+                    if (milite.isCreatoreTurni()) {
+                        turno = turnoService.newEntity(giorno, servizio);
+                    } else {
+                        log.info("Creazione turno rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizioni per il giorno " + giorno + " perché non ha il permesso di creazione turni");
+                        continue;   // skip iteration
+                    }
+                }
+
+                // recupera l'iscrizione da modificare
+                Iscrizione iscrizione = null;
+                for (Iscrizione isc : turno.getIscrizioni()) {
+                    if (isc.getFunzione().getCode().equals(iscrizioneMaster.getFunzione().getCode())) {   // attenzione a equals()! oggetti diversi!
+                        iscrizione = isc;
+                    }
+                }
+
+                // controlla se c'è gia un iscritto diverso da se stesso per la funzione
+                if (iscrizione.getMilite() != null) {  // c'è un iscritto
+                    if (!iscrizione.getMilite().getId().equals(wamLogin.getMilite().getId())) {   // non è lui
+                        log.info("Iscrizione rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizione per il giorno " + giorno + " perché è gia iscritto un altro milite: " + iscrizione.getMilite().getSigla());
+                        continue;   // skip iteration
+                    }
+                }
+
+                // da qui in poi il turno c'è e l'iscrizione si può modificare
+                iscrizione.setInizio(iscrizioneMaster.getInizio());
+                iscrizione.setFine(iscrizioneMaster.getFine());
+                iscrizione.setMilite(iscrizioneMaster.getMilite());
+                iscrizione.setFunzione(iscrizioneMaster.getFunzione());
+                iscrizione.setNote(iscrizioneMaster.getNote());
+
+                // registra il turno e lo aggiunge all'elenco dei turni modificati
+                turnoService.save(turno);
+                turniModificati.add(turno);
+
+            } catch (Exception e) {
+                log.error("Errore nel recupero del turno del " + giorno + " per il servizio " + servizio.getCode(), e);
+            }
+
+        }
+        return turniModificati;
     }
 
 

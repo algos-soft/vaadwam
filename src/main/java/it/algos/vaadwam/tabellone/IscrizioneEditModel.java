@@ -35,4 +35,11 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     String getNote();
 
+    void setMinSettimaneRipeti(int min);
+    int getMinSettimaneRipeti();
+
+    void setMaxSettimaneRipeti(int max);
+    int getMaxSettimaneRipeti();
+
+
 }
