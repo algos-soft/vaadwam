@@ -702,7 +702,15 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     @Override
     public List<String> getGridPropertyNamesList(AContext context) {
-        return annotation.getGridPropertiesName(entityClass);
+        List<String> lista;
+
+        if (wamLogin != null && wamLogin.isAdminOrDev()) {
+            lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+        } else {
+            lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+        }
+
+        return lista;
     }// end of method
 
 
@@ -719,28 +727,13 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     @Override
     public List<String> getFormPropertyNamesList(AContext context) {
-        ArrayList<String> lista = annotation.getFormPropertiesName(entityClass);
+        List<String> lista;
 
-        if (context.getLogin().isDeveloper() || context.getLogin().isAdmin()) {
-            if (context.getLogin().isAdmin()) {
-                if (lista.contains(FIELD_ROLE)) {
-                    lista.remove(FIELD_ROLE);
-                }// end of if cycle
-            }// end of if cycle
+        if (wamLogin != null && wamLogin.isAdminOrDev()) {
+            lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         } else {
-            //            if (lista.contains(FIELD_LOCKED)) {
-            //                lista.remove(FIELD_LOCKED);
-            //            }// end of if cycle
-            //            if (lista.contains(FIELD_ADMIN)) {
-            //                lista.remove(FIELD_ADMIN);
-            //            }// end of if cycle
-            //            if (lista.contains(FIELD_DIPENDENTE)) {
-            //                lista.remove(FIELD_DIPENDENTE);
-            //            }// end of if cycle
-            //            if (lista.contains(FIELD_INFERMIERE)) {
-            //                lista.remove(FIELD_INFERMIERE);
-            //            }// end of if cycle
-        }// end of if/else cycle
+            lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+        }
 
         return lista;
     }// end of method

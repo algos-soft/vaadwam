@@ -38,7 +38,7 @@ public abstract class WamViewList extends AGridViewList {
 
     public static String USER_VISIONE = "Solo in visione. Le modifiche vengono effettuate da un admin.";
 
-    public static String ADMIN_VISIONE = "Come admin si possono aggiungere, modificare e cancellare i record. Gli utenti normali possono solo vederli.";
+    public static String ADMIN_VISIONE = "Come admin si possono aggiungere e modificare i record.";
 
     public static String ADMIN_DELETE = "I record utilizzati nei turni già effettuati, non possono essere cancellati.";
 

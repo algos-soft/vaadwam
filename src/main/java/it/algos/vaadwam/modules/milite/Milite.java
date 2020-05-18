@@ -120,7 +120,7 @@ public class Milite extends Person {
     public boolean infermiere;
 
     @Field("crea")
-    @AIField(type = EAFieldType.checkbox, name = "Milite abilitato alla creazione di turni extra")
+    @AIField(type = EAFieldType.checkbox, name = "Abilitato alla creazione di turni extra")
     @AIColumn(headerIcon = VaadinIcon.PHONE)
     public boolean creatoreTurni;
 

@@ -22,12 +22,10 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
@@ -112,6 +110,34 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 
 
     /**
+     * Costruisce nell'ordine una lista di nomi di properties <br>
+     * La lista viene usata per la costruzione automatica dei campi e l'inserimento nel binder <br>
+     * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
+     * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
+     * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
+     * Sovrasrivibile nella sottoclasse <br>
+     * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
+     */
+    @Override
+    protected List<String> getPropertiesName() {
+        List<String> lista;
+
+        if (wamLogin != null && wamLogin.isAdminOrDev()) {
+            //            if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+            if (((Milite) currentItem).admin) {
+                lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,managerTabellone,funzioni,noteWam");
+            } else {
+                lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+            }
+        } else {
+            lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+        }
+
+        return lista;
+    }
+
+
+    /**
      * Eventuali specifiche regolazioni aggiuntive ai fields del binder
      * Sovrascritto nella sottoclasse
      */
@@ -165,37 +191,37 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     }// end of method
 
 
-    /**
-     * Costruisce eventuali fields specifici (costruiti non come standard type)
-     * Aggiunge i fields specifici al binder
-     * Aggiunge i fields specifici alla fieldMap
-     * Sovrascritto nella sottoclasse
-     */
-    @Override
-    protected void addSpecificAlgosFields() {
-        String message = VUOTA;
-        ACheckBox fieldLoggato;
-        Field reflectionJavaField;
-        String publicFieldName = "managerTabellone";
-
-        super.addSpecificAlgosFields();
-
-        if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
-            reflectionJavaField = reflection.getField(binderClass, publicFieldName);
-            message = annotation.getFormFieldName(reflectionJavaField);
-            fieldLoggato = new ACheckBox(message);
-
-            if (fieldLoggato != null) {
-                if (binder != null) {
-                    binder.forField(fieldLoggato).bind(MANAGER_TABELLONE);
-                }// end of if cycle
-
-                if (fieldMap != null) {
-                    fieldMap.put(MANAGER_TABELLONE, fieldLoggato);
-                }// end of if cycle
-            }
-        }
-    }
+    //    /**
+    //     * Costruisce eventuali fields specifici (costruiti non come standard type)
+    //     * Aggiunge i fields specifici al binder
+    //     * Aggiunge i fields specifici alla fieldMap
+    //     * Sovrascritto nella sottoclasse
+    //     */
+    //    @Override
+    //    protected void addSpecificAlgosFields() {
+    //        String message = VUOTA;
+    //        ACheckBox fieldLoggato;
+    //        Field reflectionJavaField;
+    //        String publicFieldName = "managerTabellone";
+    //
+    //        super.addSpecificAlgosFields();
+    //
+    //        if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+    //            reflectionJavaField = reflection.getField(binderClass, publicFieldName);
+    //            message = annotation.getFormFieldName(reflectionJavaField);
+    //            fieldLoggato = new ACheckBox(message);
+    //
+    //            if (fieldLoggato != null) {
+    //                if (binder != null) {
+    //                    binder.forField(fieldLoggato).bind(MANAGER_TABELLONE);
+    //                }// end of if cycle
+    //
+    //                if (fieldMap != null) {
+    //                    fieldMap.put(MANAGER_TABELLONE, fieldLoggato);
+    //                }// end of if cycle
+    //            }
+    //        }
+    //    }
 
 
     /**

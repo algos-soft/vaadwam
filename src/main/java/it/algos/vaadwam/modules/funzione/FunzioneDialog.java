@@ -110,7 +110,7 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
         alertUser.add(USER_VISIONE);
         alertAdmin.add("La sigla appare nelle iscrizioni dei turni e può essere liberamente modificata");
         alertAdmin.add("Questa funzione può essere cancellata solo se non è usata in nessun servizio");
-        alertAdmin.add("Le funzioni dipendenti,abilitate automaticamente, vengono indicate con la sigla");
+        alertAdmin.add("Le funzioni dipendenti, abilitate automaticamente, vengono indicate con la sigla");
         alertDev.add("Il Code è utilizzato internamente e non può essere modificato una volta creata la funzione");
         alertDev.add("Devi eventualmente cancellare prima il servizio che la usa");
 
@@ -136,7 +136,9 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
             comboFunzioni.setLabel(text.primaMaiuscola(caption));
             comboFunzioni.setItems(funzioni);
             comboFunzioni.setItemLabelGenerator(Funzione::getSigla);
-            comboFunzioni.setValue(((Funzione) currentItem).dipendenti);
+            if (((Funzione) currentItem).dipendenti != null) {
+                comboFunzioni.setValue(((Funzione) currentItem).dipendenti);
+            }
             fieldMap.put(fieldName, comboFunzioni);
         }// end of if cycle
 
@@ -154,8 +156,8 @@ public class FunzioneDialog extends WamViewDialog<Funzione> {
 
         //--bottone icona con label/caption
         String caption = annotation.getCaption(Funzione.class, "icona");
-        getFormLayout().add(text.getLabelAdmin(caption));
-        getFormLayout().add(addButtonIcona());
+        formSubLayout.add(text.getLabelAdmin(caption));
+        formSubLayout.add(addButtonIcona());
 
         if (fieldMap.get("id") != null) {
             ((ATextField) fieldMap.get("id")).setEnabled(false);

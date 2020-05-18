@@ -89,9 +89,10 @@ public class MiliteProfile extends WamViewDialog<Milite> {
      */
     @Override
     protected void fixAlertLayout() {
-        alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilita la selezione in basso");
-        alertAdmin.add("Puoi sempre modificarla");
-        //        alertAdmin.add("L'abilitazione vale solo per questa sessione ");
+        if (wamLogin != null && wamLogin.isAdmin()) {
+            alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilita la selezione in basso");
+            alertAdmin.add("Puoi sempre modificarla");
+        }
 
         super.fixAlertLayout();
     }
@@ -126,7 +127,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
 
         super.addSpecificAlgosFields();
 
-        if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+        if (wamLogin != null && wamLogin.isAdmin()) {
             reflectionJavaField = reflection.getField(binderClass, publicFieldName);
             message = annotation.getFormFieldName(reflectionJavaField);
             fieldLoggato = new ACheckBox(message);
