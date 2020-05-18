@@ -56,24 +56,28 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     usaMailImport(USA_MAIL_IMPORT, "Spedisce una mail ad ogni import", EAPrefType.bool, EARole.developer, true, true),
 
-    usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone, colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false, true),
-
     usaFieldsEnabledInShow(USA_FIELDS_ENABLED_IN_SHOW, "Mostra i fields abilitati anche nel Form per gli Users", EAPrefType.bool, EARole.developer, false, true, true),
 
     usaCheckFunzioniMilite(USA_CHECK_FUNZIONI_MILITE, "Mostra le funzioni abilitate di un Milite tramite checkbox", EAPrefType.bool, EARole.developer, false, false, true),
 
-    //--admin
-    usaColorazioneTurni(USA_COLORAZIONE_TURNI, "Nel form di edit del turno, colori differenziati per le singole iscrizioni", EAPrefType.bool, EARole.admin, true, true, true),
-
     mostraOrarioServizio(MOSTRA_ORARIO_SERVIZIO, "Mostra l'orario del servizio nel dialogo di iscrizione al turno", EAPrefType.bool, EARole.admin, false, true, true),
 
-    mostraLegenda(MOSTRA_LEGENDA_TABELLONE, "Mostra la legenda in calce al tabellone", EAPrefType.bool, EARole.admin, true, true, true),
+    //--admin
+    usaColorazioneDifferenziata(USA_COLORAZIONE_DIFFERENZIATA, "Nel tabellone, colori differenziati per le singole iscrizioni di un turno", EAPrefType.bool, EARole.admin, true, false, true),
+
+    usaColorazioneTurni(USA_COLORAZIONE_TURNI, "Nel form di edit del turno, colori differenziati per le singole iscrizioni", EAPrefType.bool, EARole.admin, true, true, false),
+
+    mostraLegenda(MOSTRA_LEGENDA_TABELLONE, "Mostra la legenda in calce al tabellone", EAPrefType.bool, EARole.admin, true, true, false),
 
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "L'utente può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, true, true),
 
     numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per convertire, nelle statistiche, un turno in ore", EAPrefType.integer, EARole.admin, true, 7, true),
 
     tipoCancellazione(TIPO_CANCELLAZIONE, "Possibili modalità per un milite di cancellarsi da un turno già segnato", EAPrefType.enumeration, EARole.admin, true, EACancellazione.mai, true),
+
+    numeroOreTrascorse(NUMERO_ORE_TRASCORSE, "Ore massime di tempo per cancellare un'iscrizione dopo averla effettuata", EAPrefType.integer, EARole.admin, true, 2, true),
+
+    numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi di tempo prima dell'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
 
     ;
 

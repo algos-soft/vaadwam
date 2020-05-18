@@ -169,6 +169,9 @@ public abstract class WamService extends AService {
      * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        super.usaRegistrazioneModifica = true;
         this.usaDaemon = USA_DAEMON_CROCI;
         this.lastImport = VUOTA;
         this.durataLastImport = VUOTA;

@@ -104,7 +104,6 @@ public class WamCost {
 
     public final static String USA_DAEMON_TURNI = "usaDaemonTurni";
 
-
     public final static String LAST_IMPORT_CROCI = "lastImportCroci";
 
     public final static String LAST_IMPORT_FUNZIONI = "lastImportFunzioni";
@@ -113,31 +112,28 @@ public class WamCost {
 
     public final static String LAST_IMPORT_SERVIZI = "lastImportServizi";
 
-
     public final static String LAST_IMPORT_MILITI = "lastImportMiliti";
 
-
     public final static String LAST_IMPORT_TURNI = "lastImportTurni";
-
 
     public final static String DURATA_IMPORT_CROCI = "durataImportCroci";
 
     public final static String DURATA_IMPORT_FUNZIONI = "durataImportFunzioni";
 
-
     public final static String DURATA_IMPORT_SERVIZI = "durataImportServizi";
 
-
     public final static String DURATA_IMPORT_MILITI = "durataImportMiliti";
-
 
     public final static String DURATA_IMPORT_TURNI = "durataImportTurni";
 
     public final static String DURATA_ELABORA = "durataElabora";
 
-
-
+    //flag
     public final static String NUMERO_ORE_TURNO_STANDARD = "numeroOreTurno";
+
+    public final static String NUMERO_ORE_TRASCORSE = "numeroOreTrascorse";
+
+    public final static String NUMERO_GIORNI_MANCANTI = "numeroGiorniMancanti";
 
 
     public final static String TASK_CRO = "taskCroci";

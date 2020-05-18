@@ -139,6 +139,8 @@ public abstract class AService extends AbstractService implements IAService {
     @Autowired
     public LogService logger;
 
+    protected boolean usaRegistrazioneModifica;
+
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
@@ -189,6 +191,7 @@ public abstract class AService extends AbstractService implements IAService {
      * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
+        this.usaRegistrazioneModifica = false;
     }// end of method
 
 
@@ -803,7 +806,8 @@ public abstract class AService extends AbstractService implements IAService {
      * @return the modified entity
      */
     public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
-        if (true) {
+
+        if (usaRegistrazioneModifica) {
             entityBean.creazione = LocalDateTime.now();
             entityBean.modifica = LocalDateTime.now();
         }
