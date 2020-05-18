@@ -280,12 +280,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 }
             }
 
-//            if(code.equals("turnorange")){
-//                RangeTurniPayload rangeTurni=(RangeTurniPayload)message.getPayload();
-//                if(intersecaTabellone(rangeTurni.getData1(), rangeTurni.getData2())){
-//                    loadDataInGrid();
-//                }
-//            }
+            if(code.equals("turnomultisave")){
+                // se ne trova anche solo uno che è nel tabellone visualizzato, aggiorna
+                boolean found=false;
+                List<Turno> turniSaved=(List<Turno>)message.getPayload();
+                for(Turno turno : turniSaved){
+                    if(isInTabellone(turno.getGiorno())){
+                        found=true;
+                        break;
+                    }
+                }
+                if(found){
+                    loadDataInGrid();
+                }
+            }
 
         }));
     }
@@ -869,19 +877,18 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         turnoService.save(turno);
 
         // effettuo le eventuali ripetizioni
-        BroadcastMsg msg;
         if (ripeti) {
             List<Turno> turniMod = ripetiTurno(turno.getServizio(), iscrizione, turno.getGiorno().plusWeeks(1), numSettimane);
-            // todo continuare da qui...
-            //            LocalDate data1=turno.getGiorno();
-//            LocalDate data2=data1.plusWeeks(numSettimane);
-//            RangeTurniPayload payload = new RangeTurniPayload(data1, data2);
-            msg = new BroadcastMsg("turnorange", null);
+            if(turniMod.size()>0){
+                turniMod.add(turno);    // aggiungi anche il turno originale
+                BroadcastMsg msg = new BroadcastMsg("turnomultisave", turniMod);
+                Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
+            }
         } else {
-            msg = new BroadcastMsg("turnosaved", turno.getGiorno());
+            BroadcastMsg msg = new BroadcastMsg("turnosaved", turno.getGiorno());
+            Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
         }
 
-        Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
 
     }
 
@@ -956,7 +963,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
                 // controlla se c'è gia un iscritto diverso da se stesso per la funzione
                 if (iscrizione.getMilite() != null) {  // c'è un iscritto
-                    if (!iscrizione.getMilite().getId().equals(wamLogin.getMilite().getId())) {   // non è lui
+                    if (!iscrizione.getMilite().equals(wamLogin.getMilite())) {   // non è lui
                         log.info("Iscrizione rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizione per il giorno " + giorno + " perché è gia iscritto un altro milite: " + iscrizione.getMilite().getSigla());
                         continue;   // skip iteration
                     }
