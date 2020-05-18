@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -136,16 +137,16 @@ public abstract class AService extends AbstractService implements IAService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected PreferenzaService pref;
-
-    //--la repository dei dati viene iniettata dal costruttore della sottoclasse concreta
-    protected MongoRepository repository;
+    public LogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    public LogService logger;
+    protected PreferenzaService pref;
+
+    //--la repository dei dati viene iniettata dal costruttore della sottoclasse concreta
+    protected MongoRepository repository;
 
 
     /**
@@ -327,12 +328,12 @@ public abstract class AService extends AbstractService implements IAService {
             }// end of if/else cycle
         }// end of if/else cycle
 
-//        if (text.isValid(sortName)) {
-//            sort = new Sort(Sort.Direction.ASC, sortName);
-//            lista = new ArrayList<>(repository.findAll(sort));
-//        } else {
-//            lista = new ArrayList<>(repository.findAll());
-//        }// end of if/else cycle
+        //        if (text.isValid(sortName)) {
+        //            sort = new Sort(Sort.Direction.ASC, sortName);
+        //            lista = new ArrayList<>(repository.findAll(sort));
+        //        } else {
+        //            lista = new ArrayList<>(repository.findAll());
+        //        }// end of if/else cycle
 
         lista = mongo.findAllByProperty(entityClass, "company", company);
 
@@ -503,73 +504,66 @@ public abstract class AService extends AbstractService implements IAService {
         if (entityUsaCompanyObbligatoria || entityUsaCompanyFacoltativa) {
             if (entityUsaCompanyObbligatoria) {
                 lista = findAll();
-                lista = lista.stream()
-                        .filter(entity -> {
-                            if (isEsisteEntityKeyUnica(entity)) {
-                                return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                lista = lista.stream().filter(entity -> {
+                    if (isEsisteEntityKeyUnica(entity)) {
+                        return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                    } else {
+                        if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
+                            return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
+                        } else {
+                            if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
+                                return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
                             } else {
-                                if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
-                                    return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
-                                } else {
-                                    if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
-                                        return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
-                                    } else {
-                                        return true;
-                                    }// end of if/else cycle
-                                }// end of if/else cycle
+                                return true;
                             }// end of if/else cycle
-                        })
-                        .collect(Collectors.toList());
+                        }// end of if/else cycle
+                    }// end of if/else cycle
+                }).collect(Collectors.toList());
             } else {
                 lista = findAll();
                 if (lista != null) {
-                    lista = lista.stream()
-                            .filter(entity -> {
-                                boolean status = true;
-                                return status;
-                            })
-                            .filter(entity -> {
-                                if (isEsisteEntityKeyUnica(entity)) {
-                                    return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                    lista = lista.stream().filter(entity -> {
+                        boolean status = true;
+                        return status;
+                    }).filter(entity -> {
+                        if (isEsisteEntityKeyUnica(entity)) {
+                            return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                        } else {
+                            if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
+                                return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
+                            } else {
+                                if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
+                                    return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
                                 } else {
-                                    if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
-                                        return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
-                                    } else {
-                                        if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
-                                            return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
-                                        } else {
-                                            return true;
-                                        }// end of if/else cycle
-                                    }// end of if/else cycle
+                                    return true;
                                 }// end of if/else cycle
-                            })
-                            .collect(Collectors.toList());
+                            }// end of if/else cycle
+                        }// end of if/else cycle
+                    }).collect(Collectors.toList());
                 }// end of if cycle
             }// end of if/else cycle
         } else {
             lista = findAll();
             if (lista != null) {
-                lista = lista.stream()
-                        .filter(entity -> {
-                            if (isEsisteEntityKeyUnica(entity)) {
-                                return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                lista = lista.stream().filter(entity -> {
+                    if (isEsisteEntityKeyUnica(entity)) {
+                        return getKeyUnica(entity).toLowerCase().startsWith(normalizedFilter);
+                    } else {
+                        if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
+                            if (reflection.getPropertyValue(entity, FIELD_NAME_CODE) == null) {
+                                return true;
                             } else {
-                                if (reflection.isEsiste(entityClass, FIELD_NAME_CODE)) {
-                                    if (reflection.getPropertyValue(entity, FIELD_NAME_CODE) == null) {
-                                        return true;
-                                    } else {
-                                        return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
-                                    }// end of if/else cycle
-                                } else {
-                                    if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
-                                        return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
-                                    } else {
-                                        return true;
-                                    }// end of if/else cycle
-                                }// end of if/else cycle
+                                return ((String) reflection.getPropertyValue(entity, FIELD_NAME_CODE)).startsWith(normalizedFilter);
                             }// end of if/else cycle
-                        })
-                        .collect(Collectors.toList());
+                        } else {
+                            if (reflection.isEsiste(entityClass, FIELD_NAME_DESCRIZIONE)) {
+                                return ((String) reflection.getPropertyValue(entity, FIELD_NAME_DESCRIZIONE)).startsWith(normalizedFilter);
+                            } else {
+                                return true;
+                            }// end of if/else cycle
+                        }// end of if/else cycle
+                    }// end of if/else cycle
+                }).collect(Collectors.toList());
             }// end of if cycle
         }// end of if/else cycle
 
@@ -635,6 +629,7 @@ public abstract class AService extends AbstractService implements IAService {
         return lista;
     }// end of method
 
+
     /**
      * Costruisce una lista di nomi delle properties del Form, specializzata per una specifica operazione <br>
      * Sovrascritto nella sottoclasse concreta <br>
@@ -672,6 +667,7 @@ public abstract class AService extends AbstractService implements IAService {
     public List<String> getFormPropertyNamesListShow(AContext context) {
         return getFormPropertyNamesList(context);
     }// end of method
+
 
     /**
      * Costruisce una lista di nomi delle properties del Search nell'ordine:
@@ -788,7 +784,7 @@ public abstract class AService extends AbstractService implements IAService {
             if (UI.getCurrent() != null) {
                 Notification.show("La scheda non è completa", DURATA, Notification.Position.BOTTOM_START);
             }// end of if cycle
-//            log.error("Algos - La scheda " + entityBean.toString() + " di " + entityBean.getClass().getSimpleName() + " non è completa");
+            //            log.error("Algos - La scheda " + entityBean.toString() + " di " + entityBean.getClass().getSimpleName() + " non è completa");
         }// end of if/else cycle
 
         return entityValida;
@@ -807,6 +803,11 @@ public abstract class AService extends AbstractService implements IAService {
      * @return the modified entity
      */
     public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
+        if (true) {
+            entityBean.creazione = LocalDateTime.now();
+            entityBean.modifica = LocalDateTime.now();
+        }
+
         return creaIdKeySpecifica(entityBean);
     }// end of method
 
