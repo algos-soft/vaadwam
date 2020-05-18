@@ -1082,30 +1082,30 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         } else {    // ci sono servizi di tipo extra
 
-            // seleziona i servizi candidati (quelli non già presenti nel tabellone)
-            List<Servizio> serviziCandidati = new ArrayList<>();
-            for (Servizio servizio : serviziExtra) {
-                if (!isPresenteInTabellone(servizio)) {
-                    serviziCandidati.add(servizio);
-                }
-            }
+//            // seleziona i servizi candidati (quelli non già presenti nel tabellone)
+//            List<Servizio> serviziCandidati = new ArrayList<>();
+//            for (Servizio servizio : serviziExtra) {
+//                if (!isPresenteInTabellone(servizio)) {
+//                    serviziCandidati.add(servizio);
+//                }
+//            }
 
-            if (serviziCandidati.size() == 0) { // non ci sono servizi candidati
+            if (serviziExtra.size() == 0) { // non ci sono servizi extra
                 ConfirmDialog.createWarning().withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
 
             } else { // ci sono uno o più servizi candidati
 
-                if (serviziCandidati.size() == 1) {    // esiste un solo servizio candidato
+                if (serviziExtra.size() == 1) {    // esiste un solo servizio candidato
 
-                    addNuovaRiga(serviziCandidati.get(0)); // lo sceglie automaticamente
+                    addNuovaRiga(serviziExtra.get(0)); // lo sceglie automaticamente
 
                 } else {   // esistono più servizi candidati
 
                     // presento un dialogo per scegliere il servizio canditato
 
                     Select<Servizio> select = new Select<>();
-                    select.setItems(serviziCandidati);
-                    select.setValue(serviziCandidati.get(0));
+                    select.setItems(serviziExtra);
+                    select.setValue(serviziExtra.get(0));
 
                     Button bConferma = new Button();
                     bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
@@ -1158,7 +1158,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     private List<Servizio> findServiziExtraVisibili() {
         List<Servizio> servizi = new ArrayList<>();
         for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())) {
-            if (!servizio.isOrarioDefinito() && servizio.isVisibile()) {
+            if (!servizio.isRipetibile() && servizio.isVisibile()) {
                 servizi.add(servizio);
             }
         }
