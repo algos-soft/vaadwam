@@ -41,6 +41,7 @@ import java.util.List;
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
+import static it.algos.vaadwam.application.WamCost.TIPO_CANCELLAZIONE;
 import static it.algos.vaadwam.modules.croce.CroceList.NOMI;
 
 /**
@@ -382,7 +383,7 @@ public class CroceDialog extends AViewDialog<Croce> {
 
     /**
      * Regola in scrittura eventuali valori NON associati al binder
-     * Dallla  UI al DB
+     * Dallla UI al DB
      * Sovrascritto
      */
     protected void writeSpecificFields() {
@@ -415,12 +416,16 @@ public class CroceDialog extends AViewDialog<Croce> {
                         }
                         break;
                     case enumeration:
-                        stringEnum = pref.getEnumStr(key);
-                        listaEnum = array.getList(stringEnum);
-
-                        //                        genericFieldValue = enumService.convertToModel(mongoEnumValue, (String) field.getValue());
-                        //                        pref.setEnum(key, (Integer) field.getValue());
-                        field.setValue(pref.getEnumStr(key));
+                        //                        stringEnum = pref.getEnumStr(key);
+                        //                        stringEnum=EACancellazione.sempre.getPref();
+                        //                        listaEnum = array.getList(stringEnum);
+                        //
+                        //                        //                        genericFieldValue = enumService.convertToModel(mongoEnumValue, (String) field.getValue());
+                        //                        //                        pref.setEnum(key, (Integer) field.getValue());
+                        ////                        field.setValue(pref.getEnumStr(key));
+                        //
+                        //                        Object alfa= field.getValue();
+                        pref.saveValue(TIPO_CANCELLAZIONE, field.getValue());
                         break;
                     default:
                         logger.warn("Switch - caso non definito", this.getClass(), "nomeDelMetodo");

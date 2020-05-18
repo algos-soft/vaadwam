@@ -808,7 +808,9 @@ public abstract class AService extends AbstractService implements IAService {
     public AEntity beforeSave(AEntity entityBean, EAOperation operation) {
 
         if (usaRegistrazioneModifica) {
-            entityBean.creazione = LocalDateTime.now();
+            if (entityBean.creazione == null) {
+                entityBean.creazione = LocalDateTime.now();
+            }
             entityBean.modifica = LocalDateTime.now();
         }
 

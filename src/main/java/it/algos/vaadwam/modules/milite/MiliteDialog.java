@@ -115,7 +115,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
      * 1) Cerca nell'annotation @AIForm della Entity e usa quella lista (con o senza ID)
      * 2) Utilizza tutte le properties della Entity (properties della classe e superclasse)
      * 3) Sovrascrive la lista nella sottoclasse specifica di xxxService
-     * Sovrasrivibile nella sottoclasse <br>
+     * Sovrascrivibile nella sottoclasse <br>
      * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
      */
     @Override
@@ -143,6 +143,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
      */
     @Override
     protected void fixStandardAlgosFieldsAnte() {
+        List<String> lista;
         String tag = "funzioni";
         Object field;
         MultiselectComboBox comboField = (MultiselectComboBox) fieldMap.get(tag);
@@ -156,7 +157,16 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             }// end of if cycle
         }// end of if/else cycle
 
-        if (wamLogin.isDeveloper() || wamLogin.isAdmin()) {
+        if (wamLogin != null && wamLogin.isAdminOrDev()) {
+            if (wamLogin.isAdmin() && ((Milite) currentItem).admin && !wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
+                lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,managerTabellone,funzioni,noteWam");
+                for (String fieldName : lista) {
+                    disabilita(fieldName);
+                }
+                abilita(FIELD_ADMIN);
+                abilita(FIELD_ATTIVO);
+            }
+
         } else {
             //--disabilita il campo ordine
             field = fieldMap.get("ordine");
@@ -177,6 +187,17 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             disabilita(FIELD_CENTRALINISTA);
 
         }// end of if/else cycle
+    }// end of method
+
+
+    protected void abilita(String fieldName) {
+        Object field;
+        field = fieldMap.get(fieldName);
+
+        if (field != null) {
+            ((AbstractField) field).setEnabled(true);
+        }// end of if cycle
+
     }// end of method
 
 

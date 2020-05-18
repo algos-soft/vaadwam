@@ -57,7 +57,6 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -437,7 +436,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
                 if (servizio != null) {
                     lastInType = (!servizio.getCode().equals(currentType));
-                    lastInType = lastInType && servizio.ripetibile;
+                    lastInType = lastInType && servizio.extra;
                     lastInType = false; //@todo PROVVISORIO
                     servizioCell = appContext.getBean(ServizioCellPolymer.class, servizio, lastInType);
                     currentType = servizio.getCode();
@@ -1158,7 +1157,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     private List<Servizio> findServiziExtraVisibili() {
         List<Servizio> servizi = new ArrayList<>();
         for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())) {
-            if (!servizio.isRipetibile() && servizio.isVisibile()) {
+            if (!servizio.extra && servizio.isVisibile()) {
                 servizi.add(servizio);
             }
         }

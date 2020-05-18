@@ -14,7 +14,7 @@ public interface IAEnum {
      * La stringa è composta da tutti i valori separati da virgola <br>
      * Poi, separato da punto e virgola viene il valore selezionato di default <br>
      *
-     * @return stringa di valori e valore di default
+     * @return stringa di valori e valore selezionato
      */
     public String getPref();
 

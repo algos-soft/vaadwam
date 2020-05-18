@@ -103,17 +103,17 @@ public class ServizioService extends WamService {
      * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param ripetibile     nella stessa giornata (facoltativo, default false)
+     * @param extra          nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
+    public boolean creaIfNotExist(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie, facoltative));
+            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative));
             creata = entity != null;
         }// end of if cycle
 
@@ -145,14 +145,14 @@ public class ServizioService extends WamService {
      * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param ripetibile     nella stessa giornata (facoltativo, default false)
+     * @param extra     nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
-        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, ripetibile, obbligatorie, facoltative);
+    public Servizio newEntity(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
+        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative);
     }// end of method
 
 
@@ -170,14 +170,14 @@ public class ServizioService extends WamService {
      * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param ripetibile     nella stessa giornata (facoltativo, default false)
+     * @param extra     nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean ripetibile, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
-        Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).ripetibile(ripetibile).obbligatorie(obbligatorie).facoltative(facoltative).build();
+    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
+        Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).extra(extra).obbligatorie(obbligatorie).facoltative(facoltative).build();
 
         return (Servizio) super.addCroce(entity, croce);
     }// end of method

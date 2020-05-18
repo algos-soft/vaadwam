@@ -27,22 +27,31 @@ public enum EACancellazione implements IAEnum {
      * La stringa è composta da tutti i valori separati da virgola <br>
      * Poi, separato da punto e virgola, viene il valore corrente <br>
      *
-     * @return stringa di valori e valore di default
+     * @param enumName enumeration da evindeziare in coda alla stringa
+     *
+     * @return stringa di valori e valore selezionato
      */
-    @Override
-    public String getPref() {
-        String testo = VUOTA;
+    public static String getPref(String enumName) {
+        EACancellazione eaCanc = getEnum(enumName);
+        return eaCanc.getPref();
+    }// end of method
 
+
+    /**
+     * Enumeration selezionata <br>
+     *
+     * @param enumName enumeration da evindeziare in coda alla stringa
+     *
+     * @return enumeration
+     */
+    public static EACancellazione getEnum(String enumName) {
         for (EACancellazione eaCanc : EACancellazione.values()) {
-            testo += eaCanc.name();
-            testo += VIRGOLA;
+            if (eaCanc.name().equals(enumName)) {
+                return eaCanc;
+            }
         }// end of for cycle
 
-        testo = testo.substring(0, testo.length() - 1);
-        testo += PUNTO_VIRGOLA;
-        testo += name();
-
-        return testo;
+        return null;
     }// end of method
 
 
@@ -59,6 +68,30 @@ public enum EACancellazione implements IAEnum {
 
     public static String getValuesStandard() {
         return getValues() + PV + EACancellazione.sempre.name();
+    }// end of method
+
+
+    /**
+     * Stringa di valori (text) da usare per memorizzare la preferenza <br>
+     * La stringa è composta da tutti i valori separati da virgola <br>
+     * Poi, separato da punto e virgola, viene il valore corrente <br>
+     *
+     * @return stringa di valori e valore di default
+     */
+    @Override
+    public String getPref() {
+        String testo = VUOTA;
+
+        for (EACancellazione eaCanc : EACancellazione.values()) {
+            testo += eaCanc.name();
+            testo += VIRGOLA;
+        }// end of for cycle
+
+        testo = testo.substring(0, testo.length() - 1);
+        testo += PUNTO_VIRGOLA;
+        testo += name();
+
+        return testo;
     }// end of method
 
 }// end of enumeration class

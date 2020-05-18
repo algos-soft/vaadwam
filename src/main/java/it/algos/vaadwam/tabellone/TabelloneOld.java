@@ -373,7 +373,7 @@ public class TabelloneOld extends AGridViewList {
 
                 if (servizio != null) {
                     lastInType = (!servizio.getCode().equals(currentType));
-                    lastInType = lastInType && servizio.ripetibile;
+                    lastInType = lastInType && servizio.extra;
                     lastInType = false; //@todo PROVVISORIO
                     servizioCell = appContext.getBean(ServizioCellPolymer.class, servizio, lastInType);
                     currentType = servizio.getCode();

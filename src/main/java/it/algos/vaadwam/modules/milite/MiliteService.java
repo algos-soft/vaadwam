@@ -359,6 +359,28 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     /**
+     * Saves a given entity.
+     * Use the returned instance for further operations
+     * as the save operation might have changed the entity instance completely.
+     *
+     * @param oldBean      previus state
+     * @param modifiedBean to be saved
+     *
+     * @return the saved entity
+     */
+    @Override
+    public AEntity save(AEntity oldBean, AEntity modifiedBean) {
+        AEntity entityBean = super.save(oldBean, modifiedBean);
+
+        if (wamLogin != null && getWamLogin().getMilite() != null && entityBean instanceof Milite && getWamLogin().getMilite().id.equals(entityBean.id)) {
+            wamLogin.setMilite((Milite) entityBean);
+        }
+
+        return entityBean;
+    }
+
+
+    /**
      * Retrieves an entity by its id.
      *
      * @param id must not be {@literal null}.
