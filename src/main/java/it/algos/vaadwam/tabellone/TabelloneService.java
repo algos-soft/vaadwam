@@ -3,9 +3,11 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
@@ -92,6 +94,9 @@ public class TabelloneService extends AService {
 
     @Autowired
     protected AVaadinService vaadinService;
+
+    @Autowired
+    protected PreferenzaService pref;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -289,10 +294,10 @@ public class TabelloneService extends AService {
         if (iscrizioneService.isValida(iscrizione, turno.getServizio())) {
             colore = EAWamColore.normale;
         } else {
-            if (mancaMenoDi(turno, critico)) {
+            if (mancaMenoDiGiorni(turno, critico)) {
                 colore = EAWamColore.critico;
             } else {
-                if (mancaMenoDi(turno, semicritico)) {
+                if (mancaMenoDiGiorni(turno, semicritico)) {
                     colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
@@ -323,10 +328,10 @@ public class TabelloneService extends AService {
         if (turnoService.isValido(turno)) {
             colore = EAWamColore.normale;
         } else {
-            if (mancaMenoDi(turno, critico)) {
+            if (mancaMenoDiGiorni(turno, critico)) {
                 colore = EAWamColore.critico;
             } else {
-                if (mancaMenoDi(turno, semicritico)) {
+                if (mancaMenoDiGiorni(turno, semicritico)) {
                     colore = EAWamColore.urgente;
                 } else {
                     colore = EAWamColore.previsto;
@@ -345,7 +350,7 @@ public class TabelloneService extends AService {
     /**
      * Turno previsto prima del numero di giorni indicati
      */
-    public boolean mancaMenoDi(Turno turno, int giorni) {
+    public boolean mancaMenoDiGiorni(Turno turno, int giorni) {
         boolean status = false;
         LocalDate limite = LocalDate.now().plusDays(giorni);
         if (turno.giorno.isBefore(limite)) {
@@ -357,7 +362,7 @@ public class TabelloneService extends AService {
     /**
      * Passato più di un certo numero di giorni dalla data di iscrizione
      */
-    public boolean passatoPiuDi(Iscrizione iscrizione, int giorni) {
+    public boolean passatoPiuDiGiorni(Iscrizione iscrizione, int giorni) {
         LocalDateTime dataCreazione=iscrizione.getCreazione();
         if(dataCreazione!=null){
             LocalDate dataCreato = dataCreazione.toLocalDate();
@@ -368,13 +373,27 @@ public class TabelloneService extends AService {
         return false;
     }
 
+    /**
+     * Passato più di un certo numero di ore dalla data di iscrizione
+     */
+    public boolean passatoPiuDiOre(Iscrizione iscrizione, int ore) {
+        LocalDateTime dataOraCreazione=iscrizione.getCreazione();
+        if(dataOraCreazione!=null){
+            if(LocalDateTime.now().minusHours(ore).isAfter(dataOraCreazione)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
     /**
      * Turno già effettuato
      */
     public boolean isStorico(Turno turno) {
-        return mancaMenoDi(turno, 0);
+        return mancaMenoDiGiorni(turno, 0);
     }// end of method
 
 
@@ -387,31 +406,41 @@ public class TabelloneService extends AService {
      */
     public String puoCancellareIscrizione(Turno turno, Iscrizione iscrizione){
 
-        Croce croce=getWamLogin().getCroce();
-
-        // @todo recuperarlo dalla croce
-        EACancellazione modo = EACancellazione.tempoMancante;
+        // recupero la modalità di cancellazione
+        String prefKey = pref.getEnumStr(EAPreferenzaWam.tipoCancellazione);
+        EACancellazione modoCanc=null;
+        if(prefKey!=null){
+            modoCanc = EACancellazione.valueOf(prefKey);
+        }
+        if(modoCanc==null){
+            modoCanc=EACancellazione.tempoMancante;
+        }
 
         String ret;
-        int giorni;
 
-        switch (modo){
+        switch (modoCanc){
             case mai:
                 return "cancellazione iscrizioni non abilitata";
             case sempre:
                 return null;
             case tempoTrascorso:
                 ret=null;
-                giorni=3;
-                if(passatoPiuDi(iscrizione,giorni)){
-                    ret="sono passati più di "+giorni+" giorni dall'iscrizione";
+                int maxOre = pref.getInt(EAPreferenzaWam.numeroOreTrascorse);
+                if(maxOre==0){
+                    maxOre=48;
+                }
+                if(passatoPiuDiOre(iscrizione,maxOre)){
+                    ret="sono passate più di "+maxOre+" ore dall'iscrizione";
                 }
                 return ret;
             case tempoMancante:
                 ret=null;
-                giorni=2;
-                if(mancaMenoDi(turno, giorni)){
-                    ret="mancano meno di "+giorni+" giorni alla data di esecuzione del turno";
+                int maxGiorni = pref.getInt(EAPreferenzaWam.numeroGiorniMancanti);
+                if(maxGiorni==0){
+                    maxGiorni=2;
+                }
+                if(mancaMenoDiGiorni(turno, maxGiorni)){
+                    ret="mancano meno di "+maxGiorni+" giorni alla data di esecuzione del turno";
                 }
                 return ret;
             default:

@@ -759,7 +759,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             Iscrizione iscrizione = getIscrizione(turno, codFunzione);
             if (iscrizione.getMilite().equals(wamLogin.getMilite())) { // occupata da se stesso
 
-                //boolean puoCancellare = !tabelloneService.isPiuRecente(turno, wamLogin.getCroce().getGiorniCritico());
                 String result = tabelloneService.puoCancellareIscrizione(turno, iscrizione);
                 boolean puoCancellare = StringUtils.isEmpty(result);
 
