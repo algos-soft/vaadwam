@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -993,6 +994,9 @@ public abstract class AService extends AbstractService implements IAService {
         }// end of if cycle
 
         keyUnica = addKeyCompany(entityBean, keyCode);
+
+        //keyUnica= UUID.randomUUID().toString();
+
         return keyUnica;
     }// end of method
 
@@ -1047,7 +1051,7 @@ public abstract class AService extends AbstractService implements IAService {
     /**
      * Property unica (se esiste).
      */
-    public String getPropertyUnica(AEntity entityBean) {
+    public String  getPropertyUnica(AEntity entityBean) {
         return "";
     }// end of method
 

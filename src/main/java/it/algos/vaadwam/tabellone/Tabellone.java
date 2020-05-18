@@ -1000,6 +1000,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         for (EAWamColore eaw : EAWamColore.values()) {
             LegendaItemModel item = new LegendaItemModel();
             item.setNome(eaw.getTitolo());
+            item.setDescrizione(eaw.getLegenda());
             item.setColore(eaw.getEsadecimale());
             colori.add(item);
         }

@@ -174,10 +174,20 @@ public class TurnoService extends WamService {
      */
     public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio, LocalTime inizio, LocalTime fine, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
 
-        Turno entity = Turno.builderTurno().giorno(giorno != null ? giorno : LocalDate.now()).servizio(servizio).inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT).fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT).iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio)).titoloExtra(titoloExtra.equals("") ? null : titoloExtra).localitaExtra(localitaExtra.equals("") ? null : localitaExtra).build();
+        Turno entity = Turno.builderTurno()
+                .giorno(giorno != null ? giorno : LocalDate.now())
+                .servizio(servizio)
+                .inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT)
+                .fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT)
+                .iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio))
+                .titoloExtra(titoloExtra.equals("") ? null : titoloExtra)
+                .localitaExtra(localitaExtra.equals("") ? null : localitaExtra)
+                .build();
 
-        return (Turno) addCroce(entity, croce);
-    }// end of method
+        AEntity aEntity = addCroce(entity, croce);
+        return (Turno)aEntity;
+
+    }
 
 
     /**

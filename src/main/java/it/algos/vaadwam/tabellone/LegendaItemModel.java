@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class LegendaItemModel {
     private String nome;
+    private String descrizione;
     private String colore;
 }

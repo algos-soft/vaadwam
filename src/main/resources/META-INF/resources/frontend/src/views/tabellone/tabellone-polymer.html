@@ -28,17 +28,24 @@
         </div>
 
         <!--layer legenda-->
-        <div id="legendaLayer" style="display:flex; flex-direction:column;
-                padding:0.5em; position:fixed;
-                top:59%; left:15%; border-radius:0.6em;
+        <div id="legendaLayer" style="
+                position:fixed; top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                display:flex;
+                flex-direction:column;
+                padding:0.5em;
+                border-radius:0.6em;
                 color:white; background:black; opacity:0.8;
                 z-index:2; visibility:hidden">
             <dom-repeat items="[[coloriLegenda]]">
                 <template>
-                    <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">
-                        <div class="iconContainer"
-                             style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>
-                        <label style="font-size:85%">[[item.nome]]</label>
+                    <div style="display:flex; flex-direction:column">
+                        <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">
+                            <div class="iconContainer"
+                                 style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>
+                            <label style="font-size:85%">[[item.nome]]</label>
+                        </div>
+                        <div style="font-size:65%; margin-left:1.4em">[[item.descrizione]]</div>
                     </div>
                 </template>
             </dom-repeat>
