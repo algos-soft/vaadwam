@@ -69,7 +69,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     mostraLegenda(MOSTRA_LEGENDA_TABELLONE, "Mostra la legenda in calce al tabellone", EAPrefType.bool, EARole.admin, true, true, false),
 
-    nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "L'utente può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, true, true),
+    nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "Il milite può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, false, true),
 
     numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per convertire, nelle statistiche, un turno in ore", EAPrefType.integer, EARole.admin, true, 7, true),
 
@@ -77,7 +77,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     numeroOreTrascorse(NUMERO_ORE_TRASCORSE, "Ore massime di tempo per poter cancellare un'iscrizione dopo averla effettuata", EAPrefType.integer, EARole.admin, true, 2, true),
 
-    numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi di tempo prima dell'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
+    numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi mancanti all'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
 
     ;
 
