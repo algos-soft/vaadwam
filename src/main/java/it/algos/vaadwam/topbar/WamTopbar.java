@@ -49,6 +49,21 @@ public class WamTopbar extends TopbarComponent {
     }// end of constructor
 
 
+    /**
+     * Preferenze <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        if (login != null && login.isDeveloper()) {
+            super.usaProfile = false;
+        }
+    }
+
+
     protected Icon getIcon() {
         Icon icon = new Icon(VaadinIcon.USER);
         WamLogin wamLogin;

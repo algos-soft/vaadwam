@@ -39,6 +39,8 @@ public class TopbarComponent extends HorizontalLayout {
 
     protected ALogin login;
 
+    protected boolean usaProfile;
+
     private MenuItem itemUser;
 
     private LogoutListener logoutListener;
@@ -106,8 +108,10 @@ public class TopbarComponent extends HorizontalLayout {
         Tab tab;
         setWidth("100%");
         setDefaultVerticalComponentAlignment(Alignment.CENTER);
-//        Icon icon = new Icon(VaadinIcon.USER);
+        //        Icon icon = new Icon(VaadinIcon.USER);
 
+        //--Preferenze specifiche
+        this.fixPreferenze();
 
         //--immagine eventuale
         Image image;
@@ -123,7 +127,7 @@ public class TopbarComponent extends HorizontalLayout {
         Div divTitolo = new Div();
         divTitolo.getElement().setAttribute("style", "display:flex; flex-direction:column; min-width:2em");
 
-        String commonStyle = "line-height:120%; white-space:nowrap; overflow:hidden; color:"+ WamCost.LUMO_PRIMARY_COLOR;
+        String commonStyle = "line-height:120%; white-space:nowrap; overflow:hidden; color:" + WamCost.LUMO_PRIMARY_COLOR;
 
         Label label1 = new Label(titolo);
         label1.getElement().setAttribute("style", commonStyle);
@@ -158,11 +162,13 @@ public class TopbarComponent extends HorizontalLayout {
             tab = new Tab();
             tab.add(VaadinIcon.EDIT.create(), new Label("Profilo"));
 
-            MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
-                if (profileListener != null) {
-                    profileListener.profile();
-                }
-            });
+            if (usaProfile) {
+                MenuItem profile = projectSubMenu.addItem(tab, menuItemClickEvent -> {
+                    if (profileListener != null) {
+                        profileListener.profile();
+                    }
+                });
+            }
 
             menuService = StaticContextAccessor.getBean(AMenuService.class);
             tab = menuService.creaMenuLogout();
@@ -190,6 +196,16 @@ public class TopbarComponent extends HorizontalLayout {
         //}
 
     }
+
+
+    /**
+     * Preferenze <br>
+     * Può essere sovrascritto, per modificare le preferenze standard <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void fixPreferenze() {
+        this.usaProfile = true;
+    }// end of method
 
 
     protected Icon getIcon() {
