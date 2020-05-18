@@ -283,9 +283,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             if(code.equals("turnomultisave")){
                 // se ne trova anche solo uno che è nel tabellone visualizzato, aggiorna
                 boolean found=false;
-                List<Turno> turniSaved=(List<Turno>)message.getPayload();
-                for(Turno turno : turniSaved){
-                    if(isInTabellone(turno.getGiorno())){
+                List<LocalDate> giorni=(List<LocalDate>)message.getPayload();
+                for(LocalDate giorno : giorni){
+                    if(isInTabellone(giorno)){
                         found=true;
                         break;
                     }
@@ -880,8 +880,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         if (ripeti) {
             List<Turno> turniMod = ripetiTurno(turno.getServizio(), iscrizione, turno.getGiorno().plusWeeks(1), numSettimane);
             if(turniMod.size()>0){
-                turniMod.add(turno);    // aggiungi anche il turno originale
-                BroadcastMsg msg = new BroadcastMsg("turnomultisave", turniMod);
+                ArrayList<LocalDate> dates=new ArrayList<>();
+                dates.add(turno.getGiorno());   // aggiungi anche il turno originale
+                for(Turno t : turniMod){
+                    dates.add(t.getGiorno());
+                }
+                BroadcastMsg msg = new BroadcastMsg("turnomultisave", dates);
                 Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
             }
         } else {
