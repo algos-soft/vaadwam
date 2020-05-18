@@ -75,7 +75,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     tipoCancellazione(TIPO_CANCELLAZIONE, "Possibili modalità per un milite di cancellarsi da un turno già segnato", EAPrefType.enumeration, EARole.admin, true, EACancellazione.mai, true),
 
-    numeroOreTrascorse(NUMERO_ORE_TRASCORSE, "Ore massime di tempo per cancellare un'iscrizione dopo averla effettuata", EAPrefType.integer, EARole.admin, true, 2, true),
+    numeroOreTrascorse(NUMERO_ORE_TRASCORSE, "Ore massime di tempo per poter cancellare un'iscrizione dopo averla effettuata", EAPrefType.integer, EARole.admin, true, 2, true),
 
     numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi di tempo prima dell'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
 
