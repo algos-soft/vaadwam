@@ -279,24 +279,23 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 }
             }
 
-            if(code.equals("turnomultisave")){
+            if (code.equals("turnomultisave")) {
                 // se ne trova anche solo uno che è nel tabellone visualizzato, aggiorna
-                boolean found=false;
-                List<LocalDate> giorni=(List<LocalDate>)message.getPayload();
-                for(LocalDate giorno : giorni){
-                    if(isInTabellone(giorno)){
-                        found=true;
+                boolean found = false;
+                List<LocalDate> giorni = (List<LocalDate>) message.getPayload();
+                for (LocalDate giorno : giorni) {
+                    if (isInTabellone(giorno)) {
+                        found = true;
                         break;
                     }
                 }
-                if(found){
+                if (found) {
                     loadDataInGrid();
                 }
             }
 
         }));
     }
-
 
 
     @Override
@@ -877,10 +876,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // effettuo le eventuali ripetizioni
         if (ripeti) {
             List<Turno> turniMod = ripetiTurno(turno.getServizio(), iscrizione, turno.getGiorno().plusWeeks(1), numSettimane);
-            if(turniMod.size()>0){
-                ArrayList<LocalDate> dates=new ArrayList<>();
+            if (turniMod.size() > 0) {
+                ArrayList<LocalDate> dates = new ArrayList<>();
                 dates.add(turno.getGiorno());   // aggiungi anche il turno originale
-                for(Turno t : turniMod){
+                for (Turno t : turniMod) {
                     dates.add(t.getGiorno());
                 }
                 BroadcastMsg msg = new BroadcastMsg("turnomultisave", dates);
@@ -1072,50 +1071,67 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void clickAddServizio() {
 
-        // recupera tutti i servizi extra
-        List<Servizio> serviziExtra = findServiziExtraVisibili();
+        // recupera la lista dei servizi aggiungibili
+        List<Servizio> listaServizi=getServiziAggiungibili();
 
-        if (serviziExtra.size() == 0) { // non ci sono servizi di tipo extra
+
+        if (listaServizi.size() == 0) { // non ci sono servizi aggiungibili
 
             // avvisa e ritorna
-            ConfirmDialog.createWarning().withMessage("Non sono disponibili servizi di tipo extra.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
+            ConfirmDialog.createWarning().withMessage("Non sono disponibili servizi da aggiungere al tabellone.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
 
-        } else {    // ci sono servizi di tipo extra
+        } else {    // ci sono servizi aggiungibili
 
-//            // seleziona i servizi candidati (quelli non già presenti nel tabellone)
-//            List<Servizio> serviziCandidati = new ArrayList<>();
-//            for (Servizio servizio : serviziExtra) {
-//                if (!isPresenteInTabellone(servizio)) {
-//                    serviziCandidati.add(servizio);
-//                }
-//            }
+            if (listaServizi.size() == 1) {    // esiste un solo servizio aggiungibile
 
-            if (serviziExtra.size() == 0) { // non ci sono servizi extra
-                ConfirmDialog.createWarning().withMessage("I servizi extra disponibili sono già tutti presenti nel tabellone.").withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
+                addNuovaRiga(listaServizi.get(0)); // lo sceglie automaticamente
 
-            } else { // ci sono uno o più servizi candidati
+            } else {   // esistono più servizi candidati
 
-                if (serviziExtra.size() == 1) {    // esiste un solo servizio candidato
+                // presento un dialogo per scegliere il servizio
 
-                    addNuovaRiga(serviziExtra.get(0)); // lo sceglie automaticamente
+                Select<Servizio> select = new Select<>();
+                select.setItems(listaServizi);
+                select.setValue(listaServizi.get(0));
 
-                } else {   // esistono più servizi candidati
+                Button bConferma = new Button();
+                bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+                    addNuovaRiga(select.getValue());
+                });
 
-                    // presento un dialogo per scegliere il servizio canditato
+                ConfirmDialog.createQuestion().withCaption("Selezione servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
+            }
 
-                    Select<Servizio> select = new Select<>();
-                    select.setItems(serviziExtra);
-                    select.setValue(serviziExtra.get(0));
 
-                    Button bConferma = new Button();
-                    bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
-                        addNuovaRiga(select.getValue());
-                    });
+        }
+    }
 
-                    ConfirmDialog.createQuestion().withCaption("Selezione servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
-                }
+
+    /**
+     * Crea la lista di tutti i servizi aggiungibili per il popup
+     */
+    private List<Servizio> getServiziAggiungibili(){
+
+        // tutti i servizi extra visibili
+        List<Servizio> serviziExtra = findServiziExtraVisibili();
+
+        // tutti i servizi non-extra e non-standard visibili
+        List<Servizio> serviziAltri = findServiziNonExtraNonStandardVisibili();
+
+        // da questi ultimi toglie quelli già a tabellone
+        List<Servizio> serviziAltriCandidati = new ArrayList<>();
+        for (Servizio servizio : serviziAltri) {
+            if (!isPresenteInTabellone(servizio)) {
+                serviziAltriCandidati.add(servizio);
             }
         }
+
+        // compone una lista completa
+        List<Servizio> listaCompleta=new ArrayList<>();
+        listaCompleta.addAll(serviziExtra);
+        listaCompleta.addAll(serviziAltriCandidati);
+
+        return listaCompleta;
     }
 
 
@@ -1158,7 +1174,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     private List<Servizio> findServiziExtraVisibili() {
         List<Servizio> servizi = new ArrayList<>();
         for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())) {
-            if (!servizio.extra && servizio.isVisibile()) {
+            if (servizio.extra && servizio.isVisibile()) {
+                servizi.add(servizio);
+            }
+        }
+        return servizi;
+    }
+
+    /**
+     * Ritorna tutti i servizi non-standard e non-extra visibili di questa Croce
+     */
+    private List<Servizio> findServiziNonExtraNonStandardVisibili() {
+        List<Servizio> servizi = new ArrayList<>();
+        for (Servizio servizio : servizioService.findAllByCroce(wamLogin.getCroce())) {
+            if (!servizio.extra && !servizio.isOrarioDefinito() && servizio.isVisibile()) {
                 servizi.add(servizio);
             }
         }
