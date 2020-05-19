@@ -354,6 +354,13 @@ public class MiliteService extends WamService implements IUtenteService {
             entity = null;
         }// end of if cycle
 
+
+        if (((Milite) entityBean).admin) {
+            ((Utente) entityBean).ruoli = roleService.getAdminRoles();
+        } else {
+            ((Utente) entityBean).ruoli = roleService.getUserRole();
+        }
+
         return entity;
     }// end of method
 

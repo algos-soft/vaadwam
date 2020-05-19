@@ -270,6 +270,26 @@ public class RoleService extends AService {
 
 
     /**
+     * User roles
+     */
+    public Set<Role> getUserRoles() {
+        Set<Role> gruppo = new HashSet<>();
+        gruppo.add(getUser());
+        return gruppo;
+    }// end of method
+
+
+    /**
+     * User roles
+     */
+    public Set<Role> getAdminRoles() {
+        Set<Role> gruppo = getUserRoles();
+        gruppo.add(getAdmin());
+        return gruppo;
+    }// end of method
+
+
+    /**
      * Admin roles
      */
     public Set<Role> getAllAdminRoles() {
