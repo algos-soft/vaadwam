@@ -170,7 +170,7 @@ public class Servizio extends WamEntity {
      * servizio extra ripetibile nella stessa giornata
      */
     @Field("rip")
-    @AIField(type = EAFieldType.checkbox, name = "Ripetibile")
+    @AIField(type = EAFieldType.checkbox, name = "extra")
     @AIColumn(headerIcon = VaadinIcon.FILE_TREE)
     public boolean extra;
 
