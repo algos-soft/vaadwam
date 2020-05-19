@@ -1,7 +1,5 @@
 package it.algos.vaadflow.ui;
 
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -28,12 +26,10 @@ import it.algos.vaadflow.service.AMenuService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadflow.ui.topbar.TopbarComponent;
-import it.algos.vaadwam.broadcast.Broadcaster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -145,7 +141,9 @@ public class MainLayout14 extends AppLayout {
     protected void inizia() {
         fixSessione();
         fixView();
-        fixType();
+        //        fixType();
+        addToDrawer(getTabMenu());
+
     }// end of method
 
 
@@ -256,8 +254,9 @@ public class MainLayout14 extends AppLayout {
     /**
      * Regola il tipo di presentazione del menu
      */
+    @Deprecated
     protected void fixType() {
-        String type = pref.getEnumStr(EAPreferenza.usaMenu, "tabs");
+        String type = pref.getEnumStr(EAPreferenza.usaMenu);
 
         switch (type) {
             case "routers":

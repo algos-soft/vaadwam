@@ -767,23 +767,23 @@ public class PreferenzaService extends AService {
 
 
     public String getEnumStr(IAPreferenza eaPref) {
-        return getEnumStr(eaPref.getCode(), (String) eaPref.getValue());
+        return getEnumStr(eaPref.getCode(), (String) eaPref.getValue(), getPrefix());
     } // end of method
 
 
     public String getEnumStr(IAPreferenza eaPref, String defaultValue) {
-        return getEnumStr(eaPref.getCode(), defaultValue);
+        return getEnumStr(eaPref.getCode(), defaultValue, getPrefix());
     } // end of method
 
 
     public String getEnumStr(String keyCode) {
-        return getEnumStr(keyCode, "");
+        return getEnumStr(keyCode, "", getPrefix());
     } // end of method
 
 
-    public String getEnumStr(String keyCode, String defaultValue) {
+    public String getEnumStr(String keyCode, String defaultValue, String companyPrefix) {
         String valoreTesto = defaultValue;
-        String rawValue = (String) getValue(keyCode);
+        String rawValue = (String) getValue(keyCode, companyPrefix);
 
         if (text.isValid(rawValue)) {
             valoreTesto = enumService.convertToPresentation(rawValue);

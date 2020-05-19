@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.croce;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
@@ -40,8 +41,7 @@ import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.TAG_CRO;
-import static it.algos.vaadwam.application.WamCost.TIPO_CANCELLAZIONE;
+import static it.algos.vaadwam.application.WamCost.*;
 import static it.algos.vaadwam.modules.croce.CroceList.NOMI;
 
 /**
@@ -75,6 +75,14 @@ public class CroceDialog extends AViewDialog<Croce> {
     protected static String ORGANIZZAZIONE = "organizzazione";
 
     protected static String PRESIDENTE = "presidente";
+
+    protected static String FIELD_TRASCORSO = NUMERO_ORE_TRASCORSE;
+
+    protected static String FIELD_MANCANTE = NUMERO_GIORNI_MANCANTI;
+
+    protected static Label LABEL_TRASCORSO;
+
+    protected static Label LABEL_MANCANTE;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -309,7 +317,28 @@ public class CroceDialog extends AViewDialog<Croce> {
                 field = new ACheckBox(eaWam.getDesc());
                 break;
             case integer:
-                layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
+                if (eaWam == EAPreferenzaWam.numeroOreTrascorse || eaWam == EAPreferenzaWam.numeroGiorniMancanti) {
+                    if (eaWam == EAPreferenzaWam.numeroOreTrascorse) {
+                        LABEL_TRASCORSO = text.getLabelAdmin(eaWam.getDesc());
+                        layoutPreferenze.add(LABEL_TRASCORSO);
+                    }
+                    if (eaWam == EAPreferenzaWam.numeroGiorniMancanti) {
+                        LABEL_MANCANTE = text.getLabelAdmin(eaWam.getDesc());
+                        layoutPreferenze.add(LABEL_MANCANTE);
+                    }
+                } else {
+                    layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
+                }
+
+                //                if (eaWam == EAPreferenzaWam.numeroOreTrascorse) {
+                //                    LABEL_TRASCORSO = text.getLabelAdmin(eaWam.getDesc());
+                //                    layoutPreferenze.add(LABEL_TRASCORSO);
+                //                }
+                //                if (eaWam == EAPreferenzaWam.numeroGiorniMancanti) {
+                //                    LABEL_MANCANTE = text.getLabelAdmin(eaWam.getDesc());
+                //                    layoutPreferenze.add(LABEL_MANCANTE);
+                //                }
+
                 field = new ATextField();
                 ((ATextField) field).addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
                 ((ATextField) field).setWidth("5em");
@@ -319,13 +348,15 @@ public class CroceDialog extends AViewDialog<Croce> {
                 break;
             case enumeration:
                 layoutPreferenze.add(text.getLabelAdmin(eaWam.getDesc()));
-                field = new AComboBox();
+                field = new AComboBox<String>();
                 ((AComboBox) field).setWidth("14em");
-                List items = array.getList(EACancellazione.getValues());
+                ((AComboBox) field).setRequired(true);
+                List<String> items = array.getList(EACancellazione.getValues());
                 if (array.isValid(items)) {
-                    ((AComboBox) field).setItems(items);
+                    ((AComboBox<String>) field).setItems(items);
                 }// end of if/else cycle
 
+                ((AComboBox<String>) field).addValueChangeListener(e -> sincro((String) e.getValue()));
                 break;
             default:
                 logger.warn("Switch - caso non definito: " + eaWam.name(), this.getClass(), "addSpecificAlgosFields");
@@ -364,13 +395,13 @@ public class CroceDialog extends AViewDialog<Croce> {
                 type = eaWam.getType();
                 switch (type) {
                     case bool:
-                        field.setValue(pref.isBool(key));
+                        field.setValue(pref.isBool(key, ((Croce) currentItem).code));
                         break;
                     case integer:
-                        field.setValue("" + pref.getInt(key));
+                        field.setValue(VUOTA + pref.getInt(key, ((Croce) currentItem).code));
                         break;
                     case enumeration:
-                        field.setValue(pref.getEnumStr(key));
+                        field.setValue(pref.getEnumStr(key, "mai", ((Croce) currentItem).code));
                         break;
                     default:
                         logger.warn("Switch - caso non definito", this.getClass(), "nomeDelMetodo");
@@ -378,6 +409,39 @@ public class CroceDialog extends AViewDialog<Croce> {
                 }
             }
         }
+    }// end of method
+
+
+    protected void sincro(String value) {
+        EACancellazione type = EACancellazione.valueOf(value);
+        AbstractField fieldTrascorse = prefMap.get(EAPreferenzaWam.numeroOreTrascorse.getCode());
+        AbstractField fieldMancanti = prefMap.get(EAPreferenzaWam.numeroGiorniMancanti.getCode());
+
+        switch (type) {
+            case sempre:
+            case mai:
+                LABEL_TRASCORSO.setVisible(false);
+                fieldTrascorse.setVisible(false);
+                LABEL_MANCANTE.setVisible(false);
+                fieldMancanti.setVisible(false);
+                break;
+            case tempoTrascorso:
+                LABEL_TRASCORSO.setVisible(true);
+                fieldTrascorse.setVisible(true);
+                LABEL_MANCANTE.setVisible(false);
+                fieldMancanti.setVisible(false);
+                break;
+            case tempoMancante:
+                LABEL_TRASCORSO.setVisible(false);
+                fieldTrascorse.setVisible(false);
+                LABEL_MANCANTE.setVisible(true);
+                fieldMancanti.setVisible(true);
+                break;
+            default:
+                logger.warn("Switch - caso non definito", this.getClass(), "sincro");
+                break;
+        }
+
     }// end of method
 
 
@@ -406,11 +470,11 @@ public class CroceDialog extends AViewDialog<Croce> {
                 type = eaWam.getType();
                 switch (type) {
                     case bool:
-                        pref.saveValue(key, (Boolean) field.getValue());
+                        pref.saveValue(key, (Boolean) field.getValue(), ((Croce) currentItem).code);
                         break;
                     case integer:
                         try {
-                            pref.saveValue(key, field.getValue() != null ? Integer.parseInt((String) field.getValue()) : 0);
+                            pref.saveValue(key, field.getValue() != null ? Integer.parseInt((String) field.getValue()) : 0, ((Croce) currentItem).code);
                         } catch (Exception unErrore) {
                             logger.error(unErrore, this.getClass(), "writeSpecificFields");
                         }
@@ -425,7 +489,7 @@ public class CroceDialog extends AViewDialog<Croce> {
                         ////                        field.setValue(pref.getEnumStr(key));
                         //
                         //                        Object alfa= field.getValue();
-                        pref.saveValue(TIPO_CANCELLAZIONE, field.getValue());
+                        pref.saveValue(TIPO_CANCELLAZIONE, field.getValue(), ((Croce) currentItem).code);
                         break;
                     default:
                         logger.warn("Switch - caso non definito", this.getClass(), "nomeDelMetodo");

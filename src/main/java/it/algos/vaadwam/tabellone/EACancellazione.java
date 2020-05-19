@@ -44,6 +44,7 @@ public enum EACancellazione implements IAEnum {
      *
      * @return enumeration
      */
+    @Deprecated
     public static EACancellazione getEnum(String enumName) {
         for (EACancellazione eaCanc : EACancellazione.values()) {
             if (eaCanc.name().equals(enumName)) {
