@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
@@ -31,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -151,6 +151,7 @@ public class TurnoService extends WamService {
      *
      * @param giorno   di inizio turno (obbligatorio, calcolato da inizio - serve per le query)
      * @param servizio di riferimento (obbligatorio)
+     *
      * @return la nuova entity appena creata (non salvata)
      */
     public Turno newEntity(LocalDate giorno, Servizio servizio) {
@@ -171,27 +172,16 @@ public class TurnoService extends WamService {
      * @param iscrizioni    dei volontari a questo turno (obbligatorio per un turno valido)
      * @param titoloExtra   motivazione del turno extra (facoltativo)
      * @param localitaExtra nome evidenziato della località per turni extra (facoltativo)
+     *
      * @return la nuova entity appena creata (non salvata)
      */
     public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio, LocalTime inizio, LocalTime fine, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
 
-        Turno entity = Turno.builderTurno()
-                .giorno(giorno != null ? giorno : LocalDate.now())
-                .servizio(servizio)
-                .inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT)
-                .fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT)
-                .iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio))
-                .titoloExtra(titoloExtra.equals("") ? null : titoloExtra)
-                .localitaExtra(localitaExtra.equals("") ? null : localitaExtra)
-                .build();
+        Turno entity = Turno.builderTurno().giorno(giorno != null ? giorno : LocalDate.now()).servizio(servizio).inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT).fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT).iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio)).titoloExtra(titoloExtra.equals("") ? null : titoloExtra).localitaExtra(localitaExtra.equals("") ? null : localitaExtra).build();
 
         AEntity aEntity = addCroce(entity, croce);
 
-        // @todo in test
-        // aEntity.setId(UUID.randomUUID().toString());
-
-        return (Turno)aEntity;
-
+        return (Turno) aEntity;
     }
 
 
@@ -201,6 +191,7 @@ public class TurnoService extends WamService {
      *
      * @param entityBean da regolare prima del save
      * @param operation  del dialogo (NEW, EDIT)
+     *
      * @return the modified entity
      */
     @Override
@@ -224,7 +215,9 @@ public class TurnoService extends WamService {
      * Retrieves an entity by its id.
      *
      * @param id must not be {@literal null}.
+     *
      * @return the entity with the given id or {@literal null} if none found
+     *
      * @throws IllegalArgumentException if {@code id} is {@literal null}
      */
     @Override
@@ -250,14 +243,19 @@ public class TurnoService extends WamService {
      * Property unica (se esiste) <br>
      */
     public String getPropertyUnica(LocalDate giorno, Servizio servizio) {
-        String keyID = "";
+        String keyID = VUOTA;
+        Query query = new Query();
+        int anno = giorno.getYear();
         int day = giorno.getDayOfYear();
-        String codeServizio = "";
+        String codeServizio = VUOTA;
+        int numExtra = 0;
 
         if (servizio != null) {
             codeServizio = servizio.code;
+            codeServizio += PUNTO + UUID.randomUUID().toString();
         }// end of if cycle
 
+        keyID += anno;
         keyID += day;
         keyID += codeServizio;
 
@@ -335,6 +333,7 @@ public class TurnoService extends WamService {
      * Returns the number of entities available for the current company
      *
      * @param croce di appartenenza (obbligatoria)
+     *
      * @return the number of entities
      */
     public int countByCroce(Croce croce) {
@@ -351,6 +350,7 @@ public class TurnoService extends WamService {
      * The 'main text property' is different in each entity class and chosen in the specific subclass
      *
      * @param filter the filter text
+     *
      * @return the list of matching entities
      */
     @Override
@@ -461,6 +461,7 @@ public class TurnoService extends WamService {
         return findByDate(date, date);
     }
 
+
     /**
      * Tutti i turni della croce corrente compresi in un dato periodo
      */
@@ -490,20 +491,19 @@ public class TurnoService extends WamService {
 
 
     public Turno findByDateAndServizio(LocalDate giorno, Servizio servizio) throws Exception {
-        Turno turno=null;
+        Turno turno = null;
         Croce croce = getCroce();
         List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(croce, servizio, giorno);
-        if(turni.size()>1){
-            throw new Exception("Numero di turni inatteso (atteso:1, trovati:"+turni.size()+")");
+        if (turni.size() > 1) {
+            throw new Exception("Numero di turni inatteso (atteso:1, trovati:" + turni.size() + ")");
         }
 
-        if(turni.size()==1){
-            turno=turni.get(0);
+        if (turni.size() == 1) {
+            turno = turni.get(0);
         }
 
         return turno;
     }
-
 
 
     //    /**
@@ -566,6 +566,7 @@ public class TurnoService extends WamService {
      * Con la funzione e senza milite
      *
      * @param turno di riferimento
+     *
      * @return lista (Iscrizione) di iscrizioni del turno
      */
     public List<Iscrizione> getIscrizioni(Turno turno) {
@@ -609,6 +610,7 @@ public class TurnoService extends WamService {
      * Con la funzione e senza milite <br>
      *
      * @param servizio di riferimento
+     *
      * @return lista (Iscrizione) di iscrizioni per un turno con questo servizio
      */
     public List<Iscrizione> getIscrizioni(Servizio servizio) {
@@ -629,6 +631,7 @@ public class TurnoService extends WamService {
      * Turno valido se tutte le funzioni obbligatorie hanno un milite segnato <br>
      *
      * @param turno di riferimento
+     *
      * @return true se valido
      */
     public boolean isValido(Turno turno) {
