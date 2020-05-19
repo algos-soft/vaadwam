@@ -135,7 +135,7 @@ public class ImportView extends VerticalLayout {
         labelUno = new Label("Import dei dati dal vecchio webambulanze");
         this.add(labelUno);
 
-        //        this.crociOnly();
+        this.crociOnly();
         this.funzioniOnly();
         this.serviziOnly();
         this.militiOnly();

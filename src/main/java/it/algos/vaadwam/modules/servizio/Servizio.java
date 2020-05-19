@@ -72,8 +72,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "ripetibile", "obbligatorie", "facoltative", "colore"})
-@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "ripetibile", "obbligatorie", "facoltative"})
+@AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "extra", "obbligatorie", "facoltative", "colore"})
+@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "extra", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
