@@ -995,8 +995,6 @@ public abstract class AService extends AbstractService implements IAService {
 
         keyUnica = addKeyCompany(entityBean, keyCode);
 
-        //keyUnica= UUID.randomUUID().toString();
-
         return keyUnica;
     }// end of method
 

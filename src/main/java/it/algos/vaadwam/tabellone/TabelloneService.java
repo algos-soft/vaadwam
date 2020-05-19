@@ -419,10 +419,6 @@ public class TabelloneService extends AService {
         String ret;
 
 
-        // @todo provvisorio!
-        modoCanc=EACancellazione.sempre;
-
-
         switch (modoCanc){
             case mai:
                 return "cancellazione iscrizioni non abilitata";

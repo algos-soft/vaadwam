@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
@@ -185,6 +186,10 @@ public class TurnoService extends WamService {
                 .build();
 
         AEntity aEntity = addCroce(entity, croce);
+
+        // @todo in test
+        // aEntity.setId(UUID.randomUUID().toString());
+
         return (Turno)aEntity;
 
     }
