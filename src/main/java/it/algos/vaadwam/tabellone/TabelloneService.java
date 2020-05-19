@@ -21,6 +21,7 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoRepository;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,10 +35,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_TAB;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * Project vaadwam
@@ -158,17 +162,20 @@ public class TabelloneService extends AService {
         LocalDate giornoFinale = data1.plusDays(quantiGiorni - 1);
 
         // tutti i servizi da visualizzare in tabellone:
-        // - tutti i servizi visibili
-        // - i servizi (non visibili o extra) che hanno almeno un turno definito nel periodo considerato
+        // - tutti i servizi standard
+        // - i servizi non standard che hanno almeno un turno definito nel periodo considerato
         List<Servizio> servizi = getServiziPeriodo(data1, giornoFinale);
-
-        List<Turno> turni;
 
         gridRigheList = new ArrayList<>();
         for (Servizio servizio : servizi) {
-            turni = turnoService.findByServizio(servizio, data1, giornoFinale);
-            riga = rigaService.newEntity(data1, servizio, turni);
-            gridRigheList.add(riga);
+            if(servizio.isOrarioDefinito()){
+                List<Turno> turni = turnoService.findByServizio(servizio, data1, giornoFinale);
+                riga = rigaService.newEntity(data1, servizio, turni);
+                gridRigheList.add(riga);
+            }else{
+                List<Riga> righe = creaRigheNonStandard(servizio, data1, giornoFinale);
+                gridRigheList.addAll(righe);
+            }
         }
 
         return gridRigheList;
@@ -176,62 +183,156 @@ public class TabelloneService extends AService {
 
 
     /**
+     * Crea l'elenco delle righe da aggiungere per un dato servizio non standard
+     */
+    private List<Riga> creaRigheNonStandard(Servizio servizio, LocalDate data1, LocalDate data2){
+
+        // Crea una lista di oggetti ColonnaGiorno, uno per ogni giorno.
+        // Ognuno mantiene la lista dei turni di quel giorno, ordinata per ora inizio turno.
+        //
+        //        18  19  20  21  <- giorni
+        //        [A] [C]  |  [D]
+        //        [B]  |   v  [E]
+        //         |   v      [F]
+        //         v           |
+        //                     v
+        //
+        List<ColonnaGiorno> colonne = new ArrayList<>();
+        List<Turno> turni = turnoService.findByServizio(servizio, data1, data2);
+        int numGiorni = (int)DAYS.between(data1, data2)+1;
+        int max=0;  // la colonna con più elementi, questo sarà il numero totale di righe creato
+        for(int i=0;i<numGiorni;i++){
+            LocalDate data = data1.plusDays(i);
+            List<Turno> turniGiorno = getTurniGiornoOrderByOraInizio(turni, data);
+            ColonnaGiorno colonna = new ColonnaGiorno();
+            colonna.addAll(turniGiorno);
+            colonne.add(colonna);
+            if(turniGiorno.size()>max){
+                max=turniGiorno.size();
+            }
+        }
+
+        // Crea un array di oggetti ListaTurni, in numero adeguato a contenere la colonna più lunga.
+        // Ogni riga contiene un oggetto ListaTurni con l'elenco dei turni di quella riga.
+        // I riferimenti al giorno non servono perché sono già nel turno e sarà il tabellone a collocare
+        // ogni turno nella colonna giusta.
+        //
+        //        [A] [C] [D] ->
+        //        [B] [E] ->
+        //        [F] ->
+        //
+        ListaTurni[] aListeTurni = new ListaTurni[max];
+        for(int row=0;row<max; row++){
+            ListaTurni listaTurni=new ListaTurni(numGiorni);
+            aListeTurni[row]=listaTurni;
+            for(int col=0;col<colonne.size(); col++){
+                ColonnaGiorno colonna = colonne.get(col);
+                Turno turno = colonna.get(row);
+                if(turno!=null){
+                    listaTurni.add(turno);
+                }
+            }
+        }
+
+
+        // Per ogni elemento dell'array aListeTurni crea una riga di tabellone
+        List<Riga> righe=new ArrayList<>();
+        for(ListaTurni listaTurni : aListeTurni){
+            Riga riga = rigaService.newEntity(data1, servizio, listaTurni);
+            righe.add(riga);
+        }
+
+        return righe;
+
+    }
+
+    /**
+     * Wrapper che mantiene una lista ordinata di turni
+     */
+    @Data
+    class ColonnaGiorno  extends ArrayList<Turno> {
+
+        @Override
+        public Turno get(int index) {
+            if(index<size()){
+                return super.get(index);
+            }else{
+                return null;
+            }
+        }
+    }
+
+
+    class ListaTurni extends ArrayList<Turno>{
+        public ListaTurni(int size) {
+            super(size);
+        }
+    }
+
+
+    /**
+     * Estrae da una lista di turni tutti quelli relativi al giorno dato in ordine di orario di inizio
+     */
+    private List<Turno> getTurniGiornoOrderByOraInizio(List<Turno> turni, LocalDate data){
+        List<Turno> turniOut=new ArrayList<>();
+        for(Turno turno : turni){
+            if(turno.getGiorno().equals(data)){
+                turniOut.add(turno);
+            }
+        }
+
+        // ordina per ora di inizio, e a parità per data creazione
+        Collections.sort(turniOut, new Comparator<Turno>() {
+            @Override
+            public int compare(Turno t1, Turno t2) {
+                if(t1.getInizio().isBefore(t2.getInizio())){
+                    return -1;
+                } else {
+                    if(t1.getInizio().isAfter(t2.getInizio())){
+                        return 1;
+                    }else{
+                        if(t1.getCreazione()!=null && t2.getCreazione()!=null){
+                            int ret = (t1.getCreazione().isBefore(t2.getCreazione())? -1: 1);
+                            return ret;
+                        }else{
+                            return 0;   // indistinguibili
+                        }
+                    }
+                }
+            }
+        });
+
+        return turniOut;
+    }
+
+
+    /**
      * Ritorna tutti i servizi da visualizzare in tabellone per un dato periodo.
      * <br>
-     * - tutti i servizi standard (cioè a orario definito) che sono visibili<br>
-     * - più i servizi standard che sono invisibili ma hanno almeno un turno nel periodo considerato<br>
-     * - più i servizi extra (visibili o invisibili) che hanno almeno un turno nel periodo considerato<br>
+     * - tutti i servizi standard (cioè a orario definito)<br>
+     * - più i servizi non standard che hanno almeno un turno nel periodo considerato<br>
      * <br>
-     * Il tutto ordinato come segue:<br>
-     * - prima i servizi standard visibili, in ordine di servizio<br>
-     * - poi i servizi standard invisibili<br>
-     * - poi i servizi extra<br>
-     * (ogni sottogruppo in ordine di servizio.)<br>
+     * Prende in considerazione solo i servizi visibili.<br>
+     * Ogni gruppo in ordine di servizio<br>
      */
     private List<Servizio> getServiziPeriodo(LocalDate data1, LocalDate data2){
 
-        // i servizi standard che sono visibili
-        //long start0=System.currentTimeMillis();
-
-        //long start=System.currentTimeMillis();
+        // i servizi standard visibili
         List<Servizio> serviziStandardVisibili = servizioService.findAllStandardVisibili();
-//        long end=System.currentTimeMillis();
-//        log.info("tempo serviziStandardVisibili: "+(end-start)+" ms");
 
-        // i servizi standard che sono invisibili ma hanno almeno un turno nel periodo considerato
-        List<Servizio> serviziStandardInvisibiliConTurni=new ArrayList<>();
-        List<Servizio> serviziStandardInvisibili = servizioService.findAllStandardInvisibili();
-        //start=System.currentTimeMillis();
-        for(Servizio s : serviziStandardInvisibili){
+        // i servizi non-standard visibili che hanno almeno un turno nel periodo considerato
+        List<Servizio> serviziNonStandardConTurni=new ArrayList<>();
+        List<Servizio> serviziNonStandardVisibili=servizioService.findAllNonStandardVisibili();
+        for(Servizio s : serviziNonStandardVisibili){
             if (countTurni(s, data1, data2)>0){
-                serviziStandardInvisibiliConTurni.add(s);
+                serviziNonStandardConTurni.add(s);
             }
         }
-        //end=System.currentTimeMillis();
-        //log.info("tempo serviziStandardInvisibiliConTurni ciclofor: "+(end-start)+" ms");
-
-
-        // i servizi extra (visibili o invisibili) che hanno almeno un turno nel periodo considerato
-        List<Servizio> serviziExtraConTurni=new ArrayList<>();
-        List<Servizio> serviziExtra = servizioService.findAllExtra();
-//        start=System.currentTimeMillis();
-        for(Servizio s : serviziExtra){
-            if (countTurni(s, data1, data2)>0){
-                serviziExtraConTurni.add(s);
-            }
-        }
-//        end=System.currentTimeMillis();
-//        log.info("tempo serviziExtraConTurni ciclofor: "+(end-start)+" ms");
-
-
-//        end=System.currentTimeMillis();
-//        log.info("tempo totale: "+(end-start0)+" ms");
 
         // lista completa
         List<Servizio> servizi = new ArrayList<>();
         servizi.addAll(serviziStandardVisibili);
-        servizi.addAll(serviziStandardInvisibiliConTurni);
-        servizi.addAll(serviziExtraConTurni);
+        servizi.addAll(serviziNonStandardConTurni);
 
         return  servizi;
 

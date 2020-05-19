@@ -379,19 +379,35 @@ public class ServizioService extends WamService {
     }
 
     /**
-     * Tutti i servizi extra
+     * Tutti i servizi extra visibili
      * Lista ordinata per servizio
      */
-    public List<Servizio> findAllExtra() {
+    public List<Servizio> findAllExtraVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
         for (Servizio serv : tuttiServizi) {
-            if (!serv.isOrarioDefinito()) {
+            if (serv.isExtra() && serv.isVisibile()) {
                 items.add(serv);
             }
         }
         return items;
     }
+
+    /**
+     * Tutti i servizi non-standard visibili
+     * Lista ordinata per servizio
+     */
+    public List<Servizio> findAllNonStandardVisibili() {
+        List<Servizio> items = new ArrayList<>();
+        List<Servizio> tuttiServizi = findAll();
+        for (Servizio serv : tuttiServizi) {
+            if (!serv.isOrarioDefinito() && serv.isVisibile()) {
+                items.add(serv);
+            }
+        }
+        return items;
+    }
+
 
 
 
