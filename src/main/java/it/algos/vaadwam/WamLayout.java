@@ -143,7 +143,7 @@ public class WamLayout extends MainLayout14 {
         topbar.projectSubMenu.addItem(tab, menuItemClickEvent -> {
             apreDialogo();
         });
-    }// end of method
+    }
 
 
     private void apreDialogo() {
