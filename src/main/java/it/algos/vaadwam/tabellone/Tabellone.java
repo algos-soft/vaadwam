@@ -602,7 +602,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                         creaTurno = true;
                     }
                 }
-            } else { //turni extra: li possono creare solo manager e utente abilitato
+            } else { //turni non-standard: li possono creare solo manager e utente abilitato
                 if (isUtenteManagerTabellone() || isUtenteAbilitatoCreareTurniExtra()) {
                     creaTurno = true;
                 }
@@ -690,7 +690,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private boolean isUtenteAbilitatoCreareTurniExtra() {
 
-        if (wamLogin.isDeveloper()) {
+        if (isSuperUser()) {
             return true;
         }
 
@@ -705,9 +705,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private boolean isUtenteManagerTabellone() {
 
+
+        // qui non controlliamo se è Admin perché dobbiamo lasciargli la
+        //possibilità di operare come user togliendosi il flag isManagerTabellone
+        // ...
+
         if (wamLogin.isDeveloper()) {
             return true;
         }
+
 
         if (wamLogin.getMilite().isManagerTabellone()) {
             return true;
@@ -715,6 +721,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         return false;
 
+    }
+
+
+    private boolean isSuperUser(){
+        return (wamLogin.isDeveloper() || wamLogin.isAdmin());
     }
 
 
@@ -946,7 +957,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 // se il turno non esiste va creato ora
                 if (turno == null) {
                     Milite milite = wamLogin.getMilite();
-                    if (milite.isCreatoreTurni()) {
+                    if (milite.isCreatoreTurni() || isSuperUser()) {
                         turno = turnoService.newEntity(giorno, servizio);
                     } else {
                         log.info("Creazione turno rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizioni per il giorno " + giorno + " perché non ha il permesso di creazione turni");

@@ -281,7 +281,7 @@ public class TabelloneService extends AService {
             }
         }
 
-        // ordina per ora di inizio, e a parità per data creazione
+        // ordina per ora di inizio, e a parità di questo per data di creazione del record
         Collections.sort(turniOut, new Comparator<Turno>() {
             @Override
             public int compare(Turno t1, Turno t2) {
