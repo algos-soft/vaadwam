@@ -41,7 +41,7 @@ public class TopbarComponent extends HorizontalLayout {
 
     protected boolean usaProfile;
 
-    private MenuItem itemUser;
+    protected MenuItem itemUser;
 
     private LogoutListener logoutListener;
 
@@ -147,7 +147,6 @@ public class TopbarComponent extends HorizontalLayout {
             menuUser = new MenuBar();
             menuUser.setOpenOnHover(true);
             itemUser = menuUser.addItem(nickName);
-
             //            if (login != null) {
             //                if (login.isDeveloper()) {
             //                    icon = new Icon(VaadinIcon.MAGIC);

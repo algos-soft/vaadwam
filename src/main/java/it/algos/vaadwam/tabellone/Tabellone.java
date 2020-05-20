@@ -225,7 +225,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // bottone Genera Turni (solo admin e developer)
         bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
         bGenTurni.setVisible(isUtenteManagerTabellone());
-        //bGenTurni.setVisible(false); //@todo Funzionalità ancora da implementare
+//        bGenTurni.setVisible(false); //@todo Linea di codice provvisoriamente commentata e DA RIMETTERE
 
         // app footer
         divAppFooter.add(appFooter);
@@ -690,7 +690,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     private boolean isUtenteAbilitatoCreareTurniExtra() {
 
-        if (wamLogin.isDeveloper()) {
+        if (wamLogin.isAdminOrDev()) {
             return true;
         }
 
@@ -709,7 +709,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             return true;
         }
 
-        if (wamLogin.getMilite().isManagerTabellone()) {
+        if (wamLogin.isAdmin() && wamLogin.getMilite().isManagerTabellone()) {
             return true;
         }
 

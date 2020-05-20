@@ -154,25 +154,25 @@ public class AFooter extends VerticalLayout {
         label.getStyle().set("white-space", "nowrap");  // il footer non deve andare a capo se no porta via spazio verticale
 
         if (label != null) {
-            //            if (login.getRoleType() != null) {
-            //                switch (login.getRoleType()) {
-            //                    case user:
-            //                        label.getElement().getStyle().set("color", "green");
-            //                        break;
-            //                    case admin:
-            //                        label.getElement().getStyle().set("color", "blue");
-            //                        break;
-            //                    case developer:
-            //                        label.getElement().getStyle().set("color", "red");
-            //                        break;
-            //                    default:
-            //                        break;
-            //                }
-            //            }
+            if (login.getRoleType() != null) {
+                switch (login.getRoleType()) {
+                    case user:
+                        label.getElement().getStyle().set("color", "green");
+                        break;
+                    case admin:
+                        label.getElement().getStyle().set("color", "blue");
+                        break;
+                    case developer:
+                        label.getElement().getStyle().set("color", "red");
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             // il fatto che sia user o admin si capirà dall'icona nel bottone di login
 
-            label.getElement().getStyle().set("color", EAColor.footerApp.getEsadecimale());
+            //            label.getElement().getStyle().set("color", EAColor.footerApp.getEsadecimale());
 
         }
 

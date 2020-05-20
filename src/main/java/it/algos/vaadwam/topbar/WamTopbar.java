@@ -64,16 +64,40 @@ public class WamTopbar extends TopbarComponent {
     }
 
 
+    /**
+     * Creazione dei componenti grafici <br>
+     */
+    @Override
+    protected void initView() {
+        super.initView();
+
+        if (itemUser != null) {
+            if (login.isDeveloper()) {
+                itemUser.getElement().getStyle().set("color", "red");
+            } else {
+                if (login.isAdmin()) {
+                    itemUser.getElement().getStyle().set("color", "blue");
+                } else {
+                    itemUser.getElement().getStyle().set("color", "green");
+                }
+            }
+        }
+    }
+
+
     protected Icon getIcon() {
         Icon icon = new Icon(VaadinIcon.USER);
+        icon.setColor("green");
         WamLogin wamLogin;
         Milite milite;
 
         if (login != null) {
             if (login.isDeveloper()) {
                 icon = new Icon(VaadinIcon.MAGIC);
+                icon.setColor("red");
             }
             if (login.isAdmin() && login instanceof WamLogin) {
+                icon.setColor("blue");
                 wamLogin = (WamLogin) login;
                 milite = wamLogin.getMilite();
                 if (milite != null) {

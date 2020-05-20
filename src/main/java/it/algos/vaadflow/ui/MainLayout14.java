@@ -334,7 +334,8 @@ public class MainLayout14 extends AppLayout {
             }// end of if/else cycle
 
             //--aggiunge il menu logout (sempre se usa la security)
-            tabs = menuService.addMenuLogout(tabs);
+            //--levato Doppione del profilo in alto a destra
+            //            tabs = menuService.addMenuLogout(tabs);
         } else {
             //--crea menu indifferenziato
             tabs = menuService.creaTabsNoSecurity(mappa);
