@@ -313,15 +313,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         return !(testDate.isBefore(startDay) || testDate.isAfter(endDate));
     }
 
-//    /**
-//     * Controlla se un dato periodo interseca il periodo del tabellone
-//     */
-//    private boolean intersecaTabellone(LocalDate data1, LocalDate data2) {
-//        LocalDateRange rangeToCheck = LocalDateRange.ofClosed(data1, data2);
-//        LocalDateRange rangeTabellone = LocalDateRange.ofClosed(startDay, startDay.plusDays(numDays));
-//        LocalDateRange intersection = rangeToCheck.intersection(rangeTabellone);
-//        return !intersection.isEmpty();
-//    }
+    //    /**
+    //     * Controlla se un dato periodo interseca il periodo del tabellone
+    //     */
+    //    private boolean intersecaTabellone(LocalDate data1, LocalDate data2) {
+    //        LocalDateRange rangeToCheck = LocalDateRange.ofClosed(data1, data2);
+    //        LocalDateRange rangeTabellone = LocalDateRange.ofClosed(startDay, startDay.plusDays(numDays));
+    //        LocalDateRange intersection = rangeToCheck.intersection(rangeTabellone);
+    //        return !intersection.isEmpty();
+    //    }
 
 
     private void buildAllGrid() {
@@ -878,6 +878,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     }
 
+
     @Override
     public void confermaDialogoIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione, boolean ripeti, int numSettimane) {
         dialog.close();
@@ -905,18 +906,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    @Data
-    class RangeTurniPayload {
-        private LocalDate data1;
-        private LocalDate data2;
-
-        public RangeTurniPayload(LocalDate data1, LocalDate data2) {
-            this.data1 = data1;
-            this.data2 = data2;
-        }
-    }
-
-
     @Override
     public void eliminaTurno(Dialog dialog, Turno turno) {
         dialog.close();
@@ -938,6 +927,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      * @param iscrizioneMaster da ripetere
      * @param giornoInizio     il giorno nel quale creare la prima iscrizione
      * @param numSettimane     per quante settimane ripetere l'iscrizione (prima compresa)
+     *
      * @return la lista dei turni nei quali l'iscrizione è stata effettuata
      */
     private List<Turno> ripetiTurno(Servizio servizio, Iscrizione iscrizioneMaster, LocalDate giornoInizio, int numSettimane) {
@@ -1007,7 +997,15 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     private void initLegendaColori() {
         List<LegendaItemModel> colori = new ArrayList<>();
-        for (EAWamColore eaw : EAWamColore.values()) {
+        ArrayList<EAWamColore> listaWrap;
+
+        if (preferenzaService.isBool(USA_COLORAZIONE_DIFFERENZIATA)) {
+            listaWrap = EAWamColore.getColorsIscrizione();
+        } else {
+            listaWrap = EAWamColore.getColorsTurno();
+        }
+
+        for (EAWamColore eaw : listaWrap) {
             LegendaItemModel item = new LegendaItemModel();
             item.setNome(eaw.getTitolo());
             item.setDescrizione(eaw.getLegenda());
@@ -1083,7 +1081,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     private void clickAddServizio() {
 
         // recupera la lista dei servizi aggiungibili
-        List<Servizio> listaServizi=getServiziAggiungibili();
+        List<Servizio> listaServizi = getServiziAggiungibili();
 
 
         if (listaServizi.size() == 0) { // non ci sono servizi aggiungibili
@@ -1121,7 +1119,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Crea la lista di tutti i servizi aggiungibili per il popup
      */
-    private List<Servizio> getServiziAggiungibili(){
+    private List<Servizio> getServiziAggiungibili() {
 
         // tutti i servizi extra visibili
         List<Servizio> serviziExtra = findServiziExtraVisibili();
@@ -1138,7 +1136,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         }
 
         // compone una lista completa
-        List<Servizio> listaCompleta=new ArrayList<>();
+        List<Servizio> listaCompleta = new ArrayList<>();
         listaCompleta.addAll(serviziExtra);
         listaCompleta.addAll(serviziAltriCandidati);
 
@@ -1192,6 +1190,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         return servizi;
     }
 
+
     /**
      * Ritorna tutti i servizi non-standard e non-extra visibili di questa Croce
      */
@@ -1216,6 +1215,22 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         //grid.setDataProvider(grid.getDataProvider());
         // ...comunque ci si provi, la pagina scrolla sempre al top, e mi sa che c'è poco da fare...
         // https://vaadin.com/forum/thread/17634020/reloading-vaadin-grid-makes-the-page-scroll-to-top
+
+    }
+
+
+    @Data
+    class RangeTurniPayload {
+
+        private LocalDate data1;
+
+        private LocalDate data2;
+
+
+        public RangeTurniPayload(LocalDate data1, LocalDate data2) {
+            this.data1 = data1;
+            this.data2 = data2;
+        }
 
     }
 
