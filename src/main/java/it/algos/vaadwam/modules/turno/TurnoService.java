@@ -10,6 +10,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.service.ADateService;
+import it.algos.vaadflow.service.ARandomService;
 import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -99,6 +101,8 @@ public class TurnoService extends WamService {
      */
     private TurnoRepository repository;
 
+    private ARandomService randomService;
+
 
     /**
      * Costruttore <br>
@@ -113,7 +117,12 @@ public class TurnoService extends WamService {
         super(repository);
         super.entityClass = Turno.class;
         this.repository = (TurnoRepository) repository;
-    }// end of Spring constructor
+    }
+
+    @PostConstruct
+    private void init(){
+        randomService=appContext.getBean(ARandomService.class, 6);
+    }
 
 
     /**
@@ -252,15 +261,15 @@ public class TurnoService extends WamService {
 
         if (servizio != null) {
             codeServizio = servizio.code;
-            codeServizio += PUNTO + UUID.randomUUID().toString();
-        }// end of if cycle
+            codeServizio += "-" + randomService.nextString();
+        }
 
         keyID += anno;
         keyID += day;
         keyID += codeServizio;
 
         return keyID;
-    }// end of method
+    }
 
 
     /**
