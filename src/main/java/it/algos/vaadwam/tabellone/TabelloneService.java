@@ -281,7 +281,7 @@ public class TabelloneService extends AService {
             }
         }
 
-        // ordina per ora di inizio, e a parità per data creazione
+        // ordina per ora di inizio, e a parità di questa, ordina per data di creazione del record
         Collections.sort(turniOut, new Comparator<Turno>() {
             @Override
             public int compare(Turno t1, Turno t2) {
@@ -290,7 +290,7 @@ public class TabelloneService extends AService {
                 } else {
                     if(t1.getInizio().isAfter(t2.getInizio())){
                         return 1;
-                    }else{
+                    }else{  // stessa ora inizio
                         if(t1.getCreazione()!=null && t2.getCreazione()!=null){
                             int ret = (t1.getCreazione().isBefore(t2.getCreazione())? -1: 1);
                             return ret;
