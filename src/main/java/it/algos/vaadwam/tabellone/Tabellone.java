@@ -1219,20 +1219,5 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    @Data
-    class RangeTurniPayload {
-
-        private LocalDate data1;
-
-        private LocalDate data2;
-
-
-        public RangeTurniPayload(LocalDate data1, LocalDate data2) {
-            this.data1 = data1;
-            this.data2 = data2;
-        }
-
-    }
-
 
 }
