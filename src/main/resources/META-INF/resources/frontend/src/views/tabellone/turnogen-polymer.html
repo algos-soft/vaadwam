@@ -5,12 +5,9 @@
 <link href="../../../bower_components/vaadin-radio-button/vaadin-radio-group.html" rel="import">
 <link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
 
-<dom-module id="turno-gen">
+<dom-module id="turno-gen" theme-for="vaadin-grid">
 
     <template>
-
-        <style>
-        </style>
 
 
         <!--single column centered in page-->
@@ -43,6 +40,12 @@
             <!--end area grid-->
 
 
+            <template is="dom-repeat" items="[[righe]]">
+                <label style="color:[[item.coloreTesto]]">[[item.nomeServizio]]</label>
+            </template>
+
+
+
             <!--area bottoni-->
             <div style="display: flex; flex-direction: column; margin-top: 1em;">
 
@@ -73,6 +76,8 @@
             }
         }
         customElements.define(TurnoGen.is, TurnoGen);
+
+
     </script>
 
 

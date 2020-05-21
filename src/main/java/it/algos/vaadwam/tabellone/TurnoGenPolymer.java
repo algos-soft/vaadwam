@@ -4,11 +4,16 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.shared.ui.LoadMode;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -44,67 +49,166 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     @Id
     private Button bEsegui;
 
-    private Grid<GridRow> grid;
+    private Grid grid;
 
     @Autowired
-    ServizioService servizioService;
-
+    private ServizioService servizioService;
 
     @Setter
     private CompletedListener completedListener;
 
+    private static final String[] TITLES = new String[]{"L","M","M","G","V","S","D"};
+
     @PostConstruct
     private void init() {
 
-        grid=buildGrid();
-        gridholder.add(grid);
+        populateModel();
+
+//        buildGrid();
+//        gridholder.add(grid);
 
         bChiudi.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
-            EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0,false, false, null, null);
+            EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0, false, false, null, null);
             fireCompletedListener(esito);
         });
 
     }
 
 
-    private Grid<GridRow> buildGrid(){
-        Grid<GridRow> grid=new Grid<>(GridRow.class);
+    private void buildGrid() {
+        grid = new Grid<>(GridRow.class);
 
         List<Servizio> servizi = servizioService.findAllStandardVisibili();
         List<GridRow> rows = new ArrayList<>();
-        for(Servizio servizio : servizi){
+        for (Servizio servizio : servizi) {
             GridRow row = new GridRow(servizio);
             rows.add(row);
         }
         grid.setItems(rows);
-        grid.addColumn(GridRow::getServizio).setHeader("Servizio");
-        grid.addColumn(GridRow::getLun).setHeader("Lun");
-        grid.addColumn(GridRow::getMar).setHeader("Mar");
-        grid.addColumn(GridRow::getMer).setHeader("Mer");
-        grid.addColumn(GridRow::getGio).setHeader("Gio");
-        grid.addColumn(GridRow::getVen).setHeader("Ven");
-        grid.addColumn(GridRow::getSab).setHeader("Sab");
-        grid.addColumn(GridRow::getDom).setHeader("Dom");
+        grid.removeAllColumns();
+
+        addColumnServizio();
+        for(int i=0;i<7;i++){
+            addColumnGiorno(i);
+        }
+//        Grid.Column<String> col = grid.addColumn(GridRow::getNomeServizio);
+//        col.setHeader("Servizio");
+//        grid.addColumn(GridRow::getLun).setHeader("Lun");
+//        grid.addColumn(GridRow::getMar).setHeader("Mar");
+//        grid.addColumn(GridRow::getMer).setHeader("Mer");
+//        grid.addColumn(GridRow::getGio).setHeader("Gio");
+//        grid.addColumn(GridRow::getVen).setHeader("Ven");
+//        grid.addColumn(GridRow::getSab).setHeader("Sab");
+//        grid.addColumn(GridRow::getDom).setHeader("Dom");
+
+    }
 
 
-        return grid;
+    /**
+     * Aggiunge la colonna per visualizzare i servizi previsti
+     */
+    private void addColumnServizio() {
+
+        ValueProvider<Servizio, Label> componentProvider = new ValueProvider() {
+
+            @Override
+            public Label apply(Object obj) {
+                Servizio servizio = ((GridRow)obj).getServizio();
+                Label label = new Label(servizio.getCode());
+                return label;
+            }
+        };
+
+        Grid.Column<Label> column = grid.addComponentColumn(componentProvider);
+
+        column.setHeader("Servizio");
+        column.setFlexGrow(0);
+        column.setWidth("10em");
+        column.setSortable(false);
+        column.setResizable(false);
+        column.setFrozen(true);
+
+    }
+
+
+    /**
+     * Aggiunge la colonna per visualizzare un giorno
+     */
+    private void addColumnGiorno(int idx) {
+
+        ValueProvider<GridRow, Checkbox> componentProvider = new ValueProvider() {
+
+            @Override
+            public Checkbox apply(Object obj) {
+                GridRow row = ((GridRow)obj);
+                boolean flag = row.getValue(idx);
+                Checkbox cb = new Checkbox();
+                cb.setLabel("");
+                //cb.getStyle().set("width","1.5em");
+                cb.setValue(flag);
+                return cb;
+            }
+        };
+
+        Grid.Column<Checkbox> column = grid.addComponentColumn(componentProvider);
+
+//        column.setAutoWidth(false);
+//        column.getElement().getStyle().set("margin","0");
+//        column.getElement().getStyle().set("padding","0");
+
+        String title = TITLES[idx];
+
+        Div div = new Div();
+        div.setText(title);
+
+//        Label titleLabel=new Label(title);
+//        titleLabel.getStyle().set("overflow","hidden");
+//        titleLabel.getStyle().set("text-overflow", "clip");
+        column.setHeader(div);
+        column.setFlexGrow(0);
+        column.setWidth("6em");
+        column.setSortable(false);
+        column.setResizable(false);
+        column.setFrozen(true);
+
+    }
+
+
+    /**
+     * Riempie il modello dati
+     */
+    private void populateModel(){
+        List<Servizio> servizi = servizioService.findAllStandardVisibili();
+        List<TurnoGenRiga> righe = new ArrayList<>();
+        for (Servizio servizio : servizi) {
+            TurnoGenRiga riga = new TurnoGenRiga();
+            riga.setNomeServizio(servizio.getCode());
+
+            List<Boolean>flags = new ArrayList<>();
+            for(int i=0; i<7;i++){
+                flags.add(false);
+            }
+            riga.setFlags(flags);
+            righe.add(riga);
+        }
+        getModel().setRighe(righe);
     }
 
 
 
-    private void fireCompletedListener(EsitoGenerazioneTurni esito){
-        if (completedListener!=null){
+    private void fireCompletedListener(EsitoGenerazioneTurni esito) {
+        if (completedListener != null) {
             completedListener.onCompleted(esito);
         }
     }
 
-    interface CompletedListener{
+    interface CompletedListener {
         void onCompleted(EsitoGenerazioneTurni esito);
     }
 
 
     @Data
-    class EsitoGenerazioneTurni{
+    class EsitoGenerazioneTurni {
         private int quanti;
         private boolean aborted;
         private boolean create;
@@ -112,11 +216,11 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
         LocalDate dataEnd;
 
         /**
-         * @param quanti quanti turni sono stati generati o cancellati
-         * @param aborted se l'operazione è stata abortita
-         * @param create true se ha creato turni, false se ha cancellato turni
+         * @param quanti    quanti turni sono stati generati o cancellati
+         * @param aborted   se l'operazione è stata abortita
+         * @param create    true se ha creato turni, false se ha cancellato turni
          * @param dataStart data del primo turno creato/cancellato
-         * @param dataEnd data dell'ultimo turno creato/cancellato
+         * @param dataEnd   data dell'ultimo turno creato/cancellato
          */
         public EsitoGenerazioneTurni(int quanti, boolean aborted, boolean create, LocalDate dataStart, LocalDate dataEnd) {
             this.quanti = quanti;
@@ -136,29 +240,44 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
 
         public GridRow(Servizio servizio) {
             this.servizio = servizio;
-            this.flags=new boolean[7];
+            this.flags = new boolean[7];
         }
 
-        public boolean getLun(){
+        public String getNomeServizio() {
+            return servizio.getCode();
+        }
+
+        public boolean getLun() {
             return flags[0];
         }
-        public boolean getMar(){
+
+        public boolean getMar() {
             return flags[1];
         }
-        public boolean getMer(){
+
+        public boolean getMer() {
             return flags[2];
         }
-        public boolean getGio(){
-            return flags[3];
+
+        public boolean getGio() {
+//            return flags[3];
+            return true;
         }
-        public boolean getVen(){
+
+        public boolean getVen() {
             return flags[4];
         }
-        public boolean getSab(){
+
+        public boolean getSab() {
             return flags[5];
         }
-        public boolean getDom(){
+
+        public boolean getDom() {
             return flags[6];
+        }
+
+        public boolean getValue(int idx){
+            return flags[idx];
         }
 
     }
