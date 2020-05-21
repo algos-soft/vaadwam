@@ -12,4 +12,7 @@ public interface TurnoGenModel extends TemplateModel {
     void setRighe(List<TurnoGenRiga> righe);
     List<TurnoGenRiga> getRighe();
 
+    List<String> getTitoliGiorno();
+    void setTitoliGiorno(List<String> titoliGiorno);
+
 }

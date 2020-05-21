@@ -12,7 +12,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.enumeration.EATime;
@@ -78,7 +77,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private Div areaRipetizioni;
 
     @Id
-    private Checkbox checboxRipeti;
+    private Checkbox checkboxRipeti;
 
     @Id
     private IntegerField settimaneRipeti;
@@ -149,10 +148,10 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             areaRipetizioni.getElement().getStyle().set("display","block");
 
             // gestione visibilità checkbox Ripeti e num settimane
-            checboxRipeti.setValue(false);
+            checkboxRipeti.setValue(false);
             settimaneRipeti.getElement().getStyle().set("visibility","hidden");
             settimaneRipeti.setValue(1);
-            checboxRipeti.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>() {
+            checkboxRipeti.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>() {
                 @Override
                 public void valueChanged(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
                     if(event.getValue()){
@@ -357,7 +356,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
         // se acceso ripeti, controlla range settimane ripetizione
         if(valid){
-            if(checboxRipeti.getValue()){
+            if(checkboxRipeti.getValue()){
                 int settimane=settimaneRipeti.getValue();
                 if(settimane<MIN_SETTIMANE_RIPETI){
                     problem = "Il numero minimo di settimane di ripetizione è "+MIN_SETTIMANE_RIPETI;
@@ -423,7 +422,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private void syncAndConferma(){
         syncIscrizione();
         // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-        boolean ripeti=checboxRipeti.getValue();
+        boolean ripeti= checkboxRipeti.getValue();
         int settimane=0;
         if (ripeti){
             settimane=settimaneRipeti.getValue();

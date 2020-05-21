@@ -4,10 +4,36 @@
 <link href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html" rel="import">
 <link href="../../../bower_components/vaadin-radio-button/vaadin-radio-group.html" rel="import">
 <link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
+<link href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html" rel="import">
 
 <dom-module id="turno-gen" theme-for="vaadin-grid">
 
+
     <template>
+
+        <style>
+        :root {
+          --serv-column-width: 7em;
+          --day-column-width: 2.5em;
+        }
+
+        .wServizio {
+            width: var(--serv-column-width);
+            min-width: var(--serv-column-width);
+        }
+
+        .wDay {
+            width: var(--day-column-width);
+            min-width: var(--day-column-width);
+            text-align:center;
+        }
+
+
+        .icona {
+            width:1.3em;
+        }
+
+        </style>
 
 
         <!--single column centered in page-->
@@ -34,16 +60,52 @@
             <!--end area setup date e operazione-->
 
 
-            <!--area grid-->
-            <div id="gridholder" style="display:flex">
+            <!--Riga dei nomi giorno-->
+            <div style="display: inline-flex; flex-direction:row">
+                <div class="wServizio"></div>
+                <template is="dom-repeat" items="[[titoliGiorno]]">
+                    <label class="wDay">[[item]]</label>
+                </template>
             </div>
-            <!--end area grid-->
+            <!--end Riga dei nomi giorno-->
 
 
+            <!--Griglia dei servizi-->
             <template is="dom-repeat" items="[[righe]]">
-                <label style="color:[[item.coloreTesto]]">[[item.nomeServizio]]</label>
-            </template>
+                <div style="display:inline-flex; flex-direction:row; width:min-content">
 
+                    <label class="wServizio" style="white-space: nowrap">[[item.nomeServizio]]</label>
+
+                    <div style="display:inline-flex; flex-direction:row">
+                        <template is="dom-repeat" items="[[item.flags]]">
+                            <vaadin-checkbox class="wDay"></vaadin-checkbox>
+                        </template>
+
+                        <iron-icon icon="vaadin:check-circle" class="icona"></iron-icon>
+
+                        <iron-icon icon="vaadin:close-circle-o" class="icona"></iron-icon>
+
+                    </div>
+
+                </div>
+            </template>
+            <!--end Griglia dei servizi-->
+
+
+            <!--Riga icone sotto-->
+            <div style="display: inline-flex; flex-direction:row">
+                <div class="wServizio"></div>
+                <template is="dom-repeat" items="[[titoliGiorno]]">
+                    <div class="wDay" style="display:flex; flex-direction:column; align-items:center">
+
+                        <iron-icon icon="vaadin:check-circle"  class="icona"></iron-icon>
+
+                        <iron-icon icon="vaadin:close-circle-o" class="icona"></iron-icon>
+
+                    </div>
+                </template>
+            </div>
+            <!--end Riga icone sotto-->
 
 
             <!--area bottoni-->
@@ -76,6 +138,7 @@
             }
         }
         customElements.define(TurnoGen.is, TurnoGen);
+
 
 
     </script>

@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Scope;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,9 +40,6 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
 public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
-
-    @Id
-    private Div gridholder;
 
     @Id
     private Button bChiudi;
@@ -192,6 +190,9 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
             righe.add(riga);
         }
         getModel().setRighe(righe);
+
+        getModel().setTitoliGiorno(Arrays.asList(TITLES));
+
     }
 
 
