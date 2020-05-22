@@ -86,12 +86,12 @@
 
                     <div style="display:inline-flex; flex-direction:row;">
                         <template is="dom-repeat" items="[[item.flags]]">
-                            <vaadin-checkbox class="wDay"></vaadin-checkbox>
+                            <vaadin-checkbox class="wDay" checked="[[item]]"></vaadin-checkbox>
                         </template>
 
-                        <iron-icon icon="vaadin:check-circle" class="icona" style="margin-left:0.2em; margin-right:0.5em"></iron-icon>
+                        <iron-icon icon="vaadin:check-circle" class="icona" style="margin-left:0.2em; margin-right:0.5em" on-click="clickRowOn"></iron-icon>
 
-                        <iron-icon icon="vaadin:close-circle-o" class="icona"></iron-icon>
+                        <iron-icon icon="vaadin:close-circle-o" class="icona" on-click="clickRowOff"></iron-icon>
 
                     </div>
 
@@ -106,9 +106,9 @@
                 <template is="dom-repeat" items="[[titoliGiorno]]">
                     <div class="wDay" style="display:flex; flex-direction:column; align-items:center">
 
-                        <iron-icon icon="vaadin:check-circle"  class="icona"></iron-icon>
+                        <iron-icon icon="vaadin:check-circle"  class="icona" on-click="clickColOn"></iron-icon>
 
-                        <iron-icon icon="vaadin:close-circle-o" class="icona"></iron-icon>
+                        <iron-icon icon="vaadin:close-circle-o" class="icona" on-click="clickColOff"></iron-icon>
 
                     </div>
                 </template>

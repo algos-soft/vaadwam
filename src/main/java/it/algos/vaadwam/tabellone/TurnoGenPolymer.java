@@ -4,17 +4,9 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.polymertemplate.Id;
-import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.shared.ui.LoadMode;
+import com.vaadin.flow.component.polymertemplate.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -55,7 +47,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     @Id
     private DatePicker picker2;
 
-    private Grid grid;
+    private List<TurnoGenRiga> model;
 
     @Autowired
     private ServizioService servizioService;
@@ -63,7 +55,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     @Setter
     private CompletedListener completedListener;
 
-    private static final String[] TITLES = new String[]{"L","M","M","G","V","S","D"};
+    private static final String[] TITLES = new String[]{"L", "M", "M", "G", "V", "S", "D"};
 
     @PostConstruct
     private void init() {
@@ -84,128 +76,31 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     }
 
 
-    private void buildGrid() {
-        grid = new Grid<>(GridRow.class);
-
-        List<Servizio> servizi = servizioService.findAllStandardVisibili();
-        List<GridRow> rows = new ArrayList<>();
-        for (Servizio servizio : servizi) {
-            GridRow row = new GridRow(servizio);
-            rows.add(row);
-        }
-        grid.setItems(rows);
-        grid.removeAllColumns();
-
-        addColumnServizio();
-        for(int i=0;i<7;i++){
-            addColumnGiorno(i);
-        }
-//        Grid.Column<String> col = grid.addColumn(GridRow::getNomeServizio);
-//        col.setHeader("Servizio");
-//        grid.addColumn(GridRow::getLun).setHeader("Lun");
-//        grid.addColumn(GridRow::getMar).setHeader("Mar");
-//        grid.addColumn(GridRow::getMer).setHeader("Mer");
-//        grid.addColumn(GridRow::getGio).setHeader("Gio");
-//        grid.addColumn(GridRow::getVen).setHeader("Ven");
-//        grid.addColumn(GridRow::getSab).setHeader("Sab");
-//        grid.addColumn(GridRow::getDom).setHeader("Dom");
-
-    }
-
-
-    /**
-     * Aggiunge la colonna per visualizzare i servizi previsti
-     */
-    private void addColumnServizio() {
-
-        ValueProvider<Servizio, Label> componentProvider = new ValueProvider() {
-
-            @Override
-            public Label apply(Object obj) {
-                Servizio servizio = ((GridRow)obj).getServizio();
-                Label label = new Label(servizio.getCode());
-                return label;
-            }
-        };
-
-        Grid.Column<Label> column = grid.addComponentColumn(componentProvider);
-
-        column.setHeader("Servizio");
-        column.setFlexGrow(0);
-        column.setWidth("10em");
-        column.setSortable(false);
-        column.setResizable(false);
-        column.setFrozen(true);
-
-    }
-
-
-    /**
-     * Aggiunge la colonna per visualizzare un giorno
-     */
-    private void addColumnGiorno(int idx) {
-
-        ValueProvider<GridRow, Checkbox> componentProvider = new ValueProvider() {
-
-            @Override
-            public Checkbox apply(Object obj) {
-                GridRow row = ((GridRow)obj);
-                boolean flag = row.getValue(idx);
-                Checkbox cb = new Checkbox();
-                cb.setLabel("");
-                //cb.getStyle().set("width","1.5em");
-                cb.setValue(flag);
-                return cb;
-            }
-        };
-
-        Grid.Column<Checkbox> column = grid.addComponentColumn(componentProvider);
-
-//        column.setAutoWidth(false);
-//        column.getElement().getStyle().set("margin","0");
-//        column.getElement().getStyle().set("padding","0");
-
-        String title = TITLES[idx];
-
-        Div div = new Div();
-        div.setText(title);
-
-//        Label titleLabel=new Label(title);
-//        titleLabel.getStyle().set("overflow","hidden");
-//        titleLabel.getStyle().set("text-overflow", "clip");
-        column.setHeader(div);
-        column.setFlexGrow(0);
-        column.setWidth("6em");
-        column.setSortable(false);
-        column.setResizable(false);
-        column.setFrozen(true);
-
-    }
-
-
     /**
      * Riempie il modello dati
      */
-    private void populateModel(){
+    private void populateModel() {
         List<Servizio> servizi = servizioService.findAllStandardVisibili();
-        List<TurnoGenRiga> righe = new ArrayList<>();
+        model = new ArrayList<>();
+        int id = 0;
         for (Servizio servizio : servizi) {
-            TurnoGenRiga riga = new TurnoGenRiga();
+            id++;
+            TurnoGenRiga riga = new TurnoGenRiga(id);
             riga.setNomeServizio(servizio.getCode());
 
-            List<Boolean>flags = new ArrayList<>();
-            for(int i=0; i<7;i++){
-                flags.add(false);
+            List<Boolean> flags = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                boolean value = (i % 2 == 0);
+                flags.add(value);
             }
             riga.setFlags(flags);
-            righe.add(riga);
+            model.add(riga);
         }
-        getModel().setRighe(righe);
+        getModel().setRighe(model);
 
         getModel().setTitoliGiorno(Arrays.asList(TITLES));
 
     }
-
 
 
     private void fireCompletedListener(EsitoGenerazioneTurni esito) {
@@ -288,10 +183,127 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
             return flags[6];
         }
 
-        public boolean getValue(int idx){
+        public boolean getValue(int idx) {
             return flags[idx];
         }
 
     }
+
+
+//    @EventHandler
+//    private void clickRowOn(@ModelItem TurnoGenRiga item) {
+//        clickRow(item, true);
+//    }
+
+    @EventHandler
+    private void clickRowOff(@ModelItem TurnoGenRiga item) {
+        clickRow(item, false);
+    }
+
+    private void clickRow(TurnoGenRiga rigaClick, boolean flag) {
+        int id = rigaClick.getId();
+        TurnoGenRiga riga = findRigaById(id);
+        List<Boolean> flags = riga.getFlags();
+        for (int i = 0; i < riga.getFlags().size(); i++) {
+            flags.set(i, flag);
+        }
+        getModel().setRighe(model); // force refresh
+    }
+
+
+
+
+
+
+    @EventHandler
+    private void clickRowOn(@ModelItem TurnoGenRiga item) {
+        int id = item.getId();
+        TurnoGenRiga riga = findRigaById(id);
+        List<Boolean> flags = riga.getFlags();
+        if (allIsOn(flags)) {
+            setAllFlags(flags, false);
+        } else {
+            setAllFlags(flags, true);
+        }
+        getModel().setRighe(model); // force refresh
+    }
+
+
+    private boolean allIsOn(List<Boolean> flags) {
+        for (boolean flag : flags) {
+            if (!flag) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void setAllFlags(List<Boolean> flags, boolean state) {
+        for (int i = 0; i < flags.size(); i++) {
+            flags.set(i, state);
+        }
+    }
+
+
+
+
+//    @EventHandler
+//    private void clickColOn(@RepeatIndex int itemIndex) {
+//        clickCol(itemIndex, true);
+//    }
+
+    @EventHandler
+    private void clickColOff(@RepeatIndex int itemIndex) {
+        clickCol(itemIndex, false);
+    }
+
+    private void clickCol(int itemIndex, boolean flag) {
+        for (TurnoGenRiga riga : model) {
+            List<Boolean> flags = riga.getFlags();
+            flags.set(itemIndex, flag);
+        }
+        getModel().setRighe(model); // force refresh
+    }
+
+
+    @EventHandler
+    private void clickColOn(@RepeatIndex int itemIndex) {
+
+        List<Boolean> flags = new ArrayList<>();
+        for (TurnoGenRiga riga : model) {
+            List<Boolean> flagsRiga = riga.getFlags();
+            int i=0;
+            for(Boolean b : flagsRiga){
+                if(i==itemIndex){
+                    flags.add(b);
+                }
+                i++;
+            }
+        }
+
+        if (allIsOn(flags)) {
+            setAllFlags(flags, false);
+        } else {
+            setAllFlags(flags, true);
+        }
+        getModel().setRighe(model); // force refresh
+
+    }
+
+
+
+    /**
+     * Recupera una riga dal modello per id
+     */
+    private TurnoGenRiga findRigaById(int id) {
+        TurnoGenRiga found = null;
+        for (TurnoGenRiga riga : model) {
+            if (riga.getId() == id) {
+                found = riga;
+            }
+        }
+        return found;
+    }
+
 
 }

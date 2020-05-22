@@ -12,6 +12,15 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
  */
 @Data
 public class TurnoGenRiga {
+
+    public TurnoGenRiga() {
+    }
+
+    public TurnoGenRiga(int id) {
+        this.id = id;
+    }
+
+    private int id;
     private String nomeServizio;
     private List<Boolean> flags;
 }
