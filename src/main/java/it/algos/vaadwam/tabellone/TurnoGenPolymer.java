@@ -65,9 +65,6 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
 
         populateModel();
 
-//        buildGrid();
-//        gridholder.add(grid);
-
         bChiudi.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
             EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0, false, false, null, null);
             fireCompletedListener(esito);
@@ -90,8 +87,8 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
 
             List<Boolean> flags = new ArrayList<>();
             for (int i = 0; i < 7; i++) {
-                boolean value = (i % 2 == 0);
-                flags.add(value);
+                //boolean value = (i % 2 == 0);
+                flags.add(false);
             }
             riga.setFlags(flags);
             model.add(riga);
@@ -190,33 +187,8 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     }
 
 
-//    @EventHandler
-//    private void clickRowOn(@ModelItem TurnoGenRiga item) {
-//        clickRow(item, true);
-//    }
-
     @EventHandler
-    private void clickRowOff(@ModelItem TurnoGenRiga item) {
-        clickRow(item, false);
-    }
-
-    private void clickRow(TurnoGenRiga rigaClick, boolean flag) {
-        int id = rigaClick.getId();
-        TurnoGenRiga riga = findRigaById(id);
-        List<Boolean> flags = riga.getFlags();
-        for (int i = 0; i < riga.getFlags().size(); i++) {
-            flags.set(i, flag);
-        }
-        getModel().setRighe(model); // force refresh
-    }
-
-
-
-
-
-
-    @EventHandler
-    private void clickRowOn(@ModelItem TurnoGenRiga item) {
+    private void clickRow(@ModelItem TurnoGenRiga item) {
         int id = item.getId();
         TurnoGenRiga riga = findRigaById(id);
         List<Boolean> flags = riga.getFlags();
@@ -227,7 +199,6 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
         }
         getModel().setRighe(model); // force refresh
     }
-
 
     private boolean allIsOn(List<Boolean> flags) {
         for (boolean flag : flags) {
@@ -244,48 +215,23 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
         }
     }
 
-
-
-
-//    @EventHandler
-//    private void clickColOn(@RepeatIndex int itemIndex) {
-//        clickCol(itemIndex, true);
-//    }
-
     @EventHandler
-    private void clickColOff(@RepeatIndex int itemIndex) {
-        clickCol(itemIndex, false);
-    }
+    private void clickCol(@RepeatIndex int itemIndex) {
 
-    private void clickCol(int itemIndex, boolean flag) {
-        for (TurnoGenRiga riga : model) {
-            List<Boolean> flags = riga.getFlags();
-            flags.set(itemIndex, flag);
-        }
-        getModel().setRighe(model); // force refresh
-    }
-
-
-    @EventHandler
-    private void clickColOn(@RepeatIndex int itemIndex) {
-
-        List<Boolean> flags = new ArrayList<>();
+        boolean allOn=true;
         for (TurnoGenRiga riga : model) {
             List<Boolean> flagsRiga = riga.getFlags();
-            int i=0;
-            for(Boolean b : flagsRiga){
-                if(i==itemIndex){
-                    flags.add(b);
-                }
-                i++;
+            if(!flagsRiga.get(itemIndex)){
+                allOn=false;
+                break;
             }
         }
 
-        if (allIsOn(flags)) {
-            setAllFlags(flags, false);
-        } else {
-            setAllFlags(flags, true);
+        for (TurnoGenRiga riga : model) {
+            List<Boolean> flagsRiga = riga.getFlags();
+            flagsRiga.set(itemIndex, !allOn);
         }
+
         getModel().setRighe(model); // force refresh
 
     }
