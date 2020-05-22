@@ -5,6 +5,7 @@
 <link href="../../../bower_components/vaadin-radio-button/vaadin-radio-group.html" rel="import">
 <link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
 <link href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html" rel="import">
+<link href="../../../bower_components/vaadin-progress-bar/vaadin-progress-bar.html" rel="import">
 
 <dom-module id="turno-gen" theme-for="vaadin-grid">
 
@@ -14,7 +15,7 @@
         <style>
         :root {
           --serv-column-width: 7em;
-          --day-column-width: 2.5em;
+          --day-column-width: 2.6em;
         }
 
         .wServizio {
@@ -30,8 +31,14 @@
 
 
         .icona {
-            width:1.3em;
+            color: #1676F3;
+            width:1.1em;
         }
+
+         .datepicker {
+            width:8.5em;
+        }
+
 
         </style>
 
@@ -40,31 +47,32 @@
         <div id="container" style="display: flex; flex-direction:column; ">
 
             <!--header-->
-            <div style="display: flex; flex-direction:column; border-bottom:0.05em solid; padding-bottom: 1em">
+            <div style="display: flex; flex-direction:column; border-bottom:0.02em solid; padding-bottom: 1em; margin-bottom:0.7em">
+                <label style="font-size:1.5em; font-weight:bold; line-height:0.8em;">Genera turni</label>
             </div>
             <!--end header-->
 
-            <!--area setup date e operazione-->
+            <!--area date e operazione-->
             <div style="display: flex; flex-direction:row;">
 
-                <vaadin-date-picker placeholder="dal"></vaadin-date-picker>
+                <vaadin-date-picker id="picker1" class="datepicker" placeholder="dal" style="margin-right:1em"></vaadin-date-picker>
 
-                <vaadin-date-picker placeholder="al"></vaadin-date-picker>
+                <vaadin-date-picker id="picker2" class="datepicker" placeholder="al" style="margin-right:1em"></vaadin-date-picker>
 
-                <vaadin-radio-group theme="vertical">
+                <vaadin-radio-group theme="horizontal">
                     <vaadin-radio-button checked>Genera</vaadin-radio-button>
                     <vaadin-radio-button>Cancella</vaadin-radio-button>
                 </vaadin-radio-group>
 
             </div>
-            <!--end area setup date e operazione-->
+            <!--end area date e operazione-->
 
 
             <!--Riga dei nomi giorno-->
-            <div style="display: inline-flex; flex-direction:row">
+            <div style="display: inline-flex; flex-direction:row; margin-top:0.5em">
                 <div class="wServizio"></div>
                 <template is="dom-repeat" items="[[titoliGiorno]]">
-                    <label class="wDay">[[item]]</label>
+                    <label class="wDay" style="font-weight: bold">[[item]]</label>
                 </template>
             </div>
             <!--end Riga dei nomi giorno-->
@@ -72,16 +80,16 @@
 
             <!--Griglia dei servizi-->
             <template is="dom-repeat" items="[[righe]]">
-                <div style="display:inline-flex; flex-direction:row; width:min-content">
+                <div style="display:inline-flex; flex-direction:row; width:min-content; margin-top:0.2em">
 
                     <label class="wServizio" style="white-space: nowrap">[[item.nomeServizio]]</label>
 
-                    <div style="display:inline-flex; flex-direction:row">
+                    <div style="display:inline-flex; flex-direction:row;">
                         <template is="dom-repeat" items="[[item.flags]]">
                             <vaadin-checkbox class="wDay"></vaadin-checkbox>
                         </template>
 
-                        <iron-icon icon="vaadin:check-circle" class="icona"></iron-icon>
+                        <iron-icon icon="vaadin:check-circle" class="icona" style="margin-left:0.2em; margin-right:0.5em"></iron-icon>
 
                         <iron-icon icon="vaadin:close-circle-o" class="icona"></iron-icon>
 
@@ -93,7 +101,7 @@
 
 
             <!--Riga icone sotto-->
-            <div style="display: inline-flex; flex-direction:row">
+            <div style="display: inline-flex; flex-direction:row; margin-top:0.25em">
                 <div class="wServizio"></div>
                 <template is="dom-repeat" items="[[titoliGiorno]]">
                     <div class="wDay" style="display:flex; flex-direction:column; align-items:center">
@@ -107,6 +115,7 @@
             </div>
             <!--end Riga icone sotto-->
 
+            <vaadin-progress-bar style="margin-top:1.3em" value="0.3"></vaadin-progress-bar>
 
             <!--area bottoni-->
             <div style="display: flex; flex-direction: column; margin-top: 1em;">
@@ -116,7 +125,7 @@
                         <label>Chiudi</label>
                     </vaadin-button>
 
-                    <vaadin-button id="bEsegui" style="flex-grow:1; margin-left:0.4em" theme="raised primary">
+                    <vaadin-button id="bEsegui" style="flex-grow:1; margin-left:0.4em" theme="primary">
                         <label>Esegui</label>
                     </vaadin-button>
                 </div>

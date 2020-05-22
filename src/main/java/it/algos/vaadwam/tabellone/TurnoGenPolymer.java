@@ -5,6 +5,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Generatore di turni per il tabellone
@@ -47,6 +49,12 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     @Id
     private Button bEsegui;
 
+    @Id
+    private DatePicker picker1;
+
+    @Id
+    private DatePicker picker2;
+
     private Grid grid;
 
     @Autowired
@@ -59,6 +67,9 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
 
     @PostConstruct
     private void init() {
+
+        picker1.setLocale(Locale.ITALY);
+        picker2.setLocale(Locale.ITALY);
 
         populateModel();
 
