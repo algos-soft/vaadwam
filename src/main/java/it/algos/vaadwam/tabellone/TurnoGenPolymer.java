@@ -47,7 +47,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     @Id
     private DatePicker picker2;
 
-    private List<TurnoGenRiga> model;
+    //private List<TurnoGenRiga> model;
 
     @Autowired
     private ServizioService servizioService;
@@ -70,6 +70,32 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
             fireCompletedListener(esito);
         });
 
+        bEsegui.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+            TurnoGenModel turnoGenModel=getModel();
+            List<TurnoGenRiga> righe = turnoGenModel.getRighe();
+
+            for(TurnoGenRiga riga : righe){
+                List<TurnoGenFlag> flags = riga.getFlags();
+                for(TurnoGenFlag flag : flags){
+                    boolean flagValue = flag.isOn();
+                    log.info("row: "+flag.getRow()+" col: "+flag.getColumn()+" value "+flag.isOn());
+                }
+            }
+
+//            TurnoGenRiga riga = righe.get(0);
+//            List<TurnoGenFlag> flags = riga.getFlags();
+//            for(TurnoGenFlag flag : flags){
+//                boolean flagValue = flag.isOn();
+//                int a = 87;
+//                int b= a;
+//            }
+//            int a = 87;
+//            int b= a;
+
+        });
+
+
+
     }
 
 
@@ -78,22 +104,25 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
      */
     private void populateModel() {
         List<Servizio> servizi = servizioService.findAllStandardVisibili();
-        model = new ArrayList<>();
-        int id = 0;
+        List<TurnoGenRiga> righe = new ArrayList<>();
+        int rowId = 0;
         for (Servizio servizio : servizi) {
-            id++;
-            TurnoGenRiga riga = new TurnoGenRiga(id);
+            TurnoGenRiga riga = new TurnoGenRiga(rowId);
             riga.setNomeServizio(servizio.getCode());
 
-            List<Boolean> flags = new ArrayList<>();
-            for (int i = 0; i < 7; i++) {
-                //boolean value = (i % 2 == 0);
-                flags.add(false);
+            List<TurnoGenFlag> flags = new ArrayList<>();
+            for (int colId = 0; colId < 7; colId++) {
+                TurnoGenFlag flagStatus=new TurnoGenFlag(rowId, colId);
+                flags.add(flagStatus);
+//                flagStatus.setOn(colId % 2 == 0);
             }
             riga.setFlags(flags);
-            model.add(riga);
+            righe.add(riga);
+
+            rowId++;
+
         }
-        getModel().setRighe(model);
+        getModel().setRighe(righe);
 
         getModel().setTitoliGiorno(Arrays.asList(TITLES));
 
@@ -147,71 +176,32 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
             this.flags = new boolean[7];
         }
 
-        public String getNomeServizio() {
-            return servizio.getCode();
-        }
-
-        public boolean getLun() {
-            return flags[0];
-        }
-
-        public boolean getMar() {
-            return flags[1];
-        }
-
-        public boolean getMer() {
-            return flags[2];
-        }
-
-        public boolean getGio() {
-//            return flags[3];
-            return true;
-        }
-
-        public boolean getVen() {
-            return flags[4];
-        }
-
-        public boolean getSab() {
-            return flags[5];
-        }
-
-        public boolean getDom() {
-            return flags[6];
-        }
-
-        public boolean getValue(int idx) {
-            return flags[idx];
-        }
-
     }
 
 
     @EventHandler
-    private void clickRow(@ModelItem TurnoGenRiga item) {
-        int id = item.getId();
-        TurnoGenRiga riga = findRigaById(id);
-        List<Boolean> flags = riga.getFlags();
+    private void clickRow(@ModelItem TurnoGenRiga riga) {
+        List<TurnoGenFlag> flags = riga.getFlags();
         if (allIsOn(flags)) {
             setAllFlags(flags, false);
         } else {
             setAllFlags(flags, true);
         }
-        getModel().setRighe(model); // force refresh
+
     }
 
-    private boolean allIsOn(List<Boolean> flags) {
-        for (boolean flag : flags) {
-            if (!flag) {
+    private boolean allIsOn(List<TurnoGenFlag> flags) {
+        for (TurnoGenFlag flag : flags) {
+            if (!flag.isOn()) {
                 return false;
             }
         }
         return true;
     }
 
-    private void setAllFlags(List<Boolean> flags, boolean state) {
+    private void setAllFlags(List<TurnoGenFlag> flags, boolean state) {
         for (int i = 0; i < flags.size(); i++) {
-            flags.set(i, state);
+            flags.get(i).setOn(state);
         }
     }
 
@@ -219,37 +209,49 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> {
     private void clickCol(@RepeatIndex int itemIndex) {
 
         boolean allOn=true;
-        for (TurnoGenRiga riga : model) {
-            List<Boolean> flagsRiga = riga.getFlags();
-            if(!flagsRiga.get(itemIndex)){
+        for (TurnoGenRiga riga : getModel().getRighe()) {
+            List<TurnoGenFlag> flagsRiga = riga.getFlags();
+            if(!flagsRiga.get(itemIndex).isOn()){
                 allOn=false;
                 break;
             }
         }
 
-        for (TurnoGenRiga riga : model) {
-            List<Boolean> flagsRiga = riga.getFlags();
-            flagsRiga.set(itemIndex, !allOn);
+        for (TurnoGenRiga riga : getModel().getRighe()) {
+            List<TurnoGenFlag> flagsRiga = riga.getFlags();
+            flagsRiga.get(itemIndex).setOn(!allOn);
         }
-
-        getModel().setRighe(model); // force refresh
 
     }
 
-
+    @EventHandler
+    private void clickFlag(@RepeatIndex int itemIndex, @ModelItem TurnoGenRiga item) {
+//        TurnoGenRiga riga = findRigaById(item.getId());
+//        List<TurnoGenFlag> flags = riga.getFlags();
+//        TurnoGenFlag flag = flags.get(itemIndex);
+//        flag.setOn(!flag.isOn());
+    }
 
     /**
      * Recupera una riga dal modello per id
      */
     private TurnoGenRiga findRigaById(int id) {
         TurnoGenRiga found = null;
-        for (TurnoGenRiga riga : model) {
+        for (TurnoGenRiga riga : getModel().getRighe()) {
             if (riga.getId() == id) {
                 found = riga;
             }
         }
         return found;
     }
+
+
+
+//    private void invertFlag(int row, int col){
+//        TurnoGenRiga riga = findRigaById(row);
+//        TurnoGenFlag flag = riga.getFlags().get(col);
+//        flag.setOn(!flag.isOn());
+//    }
 
 
 }

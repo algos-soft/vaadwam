@@ -86,7 +86,8 @@
 
                     <div style="display:inline-flex; flex-direction:row;">
                         <template is="dom-repeat" items="[[item.flags]]">
-                            <vaadin-checkbox class="wDay" checked="[[item]]"></vaadin-checkbox>
+                            <!-- two-way-binding (@AllowClientUpdates also needed in the model!)-->
+                            <vaadin-checkbox class="wDay" checked="{{item.on}}" on-click="clickFlag"></vaadin-checkbox>
                         </template>
 
                         <iron-icon icon="vaadin:check-circle" class="icona" style="margin-left:0.2em;" on-click="clickRow"></iron-icon>

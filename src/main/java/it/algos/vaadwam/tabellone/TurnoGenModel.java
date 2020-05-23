@@ -1,5 +1,6 @@
 package it.algos.vaadwam.tabellone;
 
+import com.vaadin.flow.templatemodel.AllowClientUpdates;
 import com.vaadin.flow.templatemodel.TemplateModel;
 
 import java.util.List;
