@@ -162,6 +162,17 @@ public class ServizioDialog extends WamViewDialog<Servizio> {
     }// end of method
 
 
+    /**
+     * Regola in lettura eventuali valori NON associati al binder. <br>
+     * Dal DB alla UI
+     * Sovrascritto
+     */
+    @Override
+    protected void readSpecificFields() {
+        if (comboColorField != null) {
+            comboColorField.setValue(((Servizio) currentItem).colore);
+        }// end of if cycle
+    }
 
 
     /**

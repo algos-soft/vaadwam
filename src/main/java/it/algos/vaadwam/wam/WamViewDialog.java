@@ -212,9 +212,9 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
                 if (fieldOrdine != null) {
                     fieldOrdine.setEnabled(false);
                 }// end of if cycle
-                if (fieldCode != null) {
-                    fieldCode.setEnabled(false);
-                }// end of if cycle
+                //                if (fieldCode != null) {
+                //                    fieldCode.setEnabled(false);
+                //                }// end of if cycle
             } else {
                 //blocca tutto
                 if (!pref.isBool(USA_FIELDS_ENABLED_IN_SHOW)) {
