@@ -48,21 +48,18 @@
 
             <!--header-->
             <div style="display: flex; flex-direction:column; border-bottom:0.02em solid; padding-bottom: 1em; margin-bottom:0.7em">
-                <label style="font-size:1.5em; font-weight:bold; line-height:0.8em;">Genera turni</label>
+                <label style="font-size:1.5em; font-weight:bold; line-height:0.8em;">[[title]]</label>
             </div>
             <!--end header-->
 
             <!--area date e operazione-->
-            <div style="display: flex; flex-direction:row;">
+            <div style="display: flex; flex-direction:row; align-items:center">
 
                 <vaadin-date-picker id="picker1" class="datepicker" placeholder="dal" style="margin-right:1em"></vaadin-date-picker>
 
                 <vaadin-date-picker id="picker2" class="datepicker" placeholder="al" style="margin-right:1em"></vaadin-date-picker>
 
-                <vaadin-radio-group theme="horizontal">
-                    <vaadin-radio-button checked>Genera</vaadin-radio-button>
-                    <vaadin-radio-button>Cancella</vaadin-radio-button>
-                </vaadin-radio-group>
+                <div id="radiodiv"></div>
 
             </div>
             <!--end area date e operazione-->
@@ -144,9 +141,6 @@
             }
         }
         customElements.define(TurnoGen.is, TurnoGen);
-
-
-
     </script>
 
 
