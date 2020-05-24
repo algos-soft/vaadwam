@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static it.algos.vaadwam.tabellone.TurnoGenWorker.*;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * Generatore di turni per il tabellone
@@ -351,6 +352,12 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
             return "La date di inizio non può essere precedente a oggi.";
         }
 
+        // L'intervallo non deve superare 1 anno
+        int daysBetween = (int)DAYS.between(data1, data2);
+        if (daysBetween>365) {
+            return "L'intervallo massimo è di 1 anno.";
+        }
+
         // almeno un checkbox deve essere acceso
         boolean selezionati = false;
         for (TurnoGenRiga riga : getModel().getRighe()) {
@@ -388,15 +395,50 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
         worker.startWork();
     }
 
-    private List<TurnoGenWorker.ServiziGiornoSett> buildListaServiziGiorni(){
-        List<TurnoGenWorker.ServiziGiornoSett> lista = new ArrayList<>();
+    /**
+     * Costruisce la lista dei giorni della settimana con relativi servizi
+     * in base al set di checkboxes correntemente accesi
+     */
+    private List<ServiziGiornoSett> buildListaServiziGiorni(){
+        List<ServiziGiornoSett> lista = new ArrayList<>();
+
+        for(TurnoGenRiga riga : getModel().getRighe()){
+            List<TurnoGenFlag> flags = riga.getFlags();
+            for(int i=0; i<flags.size();i++){
+                TurnoGenFlag flag = flags.get(i);
+                if(flag.isOn()){
+                    ServiziGiornoSett item = findOrCreate(lista, i);
+                    Servizio servizio = servizioService.findByKeyUnica(riga.getNomeServizio());
+                    item.addServizio(servizio);
+                }
+            }
+        }
+
         return lista;
+    }
+
+    /**
+     * Recupera dalla lista ServiziGiornoSett quello relativo all'indice giorno percificato.
+     * Se non esiste lo crea ora e lo aggiunge alla lista.
+     */
+    private ServiziGiornoSett findOrCreate(List<ServiziGiornoSett> lista, int idx){
+
+        for(ServiziGiornoSett item : lista){
+            if(item.getIdxGiornoSett()==idx){
+                return item;
+            }
+        }
+
+        ServiziGiornoSett newItem = new ServiziGiornoSett(idx);
+        lista.add(newItem);
+        return newItem;
+
     }
 
 
     /**
      * I questo metodo viene invocato da un thread separato diverso dallo UI thread.
-     * Qualsiasi azione sulla GUI va eseguita tramite il metodo ui.access().
+     * Qualsiasi azione sulla GUI che parte da qui va eseguita tramite il metodo ui.access().
      */
     @SneakyThrows
     @Override
@@ -417,8 +459,11 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                 String oldValue = (String) evt.getOldValue();
                 switch (value) {
                     case STATUS_RUNNING:
+
                         if(oldValue!=STATUS_RUNNING){ // just started (or restarted)
+
                             working=true;
+
                             ui.access(() -> {
                                 bEsegui.setText("Interrompi");
                                 progressBar.setVisible(true);
@@ -429,7 +474,11 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
                     case STATUS_COMPLETED:
 
+                        working=false;
+                        esito=worker.getEsito();
+
                         ui.access(() -> {
+
                             completedListener.onCompleted(esito);
 
                             bEsegui.setText("Esegui");
@@ -437,7 +486,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                             progressBar.setVisible(false);
 
                             ConfirmDialog.createInfo()
-                                    .withMessage("Terminato")
+                                    .withMessage("Terminato. "+esito.getTestoAzione()+" "+esito.getQuanti()+" turni.")
                                     .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
                                     .open();
 
@@ -446,7 +495,9 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                         break;
 
                     case STATUS_ABORTED:
+
                         working=false;
+                        esito=worker.getEsito();
 
                         ui.access(() -> {
 
@@ -455,10 +506,9 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                             progressBar.setVisible(false);
 
                             ConfirmDialog.createInfo()
-                                    .withMessage("Operazione interrotta")
+                                    .withMessage("Operazione interrotta. "+esito.getTestoAzione()+" "+esito.getQuanti()+" turni.")
                                     .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
                                     .open();
-
 
                         });
                         worker.removePropertyChangeListener(this);

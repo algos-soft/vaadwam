@@ -1,6 +1,5 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.UI;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import lombok.Data;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -115,19 +115,25 @@ public class TurnoGenWorker {
             support.firePropertyChange(PROPERTY_STATUS, old_status, status);
 
 
-            LocalDate date;
+            LocalDate giorno;
+            int totTurni=0;
+            List<LocalDate> dateCoinvolte=new ArrayList<>();
             int quantiGiorni = (int)DAYS.between(data1, data2);
             for(int i=0;i<=quantiGiorni;i++){
 
-                date=data1.plusDays(i);
+                giorno=data1.plusDays(i);
 
                 // @todo real work here!!
                 int quantiTurni;
                 if(crea){
-                    quantiTurni = creaTurni(date);
+                    quantiTurni = creaTurni(giorno);
                 }else{
-                    quantiTurni = cancellaTurni(date);
+                    quantiTurni = cancellaTurni(giorno);
                 }
+                if(quantiTurni>0){
+                    dateCoinvolte.add(giorno);
+                }
+                totTurni+=quantiTurni;
 
                 try {
                     Thread.sleep(1000);
@@ -137,8 +143,6 @@ public class TurnoGenWorker {
 
                 old_progress = progress;
                 progress=(float)i/(float)quantiGiorni;
-
-//                System.out.println(date+" - "+progress);
 
                 support.firePropertyChange(PROPERTY_PROGRESS, old_progress, progress);
 
@@ -155,7 +159,7 @@ public class TurnoGenWorker {
                 status = STATUS_COMPLETED;
             }
 
-            esito = new EsitoGenerazioneTurni(0, abort, crea, null);
+            esito = new EsitoGenerazioneTurni(totTurni, abort, crea, dateCoinvolte);
 
             support.firePropertyChange(PROPERTY_STATUS, old_status, status);
 
@@ -172,7 +176,14 @@ public class TurnoGenWorker {
      * @return il numero di turni creati nel giorno specificato
      */
     private int creaTurni(LocalDate data){
-        return 0;
+        int dow = getDow(data);
+        List<Servizio> servizi = getServiziForDayOfWeek(dow);
+        int i=0;
+        for(Servizio servizio : servizi){
+            System.out.println("creato: "+data+" - "+servizio.getCode());
+            i++;
+        }
+        return i;
     }
 
     /**
@@ -182,10 +193,42 @@ public class TurnoGenWorker {
      * @return il numero di turni cancellati nel giorno specificato
      */
     private int cancellaTurni(LocalDate data){
-        return 0;
+        int dow = getDow(data);
+        List<Servizio> servizi = getServiziForDayOfWeek(dow);
+        int i=0;
+        for(Servizio servizio : servizi){
+            System.out.println("cancellato: "+data+" - "+servizio.getCode());
+            i++;
+        }
+        return i;
     }
 
+    /**
+     * Ritorna l'indice del giorno di settimana per una certa data
+     * <br>
+     * @param data la data
+     * @return l'indice del giorno di settimana (0-6)
+     */
+    private int getDow(LocalDate data){
+        return data.getDayOfWeek().getValue()-1;
+    }
 
+    /**
+     * Ritorna i servizi per un dato giorno della settimana (lun=0, dom=6)
+     * <br>
+     * @param idx indice del giorno della settimana (lun=0, dom=6)
+     * @return i servizi del giorno
+     */
+    private List<Servizio> getServiziForDayOfWeek(int idx){
+        List<Servizio> servizi=new ArrayList<>();
+        for(ServiziGiornoSett sgs : giornoServizi){
+            if(sgs.getIdxGiornoSett()==idx){
+                servizi=sgs.getServizi();
+                break;
+            }
+        }
+        return servizi;
+    }
 
     /**
      * Classe che descrive il risultato dell'operazione
@@ -209,19 +252,15 @@ public class TurnoGenWorker {
             this.create = create;
             this.giorni=giorni;
         }
-    }
 
-    /**
-     * Classe che descrive un giorno della settimana e relativo elenco di servizi
-     */
-    @Data
-    class ServiziGiornoSett {
-        private int idxGiornoSett;
-        private Servizio[] servizi;
-
-        public ServiziGiornoSett(int idxGiornoSett, Servizio[] servizi) {
-            this.idxGiornoSett = idxGiornoSett;
-            this.servizi = servizi;
+        public String getTestoAzione(){
+            String azione;
+            if(esito.isCreate()){
+                azione="Creati";
+            }else{
+                azione="Cancellati";
+            }
+            return azione;
         }
     }
 
