@@ -7,18 +7,20 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.*;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +28,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.util.*;
+
+import static it.algos.vaadwam.tabellone.TurnoGenWorker.*;
 
 /**
  * Generatore di turni per il tabellone
@@ -52,7 +56,13 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
     @Id
     private Div radiodiv;
 
+    @Id
+    private ProgressBar progressBar;
+
     private RadioButtonGroup<String> radioGroup;
+
+    @Autowired
+    protected ApplicationContext appContext;
 
     @Autowired
     private ServizioService servizioService;
@@ -64,14 +74,23 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
     private boolean working;    // acceso quando inizia l'operazione
 
+    private UI ui;
+
+    private TurnoGenWorker.EsitoGenerazioneTurni esito;
+
     private static final String[] TITLES = new String[]{"L", "M", "M", "G", "V", "S", "D"};
 
     private static final String OPTION_GENERA = "Genera";
     private static final String OPTION_CANCELLA = "Cancella";
 
+    private static final String SUBTITLE_CREA = null;
+    private static final String SUBTITLE_CANCELLA = "Verranno cancellati solo i turni vuoti (senza nessun iscritto)";
+
 
     @PostConstruct
     private void init() {
+
+        ui=UI.getCurrent();
 
         picker1.setLocale(Locale.ITALY);
         picker2.setLocale(Locale.ITALY);
@@ -80,40 +99,40 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
         // bottone Chiudi
         bChiudi.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
-            EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0, false, false, null, null);
+            //EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0, false, false, null, null);
             fireCompletedListener(esito);
         });
 
         // bottone Esegui
         bEsegui.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+
             if(!working){
 
                 String error = validate();
+
                 if (error == null) {
 
+                    String word = "";
+                    if(isCrea()){
+                        word = "creazione";
+                    }else{
+                        word = "cancellazione";
+                    }
+
                     Button bConferma = new Button();
+
+                    String msg = "Confermi la " + word + " dei turni selezionati?";
+                    ConfirmDialog dialog = ConfirmDialog.createQuestion()
+                            .withMessage(msg)
+                            .withButton(new Button(), ButtonOption.caption("Annulla"), ButtonOption.closeOnClick(true))
+                            .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus(), ButtonOption.closeOnClick(true));
+
                     bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) event1 -> {
+                        dialog.close();
                         execute();
                     });
 
-                    String word = "";
-                    switch (radioGroup.getValue()) {
-                        case OPTION_GENERA: {
-                            word = "creazione";
-                            break;
-                        }
-                        case OPTION_CANCELLA: {
-                            word = "cancellazione";
-                            break;
-                        }
-                    }
-
-                    String msg = "Confermi la " + word + " dei turni selezionati?";
-                    ConfirmDialog.createQuestion()
-                            .withMessage(msg)
-                            .withButton(new Button(), ButtonOption.caption("Annulla"), ButtonOption.closeOnClick(true))
-                            .withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus(), ButtonOption.closeOnClick(true))
-                            .open();
+                    dialog.open();
 
                 } else {    // errore di validazione dei dati
                     Notification.show(error, 3000, Notification.Position.MIDDLE);
@@ -139,6 +158,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
         });
 
         setDialogTitle(OPTION_GENERA);
+        getModel().setSubtitle(SUBTITLE_CREA);
 
         radioGroup = new RadioButtonGroup<>();
         radioGroup.setItems(OPTION_GENERA, OPTION_CANCELLA);
@@ -147,7 +167,15 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
         radioGroup.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<RadioButtonGroup<String>, String>>) event -> {
             setDialogTitle(event.getValue());
+            if(isCrea()){
+                getModel().setSubtitle(SUBTITLE_CREA);
+            }else{
+                getModel().setSubtitle(SUBTITLE_CANCELLA);
+            }
         });
+
+        progressBar.setVisible(false);
+
     }
 
 
@@ -185,7 +213,25 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
     }
 
 
-    private void fireCompletedListener(EsitoGenerazioneTurni esito) {
+    /**
+     * Controla se è selezionata creazione o cancellazione
+     */
+    private boolean isCrea(){
+        boolean crea=true;
+        switch (radioGroup.getValue()) {
+            case OPTION_GENERA: {
+                crea=true;
+                break;
+            }
+            case OPTION_CANCELLA: {
+                crea=false;
+                break;
+            }
+        }
+        return crea;
+    }
+
+    private void fireCompletedListener(TurnoGenWorker.EsitoGenerazioneTurni esito) {
         if (completedListener != null) {
             completedListener.onCompleted(esito);
         }
@@ -193,7 +239,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
 
     interface CompletedListener {
-        void onCompleted(EsitoGenerazioneTurni esito);
+        void onCompleted(TurnoGenWorker.EsitoGenerazioneTurni esito);
     }
 
 
@@ -336,83 +382,92 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
      * Esecuzione della operazione richiesta
      */
     private void execute() {
-        worker = new TurnoGenWorker(UI.getCurrent());
+        worker=appContext.getBean(TurnoGenWorker.class, isCrea(), getDataStart(), getDataEnd(), buildListaServiziGiorni());
         worker.addPropertyChangeListener(this);
+        bChiudi.setEnabled(false);
         worker.startWork();
     }
 
+    private List<TurnoGenWorker.ServiziGiornoSett> buildListaServiziGiorni(){
+        List<TurnoGenWorker.ServiziGiornoSett> lista = new ArrayList<>();
+        return lista;
+    }
 
+
+    /**
+     * I questo metodo viene invocato da un thread separato diverso dallo UI thread.
+     * Qualsiasi azione sulla GUI va eseguita tramite il metodo ui.access().
+     */
+    @SneakyThrows
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
         switch (propName) {
 
-            case TurnoGenWorker.PROPERTY_PROGRESS: {
+            case PROPERTY_PROGRESS: {
+                float value = (float) evt.getNewValue();
+                ui.access(() -> {
+                    progressBar.setValue(value);
+                });
                 break;
             }
 
-            case TurnoGenWorker.PROPERTY_STATUS: {
+            case PROPERTY_STATUS: {
                 String value = (String) evt.getNewValue();
                 String oldValue = (String) evt.getOldValue();
                 switch (value) {
-                    case TurnoGenWorker.STATUS_RUNNING:
-                        if(oldValue==null){ // just started
+                    case STATUS_RUNNING:
+                        if(oldValue!=STATUS_RUNNING){ // just started (or restarted)
                             working=true;
-                            bEsegui.setText("Interrompi");
+                            ui.access(() -> {
+                                bEsegui.setText("Interrompi");
+                                progressBar.setVisible(true);
+                                progressBar.setValue(0);
+                            });
                         }
-
-                    case TurnoGenWorker.STATUS_COMPLETED:
-
-                        boolean create = radioGroup.getValue().equals(OPTION_GENERA);
-                        EsitoGenerazioneTurni esito = new EsitoGenerazioneTurni(0, true, create, getDataStart(), getDataEnd());
-                        completedListener.onCompleted(esito);
-
-                        ConfirmDialog.createInfo()
-                                .withMessage("Terminato.")
-                                .withCloseButton()
-                                .open();
-
                         break;
 
-                    case TurnoGenWorker.STATUS_ABORTED:
+                    case STATUS_COMPLETED:
+
+                        ui.access(() -> {
+                            completedListener.onCompleted(esito);
+
+                            bEsegui.setText("Esegui");
+                            bChiudi.setEnabled(true);
+                            progressBar.setVisible(false);
+
+                            ConfirmDialog.createInfo()
+                                    .withMessage("Terminato")
+                                    .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
+                                    .open();
+
+                        });
+                        worker.removePropertyChangeListener(this);
+                        break;
+
+                    case STATUS_ABORTED:
                         working=false;
-                        bEsegui.setText("Interrompi");
 
-                        ConfirmDialog.createInfo()
-                                .withMessage("Operazione interrotta.")
-                                .withCloseButton()
-                                .open();
+                        ui.access(() -> {
 
+                            bEsegui.setText("Esegui");
+                            bChiudi.setEnabled(true);
+                            progressBar.setVisible(false);
+
+                            ConfirmDialog.createInfo()
+                                    .withMessage("Operazione interrotta")
+                                    .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
+                                    .open();
+
+
+                        });
+                        worker.removePropertyChangeListener(this);
                         break;
                 }
             }
         }
     }
 
-
-    @Data
-    class EsitoGenerazioneTurni {
-        private int quanti;
-        private boolean aborted;
-        private boolean create;
-        private LocalDate dataStart;
-        LocalDate dataEnd;
-
-        /**
-         * @param quanti    quanti turni sono stati generati o cancellati
-         * @param aborted   se l'operazione è stata abortita
-         * @param create    true se ha creato turni, false se ha cancellato turni
-         * @param dataStart data del primo turno creato/cancellato
-         * @param dataEnd   data dell'ultimo turno creato/cancellato
-         */
-        public EsitoGenerazioneTurni(int quanti, boolean aborted, boolean create, LocalDate dataStart, LocalDate dataEnd) {
-            this.quanti = quanti;
-            this.aborted = aborted;
-            this.create = create;
-            this.dataStart = dataStart;
-            this.dataEnd = dataEnd;
-        }
-    }
 
 
 }

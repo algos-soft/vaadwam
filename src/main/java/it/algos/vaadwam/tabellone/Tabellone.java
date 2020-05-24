@@ -1151,13 +1151,21 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         ConfirmDialog.setButtonAddClosePerDefault(false);
         final ConfirmDialog dialog = ConfirmDialog.create();
         TurnoGenPolymer generator = appContext.getBean(TurnoGenPolymer.class);
-        generator.setCompletedListener((TurnoGenPolymer.EsitoGenerazioneTurni esito) -> {
-            dialog.close();
-            if (esito.getQuanti() > 0) {
-                BroadcastMsg msg = new BroadcastMsg("turnigenerati", esito);
-                Broadcaster.broadcast(msg);
+
+        generator.setCompletedListener(new TurnoGenPolymer.CompletedListener() {
+            @Override
+            public void onCompleted(TurnoGenWorker.EsitoGenerazioneTurni esito) {
+                dialog.close();
+                if(esito!=null){
+                    if (esito.getQuanti() > 0) {
+                        // @todo da ridefinire
+                        BroadcastMsg msg = new BroadcastMsg("turnigenerati", esito);
+                        Broadcaster.broadcast(msg);
+                    }
+                }
             }
         });
+
         dialog.add(generator);
         dialog.open();
 

@@ -13,6 +13,9 @@ public interface TurnoGenModel extends TemplateModel {
     void setTitle(String title);
     String getTitle();
 
+    void setSubtitle(String subtitle);
+    String getSubtitle();
+
     void setRighe(List<TurnoGenRiga> righe);
     List<TurnoGenRiga> getRighe();
 
