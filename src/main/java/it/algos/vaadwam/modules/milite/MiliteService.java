@@ -69,6 +69,14 @@ public class MiliteService extends WamService implements IUtenteService {
 
     public final static String FIELD_ROLE = "role";
 
+    public final static String FIELD_NOME = "nome";
+
+    public final static String FIELD_COGNOME = "cognome";
+
+    public final static String FIELD_PASSWORD = "password";
+
+    public final static String FIELD_USERNAME = "username";
+
     public final static String FIELD_ADMIN = "admin";
 
     public final static String FIELD_DIPENDENTE = "dipendente";
@@ -302,6 +310,7 @@ public class MiliteService extends WamService implements IUtenteService {
         //        entity.company = croce;
         entity.setCroce(croce);
         entity.setOrdine(ordine != 0 ? ordine : this.getNewOrdine(croce));
+        entity.setEnabled(true);
         entity.setAdmin(admin);
         entity.setDipendente(dipendente);
         entity.setInfermiere(infermiere);
@@ -332,6 +341,10 @@ public class MiliteService extends WamService implements IUtenteService {
         if (entity == null) {
             log.error("entity è nullo in MiliteService.beforeSave()");
             return null;
+        }// end of if cycle
+
+        if (entity.croce == null) {
+            entity.croce = getCroce();
         }// end of if cycle
 
         if (entity.croce == null) {

@@ -8,6 +8,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
+import it.algos.vaadflow.ui.fields.ATextField;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
@@ -166,7 +168,6 @@ public class MiliteDialog extends WamViewDialog<Milite> {
                 abilita(FIELD_ADMIN);
                 abilita(FIELD_ATTIVO);
             }
-
         } else {
             //--disabilita il campo ordine
             field = fieldMap.get("ordine");
@@ -185,8 +186,32 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             disabilita(FIELD_DIPENDENTE);
             disabilita(FIELD_INFERMIERE);
             disabilita(FIELD_CENTRALINISTA);
-
         }// end of if/else cycle
+
+        //--suggerimenti per il nickname
+        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_PASSWORD) != null) {
+            ((ATextField) getField(FIELD_NOME)).addFocusListener(event -> sincro());
+            ((ATextField) getField(FIELD_COGNOME)).addFocusListener(event -> sincro());
+            ((ATextField) getField(FIELD_PASSWORD)).addFocusListener(event -> sincro());
+        }
+
+    }// end of method
+
+
+    protected void sincro() {
+        String alfa3 = (String) getField(FIELD_COGNOME).getValue();
+        String nomeText;
+        String cognomeTxt;
+        String tag = "123";
+
+        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_USERNAME) != null && getField(FIELD_PASSWORD) != null) {
+            nomeText = text.isValid((String) getField(FIELD_NOME).getValue()) ? (String) getField(FIELD_NOME).getValue() : VUOTA;
+            cognomeTxt = text.isValid((String) getField(FIELD_COGNOME).getValue()) ? (String) getField(FIELD_COGNOME).getValue() : VUOTA;
+            getField(FIELD_USERNAME).setValue(nomeText.toLowerCase() + cognomeTxt.toLowerCase());
+            getField(FIELD_PASSWORD).setValue(nomeText.toLowerCase() + tag);
+            getField(FIELD_NOME).setValue(text.primaMaiuscola(nomeText));
+            getField(FIELD_COGNOME).setValue(text.primaMaiuscola(cognomeTxt));
+        }
     }// end of method
 
 
