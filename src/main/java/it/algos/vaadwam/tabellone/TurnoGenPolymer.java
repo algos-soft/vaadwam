@@ -145,7 +145,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                     worker.abort();
                 });
 
-                String msg = "Interrompo l'opeazione?";
+                String msg = "Interrompo l'operazione?";
                 ConfirmDialog.createQuestion()
                         .withMessage(msg)
                         .withButton(new Button(), ButtonOption.caption("Annulla"))
