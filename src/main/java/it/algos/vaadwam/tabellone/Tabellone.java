@@ -1158,8 +1158,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 dialog.close();
                 if(esito!=null){
                     if (esito.getQuanti() > 0) {
-                        // @todo da ridefinire
-                        BroadcastMsg msg = new BroadcastMsg("turnigenerati", esito);
+                        BroadcastMsg msg = new BroadcastMsg("turnomultisave", esito.getGiorni());
                         Broadcaster.broadcast(msg);
                     }
                 }
