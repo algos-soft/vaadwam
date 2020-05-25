@@ -145,10 +145,10 @@ public abstract class WamService extends AService {
     //    @Qualifier(TAG_CRO)
     //    protected WamService wamService;
 
-    /**
-     * Wam-Login della sessione con i dati del Milite loggato <br>
-     */
-    protected WamLogin wamLogin;
+    //    /**
+    //     * Wam-Login della sessione con i dati del Milite loggato <br>
+    //     */
+    //    protected WamLogin wamLogin;
 
 
     /**
@@ -483,7 +483,7 @@ public abstract class WamService extends AService {
     public void importa() {
         fixWamLogin();
 
-        if (wamLogin != null && wamLogin.getCroce() != null) {
+        if (getWamLogin() != null && getWamLogin().getCroce() != null) {
             importa(getCroce());
         }// end of if cycle
     }// end of method
@@ -540,7 +540,7 @@ public abstract class WamService extends AService {
             if (croce != null) {
                 super.deleteByProperty(entityClass, "croce", croce);
             } else {
-                if (wamLogin != null && wamLogin.isDeveloper()) {
+                if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                     mongo.drop(entityClass);
                 }// end of if cycle
                 super.deleteByProperty(entityClass, "croce", croce);
@@ -604,8 +604,8 @@ public abstract class WamService extends AService {
      * Crea il wam-login <br>
      * Inserisce il wam-login come attributo nella vaadSession <br>
      */
-    public WamLogin fixWamLogin() {
-        //        WamLogin wamLogin;
+    public void fixWamLogin() {
+        WamLogin wamLoginLocal;
         ALogin login = getLogin();
         VaadinSession vaadSession;
         User springUser;
@@ -625,7 +625,7 @@ public abstract class WamService extends AService {
                 springUser = (User) securityContext.getAuthentication().getPrincipal();
                 uniqueUserName = springUser.getUsername();
             } else {
-                return null;
+                return;
             }// end of if/else cycle
 
 
@@ -637,9 +637,9 @@ public abstract class WamService extends AService {
         }// end of if/else cycle
 
         vaadSession = UI.getCurrent().getSession();
-        wamLogin = (WamLogin) vaadSession.getAttribute(KEY_WAM_CONTEXT);
-        if (wamLogin == null) {
-            wamLogin = appContext.getBean(WamLogin.class);
+        wamLoginLocal = (WamLogin) vaadSession.getAttribute(KEY_WAM_CONTEXT);
+        if (wamLoginLocal == null) {
+            wamLoginLocal = appContext.getBean(WamLogin.class);
 
             milite = militeService.findById(uniqueUserName);
             croce = milite != null ? milite.croce : null;
@@ -651,22 +651,22 @@ public abstract class WamService extends AService {
 
             croce = croce != null ? croce : utente != null ? (Croce) utente.company : null;
 
-            wamLogin.setMilite(milite);
-            wamLogin.setCroce(croce);
-            wamLogin.setRoleType(milite != null ? milite.admin ? EARoleType.admin : EARoleType.user : EARoleType.guest);
-            wamLogin.setUtente(milite);
+            getWamLogin().setMilite(milite);
+            getWamLogin().setCroce(croce);
+            getWamLogin().setRoleType(milite != null ? milite.admin ? EARoleType.admin : EARoleType.user : EARoleType.guest);
+            getWamLogin().setUtente(milite);
 
             //--costruiosco una SECONDA istanza di croce per moidificare la descrizione ed inserirla come company
             //--verrà letta da MainLayout14
             company = croceService.findByKeyUnica(croce.code);
             company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione());
-            wamLogin.setCompany(company);
+            getWamLogin().setCompany(company);
             //--backdoor
             if (utente != null && utente.isDev()) {
-                wamLogin.setRoleType(EARoleType.developer);
+                getWamLogin().setRoleType(EARoleType.developer);
             }// end of if cycle
 
-            vaadSession.setAttribute(KEY_WAM_CONTEXT, wamLogin);
+            vaadSession.setAttribute(KEY_WAM_CONTEXT, wamLoginLocal);
         }// end of if cycle
 
         if (login != null && login.getUtente() == null) {
@@ -674,10 +674,9 @@ public abstract class WamService extends AService {
             utente.username = uniqueUserName;
             login.setUtente(utente);
             //            login.setCompany(croce);
-            login.setRoleType(wamLogin.getRoleType());
+            login.setRoleType(getWamLogin().getRoleType());
         }// end of if cycle
 
-        return wamLogin;
     }// end of method
 
 

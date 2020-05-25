@@ -69,7 +69,7 @@ import java.util.Set;
 @Builder(builderMethodName = "builderMilite")
 @EqualsAndHashCode(callSuper = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "username", "enabled", "nome", "cognome", "admin", "infermiere", "dipendente", "creatoreTurni", "funzioni", "noteWam"})
+@AIList(fields = {"ordine", "cognome", "nome", "enabled", "username", "admin", "infermiere", "dipendente", "creatoreTurni", "funzioni", "noteWam"})
 @AIForm(fields = {"nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "role", "locked", "admin", "dipendente", "infermiere", "creatoreTurni", "enabled", "funzioni", "noteWam"})
 @AIScript(sovrascrivibile = false)
 public class Milite extends Person {

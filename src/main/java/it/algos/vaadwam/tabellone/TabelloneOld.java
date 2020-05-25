@@ -187,16 +187,17 @@ public class TabelloneOld extends AGridViewList {
     @Override
     protected void initView() {
 
-        if (!inited){
+        if (!inited) {
             // crea tutta la struttura standard della pagina compresa la grid
             super.initView();
 
-            inited=true;
+            inited = true;
         }
 
 
         // crea il wam-login della sessione
-        wamLogin = wamService.fixWamLogin();
+        wamService.fixWamLogin();
+        wamLogin = wamService.getWamLogin();
         ALogin login = vaadinService.getLogin();
         if (login != null) {
             wamLogin = (WamLogin) login;

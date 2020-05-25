@@ -336,12 +336,11 @@ public class FunzioneService extends WamService {
     public List<Funzione> findAll() {
         List<Funzione> items = null;
         Croce croce = getCroce();
-        wamLogin = getWamLogin();
 
         if (croce != null) {
             items = findAllByCroce(croce);
         } else {
-            if (wamLogin != null && wamLogin.isDeveloper()) {
+            if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
             }// end of if cycle
         }// end of if/else cycle

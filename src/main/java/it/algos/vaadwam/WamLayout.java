@@ -206,8 +206,8 @@ public class WamLayout extends MainLayout14 {
      */
     protected void profilePressed() {
         //--Crea il wam-login della sessione
-        WamLogin wamLogin = wamService.fixWamLogin();
-        Milite milite = wamLogin.getMilite();
+        wamService.fixWamLogin();
+        Milite milite = wamService.getWamLogin().getMilite();
 
         if (milite != null) {
             milite = militeService.findById(milite.id);

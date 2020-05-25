@@ -392,8 +392,8 @@ public class MiliteService extends WamService implements IUtenteService {
     public AEntity save(AEntity oldBean, AEntity modifiedBean) {
         AEntity entityBean = super.save(oldBean, modifiedBean);
 
-        if (wamLogin != null && getWamLogin().getMilite() != null && entityBean instanceof Milite && getWamLogin().getMilite().id.equals(entityBean.id)) {
-            wamLogin.setMilite((Milite) entityBean);
+        if (getWamLogin() != null && getWamLogin().getMilite() != null && entityBean instanceof Milite && getWamLogin().getMilite().id.equals(entityBean.id)) {
+            getWamLogin().setMilite((Milite) entityBean);
         }
 
         return entityBean;
@@ -516,12 +516,11 @@ public class MiliteService extends WamService implements IUtenteService {
     public List<Milite> findAll() {
         List<Milite> items = null;
         Croce croce = getCroce();
-        wamLogin = getWamLogin();
 
         if (croce != null) {
             items = findAllByCroce(croce);
         } else {
-            if (wamLogin != null && wamLogin.isDeveloper()) {
+            if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
             }// end of if cycle
         }// end of if/else cycle
@@ -746,8 +745,8 @@ public class MiliteService extends WamService implements IUtenteService {
     public List<String> getGridPropertyNamesList(AContext context) {
         List<String> lista;
 
-        if (wamLogin != null && wamLogin.isAdminOrDev()) {
-            lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+        if (getWamLogin() != null && getWamLogin().isAdminOrDev()) {
+            lista = array.getList("ordine,nome,cognome,enabled,username,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         } else {
             lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         }
@@ -771,7 +770,7 @@ public class MiliteService extends WamService implements IUtenteService {
     public List<String> getFormPropertyNamesList(AContext context) {
         List<String> lista;
 
-        if (wamLogin != null && wamLogin.isAdminOrDev()) {
+        if (getWamLogin() != null && getWamLogin().isAdminOrDev()) {
             lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         } else {
             lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
@@ -805,7 +804,7 @@ public class MiliteService extends WamService implements IUtenteService {
         if (croce != null) {
             super.deleteByProperty(entityClass, "croce", croce);
         } else {
-            if (wamLogin != null && wamLogin.isDeveloper()) {
+            if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 mongo.drop(entityClass);
             }// end of if cycle
             super.deleteByProperty(entityClass, "croce", croce);

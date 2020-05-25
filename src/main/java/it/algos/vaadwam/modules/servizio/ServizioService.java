@@ -314,12 +314,11 @@ public class ServizioService extends WamService {
     public List<Servizio> findAll() {
         List<Servizio> items = null;
         Croce croce = getCroce();
-        wamLogin = getWamLogin();
 
         if (croce != null) {
             items = findAllByCroce(croce);
         } else {
-            if (wamLogin != null && wamLogin.isDeveloper()) {
+            if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
             }// end of if cycle
         }// end of if/else cycle

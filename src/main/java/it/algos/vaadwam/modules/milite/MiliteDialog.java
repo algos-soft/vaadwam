@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static it.algos.vaadflow.application.FlowCost.PUNTO;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
@@ -189,7 +190,7 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         }// end of if/else cycle
 
         //--suggerimenti per il nickname
-        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_PASSWORD) != null) {
+        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null) {
             ((ATextField) getField(FIELD_NOME)).addFocusListener(event -> sincro());
             ((ATextField) getField(FIELD_COGNOME)).addFocusListener(event -> sincro());
             ((ATextField) getField(FIELD_PASSWORD)).addFocusListener(event -> sincro());
@@ -202,12 +203,13 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         String alfa3 = (String) getField(FIELD_COGNOME).getValue();
         String nomeText;
         String cognomeTxt;
+        String sep = PUNTO;
         String tag = "123";
 
         if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_USERNAME) != null && getField(FIELD_PASSWORD) != null) {
             nomeText = text.isValid((String) getField(FIELD_NOME).getValue()) ? (String) getField(FIELD_NOME).getValue() : VUOTA;
             cognomeTxt = text.isValid((String) getField(FIELD_COGNOME).getValue()) ? (String) getField(FIELD_COGNOME).getValue() : VUOTA;
-            getField(FIELD_USERNAME).setValue(nomeText.toLowerCase() + cognomeTxt.toLowerCase());
+            getField(FIELD_USERNAME).setValue(nomeText.substring(0, 1).toLowerCase() + sep + cognomeTxt.toLowerCase());
             getField(FIELD_PASSWORD).setValue(nomeText.toLowerCase() + tag);
             getField(FIELD_NOME).setValue(text.primaMaiuscola(nomeText));
             getField(FIELD_COGNOME).setValue(text.primaMaiuscola(cognomeTxt));
