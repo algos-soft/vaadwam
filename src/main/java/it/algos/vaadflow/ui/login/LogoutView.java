@@ -26,13 +26,12 @@ public class LogoutView extends ALayoutViewList implements BeforeEnterObserver {
 
     public LogoutView() {
         super(null, null);
-    }// end of constructor
-
+    }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         VaadinSession.getCurrent().getSession().invalidate();
         UI.getCurrent().getPage().executeJavaScript("location.assign('logout')");
-    }// end of method
+    }
 
-}// end of class
+}

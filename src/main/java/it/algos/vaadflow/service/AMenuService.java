@@ -113,8 +113,9 @@ public class AMenuService extends AService {
      * Menu logout sempre presente
      */
     public Tab creaMenuLogout() {
-        return creaAlgosTab(LogoutView.class);
-    }// end of method
+        Tab tab = creaAlgosTab(LogoutView.class);
+        return tab;
+    }
 
 
     /**

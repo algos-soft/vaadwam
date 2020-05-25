@@ -131,10 +131,10 @@ public class WamLayout extends MainLayout14 {
 
         if (login != null && login.isDeveloper()) {
             addDeveloper(topbar);
-        }// end of if cycle
+        }
 
         return topbar;
-    }// end of method
+    }
 
 
     protected void addDeveloper(TopbarComponent topbar) {

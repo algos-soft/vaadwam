@@ -171,11 +171,12 @@ public class TopbarComponent extends HorizontalLayout {
 
             menuService = StaticContextAccessor.getBean(AMenuService.class);
             tab = menuService.creaMenuLogout();
-            MenuItem logout = projectSubMenu.addItem(tab, menuItemClickEvent -> {
-                if (logoutListener != null) {
-                    logoutListener.logout();
-                }
-            });
+            projectSubMenu.addItem(tab);
+//            MenuItem logout = projectSubMenu.addItem(tab, menuItemClickEvent -> {
+//                if (logoutListener != null) {
+//                    logoutListener.logout();
+//                }
+//            });
         }
 
 

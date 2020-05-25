@@ -43,6 +43,7 @@ public class ALogin {
      * Costruttore base senza parametri <br>
      */
     public ALogin() {
+        super();
     }// end of constructor
 
 
