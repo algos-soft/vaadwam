@@ -1,6 +1,5 @@
 package it.algos.vaadwam.wam;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
@@ -605,7 +604,8 @@ public abstract class WamService extends AService {
      * Inserisce il wam-login come attributo nella vaadSession <br>
      */
     public void fixWamLogin() {
-        WamLogin wamLoginLocal;
+        WamLogin wamLoginLocal = null;
+        AContext context = null;
         ALogin login = getLogin();
         VaadinSession vaadSession;
         User springUser;
@@ -636,8 +636,15 @@ public abstract class WamService extends AService {
             //            uniqueUserName = springUser != null ? springUser.getUsername() : "";
         }// end of if/else cycle
 
-        vaadSession = UI.getCurrent().getSession();
-        wamLoginLocal = (WamLogin) vaadSession.getAttribute(KEY_WAM_CONTEXT);
+        //        vaadSession = UI.getCurrent().getSession();
+        //        Object alfa= vaadSession.getAttribute(KEY_WAM_CONTEXT);
+        //        if (alfa instanceof AContext) {
+        //            context = (AContext)alfa;
+        //        }
+
+        wamLoginLocal = (WamLogin) vaadinService.getSessionContext().getLogin();
+        //        wamLoginLocal = (WamLogin) vaadSession.getAttribute(KEY_WAM_CONTEXT);
+
         if (wamLoginLocal == null) {
             wamLoginLocal = appContext.getBean(WamLogin.class);
 
@@ -656,7 +663,7 @@ public abstract class WamService extends AService {
             getWamLogin().setRoleType(milite != null ? milite.admin ? EARoleType.admin : EARoleType.user : EARoleType.guest);
             getWamLogin().setUtente(milite);
 
-            //--costruiosco una SECONDA istanza di croce per moidificare la descrizione ed inserirla come company
+            //--costruiosco una SECONDA istanza di croce per modificare la descrizione ed inserirla come company
             //--verrà letta da MainLayout14
             company = croceService.findByKeyUnica(croce.code);
             company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione());
@@ -666,7 +673,8 @@ public abstract class WamService extends AService {
                 getWamLogin().setRoleType(EARoleType.developer);
             }// end of if cycle
 
-            vaadSession.setAttribute(KEY_WAM_CONTEXT, wamLoginLocal);
+            //            vaadSession.setAttribute(KEY_WAM_CONTEXT, wamLoginLocal);
+            vaadinService.getSessionContext().setLogin(wamLoginLocal);
         }// end of if cycle
 
         if (login != null && login.getUtente() == null) {

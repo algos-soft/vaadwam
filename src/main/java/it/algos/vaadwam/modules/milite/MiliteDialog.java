@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import static it.algos.vaadflow.application.FlowCost.PUNTO;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
 import static it.algos.vaadwam.modules.milite.MiliteList.*;
 import static it.algos.vaadwam.modules.milite.MiliteService.*;
@@ -206,14 +205,14 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         String sep = PUNTO;
         String tag = "123";
 
-        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_USERNAME) != null && getField(FIELD_PASSWORD) != null) {
-            nomeText = text.isValid((String) getField(FIELD_NOME).getValue()) ? (String) getField(FIELD_NOME).getValue() : VUOTA;
-            cognomeTxt = text.isValid((String) getField(FIELD_COGNOME).getValue()) ? (String) getField(FIELD_COGNOME).getValue() : VUOTA;
-            getField(FIELD_USERNAME).setValue(nomeText.substring(0, 1).toLowerCase() + sep + cognomeTxt.toLowerCase());
-            getField(FIELD_PASSWORD).setValue(nomeText.toLowerCase() + tag);
-            getField(FIELD_NOME).setValue(text.primaMaiuscola(nomeText));
-            getField(FIELD_COGNOME).setValue(text.primaMaiuscola(cognomeTxt));
-        }
+        //        if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null && getField(FIELD_USERNAME) != null && getField(FIELD_PASSWORD) != null) {
+        //            nomeText = text.isValid((String) getField(FIELD_NOME).getValue()) ? (String) getField(FIELD_NOME).getValue() : VUOTA;
+        //            cognomeTxt = text.isValid((String) getField(FIELD_COGNOME).getValue()) ? (String) getField(FIELD_COGNOME).getValue() : VUOTA;
+        //            getField(FIELD_USERNAME).setValue(nomeText.substring(0, 1).toLowerCase() + sep + cognomeTxt.toLowerCase());
+        //            getField(FIELD_PASSWORD).setValue(nomeText.toLowerCase() + tag);
+        //            getField(FIELD_NOME).setValue(text.primaMaiuscola(nomeText));
+        //            getField(FIELD_COGNOME).setValue(text.primaMaiuscola(cognomeTxt));
+        //        }
     }// end of method
 
 
