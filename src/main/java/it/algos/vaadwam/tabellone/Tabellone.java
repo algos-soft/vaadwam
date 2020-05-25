@@ -223,8 +223,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // bottone Genera Turni (solo admin e developer)
         bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
-        bGenTurni.setVisible(isUtenteManagerTabellone());
-        //        bGenTurni.setVisible(false); //@todo Linea di codice provvisoriamente commentata e DA RIMETTERE
+        bGenTurni.setVisible(isSuperUser());
 
         // app footer
         divAppFooter.add(appFooter);
@@ -234,7 +233,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // costruisce la grid
         buildAllGrid();
 
+
     }
+
 
 
     private void initChecks() {
@@ -945,7 +946,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
             // recupera il turno
             try {
-                Turno turno = turnoService.findByDateAndServizio(giorno, servizio);
+                List<Turno> turni = turnoService.findByDateAndServizio(giorno, servizio);
+                Turno turno=null;
+                if(turni.size()>0){
+                    turno = turni.get(0); // la ripetizione vale solo su turni standard
+                }
 
                 // se il turno non esiste va creato ora
                 if (turno == null) {

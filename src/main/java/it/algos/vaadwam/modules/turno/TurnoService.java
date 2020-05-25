@@ -16,6 +16,7 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamService;
@@ -499,20 +500,28 @@ public class TurnoService extends WamService {
     }
 
 
-    public Turno findByDateAndServizio(LocalDate giorno, Servizio servizio) throws Exception {
-        Turno turno = null;
-        Croce croce = getCroce();
-        List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(croce, servizio, giorno);
-        if (turni.size() > 1) {
-            throw new Exception("Numero di turni inatteso (atteso:1, trovati:" + turni.size() + ")");
-        }
-
-        if (turni.size() == 1) {
-            turno = turni.get(0);
-        }
-
-        return turno;
+    /**
+     * Ritorna i turni della croce corrente per un dato servizio in un dato giorno.
+     * <br>
+     * Se si tratta di servizio standard è uno solo (salvo errori strutturali)<br>
+     * Se si tratta di servizio non standard possono essere più di 1
+     */
+    public List<Turno> findByDateAndServizio(LocalDate giorno, Servizio servizio) {
+        List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(getCroce(), servizio, giorno);
+        return turni;
     }
+
+    /**
+     * Ritorna i turni della croce corrente per un dato servizio in un dato giorno e data croce.
+     * <br>
+     * Se si tratta di servizio standard è uno solo (salvo errori strutturali)<br>
+     * Se si tratta di servizio non standard possono essere più di 1
+     */
+    public List<Turno> findByDateAndServizioAndCroce(LocalDate giorno, Servizio servizio, Croce croce) {
+        List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(croce, servizio, giorno);
+        return turni;
+    }
+
 
 
     //    /**
@@ -634,6 +643,20 @@ public class TurnoService extends WamService {
 
         return items;
     }// end of method
+
+
+    /**
+     * Restituisce la lista dei militi iscritti a un turno
+     */
+    public List<Milite> getMilitiIscritti(Turno turno){
+        List<Milite> militi = new ArrayList<>();
+        for(Iscrizione iscrizione : turno.getIscrizioni()){
+            if (iscrizione.getMilite()!=null){
+                militi.add(iscrizione.getMilite());
+            }
+        }
+        return militi;
+    }
 
 
     /**

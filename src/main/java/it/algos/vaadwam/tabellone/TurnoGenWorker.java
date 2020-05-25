@@ -1,8 +1,15 @@
 package it.algos.vaadwam.tabellone;
 
+import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.turno.Turno;
+import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamLogin;
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +18,9 @@ import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
@@ -52,6 +61,14 @@ public class TurnoGenWorker {
     @Getter
     private EsitoGenerazioneTurni esito;
 
+    @Autowired
+    private TurnoService turnoService;
+
+    @Autowired
+    protected AVaadinService vaadinService;
+
+    private Croce croce;
+
 
     public TurnoGenWorker() {
     }
@@ -80,6 +97,8 @@ public class TurnoGenWorker {
 
 
     public void startWork() {
+
+        croce=(Croce)vaadinService.getSessionContext().getLogin().getCompany();
 
         old_status = null;
         status = null;
@@ -135,12 +154,6 @@ public class TurnoGenWorker {
                 }
                 totTurni+=quantiTurni;
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 old_progress = progress;
                 progress=(float)i/(float)quantiGiorni;
 
@@ -180,8 +193,14 @@ public class TurnoGenWorker {
         List<Servizio> servizi = getServiziForDayOfWeek(dow);
         int i=0;
         for(Servizio servizio : servizi){
-            System.out.println("creato: "+data+" - "+servizio.getCode());
-            i++;
+            // qui siamo in un thread separato e non abbiamo login, passare sempre la croce
+            List<Turno> turni = turnoService.findByDateAndServizioAndCroce(data, servizio, croce);
+            if(turni.isEmpty()){    // non se esiste già!
+                Turno turno = turnoService.newEntity(data, servizio);
+                turno.croce=croce;  // qui siamo in un thread separato e non abbiamo login
+                turnoService.save(turno);
+                i++;
+            }
         }
         return i;
     }
@@ -197,8 +216,16 @@ public class TurnoGenWorker {
         List<Servizio> servizi = getServiziForDayOfWeek(dow);
         int i=0;
         for(Servizio servizio : servizi){
-            System.out.println("cancellato: "+data+" - "+servizio.getCode());
-            i++;
+            // qui siamo in un thread separato e non abbiamo login, passare sempre la croce
+            List<Turno> turni = turnoService.findByDateAndServizioAndCroce(data, servizio, croce);
+            if(!turni.isEmpty()){
+                for(Turno turno : turni){  // per sicurezza ciclo anche se dovrebbe essere uno solo
+                    if(turnoService.getMilitiIscritti(turno).size()==0){
+                        turnoService.delete(turno);
+                        i++;
+                    }
+                }
+            }
         }
         return i;
     }

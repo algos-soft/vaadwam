@@ -5,6 +5,28 @@
 
     <template>
 
+        <style>
+            .tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+        </style>
 
         <!--gruppo di checkbox di test in sviluppo-->
         <vaadin-checkbox-group theme="horizontal" style="display:none">
@@ -58,19 +80,16 @@
             <div id="footer"
                  style="display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; padding-bottom:0.5em; align-items:center">
 
-                <vaadin-button id="bColori" style="align-items:center">
+                <vaadin-button id="bColori" style="align-items:center" title="Mostra la legenda colori">
                     <iron-icon src="frontend/images/rainbow.png"></iron-icon>
-                    <label style="margin-left:0.3em; align-items:center">Colori...</label>
                 </vaadin-button>
 
-                <vaadin-button id="bAddServizio" style="margin-left:1em">
-                    <iron-icon icon="vaadin:plus-circle-o"></iron-icon>
-                    <label>Nuovo servizio</label>
+                <vaadin-button id="bAddServizio" style="margin-left:1em" title="Aggiunge un nuovo servizio al tabellone">
+                    <iron-icon icon="vaadin:plus-circle"></iron-icon>
                 </vaadin-button>
 
-                <vaadin-button id="bGenTurni" style="margin-left:1em";display="false">
+                <vaadin-button id="bGenTurni" style="margin-left:1em";display="false" title="Genera automaticamente una serie di turni">
                     <iron-icon icon="vaadin:cog"></iron-icon>
-                    <label>Gen</label>
                 </vaadin-button>
 
 
