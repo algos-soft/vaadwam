@@ -77,8 +77,10 @@ public class AUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String passwordHash = "";
         Collection<? extends GrantedAuthority> authorities;
-        Utente utente = (Utente) utenteService.findById(username);
-        Milite milite = militeService.findById(username);
+        //        Utente utente = (Utente) utenteService.findById(username);
+        Utente utente = (Utente) utenteService.findByKeyUnica(username);
+        //        Milite milite = militeService.findById(username);
+        Milite milite = militeService.findByKeyUnica(username);
         Croce croce;
 
         if (milite == null && utente == null) {

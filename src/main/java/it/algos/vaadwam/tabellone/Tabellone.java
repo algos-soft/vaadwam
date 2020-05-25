@@ -46,7 +46,6 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
@@ -225,7 +224,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // bottone Genera Turni (solo admin e developer)
         bGenTurni.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> clickGenTurni());
         bGenTurni.setVisible(isUtenteManagerTabellone());
-//        bGenTurni.setVisible(false); //@todo Linea di codice provvisoriamente commentata e DA RIMETTERE
+        //        bGenTurni.setVisible(false); //@todo Linea di codice provvisoriamente commentata e DA RIMETTERE
 
         // app footer
         divAppFooter.add(appFooter);
@@ -723,7 +722,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private boolean isSuperUser(){
+    private boolean isSuperUser() {
         return (wamLogin.isDeveloper() || wamLogin.isAdmin());
     }
 
@@ -814,7 +813,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      * Determina se un Milite ha una Funzione
      */
     private boolean isCompatibile(Milite milite, String codFunzione) {
-        long count = milite.getFunzioni().stream().filter(funzione -> funzione.getCode().equals(codFunzione)).count();
+        long count = 0;
+
+        if (milite.getFunzioni() != null) {
+            count = milite.getFunzioni().stream().filter(funzione -> funzione.getCode().equals(codFunzione)).count();
+        }
+
         return count > 0;
     }
 
@@ -1223,7 +1227,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // https://vaadin.com/forum/thread/17634020/reloading-vaadin-grid-makes-the-page-scroll-to-top
 
     }
-
 
 
 }

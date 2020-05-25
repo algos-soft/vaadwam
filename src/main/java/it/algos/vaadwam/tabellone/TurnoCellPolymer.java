@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ import static it.algos.vaadwam.application.WamCost.USA_COLORAZIONE_DIFFERENZIATA
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Tag("turno-cell")
 @HtmlImport("src/views/tabellone/turnoCellPolymer.html")
-public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
+public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
 
     public ADateService date = ADateService.getInstance();
 
@@ -63,12 +62,13 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
     private ITabellone tabellone;
 
+
     public TurnoCellPolymer() {
     }
 
 
     public TurnoCellPolymer(ITabellone tabellone, Riga riga, LocalDate giorno) {
-        this.tabellone=tabellone;
+        this.tabellone = tabellone;
         this.riga = riga;
         this.giorno = giorno;
     }
@@ -78,18 +78,18 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     private void inizia() {
 
         // eventuale header
-        if(!riga.getServizio().isOrarioDefinito()){
+        if (!riga.getServizio().isOrarioDefinito()) {
             Turno turno = getTurno();
-            String text1=null;
-            String text2=null;
-            if(turno!=null){
-                String oraIni=dateService.getOrario(turno.getInizio());
-                String oraFine=dateService.getOrario(turno.getFine());
-                if(oraIni!=null && oraFine!=null){
-                    text1 = oraIni+" - "+oraFine;
+            String text1 = null;
+            String text2 = null;
+            if (turno != null) {
+                String oraIni = dateService.getOrario(turno.getInizio());
+                String oraFine = dateService.getOrario(turno.getFine());
+                if (oraIni != null && oraFine != null) {
+                    text1 = oraIni + " - " + oraFine;
                 }
 
-                text2=turno.getNote();
+                text2 = turno.getNote();
 
             }
 
@@ -103,13 +103,13 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
     }
 
 
-    private Turno getTurno(){
-        Turno turno=null;
+    private Turno getTurno() {
+        Turno turno = null;
         List<Turno> turni = riga.getTurni();
-        if (turni!=null){
-            for(Turno t:turni){
-                if(t.getGiorno().equals(giorno)){
-                    turno=t;
+        if (turni != null) {
+            for (Turno t : turni) {
+                if (t.getGiorno().equals(giorno)) {
+                    turno = t;
                     break;
                 }
             }
@@ -137,12 +137,12 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
         List<RigaCella> righeCella = new ArrayList<>();
 
-        boolean colorazioneDifferenziata=pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
+        boolean colorazioneDifferenziata = pref.isBool(USA_COLORAZIONE_DIFFERENZIATA);
 
         // colore di base dell'intero turno (se turno nullo è colore "creabile")
         // (per determinare il colore controlla tutte le iscrizioni per vedere se il turno è valido)
-        EAWamColore coloreTurno=null;
-        if(!colorazioneDifferenziata){
+        EAWamColore coloreTurno = null;
+        if (!colorazioneDifferenziata) {
             coloreTurno = tabelloneService.getColoreTurno(turno);
         }
 
@@ -155,7 +155,7 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
                     EAWamColore coloreCella;
                     if (!colorazioneDifferenziata) {
                         // se non usa colorazione differenziata, il colore l'ha già calcolato prima
-                        coloreCella=coloreTurno;
+                        coloreCella = coloreTurno;
                     } else {
                         // se usa colorazione differenziata, calcola il colore
                         // della cella per ogni singola iscrizione
@@ -179,8 +179,8 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
 
                 //con colorazione differenziata, se non ci sono iscrizioni
                 // il colore è 'creabile'
-                if(colorazioneDifferenziata){
-                    coloreTurno=EAWamColore.creabile;
+                if (colorazioneDifferenziata) {
+                    coloreTurno = EAWamColore.creabile;
                 }
 
                 righeCella.add(new RigaCella(coloreTurno, "", "", funzServ.code));
@@ -199,10 +199,12 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
         if (iscr.note != null && iscr.note.length() > 0) {
             status = true;
         }
-        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
+        //        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0 || turno.inizio == LocalTime.MIDNIGHT)) {
+        if (iscr.inizio != null && (iscr.inizio.compareTo(turno.inizio) != 0)) {
             status = true;
         }
-        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
+        //        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0 || turno.fine == LocalTime.MIDNIGHT)) {
+        if (iscr.fine != null && (iscr.fine.compareTo(turno.fine) != 0)) {
             status = true;
         }
 
@@ -215,11 +217,10 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel>   {
      */
     @EventHandler
     void handleClick(@ModelItem RigaCella item) {
-        if(tabellone!=null){
+        if (tabellone != null) {
             tabellone.cellClicked(turno, giorno, riga.servizio, item.getFunzione());
         }
     }
-
 
 
 }
