@@ -38,7 +38,7 @@ public enum EATime {
      * Pattern: EEE, d MMM <br>
      * Esempio: dom, 5 apr <br>
      */
-    weekShortMese("weekShortMese", "EEE, d MMM", "dom, 5 apr"),
+    weekShortMese("weekShortMese", "EEE d MMM", "dom 5 apr"),
     /**
      * Pattern: d MMMM <br>
      * Esempio: 5 ottobre <br>

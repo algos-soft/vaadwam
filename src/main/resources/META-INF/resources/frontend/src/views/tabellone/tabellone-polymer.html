@@ -6,26 +6,6 @@
     <template>
 
         <style>
-            .tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 1;
-}
-
         </style>
 
         <!--gruppo di checkbox di test in sviluppo-->
@@ -59,6 +39,7 @@
                 border-radius:0.6em;
                 color:white; background:black; opacity:0.8;
                 z-index:2; visibility:hidden">
+
             <dom-repeat items="[[coloriLegenda]]">
                 <template>
                     <div style="display:flex; flex-direction:column">
@@ -114,9 +95,7 @@
                 return 'tabellone-polymer'
             }
         }
-
         customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
-
     </script>
 
 </dom-module>

@@ -9,7 +9,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.security.SecurityUtils;
 import it.algos.vaadflow.ui.login.LoginView;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
-import it.algos.vaadwam.tabellone.TabelloneOld;
+import it.algos.vaadwam.tabellone.Tabellone;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -64,13 +64,13 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
 String alfa=event.getLocation().getFirstSegment();
 
         if (alfa!=null&&alfa.equals("gaps")) {
-            event.rerouteTo(TabelloneOld.class);
+            event.rerouteTo(Tabellone.class);
         }// end of if cycle
 
         if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
             if(SecurityUtils.isUserLoggedIn()) {
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {
-                    event.rerouteTo(TabelloneOld.class);
+                    event.rerouteTo(Tabellone.class);
                 } else {
                     event.rerouteTo(LoginView.class);
                 }// end of if/else cycle
