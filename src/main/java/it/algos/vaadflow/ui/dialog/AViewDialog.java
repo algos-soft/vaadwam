@@ -404,8 +404,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     protected Div creaFormLayout() {
         Div div;
         if (usaFormDueColonne) {
-            formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
-                    new FormLayout.ResponsiveStep("50em", 2));
+            formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1), new FormLayout.ResponsiveStep("50em", 2));
         } else {
             formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("50em", 1));
         }// end of if/else cycle
@@ -450,7 +449,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
             cancelButton.addClickListener(e -> close());
             cancelButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
             if (pref.isBool(USA_BUTTON_SHORTCUT) && isDialogoPrimoLivello) {
-                cancelButton.addClickShortcut(Key.ARROW_LEFT);
+                cancelButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL);
             }// end of if cycle
             bottomLayout.add(cancelButton);
         }// end of if cycle
@@ -458,9 +457,9 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         if (usaSaveButton) {
             saveButton.getElement().setAttribute("theme", "primary");
             saveButton.setIcon(new Icon(VaadinIcon.DATABASE));
-//            if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-//                saveButton.addClickShortcut(Key.ENTER);
-//            }// end of if cycle
+            //            if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+            //                saveButton.addClickShortcut(Key.ENTER);
+            //            }// end of if cycle
             bottomLayout.add(saveButton);
         }// end of if cycle
 
@@ -753,8 +752,6 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     }// end of method
 
 
-
-
     /**
      * Eventuali regolazioni aggiuntive ai fields del binder PRIMA di associare i valori <br>
      * Sovrascritto nella sottoclasse
@@ -809,12 +806,12 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * 3) siamo collegati (login) come developer
      */
     protected void fixCompanyField() {
-//        companyField = (AComboBox) getField(AService.FIELD_NAME_COMPANY);
-//        if (companyField != null) {
-//            List items = companyService.findAll();
-//            companyField.setItems(items);
-//            companyField.setEnabled(false);
-//        }// end of if cycle
+        //        companyField = (AComboBox) getField(AService.FIELD_NAME_COMPANY);
+        //        if (companyField != null) {
+        //            List items = companyService.findAll();
+        //            companyField.setItems(items);
+        //            companyField.setEnabled(false);
+        //        }// end of if cycle
     }// end of method
 
 
@@ -939,9 +936,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
             close();
         } else {
             BinderValidationStatus<T> status = binder.validate();
-            Notification.show(status.getValidationErrors().stream()
-                    .map(ValidationResult::getErrorMessage)
-                    .collect(Collectors.joining("; ")), 3000, Notification.Position.BOTTOM_START);
+            Notification.show(status.getValidationErrors().stream().map(ValidationResult::getErrorMessage).collect(Collectors.joining("; ")), 3000, Notification.Position.BOTTOM_START);
         }
     }// end of method
 

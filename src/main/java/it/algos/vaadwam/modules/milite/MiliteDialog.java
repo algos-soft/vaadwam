@@ -90,6 +90,19 @@ public class MiliteDialog extends WamViewDialog<Milite> {
 
 
     /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificare informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+
+        usaFormDueColonne = false;
+    }
+
+
+    /**
      * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
      * <p>
      * Chiamato da AViewDialog.open() <br>
@@ -127,12 +140,12 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         if (wamLogin != null && wamLogin.isAdminOrDev()) {
             //            if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
             if (((Milite) currentItem).admin) {
-                lista = array.getList("ordine,username,enabled,nome,cognome,password,admin,infermiere,dipendente,creatoreTurni,managerTabellone,funzioni,noteWam");
+                lista = array.getList("ordine,nome,cognome,username,password,enabled,admin,infermiere,dipendente,creatoreTurni,managerTabellone,funzioni,noteWam");
             } else {
-                lista = array.getList("ordine,username,enabled,nome,cognome,password,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+                lista = array.getList("ordine,nome,cognome,username,password,enabled,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
             }
         } else {
-            lista = array.getList("username,enabled,nome,cognome,password,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+            lista = array.getList("ordine,nome,cognome,username,password,enabled,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         }
 
         return lista;

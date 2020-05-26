@@ -374,6 +374,12 @@ public class MiliteService extends WamService implements IUtenteService {
             ((Utente) entityBean).ruoli = roleService.getUserRole();
         }
 
+        //--prevedere possibilità di disabilitarlo se la croce non lo vuole
+        if (true) {
+            ((Milite) entityBean).nome = text.primaMaiuscola(((Milite) entityBean).nome);
+            ((Milite) entityBean).cognome = text.primaMaiuscola(((Milite) entityBean).cognome);
+        }
+
         return entity;
     }// end of method
 
