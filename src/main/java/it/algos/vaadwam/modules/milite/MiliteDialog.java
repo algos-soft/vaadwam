@@ -1,6 +1,8 @@
 package it.algos.vaadwam.modules.milite;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.StringUtils;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.io.Serializable;
@@ -200,6 +203,20 @@ public class MiliteDialog extends WamViewDialog<Milite> {
             disabilita(FIELD_INFERMIERE);
             disabilita(FIELD_CENTRALINISTA);
         }// end of if/else cycle
+
+        // capitalizzazione nome
+        getField(FIELD_NOME).addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<TextField, String>>) event -> {
+            if (event.isFromClient()){
+                getField(FIELD_NOME).setValue(StringUtils.capitalize(event.getValue()));
+            }
+        });
+
+        // capitalizzazione cognome
+        getField(FIELD_COGNOME).addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<TextField, String>>) event -> {
+            if (event.isFromClient()){
+                getField(FIELD_COGNOME).setValue(StringUtils.capitalize(event.getValue()));
+            }
+        });
 
         //--suggerimenti per il nickname
         if (getField(FIELD_NOME) != null && getField(FIELD_COGNOME) != null) {
