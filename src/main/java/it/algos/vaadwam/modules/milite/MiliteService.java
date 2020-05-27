@@ -10,7 +10,6 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.Address;
-import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.role.EARoleType;
@@ -22,6 +21,7 @@ import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +103,7 @@ public class MiliteService extends WamService implements IUtenteService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private LogService logger;
+    private WamLogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>

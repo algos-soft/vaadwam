@@ -6,7 +6,6 @@ import it.algos.vaadflow.enumeration.EALogLivello;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
 import it.algos.vaadflow.modules.log.Log;
-import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
@@ -24,6 +23,7 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -156,7 +156,7 @@ public class MigrationService extends AService {
     private ADateService date;
 
     @Autowired
-    private LogService logger;
+    private WamLogService logger;
 
     @Autowired
     private LogtypeService logtype;

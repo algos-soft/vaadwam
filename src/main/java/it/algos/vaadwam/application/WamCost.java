@@ -29,6 +29,8 @@ import java.util.List;
 @AIScript(sovrascrivibile = false)
 public class WamCost {
 
+    public final static String TAG_WAM_LOG = "wamlog";
+
     public final static String TAG_STA = "statistica";
 
     public final static String TAG_RIG = "riga";

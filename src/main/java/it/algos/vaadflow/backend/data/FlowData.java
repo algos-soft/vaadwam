@@ -61,7 +61,7 @@ public class FlowData extends AData {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private LogService logService;
+    private LogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -134,7 +134,7 @@ public class FlowData extends AData {
     public void loadAllData() {
         roleService.loadData();
         logtypeService.loadData();
-        logService.loadData();
+        logger.loadData();
 
         addressService.loadData();
         personService.loadData();
