@@ -121,12 +121,12 @@ public class Log extends ACEntity {
     public LocalDateTime evento;
 
 
-    /**
-     * @return a string representation of the object.
-     */
-    @Override
-    public String toString() {
-        return getType().toString() + " - " + getDescrizione();
-    }// end of method
+    //    /**
+    //     * @return a string representation of the object.
+    //     */
+    //    @Override
+    //    public String toString() {
+    //        return getType().toString() + " - " + getDescrizione();
+    //    }// end of method
 
 }// end of entity class
