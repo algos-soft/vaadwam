@@ -7,4 +7,5 @@ target
 
 # IntelliJ
 out/
+log/
 
