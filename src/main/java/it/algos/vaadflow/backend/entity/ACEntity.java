@@ -6,9 +6,9 @@ import it.algos.vaadflow.enumeration.EAFieldAccessibility;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.company.CompanyService;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Project springvaadin
@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Time: 12:14
  */
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public abstract class ACEntity extends AEntity {
 
 

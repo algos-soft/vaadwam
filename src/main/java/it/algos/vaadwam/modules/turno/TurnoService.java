@@ -33,9 +33,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -120,9 +120,10 @@ public class TurnoService extends WamService {
         this.repository = (TurnoRepository) repository;
     }
 
+
     @PostConstruct
-    private void init(){
-        randomService=appContext.getBean(ARandomService.class, 6);
+    private void init() {
+        randomService = appContext.getBean(ARandomService.class, 6);
     }
 
 
@@ -511,6 +512,7 @@ public class TurnoService extends WamService {
         return turni;
     }
 
+
     /**
      * Ritorna i turni della croce corrente per un dato servizio in un dato giorno e data croce.
      * <br>
@@ -521,7 +523,6 @@ public class TurnoService extends WamService {
         List<Turno> turni = repository.findAllByCroceAndServizioAndGiorno(croce, servizio, giorno);
         return turni;
     }
-
 
 
     //    /**
@@ -648,10 +649,10 @@ public class TurnoService extends WamService {
     /**
      * Restituisce la lista dei militi iscritti a un turno
      */
-    public List<Milite> getMilitiIscritti(Turno turno){
+    public List<Milite> getMilitiIscritti(Turno turno) {
         List<Milite> militi = new ArrayList<>();
-        for(Iscrizione iscrizione : turno.getIscrizioni()){
-            if (iscrizione.getMilite()!=null){
+        for (Iscrizione iscrizione : turno.getIscrizioni()) {
+            if (iscrizione.getMilite() != null) {
                 militi.add(iscrizione.getMilite());
             }
         }

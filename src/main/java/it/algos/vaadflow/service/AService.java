@@ -30,7 +30,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -620,7 +619,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @param context legato alla sessione
      *
-     * @return lista di nomi di properties
+     * @return lista di nomi di propertie
      */
     @Override
     public List<String> getFormPropertyNamesList(AContext context) {
@@ -859,7 +858,7 @@ public abstract class AService extends AbstractService implements IAService {
 
     /**
      * Proviene da List e da Form (quasi sempre) <br>
-     * Primo ingresso dopo il click sul bottone <br>
+     * Primo ingresso nel service dopo il click sul bottone <br>
      */
     public AEntity save(AEntity entityBean, EAOperation operation) {
         AEntity entitySaved = null;

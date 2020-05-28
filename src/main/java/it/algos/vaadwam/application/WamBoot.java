@@ -18,6 +18,7 @@ import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneList;
+import it.algos.vaadwam.modules.log.WamLogList;
 import it.algos.vaadwam.modules.milite.MiliteList;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.RigaList;
@@ -66,7 +67,7 @@ public class WamBoot extends ABoot {
 
     private final static double PROJECT_VERSION = 0.9;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 26);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 5, 28);
 
     /**
      * Inietta da Spring come 'singleton'
@@ -434,6 +435,7 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
+        FlowVar.menuClazzList.add(WamLogList.class);
         FlowVar.menuClazzList.add(PreferenzaList.class);
         FlowVar.menuClazzList.add(CroceList.class);
 

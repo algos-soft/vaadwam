@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -94,16 +94,19 @@ public class MiliteService extends WamService implements IUtenteService {
     public final static List<String> PROPERTIES_ADMIN = Arrays.asList("nome", "cognome", "userName", "passwordInChiaro", "telefono", "locked", "admin", "dipendente", "infermiere");
 
     /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    protected PersonService personService;
+    public WamLogService wamLogger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private WamLogService logger;
+    protected PersonService personService;
+
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -322,6 +325,196 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     /**
+     * Proviene da List e da Form (quasi sempre) <br>
+     * Primo ingresso nel service dopo il click sul bottone <br>
+     */
+    public AEntity save(AEntity entityBean, EAOperation operation) {
+        AEntity entitySaved = null;
+
+        if (operation == EAOperation.addNew) {
+            entitySaved = super.save(entityBean, operation);
+            if (entitySaved != null) {
+                wamLogger.nuovoMilite(getMessageNuovo(entityBean));
+            }
+        } else {
+            if (isModificato(entityBean)) {
+                if (operation == EAOperation.editProfile) {
+                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
+                } else {
+                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
+                }
+                entitySaved = super.save(entityBean, operation);
+            }
+        }
+
+        return entitySaved;
+    }// end of method
+
+
+    public boolean isModificato(AEntity entityBean) {
+        AEntity entityOld = findByKeyUnica(((Milite) entityBean).username);
+        return entityOld != null ? !entityOld.equals(entityBean) : true;
+    }// end of method
+
+
+    public String getMessageNuovo(AEntity entityBean) {
+        String message = VUOTA;
+        String sep = " -> ";
+        Milite milite = (Milite) entityBean;
+
+        message += "Milite: ";
+        message += milite.id;
+        message += A_CAPO;
+        message += "nome: ";
+        message += milite.nome;
+        message += A_CAPO;
+
+        message += "cognome: ";
+        message += milite.cognome;
+        message += A_CAPO;
+
+        message += "nickname: ";
+        message += milite.username;
+        message += A_CAPO;
+
+        message += "password: ";
+        message += milite.password;
+        message += A_CAPO;
+
+        message += "telefono: ";
+        message += milite.telefono;
+        message += A_CAPO;
+
+        message += "mail: ";
+        message += milite.mail;
+        message += A_CAPO;
+
+        message += "attivo is set to ";
+        message += milite.enabled ? "true" : "false";
+        message += A_CAPO;
+
+        message += "admin is set to ";
+        message += milite.admin ? "true" : "false";
+        message += A_CAPO;
+
+        message += "dipendente is set to ";
+        message += milite.dipendente ? "true" : "false";
+        message += A_CAPO;
+
+        message += "infermiere is set to ";
+        message += milite.infermiere ? "true" : "false";
+        message += A_CAPO;
+
+        message += "creatoreTurni is set to ";
+        message += milite.creatoreTurni ? "true" : "false";
+        message += A_CAPO;
+
+        message += "managerTabellone is set to ";
+        message += milite.managerTabellone ? "true" : "false";
+        message += A_CAPO;
+
+        message += "funzioni are set to ";
+        message += milite.funzioni;
+        message += A_CAPO;
+
+        return message.trim();
+    }// end of method
+
+
+    public String getMessageModifiche(AEntity entityBean) {
+        String message = VUOTA;
+        String sep = " -> ";
+        Milite milite = (Milite) entityBean;
+        Milite militeOld = findById(milite.id);
+
+        message += "Milite: ";
+        message += milite.id;
+        message += A_CAPO;
+        if (!milite.nome.equals(militeOld.nome)) {
+            message += "nome: ";
+            message += militeOld.nome;
+            message += sep;
+            message += milite.nome;
+            message += A_CAPO;
+        }
+        if (!milite.cognome.equals(militeOld.cognome)) {
+            message += "cognome: ";
+            message += militeOld.cognome;
+            message += sep;
+            message += milite.cognome;
+            message += A_CAPO;
+        }
+        if (!milite.username.equals(militeOld.username)) {
+            message += "nickname: ";
+            message += militeOld.username;
+            message += sep;
+            message += milite.username;
+            message += A_CAPO;
+        }
+        if (!milite.password.equals(militeOld.password)) {
+            message += "password: ";
+            message += militeOld.password;
+            message += sep;
+            message += milite.password;
+            message += A_CAPO;
+        }
+        if (!milite.telefono.equals(militeOld.telefono)) {
+            message += "telefono: ";
+            message += militeOld.telefono;
+            message += sep;
+            message += milite.telefono;
+            message += A_CAPO;
+        }
+        if (!milite.mail.equals(militeOld.mail)) {
+            message += "mail: ";
+            message += militeOld.mail;
+            message += sep;
+            message += milite.mail;
+            message += A_CAPO;
+        }
+        if (milite.enabled != militeOld.enabled) {
+            message += "attivo is now ";
+            message += milite.enabled ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.admin != militeOld.admin) {
+            message += "admin is now ";
+            message += milite.admin ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.dipendente != militeOld.dipendente) {
+            message += "dipendente is now ";
+            message += milite.dipendente ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.infermiere != militeOld.infermiere) {
+            message += "infermiere is now ";
+            message += milite.infermiere ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.creatoreTurni != militeOld.creatoreTurni) {
+            message += "creatoreTurni is now ";
+            message += milite.creatoreTurni ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.managerTabellone != militeOld.managerTabellone) {
+            message += "admin is now ";
+            message += milite.managerTabellone ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (!milite.funzioni.equals(militeOld.funzioni)) {
+            message += "funzioni: ";
+            message += militeOld.funzioni;
+            message += sep;
+            message += milite.funzioni;
+            message += A_CAPO;
+        }
+
+        return message.trim();
+    }// end of method
+
+
+    /**
      * Operazioni eseguite PRIMA del save <br>
      * Regolazioni automatiche di property <br>
      *
@@ -336,6 +529,7 @@ public class MiliteService extends WamService implements IUtenteService {
             entityBean = personService.beforeSave(entityBean, operation);
             entityBean.id = null;
         }// end of if cycle
+
         Milite entity = (Milite) super.beforeSave(entityBean, operation);
 
         if (entity == null) {
@@ -401,7 +595,6 @@ public class MiliteService extends WamService implements IUtenteService {
         if (getWamLogin() != null && getWamLogin().getMilite() != null && entityBean instanceof Milite && getWamLogin().getMilite().id.equals(entityBean.id)) {
             getWamLogin().setMilite((Milite) entityBean);
         }
-
         return entityBean;
     }
 
