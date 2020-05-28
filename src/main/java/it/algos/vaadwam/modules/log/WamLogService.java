@@ -114,6 +114,16 @@ public class WamLogService extends AService {
     }
 
 
+    public void nuovoMilite(String message) {
+        log(EAWamLogType.nuovoMilite, message);
+    }
+
+
+    public void modificaProfile(String message) {
+        log(EAWamLogType.modificaProfile, message);
+    }
+
+
     public void modificaMilite() {
         log(EAWamLogType.modificaMilite);
     }

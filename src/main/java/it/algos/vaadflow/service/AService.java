@@ -619,7 +619,7 @@ public abstract class AService extends AbstractService implements IAService {
      *
      * @param context legato alla sessione
      *
-     * @return lista di nomi di properties
+     * @return lista di nomi di propertie
      */
     @Override
     public List<String> getFormPropertyNamesList(AContext context) {

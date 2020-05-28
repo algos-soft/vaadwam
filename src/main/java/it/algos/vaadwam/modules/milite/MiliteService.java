@@ -107,11 +107,6 @@ public class MiliteService extends WamService implements IUtenteService {
     @Autowired
     protected PersonService personService;
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     */
-    @Autowired
-    private WamLogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -339,11 +334,15 @@ public class MiliteService extends WamService implements IUtenteService {
         if (operation == EAOperation.addNew) {
             entitySaved = super.save(entityBean, operation);
             if (entitySaved != null) {
-                wamLogger.nuovoMilite();
+                wamLogger.nuovoMilite(getMessageNuovo(entityBean));
             }
         } else {
             if (isModificato(entityBean)) {
-                wamLogger.modificaMilite(getModifiche(entityBean));
+                if (operation == EAOperation.editProfile) {
+                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
+                } else {
+                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
+                }
                 entitySaved = super.save(entityBean, operation);
             }
         }
@@ -358,7 +357,71 @@ public class MiliteService extends WamService implements IUtenteService {
     }// end of method
 
 
-    public String getModifiche(AEntity entityBean) {
+    public String getMessageNuovo(AEntity entityBean) {
+        String message = VUOTA;
+        String sep = " -> ";
+        Milite milite = (Milite) entityBean;
+
+        message += "Milite: ";
+        message += milite.id;
+        message += A_CAPO;
+        message += "nome: ";
+        message += milite.nome;
+        message += A_CAPO;
+
+        message += "cognome: ";
+        message += milite.cognome;
+        message += A_CAPO;
+
+        message += "nickname: ";
+        message += milite.username;
+        message += A_CAPO;
+
+        message += "password: ";
+        message += milite.password;
+        message += A_CAPO;
+
+        message += "telefono: ";
+        message += milite.telefono;
+        message += A_CAPO;
+
+        message += "mail: ";
+        message += milite.mail;
+        message += A_CAPO;
+
+        message += "attivo is set to ";
+        message += milite.enabled ? "true" : "false";
+        message += A_CAPO;
+
+        message += "admin is set to ";
+        message += milite.admin ? "true" : "false";
+        message += A_CAPO;
+
+        message += "dipendente is set to ";
+        message += milite.dipendente ? "true" : "false";
+        message += A_CAPO;
+
+        message += "infermiere is set to ";
+        message += milite.infermiere ? "true" : "false";
+        message += A_CAPO;
+
+        message += "creatoreTurni is set to ";
+        message += milite.creatoreTurni ? "true" : "false";
+        message += A_CAPO;
+
+        message += "managerTabellone is set to ";
+        message += milite.managerTabellone ? "true" : "false";
+        message += A_CAPO;
+
+        message += "funzioni are set to ";
+        message += milite.funzioni;
+        message += A_CAPO;
+
+        return message.trim();
+    }// end of method
+
+
+    public String getMessageModifiche(AEntity entityBean) {
         String message = VUOTA;
         String sep = " -> ";
         Milite milite = (Milite) entityBean;
@@ -393,6 +456,20 @@ public class MiliteService extends WamService implements IUtenteService {
             message += militeOld.password;
             message += sep;
             message += milite.password;
+            message += A_CAPO;
+        }
+        if (!milite.telefono.equals(militeOld.telefono)) {
+            message += "telefono: ";
+            message += militeOld.telefono;
+            message += sep;
+            message += milite.telefono;
+            message += A_CAPO;
+        }
+        if (!milite.mail.equals(militeOld.mail)) {
+            message += "mail: ";
+            message += militeOld.mail;
+            message += sep;
+            message += milite.mail;
             message += A_CAPO;
         }
         if (milite.enabled != militeOld.enabled) {

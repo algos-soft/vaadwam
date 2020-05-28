@@ -39,7 +39,7 @@ import java.time.LocalDateTime;
 @Builder(builderMethodName = "builderWamlog")
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
-@AIEntity(recordName = "wamlog", company = EACompanyRequired.obbligatoria)
+@AIEntity(recordName = "log", company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"croce", "type", "milite", "evento", "descrizione"})
 @AIForm(fields = {"croce", "type", "milite", "evento", "descrizione"})
 public class WamLog extends AEntity {

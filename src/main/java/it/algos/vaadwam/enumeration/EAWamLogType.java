@@ -11,7 +11,23 @@ import java.util.List;
  * Time: 10:36
  */
 public enum EAWamLogType {
-    nuovaIscrizione("nuovaIscrizione"), modificaIscrizione("modificaIscrizione"), cancellazioneIscrizione("cancellazioneIscrizione"), aggiuntaTurnoExtra("aggiuntaTurnoExtra"), nuovoMilite("nuovoMilite"), modificaMilite("modificaMilite"), creazioneTurno("creazioneTurno"), cancellazioneTurno("cancellazioneTurno"),
+    nuovaIscrizione("nuovaIscrizione"),
+
+    modificaIscrizione("modificaIscrizione"),
+
+    cancellazioneIscrizione("cancellazioneIscrizione"),
+
+    aggiuntaTurnoExtra("aggiuntaTurnoExtra"),
+
+    nuovoMilite("nuovoMilite"),
+
+    modificaMilite("modificaMilite"),
+
+    modificaProfile("modificaProfile"),
+
+    creazioneTurno("creazioneTurno"),
+
+    cancellazioneTurno("cancellazioneTurno"),
     ;
 
 

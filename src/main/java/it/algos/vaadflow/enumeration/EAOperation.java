@@ -10,11 +10,7 @@ package it.algos.vaadflow.enumeration;
  * Delete is enabled when editing an already existing item.
  */
 public enum EAOperation {
-    addNew("New", "add", true, false),
-    edit("Edit", "edit", true, true),
-    editNoDelete("Edit", "edit", true, false),
-    editDaLink("Edit", "edit", true, true),
-    showOnly("Mostra", "mostra", false, false);
+    addNew("New", "add", true, false), edit("Edit", "edit", true, true), editProfile("Edit", "edit", true, false), editNoDelete("Edit", "edit", true, false), editDaLink("Edit", "edit", true, true), showOnly("Mostra", "mostra", false, false);
 
     private final String nameInTitle;
 
