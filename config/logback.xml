@@ -1,4 +1,4 @@
-<configuration scan="true" scanPeriod="15 seconds" >
+<configuration>
 
     <!-- read the spring properties -->
     <springProperty name="loggingFile" source="logging.file"/>
@@ -48,7 +48,7 @@
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
-    <logger name="org.springframework.*" level="INFO" additivity="false">
+    <logger name="org.springframework" level="INFO" additivity="false">
         <appender-ref ref="springContextAppender"/>
     </logger>
 
