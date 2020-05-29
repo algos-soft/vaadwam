@@ -1,10 +1,13 @@
-<configuration>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-    <!-- read the spring properties -->
-    <springProperty name="loggingFile" source="logging.file"/>
-    <springProperty name="springLoggingFile" source="wam.logging.spring.file"/>
-    <springProperty name="consoleLog" source="wam.logging.console.log.enable"/>
+<!--    In the current release of Logback, if spring properties are used, configuration scan does not work.-->
+<!--    We prefer to have configuration scan and give up with the spring properties. We use local variables instead.-->
+<!--    <springProperty name="loggingFile" source="logging.file"/>-->
+<!--    <springProperty name="springLoggingFile" source="wam.logging.spring.file"/>-->
+<!--    <springProperty name="consoleLog" source="wam.logging.console.log.enable"/>-->
 
+    <!-- enable console logging. to be disabled in production-->
+    <variable name="LOG_TO_CONSOLE" value="true" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -14,29 +17,30 @@
     </appender>
 
 
+    <variable name="WAM_LOG_FILE" value="log/wam.log"/>
     <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${loggingFile}</file>
+        <file>${WAM_LOG_FILE}</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${loggingFile}.%i.log</FileNamePattern>
+            <FileNamePattern>${WAM_LOG_FILE}.%i.log</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
     </appender>
 
-
+    <variable name="SPRING_LOG_FILE" value="log/wam-spring.log"/>
     <appender name="springContextAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${springLoggingFile}</file>
+        <file>${SPRING_LOG_FILE}</file>
         <encoder>
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${springLoggingFile}.%i.log</FileNamePattern>
+            <FileNamePattern>${SPRING_LOG_FILE}.%i.log</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
@@ -44,17 +48,26 @@
     </appender>
 
 
-    <logger name="it.algos" level="INFO" additivity="false">
+    <!--additivity = false: il log si ferma qui-->
+    <!--additivity = true: il log attraversa questo logger e viene propagato agli ancestors-->
+    <!--un logger può avere più appenders e invia il log a tutti i suoi appenders-->
+    <logger name="it.algos" level="INFO" additivity="true">
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
-    <logger name="org.springframework" level="INFO" additivity="false">
+    <logger name="org.springframework" level="INFO" additivity="true">
         <appender-ref ref="springContextAppender"/>
     </logger>
 
 
+<!--    un logger di questo tipo (senza appenders) blocca tutti i log qui e non li propaga-->
+<!--    <logger name="org.atmosphere" level="INFO" additivity="false"/>-->
+
+
+    <!--qui arrivano tutti i logger che hanno additivity = true-->
+    <!-- vengono stampati in console solo se la relativa property è a true-->
     <root level="INFO">
-        <if condition='property("consoleLog").contains("true")'>
+        <if condition='property("LOG_TO_CONSOLE").contains("true")'>
             <then>
                 <appender-ref ref="STDOUT"/>
             </then>

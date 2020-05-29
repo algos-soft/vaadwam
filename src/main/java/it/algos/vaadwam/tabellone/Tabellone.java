@@ -50,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -193,10 +194,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
-//        log.debug("Log di level DEBUG");
-//        log.info("Log di level INFO");
-//        log.warn("Log di level WARN");
-//        log.error("Log di level ERROR");
+        log.debug("Log di level DEBUG");
+        log.info("Log di level INFO");
+        log.warn("Log di level WARN");
+        log.error("Log di level ERROR");
 
         AContext context = vaadinService.getSessionContext();
         if (context == null) {
