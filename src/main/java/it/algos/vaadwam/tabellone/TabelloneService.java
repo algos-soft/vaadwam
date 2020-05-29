@@ -12,6 +12,8 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -34,11 +36,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.A_CAPO;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_TAB;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -70,6 +71,14 @@ public class TabelloneService extends AService {
     public static final String SEP = " / ";
 
     /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WamLogService wamLogger;
+
+    /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
@@ -94,13 +103,13 @@ public class TabelloneService extends AService {
     protected CroceService croceService;
 
     @Autowired
-    private MiliteService militeService;
-
-    @Autowired
     protected AVaadinService vaadinService;
 
     @Autowired
     protected PreferenzaService pref;
+
+    @Autowired
+    private MiliteService militeService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -121,14 +130,15 @@ public class TabelloneService extends AService {
     }// end of Spring constructor
 
 
-//    @PostConstruct
-//    private void init(){
-//        AContext context = vaadinService.getSessionContext();
-//        vaadinService.getSessionContext();
-//        if (context!=null){
-//            wamLogin = (WamLogin) context.getLogin();
-//        }
-//    }
+    //    @PostConstruct
+    //    private void init(){
+    //        AContext context = vaadinService.getSessionContext();
+    //        vaadinService.getSessionContext();
+    //        if (context!=null){
+    //            wamLogin = (WamLogin) context.getLogin();
+    //        }
+    //    }
+
 
     /**
      * Costruisce una lista di giorni da visualizzare nella grid <br>
@@ -153,7 +163,7 @@ public class TabelloneService extends AService {
     /**
      * Costruisce la lista delle righe da visualizzare nella grid per un dato periodo.
      *
-     * @param data1  data iniziale
+     * @param data1        data iniziale
      * @param quantiGiorni numero di giorni da analizzare
      */
     public List<Riga> getGridRigheList(LocalDate data1, int quantiGiorni) {
@@ -168,11 +178,11 @@ public class TabelloneService extends AService {
 
         gridRigheList = new ArrayList<>();
         for (Servizio servizio : servizi) {
-            if(servizio.isOrarioDefinito()){
+            if (servizio.isOrarioDefinito()) {
                 List<Turno> turni = turnoService.findByServizio(servizio, data1, giornoFinale);
                 riga = rigaService.newEntity(data1, servizio, turni);
                 gridRigheList.add(riga);
-            }else{
+            } else {
                 List<Riga> righe = creaRigheNonStandard(servizio, data1, giornoFinale);
                 gridRigheList.addAll(righe);
             }
@@ -185,7 +195,7 @@ public class TabelloneService extends AService {
     /**
      * Crea l'elenco delle righe da aggiungere per un dato servizio non standard
      */
-    private List<Riga> creaRigheNonStandard(Servizio servizio, LocalDate data1, LocalDate data2){
+    private List<Riga> creaRigheNonStandard(Servizio servizio, LocalDate data1, LocalDate data2) {
 
         // Crea una lista di oggetti ColonnaGiorno, uno per ogni giorno.
         // Ognuno mantiene la lista dei turni di quel giorno, ordinata per ora inizio turno.
@@ -199,16 +209,16 @@ public class TabelloneService extends AService {
         //
         List<ColonnaGiorno> colonne = new ArrayList<>();
         List<Turno> turni = turnoService.findByServizio(servizio, data1, data2);
-        int numGiorni = (int)DAYS.between(data1, data2)+1;
-        int max=0;  // la colonna con più elementi, questo sarà il numero totale di righe creato
-        for(int i=0;i<numGiorni;i++){
+        int numGiorni = (int) DAYS.between(data1, data2) + 1;
+        int max = 0;  // la colonna con più elementi, questo sarà il numero totale di righe creato
+        for (int i = 0; i < numGiorni; i++) {
             LocalDate data = data1.plusDays(i);
             List<Turno> turniGiorno = getTurniGiornoOrderByOraInizio(turni, data);
             ColonnaGiorno colonna = new ColonnaGiorno();
             colonna.addAll(turniGiorno);
             colonne.add(colonna);
-            if(turniGiorno.size()>max){
-                max=turniGiorno.size();
+            if (turniGiorno.size() > max) {
+                max = turniGiorno.size();
             }
         }
 
@@ -222,13 +232,13 @@ public class TabelloneService extends AService {
         //        [F] ->
         //
         ListaTurni[] aListeTurni = new ListaTurni[max];
-        for(int row=0;row<max; row++){
-            ListaTurni listaTurni=new ListaTurni(numGiorni);
-            aListeTurni[row]=listaTurni;
-            for(int col=0;col<colonne.size(); col++){
+        for (int row = 0; row < max; row++) {
+            ListaTurni listaTurni = new ListaTurni(numGiorni);
+            aListeTurni[row] = listaTurni;
+            for (int col = 0; col < colonne.size(); col++) {
                 ColonnaGiorno colonna = colonne.get(col);
                 Turno turno = colonna.get(row);
-                if(turno!=null){
+                if (turno != null) {
                     listaTurni.add(turno);
                 }
             }
@@ -236,8 +246,8 @@ public class TabelloneService extends AService {
 
 
         // Per ogni elemento dell'array aListeTurni crea una riga di tabellone
-        List<Riga> righe=new ArrayList<>();
-        for(ListaTurni listaTurni : aListeTurni){
+        List<Riga> righe = new ArrayList<>();
+        for (ListaTurni listaTurni : aListeTurni) {
             Riga riga = rigaService.newEntity(data1, servizio, listaTurni);
             righe.add(riga);
         }
@@ -246,55 +256,33 @@ public class TabelloneService extends AService {
 
     }
 
-    /**
-     * Wrapper che mantiene una lista ordinata di turni
-     */
-    @Data
-    class ColonnaGiorno  extends ArrayList<Turno> {
-
-        @Override
-        public Turno get(int index) {
-            if(index<size()){
-                return super.get(index);
-            }else{
-                return null;
-            }
-        }
-    }
-
-
-    class ListaTurni extends ArrayList<Turno>{
-        public ListaTurni(int size) {
-            super(size);
-        }
-    }
-
 
     /**
      * Estrae da una lista di turni tutti quelli relativi al giorno dato in ordine di orario di inizio
      */
-    private List<Turno> getTurniGiornoOrderByOraInizio(List<Turno> turni, LocalDate data){
-        List<Turno> turniOut=new ArrayList<>();
-        for(Turno turno : turni){
-            if(turno.getGiorno().equals(data)){
+    private List<Turno> getTurniGiornoOrderByOraInizio(List<Turno> turni, LocalDate data) {
+        List<Turno> turniOut = new ArrayList<>();
+        for (Turno turno : turni) {
+            if (turno.getGiorno().equals(data)) {
                 turniOut.add(turno);
             }
         }
 
         // ordina per ora di inizio, e a parità di questa, ordina per data di creazione del record
         Collections.sort(turniOut, new Comparator<Turno>() {
+
             @Override
             public int compare(Turno t1, Turno t2) {
-                if(t1.getInizio().isBefore(t2.getInizio())){
+                if (t1.getInizio().isBefore(t2.getInizio())) {
                     return -1;
                 } else {
-                    if(t1.getInizio().isAfter(t2.getInizio())){
+                    if (t1.getInizio().isAfter(t2.getInizio())) {
                         return 1;
-                    }else{  // stessa ora inizio
-                        if(t1.getCreazione()!=null && t2.getCreazione()!=null){
-                            int ret = (t1.getCreazione().isBefore(t2.getCreazione())? -1: 1);
+                    } else {  // stessa ora inizio
+                        if (t1.getCreazione() != null && t2.getCreazione() != null) {
+                            int ret = (t1.getCreazione().isBefore(t2.getCreazione()) ? -1 : 1);
                             return ret;
-                        }else{
+                        } else {
                             return 0;   // indistinguibili
                         }
                     }
@@ -315,16 +303,16 @@ public class TabelloneService extends AService {
      * Prende in considerazione solo i servizi visibili.<br>
      * Ogni gruppo in ordine di servizio<br>
      */
-    private List<Servizio> getServiziPeriodo(LocalDate data1, LocalDate data2){
+    private List<Servizio> getServiziPeriodo(LocalDate data1, LocalDate data2) {
 
         // i servizi standard visibili
         List<Servizio> serviziStandardVisibili = servizioService.findAllStandardVisibili();
 
         // i servizi non-standard visibili che hanno almeno un turno nel periodo considerato
-        List<Servizio> serviziNonStandardConTurni=new ArrayList<>();
-        List<Servizio> serviziNonStandardVisibili=servizioService.findAllNonStandardVisibili();
-        for(Servizio s : serviziNonStandardVisibili){
-            if (countTurni(s, data1, data2)>0){
+        List<Servizio> serviziNonStandardConTurni = new ArrayList<>();
+        List<Servizio> serviziNonStandardVisibili = servizioService.findAllNonStandardVisibili();
+        for (Servizio s : serviziNonStandardVisibili) {
+            if (countTurni(s, data1, data2) > 0) {
                 serviziNonStandardConTurni.add(s);
             }
         }
@@ -334,28 +322,26 @@ public class TabelloneService extends AService {
         servizi.addAll(serviziStandardVisibili);
         servizi.addAll(serviziNonStandardConTurni);
 
-        return  servizi;
+        return servizi;
 
     }
-
-
 
 
     /**
      * Restituisce il numero di turni della croce corrente per un dato servizio in un dato periodo.
      */
     private long countTurni(Servizio servizio, LocalDate data1, LocalDate data2) {
-        Croce croce=getWamLogin().getCroce();
+        Croce croce = getWamLogin().getCroce();
 
         Query query = new Query();
         query.addCriteria(Criteria.where("croce").is(croce));
         query.addCriteria(Criteria.where("giorno").gte(data1).andOperator(Criteria.where("giorno").lte(data2)));
         query.addCriteria(Criteria.where("serv.$id").is(servizio.getId()));
 
-//        long start=System.currentTimeMillis();
+        //        long start=System.currentTimeMillis();
         long count = mongoTemplate.count(query, Turno.class);
-//        long end=System.currentTimeMillis();
-//        log.info("tempo count: "+(end-start)+" ms");
+        //        long end=System.currentTimeMillis();
+        //        log.info("tempo count: "+(end-start)+" ms");
 
         return count;
 
@@ -373,9 +359,6 @@ public class TabelloneService extends AService {
     }
 
 
-
-
-
     /**
      * Colore della iscrizione in funzione della data corrente <br>
      * I periodi di colore cambiano da Croce a Croce <br>
@@ -384,9 +367,9 @@ public class TabelloneService extends AService {
         EAWamColore colore = EAWamColore.creabile;
 
         AContext context = vaadinService.getSessionContext();
-        WamLogin wamLogin=(WamLogin)context.getLogin();
-        int critico=wamLogin.getCroce().getGiorniCritico();
-        int semicritico=wamLogin.getCroce().getGiorniSemicritico();
+        WamLogin wamLogin = (WamLogin) context.getLogin();
+        int critico = wamLogin.getCroce().getGiorniCritico();
+        int semicritico = wamLogin.getCroce().getGiorniSemicritico();
 
         if (iscrizione == null) {
             return colore;
@@ -412,6 +395,7 @@ public class TabelloneService extends AService {
 
         return colore;
     }// end of method
+
 
     /**
      * Colore del turno in funzione della data corrente <br>
@@ -460,34 +444,34 @@ public class TabelloneService extends AService {
         return status;
     }
 
+
     /**
      * Passato più di un certo numero di giorni dalla data di iscrizione
      */
     public boolean passatoPiuDiGiorni(Iscrizione iscrizione, int giorni) {
-        LocalDateTime dataCreazione=iscrizione.getCreazione();
-        if(dataCreazione!=null){
+        LocalDateTime dataCreazione = iscrizione.getCreazione();
+        if (dataCreazione != null) {
             LocalDate dataCreato = dataCreazione.toLocalDate();
-            if(LocalDate.now().minusDays(giorni).isAfter(dataCreato)){
+            if (LocalDate.now().minusDays(giorni).isAfter(dataCreato)) {
                 return true;
             }
         }
         return false;
     }
+
 
     /**
      * Passato più di un certo numero di ore dalla data di iscrizione
      */
     public boolean passatoPiuDiOre(Iscrizione iscrizione, int ore) {
-        LocalDateTime dataOraCreazione=iscrizione.getCreazione();
-        if(dataOraCreazione!=null){
-            if(LocalDateTime.now().minusHours(ore).isAfter(dataOraCreazione)){
+        LocalDateTime dataOraCreazione = iscrizione.getCreazione();
+        if (dataOraCreazione != null) {
+            if (LocalDateTime.now().minusHours(ore).isAfter(dataOraCreazione)) {
                 return true;
             }
         }
         return false;
     }
-
-
 
 
     /**
@@ -501,48 +485,50 @@ public class TabelloneService extends AService {
     /**
      * Determina se il milite può cancellare l'iscrizione.
      * <p>
-     * @return null se può cancellare, la motivazione se non può.
+     *
      * @param turno
      * @param iscrizione
+     *
+     * @return null se può cancellare, la motivazione se non può.
      */
-    public String puoCancellareIscrizione(Turno turno, Iscrizione iscrizione){
+    public String puoCancellareIscrizione(Turno turno, Iscrizione iscrizione) {
 
         // recupero la modalità di cancellazione
         String prefKey = pref.getEnumStr(EAPreferenzaWam.tipoCancellazione);
-        EACancellazione modoCanc=null;
-        if(prefKey!=null){
+        EACancellazione modoCanc = null;
+        if (prefKey != null) {
             modoCanc = EACancellazione.valueOf(prefKey);
         }
-        if(modoCanc==null){
-            modoCanc=EACancellazione.tempoMancante;
+        if (modoCanc == null) {
+            modoCanc = EACancellazione.tempoMancante;
         }
 
         String ret;
 
 
-        switch (modoCanc){
+        switch (modoCanc) {
             case mai:
                 return "cancellazione iscrizioni non abilitata";
             case sempre:
                 return null;
             case tempoTrascorso:
-                ret=null;
+                ret = null;
                 int maxOre = pref.getInt(EAPreferenzaWam.numeroOreTrascorse);
-                if(maxOre==0){
-                    maxOre=48;
+                if (maxOre == 0) {
+                    maxOre = 48;
                 }
-                if(passatoPiuDiOre(iscrizione,maxOre)){
-                    ret="sono passate più di "+maxOre+" ore dall'iscrizione";
+                if (passatoPiuDiOre(iscrizione, maxOre)) {
+                    ret = "sono passate più di " + maxOre + " ore dall'iscrizione";
                 }
                 return ret;
             case tempoMancante:
-                ret=null;
+                ret = null;
                 int maxGiorni = pref.getInt(EAPreferenzaWam.numeroGiorniMancanti);
-                if(maxGiorni==0){
-                    maxGiorni=2;
+                if (maxGiorni == 0) {
+                    maxGiorni = 2;
                 }
-                if(mancaMenoDiGiorni(turno, maxGiorni)){
-                    ret="mancano meno di "+maxGiorni+" giorni alla data di esecuzione del turno";
+                if (mancaMenoDiGiorni(turno, maxGiorni)) {
+                    ret = "mancano meno di " + maxGiorni + " giorni alla data di esecuzione del turno";
                 }
                 return ret;
             default:
@@ -550,22 +536,6 @@ public class TabelloneService extends AService {
 
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -617,11 +587,11 @@ public class TabelloneService extends AService {
         turnoIscrizioneModello.setKeyTag(turnoIscrizione.keyTag);
         turnoIscrizioneModello.setColore(turnoIscrizione.coloreTxt);
         turnoIscrizioneModello.setIcona(turnoIscrizione.iconaTxt);
-        if(turnoIscrizione.militeEntity!=null){
+        if (turnoIscrizione.militeEntity != null) {
             turnoIscrizioneModello.setIdMilite(turnoIscrizione.militeEntity.id);
         }
         turnoIscrizioneModello.setMilite(turnoIscrizione.militetxt);
-        if (turnoIscrizione.funzioneEntity!=null){
+        if (turnoIscrizione.funzioneEntity != null) {
             turnoIscrizioneModello.setIdFunzione(turnoIscrizione.funzioneEntity.id);
         }
         turnoIscrizioneModello.setFunzione(turnoIscrizione.funzioneTxt);
@@ -634,5 +604,133 @@ public class TabelloneService extends AService {
         return turnoIscrizioneModello;
     }// end of method
 
+
+    public void fixModificaTurno(Turno turno) {
+        String message = VUOTA;
+        Turno turnoOld = turnoService.findById(turno.id);
+        String sep = " -> ";
+        String nullo = "null";
+        Map<String, Milite> mappaOld = getMappa(turnoOld);
+        Map<String, Milite> mappaNew = getMappa(turno);
+        String key;
+
+        message = getMessaggioTurno(turno);
+        if (turnoOld == null) {
+            wamLogger.creazioneTurno(message);
+        } else {
+            for (Iscrizione iscr : turnoOld.iscrizioni) {
+                key = iscr.funzione.sigla;
+
+                message += "(" + key + ") ";
+                message += mappaOld.get(key) != null ? mappaOld.get(key) : nullo;
+                message += sep;
+                message += mappaNew.get(key) != null ? mappaNew.get(key) : nullo;
+                message += A_CAPO;
+            }
+            wamLogger.modificaTurno(message);
+        }
+
+    }// end of method
+
+
+    public Map getMappa(Turno turno) {
+        HashMap<String, Milite> mappa = new HashMap<>();
+
+        for (Iscrizione iscr : turno.iscrizioni) {
+            mappa.put(iscr.funzione.sigla, iscr.milite);
+        }
+
+        return mappa;
+    }// end of method
+
+
+    public void fixCancellaTurno(Turno turno) {
+        String message = VUOTA;
+        String sep = " - ";
+        boolean turnoPieno = isTurnoPieno(turno);
+
+        message = getMessaggioTurno(turno);
+        if (turnoPieno) {
+            message += "militi iscritti: ";
+            message += A_CAPO;
+            for (Iscrizione iscr : turno.iscrizioni) {
+                if (iscr.milite != null) {
+                    message += "(" + iscr.funzione.sigla + ")" + sep + iscr.milite.toString();
+                    message += A_CAPO;
+                }
+            }
+        }
+
+        if (turnoPieno) {
+            wamLogger.cancellazioneTurnoPieno(message);
+        } else {
+            wamLogger.cancellazioneTurnoVuoto(message);
+        }
+    }
+
+
+    public String getMessaggioTurno(Turno turno) {
+        String message = VUOTA;
+        String sep = " - ";
+
+        message += "Turno: ";
+        message += turno.id;
+        message += A_CAPO;
+        message += "giorno: ";
+        message += turno.giorno;
+        message += A_CAPO;
+        message += "servizio: ";
+        message += turno.servizio;
+        message += A_CAPO;
+        message += "orario: ";
+        message += turno.inizio;
+        message += sep;
+        message += turno.fine;
+        message += A_CAPO;
+
+        return message;
+    }
+
+
+    public boolean isTurnoPieno(Turno turno) {
+        boolean pieno = false;
+
+
+        for (Iscrizione iscr : turno.iscrizioni) {
+            if (iscr.milite != null) {
+                pieno = true;
+                break;
+            }
+        }
+
+        return pieno;
+    }
+
+
+    /**
+     * Wrapper che mantiene una lista ordinata di turni
+     */
+    @Data
+    class ColonnaGiorno extends ArrayList<Turno> {
+
+        @Override
+        public Turno get(int index) {
+            if (index < size()) {
+                return super.get(index);
+            } else {
+                return null;
+            }
+        }
+
+    }
+
+
+    class ListaTurni extends ArrayList<Turno> {
+
+        public ListaTurni(int size) {
+            super(size);
+        }
+
+    }
 
 }// end of class

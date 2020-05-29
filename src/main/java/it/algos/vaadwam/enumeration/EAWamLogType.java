@@ -27,7 +27,11 @@ public enum EAWamLogType {
 
     creazioneTurno("creazioneTurno"),
 
-    cancellazioneTurno("cancellazioneTurno"),
+    modificaTurno("modificaTurno"),
+
+    cancellazioneTurnoVuoto("cancellazioneTurnoVuoto"),
+
+    cancellazioneTurnoPieno("cancellazioneTurnoPieno"),
     ;
 
 
@@ -63,13 +67,13 @@ public enum EAWamLogType {
     }// end of static method
 
 
-    private void setTag(String tag) {
-        this.tag = tag;
+    public String getTag() {
+        return tag;
     }// end of method
 
 
-    public String getTag() {
-        return tag;
+    private void setTag(String tag) {
+        this.tag = tag;
     }// end of method
 
 }// end of enumeration

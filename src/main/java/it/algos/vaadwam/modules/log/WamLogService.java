@@ -109,8 +109,28 @@ public class WamLogService extends AService {
     }// end of method
 
 
-    public void nuovoMilite() {
-        log(EAWamLogType.nuovoMilite);
+    public void creazioneTurno(String message) {
+        log(EAWamLogType.creazioneTurno, message);
+    }
+
+
+    public void modificaTurno(String message) {
+        log(EAWamLogType.modificaTurno, message);
+    }
+
+
+    public void cancellazioneTurnoVuoto(String message) {
+        log(EAWamLogType.cancellazioneTurnoVuoto, message);
+    }
+
+
+    public void cancellazioneTurnoPieno(String message) {
+        log(EAWamLogType.cancellazioneTurnoPieno, message);
+    }
+
+
+    public void modificaIscrizione(String message) {
+        log(EAWamLogType.modificaIscrizione, message);
     }
 
 
@@ -121,11 +141,6 @@ public class WamLogService extends AService {
 
     public void modificaProfile(String message) {
         log(EAWamLogType.modificaProfile, message);
-    }
-
-
-    public void modificaMilite() {
-        log(EAWamLogType.modificaMilite);
     }
 
 

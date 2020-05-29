@@ -50,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -80,6 +79,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     // valore di default per il numero di giorni visualizzati nel tabellone
     public final static int NUM_GIORNI_DEFAULT = 7;
+
 
     @Autowired
     protected ApplicationContext appContext;
@@ -194,10 +194,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
-//        log.debug("Log di level DEBUG");
-//        log.info("Log di level INFO");
-//        log.warn("Log di level WARN");
-//        log.error("Log di level ERROR");
+        //        log.debug("Log di level DEBUG");
+        //        log.info("Log di level INFO");
+        //        log.warn("Log di level WARN");
+        //        log.error("Log di level ERROR");
 
         AContext context = vaadinService.getSessionContext();
         if (context == null) {
@@ -241,7 +241,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     }
-
 
 
     private void initChecks() {
@@ -881,6 +880,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     public void confermaDialogoTurno(Dialog dialog, Turno turno) {
         dialog.close();
+
+        //--log di conferma
+        tabelloneService.fixModificaTurno(turno);
+
         turnoService.save(turno);
 
         BroadcastMsg msg = new BroadcastMsg("turnosaved", turno.getGiorno());
@@ -919,6 +922,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     public void eliminaTurno(Dialog dialog, Turno turno) {
         dialog.close();
+
+        //--log di cancellazione
+        tabelloneService.fixCancellaTurno(turno);
+
         turnoService.delete(turno);
 
         BroadcastMsg msg = new BroadcastMsg("turnodeleted", turno.getGiorno());
@@ -953,8 +960,8 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             // recupera il turno
             try {
                 List<Turno> turni = turnoService.findByDateAndServizio(giorno, servizio);
-                Turno turno=null;
-                if(turni.size()>0){
+                Turno turno = null;
+                if (turni.size() > 0) {
                     turno = turni.get(0); // la ripetizione vale solo su turni standard
                 }
 
@@ -1168,10 +1175,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         TurnoGenPolymer generator = appContext.getBean(TurnoGenPolymer.class);
 
         generator.setCompletedListener(new TurnoGenPolymer.CompletedListener() {
+
             @Override
             public void onCompleted(TurnoGenWorker.EsitoGenerazioneTurni esito) {
                 dialog.close();
-                if(esito!=null){
+                if (esito != null) {
                     if (esito.getQuanti() > 0) {
                         BroadcastMsg msg = new BroadcastMsg("turnomultisave", esito.getGiorni());
                         Broadcaster.broadcast(msg);

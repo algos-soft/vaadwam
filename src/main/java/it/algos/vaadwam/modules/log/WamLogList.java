@@ -10,14 +10,14 @@ import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.log.LogDialog;
-import it.algos.vaadflow.modules.logtype.Logtype;
-import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.wrapper.AFiltro;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,12 +47,12 @@ public class WamLogList extends AGridViewList {
 
     public static final String IRON_ICON = "history";
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Disponibile solo dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-     */
-    @Autowired
-    protected LogtypeService typeService;
+    //    /**
+    //     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+    //     * Disponibile solo dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+    //     */
+    //    @Autowired
+    //    protected LogtypeService typeService;
 
 
     /**
@@ -97,6 +97,7 @@ public class WamLogList extends AGridViewList {
             super.usaButtonDelete = true;
         }// end of if cycle
 
+        super.searchType = EASearch.nonUsata;
         super.usaPopupFiltro = true;
         super.usaBottoneEdit = false;
         super.usaButtonNew = false;
@@ -127,8 +128,9 @@ public class WamLogList extends AGridViewList {
     protected void creaPopupFiltro() {
         super.creaPopupFiltro();
 
+        filtroComboBox.setWidth("16em");
         filtroComboBox.setPlaceholder("Types ...");
-        filtroComboBox.setItems(typeService.findAll());
+        filtroComboBox.setItems(EAWamLogType.values());
         filtroComboBox.addValueChangeListener(e -> {
             updateFiltri();
             updateGrid();
@@ -148,7 +150,7 @@ public class WamLogList extends AGridViewList {
 
         String fieldName = "type";
         String fieldSort = "evento";
-        Logtype type = (Logtype) filtroComboBox.getValue();
+        EAWamLogType type = (EAWamLogType) filtroComboBox.getValue();
 
         if (type != null) {
             CriteriaDefinition criteria = Criteria.where(fieldName).is(type);

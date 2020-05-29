@@ -64,7 +64,7 @@ public class WamLog extends AEntity {
      */
     @DBRef
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 18)
+    @AIColumn(widthEM = 14)
     public Milite milite;
 
 
@@ -75,7 +75,7 @@ public class WamLog extends AEntity {
     @Indexed()
     @Field("type")
     @AIField(type = EAFieldType.enumeration, enumClazz = EAWamLogType.class, nullSelectionAllowed = false, widthEM = 10)
-    @AIColumn(widthEM = 12, sortable = false)
+    @AIColumn(widthEM = 14, sortable = false)
     public EAWamLogType type;
 
 
