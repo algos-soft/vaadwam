@@ -53,13 +53,12 @@
         <encoder>
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</Pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>10</maxIndex>
-            <FileNamePattern>${ADMIN_LOG_FILE}.%i.log</FileNamePattern>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${ADMIN_LOG_FILE}.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>10MB</MaxFileSize>
-        </triggeringPolicy>
     </appender>
 
 
@@ -80,12 +79,12 @@
     </logger>
 
 
-    <!--    un logger di questo tipo (senza appenders) blocca tutti i log qui e non li propaga-->
-<!--    <logger name="org.atmosphere" level="INFO" additivity="false"/>-->
+    <!--    un logger di questo tipo (senza appenders) blocca tutti i log qui e non li propaga oltre-->
+    <!--    <logger name="org.atmosphere" level="INFO" additivity="false"/>-->
 
 
     <!--qui arrivano tutti i logger che hanno additivity = true-->
-    <!-- vengono stampati in console solo se la relativa property è a true-->
+    <!-- vengono stampati in console solo se la property LOG_TO_CONSOLE è a true-->
     <root level="INFO">
         <if condition='property("LOG_TO_CONSOLE").contains("true")'>
             <then>
