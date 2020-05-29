@@ -410,7 +410,7 @@ public class MiliteService extends WamService implements IUtenteService {
         }
 
         return entity;
-    }// end of method
+    }
 
 
     /**
