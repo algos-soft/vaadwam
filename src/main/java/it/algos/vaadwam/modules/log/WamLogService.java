@@ -10,6 +10,8 @@ import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.wam.WamLogin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -36,6 +38,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 @AIScript(sovrascrivibile = false)
 public class WamLogService extends AService {
 
+    private Logger adminLogger;
 
     /**
      * Costruttore @Autowired <br>
@@ -50,6 +53,9 @@ public class WamLogService extends AService {
         super(repository);
         super.entityClass = WamLog.class;
         this.repository = (WamLogRepository) repository;
+
+        adminLogger=LoggerFactory.getLogger("wam.admin");
+
     }// end of Spring constructor
 
 
@@ -162,6 +168,9 @@ public class WamLogService extends AService {
         wamLog = newEntity(croce, type, militeLoggato, message);
         wamLog.id = croce.code + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
+
+        adminLogger.info(message);
+
     }
 
 

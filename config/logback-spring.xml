@@ -47,6 +47,22 @@
         </triggeringPolicy>
     </appender>
 
+    <variable name="ADMIN_LOG_FILE" value="log/wam-admin.log"/>
+    <appender name="adminAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ADMIN_LOG_FILE}</file>
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>10</maxIndex>
+            <FileNamePattern>${ADMIN_LOG_FILE}.%i.log</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
 
     <!--additivity = false: il log si ferma qui-->
     <!--additivity = true: il log attraversa questo logger e viene propagato agli ancestors-->
@@ -59,8 +75,12 @@
         <appender-ref ref="springContextAppender"/>
     </logger>
 
+    <logger name="wam.admin" level="INFO" additivity="true">
+        <appender-ref ref="adminAppender"/>
+    </logger>
 
-<!--    un logger di questo tipo (senza appenders) blocca tutti i log qui e non li propaga-->
+
+    <!--    un logger di questo tipo (senza appenders) blocca tutti i log qui e non li propaga-->
 <!--    <logger name="org.atmosphere" level="INFO" additivity="false"/>-->
 
 
