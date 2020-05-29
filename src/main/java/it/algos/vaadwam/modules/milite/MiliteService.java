@@ -324,194 +324,17 @@ public class MiliteService extends WamService implements IUtenteService {
     }// end of method
 
 
-    /**
-     * Proviene da List e da Form (quasi sempre) <br>
-     * Primo ingresso nel service dopo il click sul bottone <br>
-     */
-    public AEntity save(AEntity entityBean, EAOperation operation) {
-        AEntity entitySaved = null;
-
-        if (operation == EAOperation.addNew) {
-            entitySaved = super.save(entityBean, operation);
-            if (entitySaved != null) {
-                wamLogger.nuovoMilite(getMessageNuovo(entityBean));
-            }
-        } else {
-            if (isModificato(entityBean)) {
-                if (operation == EAOperation.editProfile) {
-                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
-                } else {
-                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
-                }
-                entitySaved = super.save(entityBean, operation);
-            }
-        }
-
-        return entitySaved;
-    }// end of method
-
-
-    public boolean isModificato(AEntity entityBean) {
-        AEntity entityOld = findByKeyUnica(((Milite) entityBean).username);
-        return entityOld != null ? !entityOld.equals(entityBean) : true;
-    }// end of method
-
-
-    public String getMessageNuovo(AEntity entityBean) {
-        String message = VUOTA;
-        String sep = " -> ";
-        Milite milite = (Milite) entityBean;
-
-        message += "Milite: ";
-        message += milite.id;
-        message += A_CAPO;
-        message += "nome: ";
-        message += milite.nome;
-        message += A_CAPO;
-
-        message += "cognome: ";
-        message += milite.cognome;
-        message += A_CAPO;
-
-        message += "nickname: ";
-        message += milite.username;
-        message += A_CAPO;
-
-        message += "password: ";
-        message += milite.password;
-        message += A_CAPO;
-
-        message += "telefono: ";
-        message += milite.telefono;
-        message += A_CAPO;
-
-        message += "mail: ";
-        message += milite.mail;
-        message += A_CAPO;
-
-        message += "attivo is set to ";
-        message += milite.enabled ? "true" : "false";
-        message += A_CAPO;
-
-        message += "admin is set to ";
-        message += milite.admin ? "true" : "false";
-        message += A_CAPO;
-
-        message += "dipendente is set to ";
-        message += milite.dipendente ? "true" : "false";
-        message += A_CAPO;
-
-        message += "infermiere is set to ";
-        message += milite.infermiere ? "true" : "false";
-        message += A_CAPO;
-
-        message += "creatoreTurni is set to ";
-        message += milite.creatoreTurni ? "true" : "false";
-        message += A_CAPO;
-
-        message += "managerTabellone is set to ";
-        message += milite.managerTabellone ? "true" : "false";
-        message += A_CAPO;
-
-        message += "funzioni are set to ";
-        message += milite.funzioni;
-        message += A_CAPO;
-
-        return message.trim();
-    }// end of method
-
-
-    public String getMessageModifiche(AEntity entityBean) {
-        String message = VUOTA;
-        String sep = " -> ";
-        Milite milite = (Milite) entityBean;
-        Milite militeOld = findById(milite.id);
-
-        message += "Milite: ";
-        message += milite.id;
-        message += A_CAPO;
-        if (!milite.nome.equals(militeOld.nome)) {
-            message += "nome: ";
-            message += militeOld.nome;
-            message += sep;
-            message += milite.nome;
-            message += A_CAPO;
-        }
-        if (!milite.cognome.equals(militeOld.cognome)) {
-            message += "cognome: ";
-            message += militeOld.cognome;
-            message += sep;
-            message += milite.cognome;
-            message += A_CAPO;
-        }
-        if (!milite.username.equals(militeOld.username)) {
-            message += "nickname: ";
-            message += militeOld.username;
-            message += sep;
-            message += milite.username;
-            message += A_CAPO;
-        }
-        if (!milite.password.equals(militeOld.password)) {
-            message += "password: ";
-            message += militeOld.password;
-            message += sep;
-            message += milite.password;
-            message += A_CAPO;
-        }
-        if (!milite.telefono.equals(militeOld.telefono)) {
-            message += "telefono: ";
-            message += militeOld.telefono;
-            message += sep;
-            message += milite.telefono;
-            message += A_CAPO;
-        }
-        if (!milite.mail.equals(militeOld.mail)) {
-            message += "mail: ";
-            message += militeOld.mail;
-            message += sep;
-            message += milite.mail;
-            message += A_CAPO;
-        }
-        if (milite.enabled != militeOld.enabled) {
-            message += "attivo is now ";
-            message += milite.enabled ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (milite.admin != militeOld.admin) {
-            message += "admin is now ";
-            message += milite.admin ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (milite.dipendente != militeOld.dipendente) {
-            message += "dipendente is now ";
-            message += milite.dipendente ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (milite.infermiere != militeOld.infermiere) {
-            message += "infermiere is now ";
-            message += milite.infermiere ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (milite.creatoreTurni != militeOld.creatoreTurni) {
-            message += "creatoreTurni is now ";
-            message += milite.creatoreTurni ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (milite.managerTabellone != militeOld.managerTabellone) {
-            message += "admin is now ";
-            message += milite.managerTabellone ? "true" : "false";
-            message += A_CAPO;
-        }
-        if (!milite.funzioni.equals(militeOld.funzioni)) {
-            message += "funzioni: ";
-            message += militeOld.funzioni;
-            message += sep;
-            message += milite.funzioni;
-            message += A_CAPO;
-        }
-
-        return message.trim();
-    }// end of method
+    //    /**
+    //     * Proviene da List e da Form (quasi sempre) <br>
+    //     * Primo ingresso nel service dopo il click sul bottone <br>
+    //     */
+    //    public AEntity saveNotWorking(AEntity entityBean, EAOperation operation) {
+    //        AEntity entitySaved = null;
+    //        entitySaved = super.save(entityBean, operation);
+    //
+    //
+    //        return entitySaved;
+    //    }// end of method
 
 
     /**
@@ -572,6 +395,18 @@ public class MiliteService extends WamService implements IUtenteService {
         if (true) {
             ((Milite) entityBean).nome = text.primaMaiuscola(((Milite) entityBean).nome);
             ((Milite) entityBean).cognome = text.primaMaiuscola(((Milite) entityBean).cognome);
+        }
+
+        if (operation == EAOperation.addNew) {
+            wamLogger.nuovoMilite(getMessageNuovo(entityBean));
+        } else {
+            if (isModificato(entityBean)) {
+                if (operation == EAOperation.editProfile) {
+                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
+                } else {
+                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
+                }
+            }
         }
 
         return entity;
@@ -1160,5 +995,209 @@ public class MiliteService extends WamService implements IUtenteService {
         return roleType;
     }// end of method
 
+
+    public boolean isModificato(AEntity entityBean) {
+        AEntity entityOld = findByKeyUnica(((Milite) entityBean).username);
+        return entityOld != null ? !entityOld.equals(entityBean) : true;
+    }// end of method
+
+
+    public String getMessageNuovo(AEntity entityBean) {
+        String message = VUOTA;
+        String sep = " -> ";
+        Milite milite = (Milite) entityBean;
+
+        message += "Milite: ";
+        message += milite.id;
+        message += A_CAPO;
+        message += "nome: ";
+        message += milite.nome;
+        message += A_CAPO;
+
+        message += "cognome: ";
+        message += milite.cognome;
+        message += A_CAPO;
+
+        message += "nickname: ";
+        message += milite.username;
+        message += A_CAPO;
+
+        message += "password: ";
+        message += milite.password;
+        message += A_CAPO;
+
+        message += "telefono: ";
+        message += milite.telefono;
+        message += A_CAPO;
+
+        message += "mail: ";
+        message += milite.mail;
+        message += A_CAPO;
+
+        message += "attivo is set to ";
+        message += milite.enabled ? "true" : "false";
+        message += A_CAPO;
+
+        message += "admin is set to ";
+        message += milite.admin ? "true" : "false";
+        message += A_CAPO;
+
+        message += "dipendente is set to ";
+        message += milite.dipendente ? "true" : "false";
+        message += A_CAPO;
+
+        message += "infermiere is set to ";
+        message += milite.infermiere ? "true" : "false";
+        message += A_CAPO;
+
+        message += "creatoreTurni is set to ";
+        message += milite.creatoreTurni ? "true" : "false";
+        message += A_CAPO;
+
+        message += "managerTabellone is set to ";
+        message += milite.managerTabellone ? "true" : "false";
+        message += A_CAPO;
+
+        message += "funzioni are set to ";
+        message += milite.funzioni;
+        message += A_CAPO;
+
+        return message.trim();
+    }// end of method
+
+
+    public String getMessageModifiche(AEntity entityBean) {
+        String message = VUOTA;
+        String sep = " -> ";
+        String nullo = "null";
+        Milite milite = (Milite) entityBean;
+        Milite militeOld = findById(milite.id);
+
+        if (militeOld == null) {
+            logger.error("Operation errata", this.getClass(), "getMessageModifiche");
+            return VUOTA;
+        }
+
+        message += "Milite: ";
+        message += milite.id;
+        message += A_CAPO;
+        if (!milite.nome.equals(militeOld.nome)) {
+            message += "nome: ";
+            message += militeOld.nome;
+            message += sep;
+            message += milite.nome;
+            message += A_CAPO;
+        }
+        if (!milite.cognome.equals(militeOld.cognome)) {
+            message += "cognome: ";
+            message += militeOld.cognome;
+            message += sep;
+            message += milite.cognome;
+            message += A_CAPO;
+        }
+        if (!milite.username.equals(militeOld.username)) {
+            message += "nickname: ";
+            message += militeOld.username;
+            message += sep;
+            message += milite.username;
+            message += A_CAPO;
+        }
+        if (!milite.password.equals(militeOld.password)) {
+            message += "password: ";
+            message += militeOld.password;
+            message += sep;
+            message += milite.password;
+            message += A_CAPO;
+        }
+        if (text.isValid(milite.telefono) && text.isValid(militeOld.telefono)) {
+            if (!milite.telefono.equals(militeOld.telefono)) {
+                message += "telefono: ";
+                message += militeOld.telefono;
+                message += sep;
+                message += milite.telefono;
+                message += A_CAPO;
+            }
+        } else {
+            if (text.isValid(milite.telefono)) {
+                message += "telefono: ";
+                message += nullo;
+                message += sep;
+                message += milite.telefono;
+                message += A_CAPO;
+            }
+            if (text.isValid(militeOld.telefono)) {
+                message += "telefono: ";
+                message += militeOld.telefono;
+                message += sep;
+                message += nullo;
+                message += A_CAPO;
+            }
+        }
+
+        if (text.isValid(milite.mail) && text.isValid(militeOld.mail)) {
+            if (!milite.mail.equals(militeOld.mail)) {
+                message += "mail: ";
+                message += militeOld.mail != null ? militeOld.mail : nullo;
+                message += sep;
+                message += milite.mail != null ? milite.mail : nullo;
+                message += A_CAPO;
+            }
+        } else {
+            if (text.isValid(milite.mail)) {
+                message += "mail: ";
+                message += nullo;
+                message += sep;
+                message += milite.mail;
+                message += A_CAPO;
+            }
+            if (text.isValid(militeOld.mail)) {
+                message += "mail: ";
+                message += militeOld.mail;
+                message += sep;
+                message += nullo;
+                message += A_CAPO;
+            }
+        }
+
+        if (milite.enabled != militeOld.enabled) {
+            message += "attivo is now ";
+            message += milite.enabled ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.admin != militeOld.admin) {
+            message += "admin is now ";
+            message += milite.admin ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.dipendente != militeOld.dipendente) {
+            message += "dipendente is now ";
+            message += milite.dipendente ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.infermiere != militeOld.infermiere) {
+            message += "infermiere is now ";
+            message += milite.infermiere ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.creatoreTurni != militeOld.creatoreTurni) {
+            message += "creatoreTurni is now ";
+            message += milite.creatoreTurni ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (milite.managerTabellone != militeOld.managerTabellone) {
+            message += "admin is now ";
+            message += milite.managerTabellone ? "true" : "false";
+            message += A_CAPO;
+        }
+        if (!milite.funzioni.equals(militeOld.funzioni)) {
+            message += "funzioni: ";
+            message += militeOld.funzioni != null ? militeOld.funzioni : nullo;
+            message += sep;
+            message += milite.funzioni != null ? milite.funzioni : nullo;
+            message += A_CAPO;
+        }
+
+        return message.trim();
+    }// end of method
 
 }// end of class

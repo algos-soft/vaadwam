@@ -863,6 +863,11 @@ public abstract class AService extends AbstractService implements IAService {
     public AEntity save(AEntity entityBean, EAOperation operation) {
         AEntity entitySaved = null;
         entityBean = this.beforeSave(entityBean, operation);
+
+        if (entityBean == null) {
+            return null;
+        }
+
         switch (operation) {
             case addNew:
                 if (this.isEsisteEntityKeyUnica(entityBean)) {
@@ -881,6 +886,7 @@ public abstract class AService extends AbstractService implements IAService {
                 }// end of if/else cycle
                 break;
             case edit:
+            case editProfile:
             case editNoDelete:
             case editDaLink:
                 entitySaved = this.save(entityBean);
@@ -1048,7 +1054,7 @@ public abstract class AService extends AbstractService implements IAService {
     /**
      * Property unica (se esiste).
      */
-    public String  getPropertyUnica(AEntity entityBean) {
+    public String getPropertyUnica(AEntity entityBean) {
         return "";
     }// end of method
 

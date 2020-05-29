@@ -180,7 +180,11 @@ public class FunzioneService extends WamService {
         }// end of if cycle
 
         if (text.isEmpty(entity.code)) {
-            entity = null;
+            if (text.isValid(entity.sigla)) {
+                entity.code = entity.sigla;
+            } else {
+                entity = null;
+            }
         }// end of if cycle
 
         if (entity.getCroce() == null) {

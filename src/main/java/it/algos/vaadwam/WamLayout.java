@@ -212,7 +212,7 @@ public class WamLayout extends MainLayout14 {
         if (milite != null) {
             milite = militeService.findById(milite.id);
             MiliteProfile profile = appContext.getBean(MiliteProfile.class, militeService, Milite.class);
-            profile.openWam(milite, EAOperation.editProfile, this::save, null);
+            profile.openWam(milite, EAOperation.editProfile, this::saveMilite, null);
         }
 
     }// end of method
@@ -221,7 +221,7 @@ public class WamLayout extends MainLayout14 {
     /**
      * Primo ingresso dopo il click sul bottone <br>
      */
-    protected void save(AEntity entityBean, EAOperation operation) {
+    protected void saveMilite(AEntity entityBean, EAOperation operation) {
         militeService.save(entityBean, operation);
     }// end of method
 
