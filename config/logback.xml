@@ -1,0 +1,64 @@
+<configuration>
+
+    <!-- read the spring properties -->
+    <springProperty name="loggingFile" source="logging.file"/>
+    <springProperty name="springLoggingFile" source="wam.logging.spring.file"/>
+    <springProperty name="consoleLog" source="wam.logging.console.log.enable"/>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5p) - ${PID:-} %cyan([%15t]) %blue(%-100m) - %C.%M:%L %n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${loggingFile}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>10</maxIndex>
+            <FileNamePattern>${loggingFile}.%i.log</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
+    <appender name="springContextAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${springLoggingFile}</file>
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>10</maxIndex>
+            <FileNamePattern>${springLoggingFile}.%i.log</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
+    <logger name="it.algos" level="INFO" additivity="false">
+        <appender-ref ref="rollingFileAppender"/>
+    </logger>
+
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="springContextAppender"/>
+    </logger>
+
+
+    <root level="INFO">
+        <if condition='property("consoleLog").contains("true")'>
+            <then>
+                <appender-ref ref="STDOUT"/>
+            </then>
+        </if>
+    </root>
+
+</configuration>

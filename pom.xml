@@ -274,7 +274,6 @@
             <artifactId>cron4j</artifactId>
             <version>2.2.5</version>
         </dependency>
-        <!-- End Algos -->
 
         <!--https://mvnrepository.com/artifact/org.json/json-->
         <dependency>
@@ -303,6 +302,15 @@
             <artifactId>confirm-dialog</artifactId>
             <version>2.0.0</version>
         </dependency>
+
+
+        <!--Logback requires the Janino library for conditional logging-->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
 
     </dependencies>
 
