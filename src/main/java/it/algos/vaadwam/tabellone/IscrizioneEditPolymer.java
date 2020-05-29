@@ -26,6 +26,7 @@ import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,8 +274,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                 bElimina.getStyle().set("color", "white");
                 bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
                     if (himself()) { // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
+                        Turno oldTurno= SerializationUtils.clone(turno);
                         resetIscrizione();
-                        tabellone.confermaDialogoTurno(dialogo, turno);
+                        tabellone.confermaDialogoTurno(dialogo, turno, oldTurno);
                     }
                 });
 

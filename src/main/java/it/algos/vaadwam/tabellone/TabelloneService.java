@@ -3,16 +3,20 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.enumeration.EALogType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.log.WamLogService;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -35,10 +39,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static it.algos.vaadflow.application.FlowCost.A_CAPO;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
@@ -84,7 +85,7 @@ public class TabelloneService extends AService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected ADateService date;
+    protected ADateService dateService;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -607,32 +608,64 @@ public class TabelloneService extends AService {
     }// end of method
 
 
-    public void fixModificaTurno(Turno turno) {
-        //        String message = VUOTA;
-        //        Turno turnoOld = turnoService.findById(turno.id);
-        //        String sep = " -> ";
-        //        String nullo = "null";
-        //        Map<String, Milite> mappaOld = getMappa(turnoOld);
-        //        Map<String, Milite> mappaNew = getMappa(turno);
-        //        String key;
-        //
-        //        message = getMessaggioTurno(turno);
-        //        if (turnoOld == null) {
-        //            wamLogger.creazioneTurno(message);
-        //        } else {
-        //            for (Iscrizione iscr : turnoOld.iscrizioni) {
-        //                key = iscr.funzione.sigla;
-        //
-        //                message += "(" + key + ") ";
-        //                message += mappaOld.get(key) != null ? mappaOld.get(key) : nullo;
-        //                message += sep;
-        //                message += mappaNew.get(key) != null ? mappaNew.get(key) : nullo;
-        //                message += A_CAPO;
-        //            }
-        //            wamLogger.modificaTurno(message);
-        //        }
-        //
-    }// end of method
+    /**
+     * Logga la variazione delle iscrizioni tra lo stato corrente e lo stato precedente di un turno.
+     */
+    public void logDeltaIscrizioni(Turno turno, Turno oldTurno) {
+
+        Map<String, MiliteFunzione> mapOld=creaMap(oldTurno);
+        Map<String, MiliteFunzione> mapNew=creaMap(turno);
+
+        for(Map.Entry<String, MiliteFunzione> entry : mapOld.entrySet()){
+            if(mapNew.get(entry.getKey())==null){
+                logIscrizioni(oldTurno, entry.getValue().getMilite(), entry.getValue().getFunzione(), false);
+            }
+        }
+
+        for(Map.Entry<String, MiliteFunzione> entry : mapNew.entrySet()){
+            if(mapOld.get(entry.getKey())==null){
+                logIscrizioni(turno, entry.getValue().getMilite(), entry.getValue().getFunzione(), true);
+            }
+        }
+
+    }
+
+    private void logIscrizioni(Turno turno, Milite milite, Funzione funzione, boolean action){
+        Servizio s = turno.getServizio();
+        String sGiorno = dateService.getDate(turno.getGiorno());
+        String sFunzione=funzione.getSigla();
+        String sAction;
+        if(action){
+            sAction="iscritto al turno";
+        }else {
+            sAction="cancellato dal turno";
+        }
+        String log = milite.getSigla()+" "+sAction+" "+s.getCode()+" del "+sGiorno+" ("+sFunzione+")";
+        wamLogger.log(EAWamLogType.cancellazioneIscrizione,log);
+
+    }
+
+    private Map<String, MiliteFunzione> creaMap(Turno turno){
+        Map<String, MiliteFunzione> map=new HashMap<>();
+        for(Iscrizione i : turno.getIscrizioni()){
+            Milite m = i.getMilite();
+            if(m!=null){
+                Funzione f = i.getFunzione();
+                map.put(f.getId()+"-"+m.getId(), new MiliteFunzione(m, f));
+            }
+        }
+        return map;
+    }
+
+    @Data
+    class MiliteFunzione{
+        public MiliteFunzione(Milite milite, Funzione funzione) {
+            this.milite = milite;
+            this.funzione = funzione;
+        }
+        private Milite milite;
+        private Funzione funzione;
+    }
 
 
     //    public Map getMappa(Turno turno) {

@@ -38,6 +38,7 @@ import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -116,6 +117,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
     @Autowired
     private RigaService rigaService;
+
+    @Autowired
+    private WamLogService wamLogService;
 
     @Id
     private Dialog turnodialog;
@@ -878,13 +882,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     @Override
-    public void confermaDialogoTurno(Dialog dialog, Turno turno) {
+    public void confermaDialogoTurno(Dialog dialog, Turno turno, Turno oldTurno) {
         dialog.close();
 
-        //--log di conferma
-        tabelloneService.fixModificaTurno(turno);
-
         turnoService.save(turno);
+
+        tabelloneService.logDeltaIscrizioni(turno, oldTurno);
 
         BroadcastMsg msg = new BroadcastMsg("turnosaved", turno.getGiorno());
         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client

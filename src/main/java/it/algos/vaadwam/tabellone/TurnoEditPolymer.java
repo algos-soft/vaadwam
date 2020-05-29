@@ -26,6 +26,7 @@ import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,14 +282,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     @EventHandler
     private void handleConferma() {
 
-        // qui eventuali validazioni dei dati dialogo nel loro complesso
-        // ... per ora non ce ne sono
+        // clona il turno corrente per mantenere lo stato pre modifiche
+        Turno oldTurno= SerializationUtils.clone(turno);
 
         // aggiorna l'oggetto turno come da dialogo
         syncTurno();
 
         // lo passa al tabellone per la registrazione
-        tabellone.confermaDialogoTurno(dialogo, turno);
+        tabellone.confermaDialogoTurno(dialogo, turno, oldTurno);
 
     }
 
