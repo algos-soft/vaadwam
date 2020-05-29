@@ -13,7 +13,6 @@ import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.log.WamLogService;
-import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
@@ -36,7 +35,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.A_CAPO;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
@@ -606,42 +608,42 @@ public class TabelloneService extends AService {
 
 
     public void fixModificaTurno(Turno turno) {
-        String message = VUOTA;
-        Turno turnoOld = turnoService.findById(turno.id);
-        String sep = " -> ";
-        String nullo = "null";
-        Map<String, Milite> mappaOld = getMappa(turnoOld);
-        Map<String, Milite> mappaNew = getMappa(turno);
-        String key;
-
-        message = getMessaggioTurno(turno);
-        if (turnoOld == null) {
-            wamLogger.creazioneTurno(message);
-        } else {
-            for (Iscrizione iscr : turnoOld.iscrizioni) {
-                key = iscr.funzione.sigla;
-
-                message += "(" + key + ") ";
-                message += mappaOld.get(key) != null ? mappaOld.get(key) : nullo;
-                message += sep;
-                message += mappaNew.get(key) != null ? mappaNew.get(key) : nullo;
-                message += A_CAPO;
-            }
-            wamLogger.modificaTurno(message);
-        }
-
+        //        String message = VUOTA;
+        //        Turno turnoOld = turnoService.findById(turno.id);
+        //        String sep = " -> ";
+        //        String nullo = "null";
+        //        Map<String, Milite> mappaOld = getMappa(turnoOld);
+        //        Map<String, Milite> mappaNew = getMappa(turno);
+        //        String key;
+        //
+        //        message = getMessaggioTurno(turno);
+        //        if (turnoOld == null) {
+        //            wamLogger.creazioneTurno(message);
+        //        } else {
+        //            for (Iscrizione iscr : turnoOld.iscrizioni) {
+        //                key = iscr.funzione.sigla;
+        //
+        //                message += "(" + key + ") ";
+        //                message += mappaOld.get(key) != null ? mappaOld.get(key) : nullo;
+        //                message += sep;
+        //                message += mappaNew.get(key) != null ? mappaNew.get(key) : nullo;
+        //                message += A_CAPO;
+        //            }
+        //            wamLogger.modificaTurno(message);
+        //        }
+        //
     }// end of method
 
 
-    public Map getMappa(Turno turno) {
-        HashMap<String, Milite> mappa = new HashMap<>();
-
-        for (Iscrizione iscr : turno.iscrizioni) {
-            mappa.put(iscr.funzione.sigla, iscr.milite);
-        }
-
-        return mappa;
-    }// end of method
+    //    public Map getMappa(Turno turno) {
+    //        HashMap<String, Milite> mappa = new HashMap<>();
+    //
+    //        for (Iscrizione iscr : turno.iscrizioni) {
+    //            mappa.put(iscr.funzione.sigla, iscr.milite);
+    //        }
+    //
+    //        return mappa;
+    //    }// end of method
 
 
     public void fixCancellaTurno(Turno turno) {
