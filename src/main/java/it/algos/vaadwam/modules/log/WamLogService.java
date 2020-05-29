@@ -10,6 +10,7 @@ import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.wam.WamLogin;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 @Qualifier(TAG_WAM_LOG)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @AIScript(sovrascrivibile = false)
+@Slf4j
 public class WamLogService extends AService {
 
     private Logger adminLogger;
@@ -161,11 +163,16 @@ public class WamLogService extends AService {
 
 
     public void log(EAWamLogType type, String message) {
-        WamLog wamLog = null;
+
         Croce croce = getCroce();
         Milite militeLoggato = getMiliteLoggato();
 
-        wamLog = newEntity(croce, type, militeLoggato, message);
+        if(croce==null || militeLoggato==null){
+            log.error("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
+            return;
+        }
+
+        WamLog wamLog = newEntity(croce, type, militeLoggato, message);
         wamLog.id = croce.code + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
 
@@ -177,15 +184,22 @@ public class WamLogService extends AService {
     public WamLogin getWamLogin() {
         WamLogin wamLogin = null;
         AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+
+        UI ui = UI.getCurrent();
+
+        if(ui==null){
+            return null;
+        }
+
+        VaadinSession vaadSession = ui.getSession();
 
         if (vaadSession != null) {
-            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-        }// end of if cycle
+            context = (AContext)vaadSession.getAttribute(KEY_CONTEXT);
+        }
 
         if (context != null && context.getLogin() != null) {
             wamLogin = (WamLogin) context.getLogin();
-        }// end of if cycle
+        }
 
         return wamLogin;
     }
