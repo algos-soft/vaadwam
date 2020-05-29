@@ -194,10 +194,10 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @PostConstruct
     private void init() {
 
-        log.debug("Log di level DEBUG");
-        log.info("Log di level INFO");
-        log.warn("Log di level WARN");
-        log.error("Log di level ERROR");
+//        log.debug("Log di level DEBUG");
+//        log.info("Log di level INFO");
+//        log.warn("Log di level WARN");
+//        log.error("Log di level ERROR");
 
         AContext context = vaadinService.getSessionContext();
         if (context == null) {
