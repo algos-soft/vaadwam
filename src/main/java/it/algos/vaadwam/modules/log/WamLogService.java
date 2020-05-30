@@ -194,21 +194,21 @@ public class WamLogService extends AService {
     }
 
 
-    public WamLogin getWamLoginOld() {
-        WamLogin wamLogin = null;
-        AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
-
-        if (vaadSession != null) {
-            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-        }// end of if cycle
-
-        if (context != null && context.getLogin() != null) {
-            wamLogin = (WamLogin) context.getLogin();
-        }// end of if cycle
-
-        return wamLogin;
-    }
+//    public WamLogin getWamLoginOld() {
+//        WamLogin wamLogin = null;
+//        AContext context = null;
+//        VaadinSession vaadSession = UI.getCurrent().getSession();
+//
+//        if (vaadSession != null) {
+//            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+//        }// end of if cycle
+//
+//        if (context != null && context.getLogin() != null) {
+//            wamLogin = (WamLogin) context.getLogin();
+//        }// end of if cycle
+//
+//        return wamLogin;
+//    }
 
 
     public WamLogin getWamLogin() {

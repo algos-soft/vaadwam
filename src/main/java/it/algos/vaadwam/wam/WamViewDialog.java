@@ -101,7 +101,7 @@ public abstract class WamViewDialog<T extends Serializable> extends AViewDialog 
         super.fixLoginContext();
 
         AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+        VaadinSession vaadSession = VaadinSession.getCurrent();
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);

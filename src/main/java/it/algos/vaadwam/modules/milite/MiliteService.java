@@ -726,43 +726,43 @@ public class MiliteService extends WamService implements IUtenteService {
     }
 
 
-    /**
-     * Returns instances of the company <br>
-     * Lista ordinata <br>
-     *
-     * @param croce di appartenenza (obbligatoria)
-     *
-     * @return lista ordinata di tutte le entities
-     */
-    public List<Milite> findAllByCroceOld(Croce croce) {
-        List<Milite> listaMiliti;
-        String userName;
-        AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
-
-        if (vaadSession != null) {
-            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-        }// end of if cycle
-
-        if (context != null && context.getLogin().isDeveloper()) {
-            listaMiliti = repository.findAllByCroceOrderByOrdineAsc(croce);
-        } else {
-            userName = context.getLogin().getUtente().getUsername();
-            listaMiliti = repository.findAllByUsername(userName);
-
-            if (listaMiliti == null || listaMiliti.size() == 0) {
-                log.warn("Non ho trovato il milite " + userName);
-                listaMiliti = null;
-            } else {
-                if (listaMiliti.size() > 1) {
-                    log.error("Ci sono alcuni militi con lo stesso userName: " + userName);
-                    listaMiliti = null;
-                }// end of if cycle
-            }// end of if/else cycle
-        }// end of if/else cycle
-
-        return listaMiliti;
-    }// end of method
+//    /**
+//     * Returns instances of the company <br>
+//     * Lista ordinata <br>
+//     *
+//     * @param croce di appartenenza (obbligatoria)
+//     *
+//     * @return lista ordinata di tutte le entities
+//     */
+//    public List<Milite> findAllByCroceOld(Croce croce) {
+//        List<Milite> listaMiliti;
+//        String userName;
+//        AContext context = null;
+//        VaadinSession vaadSession = UI.getCurrent().getSession();
+//
+//        if (vaadSession != null) {
+//            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+//        }// end of if cycle
+//
+//        if (context != null && context.getLogin().isDeveloper()) {
+//            listaMiliti = repository.findAllByCroceOrderByOrdineAsc(croce);
+//        } else {
+//            userName = context.getLogin().getUtente().getUsername();
+//            listaMiliti = repository.findAllByUsername(userName);
+//
+//            if (listaMiliti == null || listaMiliti.size() == 0) {
+//                log.warn("Non ho trovato il milite " + userName);
+//                listaMiliti = null;
+//            } else {
+//                if (listaMiliti.size() > 1) {
+//                    log.error("Ci sono alcuni militi con lo stesso userName: " + userName);
+//                    listaMiliti = null;
+//                }// end of if cycle
+//            }// end of if/else cycle
+//        }// end of if/else cycle
+//
+//        return listaMiliti;
+//    }// end of method
 
 
     //    /**

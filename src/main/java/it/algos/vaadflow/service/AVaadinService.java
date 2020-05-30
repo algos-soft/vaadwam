@@ -101,25 +101,24 @@ public class AVaadinService {
      * Inserisce il context come attributo nella vaadSession <br>
      */
     public AContext getSessionContext() {
-        AContext context = null;
-        VaadinSession vaadSession = null;
-        String uniqueUsername = "";
-        ALogin login = null;
+        AContext context;
+        String uniqueUsername;
+        ALogin login;
         IUtenteService service;
         Utente utente;
         EARoleType roleType = null;
 
-        vaadSession = UI.getCurrent() != null ? UI.getCurrent().getSession() : null;
+        VaadinSession vaadSession = VaadinSession.getCurrent();
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
             uniqueUsername = getLoggedUsername();
         } else {
             return null;
-        }// end of if/else cycle
+        }
 
         if (context == null) {
             if (usaSecurity) {
-                try { // prova ad eseguire il codice
+                try {
                     service = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
                     utente = service.findByKeyUnica(uniqueUsername);
 
@@ -146,16 +145,15 @@ public class AVaadinService {
                 context = appContext.getBean(AContext.class, login);
                 context.setUsaLogin(false);
                 context.setLoginValido(true);
-            }// end of if/else cycle
+            }
 
             if (context != null) {
                 vaadSession.setAttribute(KEY_CONTEXT, context);
-            }// end of if cycle
-        } else {
-        }// end of if/else cycle
+            }
+        }
 
         return context;
-    }// end of  method
+    }
 
 
     public ALogin getLogin() {
@@ -188,7 +186,7 @@ public class AVaadinService {
     /**
      * Ritorna lo username dell'utente loggato
      */
-    public String getLoggedUsername() {
+    public String  getLoggedUsername() {
         VaadinSession vs = VaadinSession.getCurrent();
         WrappedSession ws = vs.getSession();
         SecurityContext sc = (SecurityContext)ws.getAttribute(KEY_SECURITY_CONTEXT);

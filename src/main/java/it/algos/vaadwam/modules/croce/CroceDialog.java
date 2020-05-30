@@ -193,7 +193,7 @@ public class CroceDialog extends AViewDialog<Croce> {
         super.fixLoginContext();
 
         AContext context = null;
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+        VaadinSession vaadSession = VaadinSession.getCurrent();
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);

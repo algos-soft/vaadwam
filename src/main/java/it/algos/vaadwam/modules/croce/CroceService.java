@@ -244,14 +244,10 @@ public class CroceService extends WamService {
     @Override
     public List<Croce> findAll() {
         List<Croce> lista = null;
-        VaadinSession vaadSession = null;
         Croce croce;
         AContext context = null;
 
-        UI ui = UI.getCurrent();
-        if (ui != null) {
-            vaadSession = UI.getCurrent().getSession();
-        }// end of if cycle
+        VaadinSession vaadSession = VaadinSession.getCurrent();
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);

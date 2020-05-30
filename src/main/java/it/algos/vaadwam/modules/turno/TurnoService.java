@@ -372,7 +372,7 @@ public class TurnoService extends WamService {
         LocalDate oggi = LocalDate.now();
         LocalDate inizio = oggi.minusDays(delta + 1);
         LocalDate fine = oggi.plusDays(delta);
-        VaadinSession vaadSession = UI.getCurrent().getSession();
+        VaadinSession vaadSession = VaadinSession.getCurrent();
 
         if (vaadSession != null) {
             context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
