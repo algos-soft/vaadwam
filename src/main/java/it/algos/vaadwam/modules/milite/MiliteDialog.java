@@ -6,7 +6,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
@@ -426,17 +425,6 @@ public class MiliteDialog extends WamViewDialog<Milite> {
     //
     //        return listaFunzioniAbilitateMilite;
     //    }// end of method
-
-
-    /**
-     * Primo ingresso dopo il click sul bottone <br>
-     */
-    protected void save(AEntity entityBean, EAOperation operation) {
-        if (service.save(entityBean, operation) != null) {
-            //            updateItems();
-            //            updateView();
-        }// end of if cycle
-    }// end of method
 
 
     /**

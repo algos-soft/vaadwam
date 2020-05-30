@@ -338,6 +338,32 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     /**
+     * Proviene da List e da Form (quasi sempre) <br>
+     * Primo ingresso nel service dopo il click sul bottone <br>
+     *
+     * @param entityBean
+     * @param operation
+     */
+    @Override
+    public AEntity save(AEntity entityBean, EAOperation operation) {
+
+        if (operation == EAOperation.addNew) {
+            wamLogger.nuovoMilite(getMessageNuovo(entityBean));
+        } else {
+            if (isModificato(entityBean)) {
+                if (operation == EAOperation.editProfile) {
+                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
+                } else {
+                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
+                }
+            }
+        }
+
+        return super.save(entityBean, operation);
+    }
+
+
+    /**
      * Operazioni eseguite PRIMA del save <br>
      * Regolazioni automatiche di property <br>
      *
@@ -395,18 +421,6 @@ public class MiliteService extends WamService implements IUtenteService {
         if (true) {
             ((Milite) entityBean).nome = text.primaMaiuscola(((Milite) entityBean).nome);
             ((Milite) entityBean).cognome = text.primaMaiuscola(((Milite) entityBean).cognome);
-        }
-
-        if (operation == EAOperation.addNew) {
-            wamLogger.nuovoMilite(getMessageNuovo(entityBean));
-        } else {
-            if (isModificato(entityBean)) {
-                if (operation == EAOperation.editProfile) {
-                    wamLogger.modificaProfile(getMessageModifiche(entityBean));
-                } else {
-                    wamLogger.modificaMilite(getMessageModifiche(entityBean));
-                }
-            }
         }
 
         return entity;
@@ -997,8 +1011,8 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     public boolean isModificato(AEntity entityBean) {
-        AEntity entityOld = findByKeyUnica(((Milite) entityBean).username);
-        return entityOld != null ? !entityOld.equals(entityBean) : true;
+        Milite militeOld = findByKeyUnica(((Milite) entityBean).username);
+        return militeOld != null ? !militeOld.equals(entityBean) : true;
     }// end of method
 
 
