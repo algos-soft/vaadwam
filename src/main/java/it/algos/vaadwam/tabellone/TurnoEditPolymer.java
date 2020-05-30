@@ -50,7 +50,7 @@ import java.util.List;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
-public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
+public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
 
     @Autowired
     private ApplicationContext appContext;
@@ -118,18 +118,18 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     private TimePicker pickerFine;
 
     /**
-     * @param tabellone il tabellone di riferimento per effettuare le callbacks
-     * @param dialogo il dialogo contenitore
-     * @param turno il turno da mostrare
+     * @param tabellone            il tabellone di riferimento per effettuare le callbacks
+     * @param dialogo              il dialogo contenitore
+     * @param turno                il turno da mostrare
      * @param abilitaCancellaTurno abilita la funzionalità di cancellazione del turno
-     * @param isNuovoTurno true se il turno passato da editare è nuovo e non ancora salvato sul db
+     * @param isNuovoTurno         true se il turno passato da editare è nuovo e non ancora salvato sul db
      */
     public TurnoEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, boolean abilitaCancellaTurno, boolean isNuovoTurno) {
-        this.tabellone=tabellone;
-        this.dialogo=dialogo;
-        this.turno =turno;
-        this.abilitaCancellaTurno=abilitaCancellaTurno;
-        this.isNuovoTurno=isNuovoTurno;
+        this.tabellone = tabellone;
+        this.dialogo = dialogo;
+        this.turno = turno;
+        this.abilitaCancellaTurno = abilitaCancellaTurno;
+        this.isNuovoTurno = isNuovoTurno;
 
         // registra il riferimento al server Java nel client JS
         // necessario perché JS possa chiamare direttamente metodi Java
@@ -139,13 +139,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
 
     @PostConstruct
-    private void init(){
+    private void init() {
 
         populateModel();
 
         // crea e aggiunge l'area Iscrizioni
-        compIscrizioni=buildCompIscrizioni();
-        for (CompIscrizione comp : compIscrizioni){
+        compIscrizioni = buildCompIscrizioni();
+        for (CompIscrizione comp : compIscrizioni) {
             areaiscrizioni.add(comp);
         }
 
@@ -159,7 +159,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         bAnnulla.addClickShortcut(Key.ESCAPE);
         bAnnulla.addClickListener(e -> handleAnnulla());
 
-        manageElimina();;
+        manageElimina();
 
 
     }
@@ -169,15 +169,13 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * Regola l'altezza massima del contenitore interno dinamicamente
      */
     @ClientCallable
-    public void pageReady(int w, int h){
+    public void pageReady(int w, int h) {
         Style style = container.getStyle();
 
         // togliamo 80 pixel empiricamente
-        style.set("max-height", h-100+"px");
+        style.set("max-height", h - 100 + "px");
 
     }
-
-
 
 
     /**
@@ -198,17 +196,15 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
         // note del turno visibili solo per turni 'non standard'
         getModel().setNote(turno.getNote());
-        if (servizio.isOrarioDefinito()){ // servizio con orario definito
+        if (servizio.isOrarioDefinito()) { // servizio con orario definito
             getModel().setNoteVisibili(false);
-        }else{  // servizio con orario non definito
+        } else {  // servizio con orario non definito
             getModel().setNoteVisibili(true);
         }
 
         getModel().setAbilitaCancellaTurno(this.abilitaCancellaTurno);
 
     }
-
-
 
 
     /**
@@ -224,14 +220,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
         LocalTime tInizio;
         LocalTime tFine;
         boolean editabile;
-        if (servizio.isOrarioDefinito()){ // servizio con orario definito
-            tInizio=servizio.getInizio();
-            tFine=servizio.getFine();
-            editabile=false;
-        }else{  // servizio con orario non definito
-            tInizio=turno.getInizio();
-            tFine=turno.getFine();
-            editabile=true;
+        if (servizio.isOrarioDefinito()) { // servizio con orario definito
+            tInizio = servizio.getInizio();
+            tFine = servizio.getFine();
+            editabile = false;
+        } else {  // servizio con orario non definito
+            tInizio = turno.getInizio();
+            tFine = turno.getFine();
+            editabile = true;
         }
 
         // evitiamo i nulli che nel TimePicker creano problemi
@@ -256,7 +252,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     private ListaIscrizioni buildCompIscrizioni() {
         ListaIscrizioni componenti = new ListaIscrizioni();
 
-        for(Iscrizione iscrizione : turno.getIscrizioni()){
+        for (Iscrizione iscrizione : turno.getIscrizioni()) {
             CompIscrizione comp = appContext.getBean(CompIscrizione.class, iscrizione, this);
             componenti.add(comp);
         }
@@ -287,7 +283,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     private void handleConferma() {
 
         // clona il turno corrente per mantenere lo stato pre modifiche
-        Turno oldTurno= SerializationUtils.clone(turno);
+        Turno oldTurno = SerializationUtils.clone(turno);
 
         // aggiorna l'oggetto turno come da dialogo
         syncTurno();
@@ -302,17 +298,17 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * Sincronizza le iscrizioni dell'oggetto Turno ricevuto nel costruttore
      * in base allo stato corrente delle iscrizioni contenute nel dialogo.
      */
-    private void syncTurno(){
+    private void syncTurno() {
 
-        List<Iscrizione> iscrizioni= turno.getIscrizioni();
+        List<Iscrizione> iscrizioni = turno.getIscrizioni();
 
-        for(Iscrizione iscrizione : iscrizioni){
+        for (Iscrizione iscrizione : iscrizioni) {
 
             CompIscrizione ci = findCompIscrizione(iscrizione);
-            if (ci!=null){
+            if (ci != null) {
                 syncIscrizione(iscrizione, ci);
-            }else{
-                log.error("Componente iscrizione non trovato per l'iscrizione "+iscrizione.getFunzione().getCode());
+            } else {
+                log.error("Componente iscrizione non trovato per l'iscrizione " + iscrizione.getFunzione().getCode());
             }
 
         }
@@ -351,16 +347,15 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
 
     /**
      * Sincronizza una singola iscrizione del turno con quella del dialogo
-     *
      */
-    private void syncIscrizione(Iscrizione iscrizione, CompIscrizione compIscrizione){
+    private void syncIscrizione(Iscrizione iscrizione, CompIscrizione compIscrizione) {
 
         // sync milite
-        String idMilite=compIscrizione.getIdMiliteSelezionato();
-        if (idMilite!=null){
+        String idMilite = compIscrizione.getIdMiliteSelezionato();
+        if (idMilite != null) {
             Milite milite = militeService.findById(idMilite);
             iscrizione.setMilite(milite);
-        }else{
+        } else {
             iscrizione.setMilite(null);
         }
 
@@ -378,11 +373,11 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
      * Cerca il componente iscrizione in base all'oggetto Iscrizione
      * con cui è stato costruito
      */
-    private CompIscrizione findCompIscrizione(Iscrizione iscrizione){
-        CompIscrizione compOut=null;
-        for(CompIscrizione comp : compIscrizioni){
-            if (comp.getIscrizione().equals(iscrizione)){
-                compOut=comp;
+    private CompIscrizione findCompIscrizione(Iscrizione iscrizione) {
+        CompIscrizione compOut = null;
+        for (CompIscrizione comp : compIscrizioni) {
+            if (comp.getIscrizione().equals(iscrizione)) {
+                compOut = comp;
                 break;
             }
         }
@@ -392,23 +387,23 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Gestione bottone Elimina Turno
      */
-    private void manageElimina(){
+    private void manageElimina() {
         bElimina.addClickListener(e -> {
 
             // bottone elimina del dialogo di conferma
             Button bElimina = new Button();
-            bElimina.getStyle().set("background-color","red");
-            bElimina.getStyle().set("color","white");
+            bElimina.getStyle().set("background-color", "red");
+            bElimina.getStyle().set("color", "white");
             bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-                if (abilitaCancellaTurno){  // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
+                if (abilitaCancellaTurno) {  // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
                     tabellone.eliminaTurno(dialogo, turno);
                 }
             });
 
-            String warningIscritti="";
-            for(CompIscrizione comp : getCompIscrizioni()){
-                if (!StringUtils.isEmpty(comp.getIdMiliteSelezionato())){
-                    warningIscritti="Attenzione! Ci sono dei militi già iscritti. ";
+            String warningIscritti = "";
+            for (CompIscrizione comp : getCompIscrizioni()) {
+                if (!StringUtils.isEmpty(comp.getIdMiliteSelezionato())) {
+                    warningIscritti = "Attenzione! Ci sono dei militi già iscritti. ";
                     break;
                 }
             }
@@ -416,7 +411,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
             ConfirmDialog
                     .createWarning()
                     .withCaption("Conferma eliminazione turno")
-                    .withMessage(warningIscritti+"Sei sicuro di voler eliminare il turno?")
+                    .withMessage(warningIscritti + "Sei sicuro di voler eliminare il turno?")
                     .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
                     .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
                     .open();
@@ -428,8 +423,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Ritorna l'ora correntemente mostrata nel picker ora inizio turno
      */
-    public LocalTime getOraInizioPicker(){
-        LocalTime localTime=null;
+    public LocalTime getOraInizioPicker() {
+        LocalTime localTime = null;
         try {
             localTime = dateService.getLocalTimeHHMM(getModel().getOraInizio());
         } catch (Exception e) {
@@ -441,8 +436,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Ritorna l'ora correntemente mostrata nel picker ora fine turno
      */
-    public LocalTime getOraFinePicker(){
-        LocalTime localTime=null;
+    public LocalTime getOraFinePicker() {
+        LocalTime localTime = null;
         try {
             localTime = dateService.getLocalTimeHHMM(getModel().getOraFine());
         } catch (Exception e) {
@@ -455,14 +450,14 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
     /**
      * Lista di oggetti CompIscrizione con funzionalità aggiuntive
      */
-    class ListaIscrizioni extends ArrayList<CompIscrizione>{
+    class ListaIscrizioni extends ArrayList<CompIscrizione> {
 
         /**
          * Assegna l'ora di inizio a tutti i camponenti interni che hanno un iscritto
          */
         public void setOraInizio(LocalTime value) {
-            for(CompIscrizione comp : this){
-                if (comp.getIdMiliteSelezionato()!=null){
+            for (CompIscrizione comp : this) {
+                if (comp.getIdMiliteSelezionato() != null) {
                     comp.setOraInizio(value);
                 }
             }
@@ -472,8 +467,8 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel>  {
          * Assegna l'ora di fine a tutti i camponenti interni che hanno un iscritto
          */
         public void setOraFine(LocalTime value) {
-            for(CompIscrizione comp : this){
-                if (comp.getIdMiliteSelezionato()!=null){
+            for (CompIscrizione comp : this) {
+                if (comp.getIdMiliteSelezionato() != null) {
                     comp.setOraFine(value);
                 }
             }

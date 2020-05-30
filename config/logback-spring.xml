@@ -56,7 +56,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${ADMIN_LOG_FILE}.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>${ADMIN_LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>

@@ -2,6 +2,7 @@ package it.algos.vaadflow.service;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.application.FlowVar;
@@ -162,11 +163,12 @@ public class AVaadinService {
     }// end of  method
 
 
-    public String getLoggedUsername() {
+    public String getLoggedUsernameOld() {
         String uniqueUsername = "";
         User springUser;
 
         try { // prova ad eseguire il codice
+
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpSession httpSession = attr.getRequest().getSession(true);
             SecurityContext securityContext = (SecurityContext) httpSession.getAttribute(KEY_SECURITY_CONTEXT);
@@ -181,6 +183,19 @@ public class AVaadinService {
 
         return uniqueUsername;
     }// end of  method
+
+
+    /**
+     * Ritorna lo username dell'utente loggato
+     */
+    public String getLoggedUsername() {
+        VaadinSession vs = VaadinSession.getCurrent();
+        WrappedSession ws = vs.getSession();
+        SecurityContext sc = (SecurityContext)ws.getAttribute(KEY_SECURITY_CONTEXT);
+        User user = (User)sc.getAuthentication().getPrincipal();
+        return user.getUsername();
+    }
+
 
 
     /**
