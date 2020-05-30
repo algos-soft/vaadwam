@@ -67,7 +67,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "builderMilite")
-@EqualsAndHashCode(callSuper = true)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "cognome", "nome", "enabled", "username", "admin", "infermiere", "dipendente", "creatoreTurni", "funzioni", "noteWam"})
 @AIForm(fields = {"nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "role", "locked", "admin", "dipendente", "infermiere", "creatoreTurni", "enabled", "funzioni", "noteWam"})
@@ -175,6 +174,8 @@ public class Milite extends Person {
     public String toString() {
         return getUsername();
     }// end of method
+
+
 
 
 }// end of entity class

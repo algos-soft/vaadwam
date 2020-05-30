@@ -157,9 +157,9 @@ public class WamLogService extends AService {
     }
 
 
-    public void log(EAWamLogType type) {
-        log(type, VUOTA);
-    }
+//    public void log(EAWamLogType type) {
+//        log(type, VUOTA);
+//    }
 
 
     public void log(EAWamLogType type, String message) {

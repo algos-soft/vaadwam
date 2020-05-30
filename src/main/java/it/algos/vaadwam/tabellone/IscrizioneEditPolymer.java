@@ -65,6 +65,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     private boolean readOnly;
 
+    private boolean isNuovoTurno;
+
     @Id("annulla")
     private Button bAnnulla;
 
@@ -109,12 +111,13 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      * @param iscrizione l'iscrizione da mostrare
      * @param readOnly   interfaccia in modalità read only
      */
-    public IscrizioneEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, Iscrizione iscrizione, boolean readOnly) {
+    public IscrizioneEditPolymer(ITabellone tabellone, Dialog dialogo, Turno turno, Iscrizione iscrizione, boolean readOnly, boolean isNuovoTurno) {
         this.tabellone = tabellone;
         this.dialogo = dialogo;
         this.iscrizione = iscrizione;
         this.turno = turno;
         this.readOnly = readOnly;
+        this.isNuovoTurno = isNuovoTurno;
     }
 
 
@@ -276,7 +279,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                     if (himself()) { // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
                         Turno oldTurno= SerializationUtils.clone(turno);
                         resetIscrizione();
-                        tabellone.confermaDialogoTurno(dialogo, turno, oldTurno);
+                        tabellone.confermaDialogoTurno(dialogo, turno, oldTurno, isNuovoTurno);
                     }
                 });
 
@@ -429,7 +432,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         if (ripeti){
             settimane=settimaneRipeti.getValue();
         }
-        tabellone.confermaDialogoIscrizione(dialogo, turno, iscrizione, ripeti, settimane);
+        tabellone.confermaDialogoIscrizione(dialogo, turno, iscrizione, ripeti, settimane, isNuovoTurno);
     }
 
 

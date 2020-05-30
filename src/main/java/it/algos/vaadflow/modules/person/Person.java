@@ -69,7 +69,6 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "builderPerson")
-@EqualsAndHashCode(callSuper = true)
 @AIEntity(recordName = "persona", company = EACompanyRequired.facoltativa)
 @AIList(fields = {"nome", "cognome", "telefono", "indirizzo", "mail"})
 @AIForm(fields = {"nome", "cognome", "telefono", "indirizzo", "mail"})

@@ -78,7 +78,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "builderUtente")
-@EqualsAndHashCode(callSuper = true)
 @AIEntity(recordName = "utente", company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"company", "username", "password", "ruoli", "enabled", "mail"})
 @AIForm(fields = {"company", "username", "password", "ruoli", "enabled", "mail"})
@@ -224,4 +223,12 @@ public class Utente extends ACEntity implements UserDetails {
         return listAuthority;
     }// end of method
 
-}// end of entity class
+
+    /**
+     * override the equals method to return true for objects which have the same logical value
+     */
+    public boolean equals(Utente altro){
+        return this.username.equals(altro.username);
+    }
+
+}

@@ -652,7 +652,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // Manager Tabellone, può fare tutto
         if (isUtenteManagerTabellone()) {
-            return editMulti(turno, !nuovoTurno);
+            return editMulti(turno, !nuovoTurno, nuovoTurno);
         }
 
         // Utente abilitato a create turni extra.
@@ -663,13 +663,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // - nello storico edit singolo
         if (isUtenteAbilitatoCreareTurniExtra()) {
             if (servizio.isOrarioDefinito()) {    // turno standard
-                return editSingle(turno, codFunzione);
+                return editSingle(turno, codFunzione, nuovoTurno);
             } else {  // turno extra
                 if (!isTurnoStorico(turno)) { // corrente
-                    return editMulti(turno, false);
+                    return editMulti(turno, false, nuovoTurno);
                 } else {  // storico
                     if (getIscrizione(turno, codFunzione).getMilite() != null) {    // c'è un iscritto
-                        return editSingle(turno, codFunzione);
+                        return editSingle(turno, codFunzione, nuovoTurno);
                     } else {  // nessun iscritto
                         return null;
                     }
@@ -679,12 +679,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         // da qui in poi è utente normale, sempre editor di tipo singolo
         if (!isTurnoStorico(turno)) { // corrente
-            return editSingle(turno, codFunzione);
+            return editSingle(turno, codFunzione, nuovoTurno);
         }
 
         // utente normale, turno storico
         if (getIscrizione(turno, codFunzione).getMilite() != null) {    // c'è un iscritto
-            return editSingle(turno, codFunzione);
+            return editSingle(turno, codFunzione, nuovoTurno);
         } else {  // nessun iscritto
             return null;
         }
@@ -740,12 +740,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     /**
      * Verifica che una iscrizione sia editabile e ritorna l'editor singolo
      */
-    private Component editSingle(Turno turno, String codFunzione) {
+    private Component editSingle(Turno turno, String codFunzione, boolean nuovoTurno) {
 
         // in modalità editor singolo lo storico è sempre read-only
         if (turno.getGiorno().isBefore(LocalDate.now())) {
             Iscrizione iscrizione = getIscrizione(turno, codFunzione);
-            return creaEditorSingolo(turno, iscrizione, true); // editor read-only
+            return creaEditorSingolo(turno, iscrizione, true, nuovoTurno); // editor read-only
         }
 
         Component editor = null;
@@ -760,7 +760,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                     iscrizione.setInizio(turno.getInizio());
                     iscrizione.setFine(turno.getFine());
 
-                    editor = creaEditorSingolo(turno, iscrizione, false); // editor RW
+                    editor = creaEditorSingolo(turno, iscrizione, false, nuovoTurno); // editor RW
 
                 } else {   // è già iscritto a questo turno
                     Funzione funzione = funzioneService.findByKeyUnica(wamLogin.getCroce(), codFunzione);
@@ -780,13 +780,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 boolean puoCancellare = StringUtils.isEmpty(result);
 
                 if (puoCancellare) {    // può ancora modificare/cancellare
-                    editor = creaEditorSingolo(turno, iscrizione, false); // editor RW
+                    editor = creaEditorSingolo(turno, iscrizione, false, nuovoTurno); // editor RW
                 } else {  // non può più modificare
-                    editor = creaEditorSingolo(turno, iscrizione, true); // editor read-only
+                    editor = creaEditorSingolo(turno, iscrizione, true, nuovoTurno); // editor read-only
                 }
 
             } else {  // occupata da un altro
-                editor = creaEditorSingolo(turno, iscrizione, true); // editor read-only
+                editor = creaEditorSingolo(turno, iscrizione, true, nuovoTurno); // editor read-only
             }
         }
 
@@ -795,17 +795,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     }
 
 
-    private Component creaEditorSingolo(Turno turno, Iscrizione iscrizione, boolean readOnly) {
-        return appContext.getBean(IscrizioneEditPolymer.class, this, turnodialog, turno, iscrizione, readOnly);
+    private Component creaEditorSingolo(Turno turno, Iscrizione iscrizione, boolean readOnly, boolean nuovoTurno) {
+        return appContext.getBean(IscrizioneEditPolymer.class, this, turnodialog, turno, iscrizione, readOnly, nuovoTurno);
     }
 
 
     /**
      * Verifica che un turno sia editabile e ritorna l'editor multiplo
      */
-    private Component editMulti(Turno turno, boolean abilitaCancellaTurno) {
+    private Component editMulti(Turno turno, boolean abilitaCancellaTurno, boolean nuovoTurno) {
         Component editor;
-        editor = appContext.getBean(TurnoEditPolymer.class, this, turnodialog, turno, abilitaCancellaTurno);
+        editor = appContext.getBean(TurnoEditPolymer.class, this, turnodialog, turno, abilitaCancellaTurno, nuovoTurno);
         return editor;
     }
 
@@ -882,10 +882,14 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     @Override
-    public void confermaDialogoTurno(Dialog dialog, Turno turno, Turno oldTurno) {
+    public void confermaDialogoTurno(Dialog dialog, Turno turno, Turno oldTurno, boolean nuovoTurno) {
         dialog.close();
 
         turnoService.save(turno);
+
+        if(nuovoTurno){
+            tabelloneService.logCreazioneTurno(turno);
+        }
 
         tabelloneService.logDeltaIscrizioni(turno, oldTurno);
 
@@ -896,10 +900,16 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
     @Override
-    public void confermaDialogoIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione, boolean ripeti, int numSettimane) {
+    public void confermaDialogoIscrizione(Dialog dialog, Turno turno, Iscrizione iscrizione, boolean ripeti, int numSettimane, boolean nuovoTurno) {
         dialog.close();
 
         turnoService.save(turno);
+
+        if(nuovoTurno){
+            tabelloneService.logCreazioneTurno(turno);
+        }
+
+        tabelloneService.logIscrizione(iscrizione, turno);
 
         // effettuo le eventuali ripetizioni
         if (ripeti) {
@@ -926,10 +936,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     public void eliminaTurno(Dialog dialog, Turno turno) {
         dialog.close();
 
-        //--log di cancellazione
-        tabelloneService.fixCancellaTurno(turno);
-
         turnoService.delete(turno);
+
+        tabelloneService.logEliminaTurno(turno);
 
         BroadcastMsg msg = new BroadcastMsg("turnodeleted", turno.getGiorno());
         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client
@@ -962,6 +971,9 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
             // recupera il turno
             try {
+
+                boolean nuovoTurno=false;
+
                 List<Turno> turni = turnoService.findByDateAndServizio(giorno, servizio);
                 Turno turno = null;
                 if (turni.size() > 0) {
@@ -973,6 +985,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                     Milite milite = wamLogin.getMilite();
                     if (milite.isCreatoreTurni() || isSuperUser()) {
                         turno = turnoService.newEntity(giorno, servizio);
+                        nuovoTurno=true;
                     } else {
                         log.info("Creazione turno rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizioni per il giorno " + giorno + " perché non ha il permesso di creazione turni");
                         continue;   // skip iteration
@@ -1004,6 +1017,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
                 // registra il turno e lo aggiunge all'elenco dei turni modificati
                 turnoService.save(turno);
+
+                if(nuovoTurno){
+                    tabelloneService.logCreazioneTurno(turno, true);
+                }
+
+                tabelloneService.logIscrizione(iscrizione, turno, true);
+
                 turniModificati.add(turno);
 
             } catch (Exception e) {
