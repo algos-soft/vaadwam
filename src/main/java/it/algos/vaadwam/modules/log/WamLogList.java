@@ -1,7 +1,6 @@
 package it.algos.vaadwam.modules.log;
 
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -11,7 +10,6 @@ import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EASearch;
-import it.algos.vaadflow.modules.log.LogDialog;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
@@ -46,13 +44,6 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 public class WamLogList extends AGridViewList {
 
     public static final String IRON_ICON = "history";
-
-    //    /**
-    //     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-    //     * Disponibile solo dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
-    //     */
-    //    @Autowired
-    //    protected LogtypeService typeService;
 
 
     /**
@@ -99,7 +90,7 @@ public class WamLogList extends AGridViewList {
 
         super.searchType = EASearch.nonUsata;
         super.usaPopupFiltro = true;
-        super.usaBottoneEdit = false;
+        super.usaBottoneEdit = true;
         super.usaButtonNew = false;
         super.isEntityAdmin = true;
         super.usaPagination = true;
@@ -114,8 +105,8 @@ public class WamLogList extends AGridViewList {
      */
     @Override
     protected void creaAlertLayout() {
-        super.creaAlertLayout();
-        alertPlacehorder.add(new Label("Lista creata dal programma."));
+        alertPlacehorder.add(text.getLabelAdmin("Lista visibile solo perché sei collegato come admin. Gli utenti normali non la vedono."));
+        alertPlacehorder.add(text.getLabelAdmin("Lista creata dal programma."));
     }// end of method
 
 
@@ -167,7 +158,7 @@ public class WamLogList extends AGridViewList {
      * Sovrascritto <br>
      */
     protected void openDialog(AEntity entityBean) {
-        LogDialog dialog = appContext.getBean(LogDialog.class, service, entityClazz);
+        WamLogDialog dialog = appContext.getBean(WamLogDialog.class, service, entityClazz);
         dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
     }// end of method
 

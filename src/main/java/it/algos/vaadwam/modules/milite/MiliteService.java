@@ -1062,6 +1062,10 @@ public class MiliteService extends WamService implements IUtenteService {
         message += milite.funzioni;
         message += A_CAPO;
 
+        message += "note: ";
+        message += milite.noteWam;
+        message += A_CAPO;
+
         return message.trim();
     }// end of method
 
@@ -1195,6 +1199,31 @@ public class MiliteService extends WamService implements IUtenteService {
             message += sep;
             message += milite.funzioni != null ? milite.funzioni : nullo;
             message += A_CAPO;
+        }
+
+        if (text.isValid(milite.noteWam) && text.isValid(militeOld.noteWam)) {
+            if (!milite.noteWam.equals(militeOld.noteWam)) {
+                message += "note: ";
+                message += militeOld.noteWam;
+                message += sep;
+                message += milite.noteWam;
+                message += A_CAPO;
+            }
+        } else {
+            if (text.isValid(milite.noteWam)) {
+                message += "note: ";
+                message += nullo;
+                message += sep;
+                message += milite.noteWam;
+                message += A_CAPO;
+            }
+            if (text.isValid(militeOld.noteWam)) {
+                message += "note: ";
+                message += militeOld.noteWam;
+                message += sep;
+                message += nullo;
+                message += A_CAPO;
+            }
         }
 
         return message.trim();

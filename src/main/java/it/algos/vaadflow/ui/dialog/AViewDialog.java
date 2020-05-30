@@ -195,6 +195,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
     protected LinkedHashMap<String, AbstractField> fieldMap;
 
+
     @Autowired
     protected AFieldService fieldService;
 

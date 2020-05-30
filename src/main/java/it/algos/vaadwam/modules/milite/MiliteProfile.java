@@ -1,5 +1,6 @@
 package it.algos.vaadwam.modules.milite;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -79,24 +80,6 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     }
 
 
-    /**
-     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
-     * <p>
-     * Chiamato da AViewDialog.open() <br>
-     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
-     * Può essere sovrascritto, per aggiungere informazioni <br>
-     * DOPO invocare il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixAlertLayout() {
-        if (wamLogin != null && wamLogin.isAdmin()) {
-            alertAdmin.add("Per poter iscrivere tutti gli altri militi, abilita la selezione in basso");
-            alertAdmin.add("Puoi sempre modificarla");
-        }
-
-        super.fixAlertLayout();
-    }
-
 
     /**
      * Costruisce nell'ordine una lista di nomi di properties <br>
@@ -108,7 +91,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
      * Se serve, modifica l'ordine della lista oppure esclude una property che non deve andare nel binder <br>
      */
     protected List<String> getPropertiesName() {
-        return Arrays.asList("nome", "cognome", "username", "password", "telefono", "mail", "indirizzo", "noteWam");
+        return Arrays.asList("nome", "cognome", "username", "password", "telefono", "mail", "noteWam");
     }// end of method
 
 
@@ -219,5 +202,34 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     //        militeService.save(entityBean, EAOperation.editNoDelete);
     //    }// end of method
 
+
+    /**
+     * Aggiunge ogni singolo field della fieldMap al layout grafico
+     */
+    @Override
+    protected void addFieldsToLayout() {
+        getFormLayout().removeAll();
+        String name;
+        Component field;
+
+        for (Object obj : fieldMap.keySet()) {
+            if (obj instanceof String) {
+                name = (String) obj;
+                field = (Component) fieldMap.get(name);
+                if (name.equals("noteWam") || name.equals("managerTabellone")) {
+                    if (name.equals("managerTabellone")) {
+                        formSubLayout.add(text.getLabelAdmin("Se vuoi iscriverti direttamente ai turni, disabilita questo checkbox"));
+                        formSubLayout.add(text.getLabelAdmin("Per poter iscrivere tutti gli altri militi, abilita questo checkbox"));
+                        formSubLayout.add(text.getLabelAdmin("Puoi modificare la scelta in ogni momento"));
+                        formSubLayout.add(field);
+                    } else {
+                        getFormLayout().add(field, 2);
+                    }
+                } else {
+                    getFormLayout().add(field);
+                }
+            }
+        }
+    }
 
 }// end of class

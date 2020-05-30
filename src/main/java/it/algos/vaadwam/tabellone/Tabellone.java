@@ -891,7 +891,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             tabelloneService.logCreazioneTurno(turno);
         }
 
-        tabelloneService.logDeltaIscrizioni(turno, oldTurno);
+//        tabelloneService.logDeltaIscrizioni(turno, oldTurno);
 
         BroadcastMsg msg = new BroadcastMsg("turnosaved", turno.getGiorno());
         Broadcaster.broadcast(msg);    // provoca l'update della GUI di questo e degli altri client

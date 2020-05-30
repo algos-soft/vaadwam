@@ -47,4 +47,21 @@ public class WamLogDialog extends AViewDialog<WamLog> {
         super(service, binderClass);
     }// end of constructor
 
+
+    /**
+     * Aggiunge ogni singolo field della fieldMap al layout grafico
+     */
+    @Override
+    protected void addFieldsToLayout() {
+        getFormLayout().removeAll();
+
+        for (String name : fieldMap.keySet()) {
+            if (name.equals("descrizione")) {
+                getFormLayout().add(fieldMap.get(name), 2);
+            } else {
+                getFormLayout().add(fieldMap.get(name));
+            }
+        }// end of for cycle
+    }
+
 }
