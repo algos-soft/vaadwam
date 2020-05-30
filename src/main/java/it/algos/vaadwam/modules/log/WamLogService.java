@@ -2,6 +2,7 @@ package it.algos.vaadwam.modules.log;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
@@ -18,12 +19,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 
 /**
@@ -165,7 +167,18 @@ public class WamLogService extends AService {
     public void log(EAWamLogType type, String message) {
 
         Croce croce = getCroce();
+        if(croce!=null){
+            log.debug("croce is: "+croce.getCode());
+        }else{
+            log.debug("croce is null");
+        }
+
         Milite militeLoggato = getMiliteLoggato();
+        if(militeLoggato!=null){
+            log.debug("militeLoggato is: "+militeLoggato.getSigla());
+        }else{
+            log.debug("militeLoggato is null");
+        }
 
         if(croce==null || militeLoggato==null){
             log.error("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
@@ -181,24 +194,47 @@ public class WamLogService extends AService {
     }
 
 
-    public WamLogin getWamLogin() {
+    public WamLogin getWamLoginOld() {
         WamLogin wamLogin = null;
         AContext context = null;
-
-        UI ui = UI.getCurrent();
-
-        if(ui==null){
-            return null;
-        }
-
-        VaadinSession vaadSession = ui.getSession();
+        VaadinSession vaadSession = UI.getCurrent().getSession();
 
         if (vaadSession != null) {
-            context = (AContext)vaadSession.getAttribute(KEY_CONTEXT);
-        }
+            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+        }// end of if cycle
 
         if (context != null && context.getLogin() != null) {
             wamLogin = (WamLogin) context.getLogin();
+        }// end of if cycle
+
+        return wamLogin;
+    }
+
+
+    public WamLogin getWamLogin() {
+
+        VaadinSession vs = VaadinSession.getCurrent();
+        if (vs == null) {
+            log.debug("VaadinSession is null");
+            return null;
+        } else {
+            log.debug("VaadinSession is "+vs);
+        }
+
+        AContext context = (AContext)vs.getAttribute(KEY_CONTEXT);
+        if(context==null){
+            log.debug("AContext is null");
+            return null;
+        }else{
+            log.debug("AContext is "+context);
+        }
+
+        WamLogin wamLogin = (WamLogin) context.getLogin();
+        if(wamLogin==null){
+            log.debug("WamLogin is null");
+            return null;
+        }else{
+            log.debug("wamLogin is "+wamLogin);
         }
 
         return wamLogin;

@@ -51,7 +51,7 @@
     <appender name="adminAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${ADMIN_LOG_FILE}</file>
         <encoder>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} --- %m %n</Pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
