@@ -19,6 +19,8 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.InitialPageSettings;
+import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.shared.Registration;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.AContext;

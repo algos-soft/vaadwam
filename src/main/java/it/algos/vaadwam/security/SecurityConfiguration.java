@@ -91,8 +91,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+//        http.authorizeRequests().antMatchers( "/favicon.ico").permitAll();
+
         // Not using Spring CSRF here to be able to use plain HTML for the login page
-        http.csrf().disable()
+        http
+                .csrf().disable()
 
                 // Register our CustomRequestCache, that saves unauthorized access attempts, so
                 // the user is redirected after login.
@@ -151,6 +155,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // (production mode) static resources
                 "/frontend-es5/**", "/frontend-es6/**");
-    }// end of method
+    }
 
-}// end of class
+}

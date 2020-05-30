@@ -10,6 +10,9 @@ import com.vaadin.flow.component.polymertemplate.*;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadflow.service.ADateService;
+import it.algos.vaadwam.enumeration.EAWamLogType;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import lombok.Getter;
@@ -67,6 +70,12 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
 
     @Autowired
     private ServizioService servizioService;
+
+    @Autowired
+    private WamLogService wamLogService;
+
+    @Autowired
+    private ADateService dateService;
 
     @Setter
     private CompletedListener completedListener;
@@ -393,6 +402,7 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
         worker.addPropertyChangeListener(this);
         bChiudi.setEnabled(false);
         worker.startWork();
+
     }
 
     /**
@@ -465,6 +475,9 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                             working=true;
 
                             ui.access(() -> {
+
+                                logStart();
+
                                 bEsegui.setText("Interrompi");
                                 progressBar.setVisible(true);
                                 progressBar.setValue(0);
@@ -490,6 +503,8 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                                     .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
                                     .open();
 
+                            logEnd();
+
                         });
                         worker.removePropertyChangeListener(this);
                         break;
@@ -510,6 +525,8 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
                                     .withButton(new Button(), ButtonOption.caption("Chiudi"), ButtonOption.closeOnClick(true))
                                     .open();
 
+                            logEnd();
+
                         });
                         worker.removePropertyChangeListener(this);
                         break;
@@ -518,6 +535,58 @@ public class TurnoGenPolymer extends PolymerTemplate<TurnoGenModel> implements P
         }
     }
 
+    /**
+     * Logga l'avvio della operazione
+     */
+    private void logStart(){
+        String dal = dateService.get(getDataStart());
+        String al = dateService.get(getDataEnd());
+        EAWamLogType logType;
+        String op;
+        if(isCrea()){
+            logType=EAWamLogType.multiCreazioneTurni;
+            op="creazione";
+        }else{
+            logType=EAWamLogType.multiCancellazioneTurni;
+            op="cancellazione";
+        }
+        wamLogService.log(logType, "Avviata "+op+" automatica turni dal "+dal+" al "+al);
 
+    }
+
+    /**
+     * Logga l'esito della operazione
+     */
+    private void logEnd(){
+
+        String op;
+        EAWamLogType logType;
+        if(isCrea()){
+            op="creazione";
+            logType = EAWamLogType.multiCreazioneTurni;
+        }else {
+            op="cancellazione";
+            logType = EAWamLogType.multiCancellazioneTurni;
+        }
+
+        String sEsito;
+        if(esito.isAborted()){
+            sEsito="interrotta";
+        }else{
+            sEsito="conclusa correttamente";
+        }
+
+        List<LocalDate> giorni = esito.getGiorni();
+        String sPeriodo="";
+        if(giorni.size()>0){
+            Collections.sort(giorni);
+            String sMinDate=dateService.get(giorni.get(0));
+            String sMaxDate=dateService.get(giorni.get(giorni.size()-1));
+            sPeriodo="dal "+sMinDate+" al "+sMaxDate;
+        }
+
+
+        wamLogService.log(logType, op+" automatica turni "+sEsito+" - "+esito.getTestoAzione()+" "+esito.getQuanti()+" turni "+sPeriodo);
+    }
 
 }

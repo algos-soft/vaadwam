@@ -176,7 +176,7 @@ public class ServizioService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
+    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative)  {
         Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).extra(extra).obbligatorie(obbligatorie).facoltative(facoltative).build();
 
         return (Servizio) super.addCroce(entity, croce);

@@ -25,6 +25,10 @@ public enum EAWamLogType {
 
     modificaProfile("modificaProfile"),
 
+    multiCreazioneTurni("multiCreazioneTurni"),
+
+    multiCancellazioneTurni("multiCancellazioneTurni"),
+
     creazioneTurno("creazioneTurno"),
 
     modificaTurno("modificaTurno"),

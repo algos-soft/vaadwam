@@ -10,6 +10,8 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.server.InitialPageSettings;
+import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -87,6 +89,21 @@ public class WamLayout extends MainLayout14 {
 
     private Dialog messageDialog;
 
+//    @Override
+//    public void configurePage(InitialPageSettings settings) {
+//        settings.addInlineFromFile(InitialPageSettings.Position.PREPEND,
+//                "inline.js", InitialPageSettings.WrapMode.JAVASCRIPT);
+//
+//        settings.addMetaTag("og:title", "The Rock");
+//        settings.addMetaTag("og:type", "video.movie");
+//        settings.addMetaTag("og:url",
+//                "http://www.imdb.com/title/tt0117500/");
+//        settings.addMetaTag("og:image",
+//                "http://ia.media-imdb.com/images/rock.jpg");
+//
+//        settings.addLink("shortcut icon", "images/favicon.ico");
+//        settings.addFavIcon("icon", "images/medal.ico", "192x192");
+//    }
 
     /**
      * Recupera i dati della sessione

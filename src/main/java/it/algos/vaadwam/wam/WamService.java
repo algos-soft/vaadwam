@@ -229,7 +229,7 @@ public abstract class WamService extends AService {
      *
      * @param entityBean da creare
      */
-    protected AEntity addCroce(AEntity entityBean) {
+    protected AEntity addCroce(AEntity entityBean) throws Exception {
         return addCroce(entityBean, null);
     }// end of method
 
@@ -243,16 +243,16 @@ public abstract class WamService extends AService {
     protected AEntity addCroce(AEntity entityBean, Croce croce) {
         if (croce == null) {
             croce = this.getWamCroce();
-        }// end of if cycle
+        }
 
         if (croce != null) {
             reflection.setPropertyValue(entityBean, PROPERTY_CROCE, croce);
         } else {
             log.error("Algos- Manca la croce (obbligatoria) di " + entityBean.toString() + " della classe " + entityBean.getClass().getSimpleName());
-        }// end of if/else cycle
+        }
 
         return creaIdKeySpecifica(entityBean);
-    }// end of method
+    }
 
 
     /**

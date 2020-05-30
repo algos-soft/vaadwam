@@ -97,7 +97,7 @@ public class FunzioneService extends WamService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) {
+    public boolean creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
         boolean creata = false;
 
         if (isMancaByKeyUnica(croce, code)) {
@@ -134,7 +134,7 @@ public class FunzioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) {
+    public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
         return newEntity(croce, 0, code, sigla, descrizione, icona, (Set<Funzione>) null);
     }// end of method
 
@@ -155,10 +155,11 @@ public class FunzioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti) {
+    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti)  {
         Funzione entity = Funzione.builderFunzione().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).sigla(text.isValid(sigla) ? sigla : null).descrizione(text.isValid(descrizione) ? descrizione : null).icona(icona).dipendenti(dipendenti).build();
 
         return (Funzione) super.addCroce(entity, croce);
+
     }// end of method
 
 

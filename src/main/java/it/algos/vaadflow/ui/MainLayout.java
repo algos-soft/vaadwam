@@ -475,7 +475,8 @@ public class MainLayout extends VerticalLayout implements RouterLayout, PageConf
         settings.addMetaTag("viewport", "width=device-width, initial-scale=1.0");
         settings.addLink("shortcut icon", "/frontend/images/favicons/favicon-96x96.png");
         settings.addLink("manifest", "/manifest.json");
-        settings.addFavIcon("icon", "/frontend/images/favicons/favicon-96x96.png", "96x96");
+//        settings.addFavIcon("icon", "/frontend/images/favicons/favicon-96x96.png", "96x96");
+        settings.addFavIcon("icon", "/frontend/images/favicon.ico", "96x96");
     }// end of method
 
 
