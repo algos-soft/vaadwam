@@ -3,6 +3,7 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.enumeration.EALogType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
@@ -634,13 +635,16 @@ public class TabelloneService extends AService {
         String sGiorno = dateService.getDate(turno.getGiorno());
         String sFunzione=funzione.getSigla();
         String sAction;
+        EAWamLogType logType;
         if(action){
+            logType=EAWamLogType.nuovaIscrizione;
             sAction="iscritto al turno";
         }else {
+            logType=EAWamLogType.cancellazioneIscrizione;
             sAction="cancellato dal turno";
         }
         String log = milite.getSigla()+" "+sAction+" "+s.getCode()+" del "+sGiorno+" ("+sFunzione+")";
-        wamLogger.log(EAWamLogType.cancellazioneIscrizione, log);
+        wamLogger.log(logType,log);
 
     }
 
@@ -657,50 +661,68 @@ public class TabelloneService extends AService {
     }
 
     @Data
-    class MiliteFunzione {
-
+    class MiliteFunzione{
         public MiliteFunzione(Milite milite, Funzione funzione) {
             this.milite = milite;
             this.funzione = funzione;
         }
-
-
         private Milite milite;
-
         private Funzione funzione;
-
     }
 
 
-    //    public Map getMappa(Turno turno) {
-    //        HashMap<String, Milite> mappa = new HashMap<>();
-    //
-    //        for (Iscrizione iscr : turno.iscrizioni) {
-    //            mappa.put(iscr.funzione.sigla, iscr.milite);
-    //        }
-    //
-    //        return mappa;
-    //    }// end of method
 
 
-    public void fixCancellaTurno(Turno turno) {
-        String message = VUOTA;
-        String sep = " - ";
-        boolean turnoPieno = isTurnoPieno(turno);
+    /**
+     * Logga una singola nuova iscrizione.
+     */
+    public void logIscrizione(Iscrizione iscrizione, Turno turno, boolean ripetizione) {
 
-        message = getMessaggioTurno(turno);
-        if (turnoPieno) {
+        Milite milite = iscrizione.getMilite();
+        Servizio s = turno.getServizio();
+        String sGiorno = dateService.getDate(turno.getGiorno());
+        String sFunzione=iscrizione.getFunzione().getSigla();
+
+        String log = milite.getSigla()+" iscritto al turno "+s.getCode()+" del "+sGiorno+" ("+sFunzione+")";
+        if(ripetizione){
+            log+=" [rip]";
+        }
+        wamLogger.log(EAWamLogType.nuovaIscrizione,log);
+
+    }
+
+    /**
+     * Logga una singola nuova iscrizione.
+     */
+    public void logIscrizione(Iscrizione iscrizione, Turno turno) {
+        logIscrizione(iscrizione, turno, false);
+    }
+
+
+
+    public void logEliminaTurno(Turno turno) {
+
+        boolean haIscrizioni=false;
+        for (Iscrizione iscr : turno.iscrizioni) {
+            if (iscr.milite != null) {
+                haIscrizioni = true;
+                break;
+            }
+        }
+
+        String message = getMessaggioTurno(turno);
+        if (haIscrizioni) {
             message += "militi iscritti: ";
             message += A_CAPO;
             for (Iscrizione iscr : turno.iscrizioni) {
                 if (iscr.milite != null) {
-                    message += "(" + iscr.funzione.sigla + ")" + sep + iscr.milite.toString();
+                    message += "(" + iscr.funzione.sigla + ")" + " - " + iscr.milite.toString();
                     message += A_CAPO;
                 }
             }
         }
 
-        if (turnoPieno) {
+        if (haIscrizioni) {
             wamLogger.cancellazioneTurnoPieno(message);
         } else {
             wamLogger.cancellazioneTurnoVuoto(message);
@@ -731,19 +753,21 @@ public class TabelloneService extends AService {
     }
 
 
-    public boolean isTurnoPieno(Turno turno) {
-        boolean pieno = false;
-
-
-        for (Iscrizione iscr : turno.iscrizioni) {
-            if (iscr.milite != null) {
-                pieno = true;
-                break;
-            }
+    public void logCreazioneTurno(Turno turno, boolean ripetizione){
+        Servizio s = turno.getServizio();
+        String sGiorno = dateService.getDate(turno.getGiorno());
+        String log = "creato turno "+s.getCode()+" del "+sGiorno;
+        if(ripetizione){
+            log+=" [rip]";
         }
-
-        return pieno;
+        wamLogger.log(EAWamLogType.creazioneTurno, log);
     }
+
+    public void logCreazioneTurno(Turno turno){
+        logCreazioneTurno(turno, false);
+    }
+
+
 
 
     /**
