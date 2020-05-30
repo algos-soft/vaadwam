@@ -1,8 +1,6 @@
 package it.algos.vaadwam.modules.log;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
@@ -19,13 +17,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 
 /**
@@ -44,6 +40,7 @@ public class WamLogService extends AService {
 
     private Logger adminLogger;
 
+
     /**
      * Costruttore @Autowired <br>
      * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
@@ -58,7 +55,7 @@ public class WamLogService extends AService {
         super.entityClass = WamLog.class;
         this.repository = (WamLogRepository) repository;
 
-        adminLogger=LoggerFactory.getLogger("wam.admin");
+        adminLogger = LoggerFactory.getLogger("wam.admin");
 
     }// end of Spring constructor
 
@@ -159,28 +156,28 @@ public class WamLogService extends AService {
     }
 
 
-//    public void log(EAWamLogType type) {
-//        log(type, VUOTA);
-//    }
+    //    public void log(EAWamLogType type) {
+    //        log(type, VUOTA);
+    //    }
 
 
     public void log(EAWamLogType type, String message) {
 
         Croce croce = getCroce();
-        if(croce!=null){
-            log.debug("croce is: "+croce.getCode());
-        }else{
+        if (croce != null) {
+            log.debug("croce is: " + croce.getCode());
+        } else {
             log.debug("croce is null");
         }
 
         Milite militeLoggato = getMiliteLoggato();
-        if(militeLoggato!=null){
-            log.debug("militeLoggato is: "+militeLoggato.getSigla());
-        }else{
+        if (militeLoggato != null) {
+            log.debug("militeLoggato is: " + militeLoggato.getSigla());
+        } else {
             log.debug("militeLoggato is null");
         }
 
-        if(croce==null || militeLoggato==null){
+        if (croce == null || militeLoggato == null) {
             log.error("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
             return;
         }
@@ -218,23 +215,23 @@ public class WamLogService extends AService {
             log.debug("VaadinSession is null");
             return null;
         } else {
-            log.debug("VaadinSession is "+vs);
+            log.debug("VaadinSession is " + vs);
         }
 
-        AContext context = (AContext)vs.getAttribute(KEY_CONTEXT);
-        if(context==null){
+        AContext context = (AContext) vs.getAttribute(KEY_CONTEXT);
+        if (context == null) {
             log.debug("AContext is null");
             return null;
-        }else{
-            log.debug("AContext is "+context);
+        } else {
+            log.debug("AContext is " + context);
         }
 
         WamLogin wamLogin = (WamLogin) context.getLogin();
-        if(wamLogin==null){
+        if (wamLogin == null) {
             log.debug("WamLogin is null");
             return null;
-        }else{
-            log.debug("wamLogin is "+wamLogin);
+        } else {
+            log.debug("wamLogin is " + wamLogin);
         }
 
         return wamLogin;

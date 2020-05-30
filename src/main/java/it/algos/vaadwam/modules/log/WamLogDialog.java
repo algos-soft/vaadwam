@@ -49,6 +49,38 @@ public class WamLogDialog extends AViewDialog<WamLog> {
 
 
     /**
+     * Preferenze standard e specifiche, eventualmente sovrascritte nella sottoclasse <br>
+     * Può essere sovrascritto, per aggiungere e/o modificareinformazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixPreferenze() {
+        super.fixPreferenze();
+    }
+
+
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        super.fixAlertLayout();
+
+        alertPlacehorder.add(text.getLabelAdmin("Scheda di log non modificabile"));
+
+        if (login != null && login.isDeveloper()) {
+            alertPlacehorder.add(text.getLabelDev("Scheda di log modificabile solo nella descrizione"));
+            alertPlacehorder.add(text.getLabelDev("Le modifiche alle altre properties non vengono comunque registrate"));
+        }
+    }
+
+
+    /**
      * Aggiunge ogni singolo field della fieldMap al layout grafico
      */
     @Override

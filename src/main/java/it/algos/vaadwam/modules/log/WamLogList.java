@@ -158,8 +158,15 @@ public class WamLogList extends AGridViewList {
      * Sovrascritto <br>
      */
     protected void openDialog(AEntity entityBean) {
+        EAOperation eaOperation;
+        if (login != null && login.isDeveloper()) {
+            eaOperation = EAOperation.editNoDelete;
+        } else {
+            eaOperation = EAOperation.showOnly;
+        }
+
         WamLogDialog dialog = appContext.getBean(WamLogDialog.class, service, entityClazz);
-        dialog.open(entityBean, EAOperation.showOnly, this::save, this::delete);
+        dialog.open(entityBean, eaOperation, this::save, this::delete);
     }// end of method
 
 }// end of class

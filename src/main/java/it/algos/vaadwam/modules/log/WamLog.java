@@ -53,7 +53,7 @@ public class WamLog extends AEntity {
     @DBRef
     @Field("croce")
     @AIField(type = EAFieldType.combo, serviceClazz = CroceService.class, dev = EAFieldAccessibility.newOnly, admin = EAFieldAccessibility.showOnly)
-    @AIColumn(name = "Croce", widthEM = 20)
+    @AIColumn(name = "Croce", widthEM = 8)
     public Croce croce;
 
 
