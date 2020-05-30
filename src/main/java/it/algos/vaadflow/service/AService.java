@@ -1307,6 +1307,8 @@ public abstract class AService extends AbstractService implements IAService {
     }// end of method
 
 
+
+
     /**
      * Recupera il login della session corrente <br>
      * Controlla che la session sia attiva <br>
