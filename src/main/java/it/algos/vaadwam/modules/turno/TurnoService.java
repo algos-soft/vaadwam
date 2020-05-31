@@ -155,6 +155,7 @@ public class TurnoService extends WamService {
     }// end of method
 
 
+
     /**
      * Creazione in memoria di una nuova entity che NON viene salvata
      * Eventuali regolazioni iniziali delle property
@@ -165,9 +166,16 @@ public class TurnoService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
+    public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio) {
+        return newEntity(croce, giorno, servizio, servizio.getInizio(), servizio.getFine(), (List<Iscrizione>) null, "", "");
+    }
+
+
     public Turno newEntity(LocalDate giorno, Servizio servizio) {
-        return newEntity((Croce) null, giorno, servizio, servizio.getInizio(), servizio.getFine(), (List<Iscrizione>) null, "", "");
-    }// end of method
+        return newEntity(null, giorno, servizio);
+    }
+
+
 
 
     /**

@@ -196,9 +196,7 @@ public class TurnoGenWorker {
             // qui siamo in un thread separato e non abbiamo login, passare sempre la croce
             List<Turno> turni = turnoService.findByDateAndServizioAndCroce(data, servizio, croce);
             if(turni.isEmpty()){    // non se esiste già!
-//                Turno turno = turnoService.newEntity(croce, data, servizio, null, null, null, null, null);
-                Turno turno = turnoService.newEntity(data, servizio);
-                turno.croce=croce;  // qui siamo in un thread separato e non abbiamo login
+                Turno turno = turnoService.newEntity(croce, data, servizio);
                 turnoService.save(turno);
                 i++;
             }

@@ -126,16 +126,6 @@ public class WamLogService extends AService {
     }
 
 
-    public void cancellazioneTurnoVuoto(String message) {
-        log(EAWamLogType.cancellazioneTurnoVuoto, message);
-    }
-
-
-    public void cancellazioneTurnoPieno(String message) {
-        log(EAWamLogType.cancellazioneTurnoPieno, message);
-    }
-
-
     public void modificaIscrizione(String message) {
         log(EAWamLogType.modificaIscrizione, message);
     }

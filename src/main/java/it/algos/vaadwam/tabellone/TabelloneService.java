@@ -710,7 +710,7 @@ public class TabelloneService extends AService {
             }
         }
 
-        String message = getMessaggioTurno(turno);
+        String message = "Cancellato turno - "+getMessaggioTurno(turno);
         if (haIscrizioni) {
             message += "militi iscritti: ";
             message += A_CAPO;
@@ -723,9 +723,9 @@ public class TabelloneService extends AService {
         }
 
         if (haIscrizioni) {
-            wamLogger.cancellazioneTurnoPieno(message);
+            wamLogger.log(EAWamLogType.cancellazioneTurnoPieno, message);
         } else {
-            wamLogger.cancellazioneTurnoVuoto(message);
+            wamLogger.log(EAWamLogType.cancellazioneTurnoVuoto, message);
         }
     }
 
