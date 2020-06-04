@@ -40,7 +40,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 @Slf4j
 @Secured("admin")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = true, menuName = "Logs", menuIcon = VaadinIcon.ARCHIVE, searchProperty = "descrizione", roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = true, menuName = "Logs", menuIcon = VaadinIcon.ARCHIVE, sortProperty = "evento", sortDirection = "DESC", searchProperty = "descrizione", roleTypeVisibility = EARoleType.admin)
 public class WamLogList extends AGridViewList {
 
     public static final String IRON_ICON = "history";

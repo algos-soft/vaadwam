@@ -25,14 +25,14 @@ public class FlowVar {
      * Controlla se l'applicazione usa il login oppure no <br>
      * Se si usa il login, occorre la classe SecurityConfiguration <br>
      * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
-     * Di defaul (per sicurezza) uguale a true <br>
+     * Di default (per sicurezza) uguale a true <br>
      * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
      */
     public static boolean usaSecurity = true;
 
     /**
      * Controlla se l'applicazione è multi-company oppure no <br>
-     * Di defaul (per sicurezza) uguale a true <br>
+     * Di default (per sicurezza) uguale a true <br>
      * Deve essere regolato in xxxBoot.regolaInfo() sempre presente nella directory 'application' <br>
      */
     public static boolean usaCompany = true;

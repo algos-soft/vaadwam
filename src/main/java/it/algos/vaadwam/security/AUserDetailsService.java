@@ -8,6 +8,7 @@ import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadflow.service.ABootService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,14 @@ public class AUserDetailsService implements UserDetailsService {
     private final CroceService croceService;
 
     public PasswordEncoder passwordEncoder;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WamLogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -92,6 +101,7 @@ public class AUserDetailsService implements UserDetailsService {
                     passwordHash = passwordEncoder.encode(milite.getPassword());
                     authorities = roleService.getAuthorities(milite);
                     FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
+                    logger.login(milite);
                     return new User(username, passwordHash, authorities);
                 } else {
                     throw new UsernameNotFoundException(username + " non è più attivo");

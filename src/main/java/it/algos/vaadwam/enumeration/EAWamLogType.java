@@ -11,6 +11,8 @@ import java.util.List;
  * Time: 10:36
  */
 public enum EAWamLogType {
+    login("login"),
+
     nuovaIscrizione("nuovaIscrizione"),
 
     modificaIscrizione("modificaIscrizione"),

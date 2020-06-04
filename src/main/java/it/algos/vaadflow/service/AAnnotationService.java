@@ -1055,14 +1055,27 @@ public class AAnnotationService extends AbstractService {
     public Sort getSort(Class<? extends IAView> viewClazz) {
         Sort sort = null;
         String sortProperty = VUOTA;
+        String sortDirectionTxt = VUOTA;
+        Sort.Direction sortDirection = Sort.DEFAULT_DIRECTION;
+
         AIView annotationView = this.getAIView(viewClazz);
 
         if (annotationView != null) {
             sortProperty = annotationView.sortProperty();
+            sortDirectionTxt = annotationView.sortDirection();
         }// end of if cycle
 
+        if (text.isValid(sortDirectionTxt)) {
+            if (sortDirectionTxt.equals("ASC")) {
+                sortDirection = Sort.Direction.ASC;
+            }
+            if (sortDirectionTxt.equals("DESC")) {
+                sortDirection = Sort.Direction.DESC;
+            }
+        }
+
         if (text.isValid(sortProperty)) {
-            sort = new Sort(Sort.DEFAULT_DIRECTION, sortProperty);
+            sort = new Sort(sortDirection, sortProperty);
         }// end of if cycle
 
         return sort;

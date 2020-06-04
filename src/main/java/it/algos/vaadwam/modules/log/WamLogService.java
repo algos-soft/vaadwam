@@ -10,6 +10,7 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 
 /**
@@ -116,6 +117,20 @@ public class WamLogService extends AService {
     }// end of method
 
 
+    public void login(Milite milite) {
+        login(milite, VUOTA);
+    }
+
+
+    public void login(Milite milite, String message) {
+        WamLog wamLog = newEntity(milite.croce, EAWamLogType.login, milite, message);
+        wamLog.id = milite.croce.code + System.currentTimeMillis();
+        mongo.update(wamLog, WamLog.class);
+
+        sendLog(milite.croce, milite, EAWamLogType.login, message);
+    }
+
+
     public void creazioneTurno(String message) {
         log(EAWamLogType.creazioneTurno, message);
     }
@@ -152,7 +167,6 @@ public class WamLogService extends AService {
 
 
     public void log(EAWamLogType type, String message) {
-
         Croce croce = getCroce();
         if (croce != null) {
             log.debug("croce is: " + croce.getCode());
@@ -167,35 +181,64 @@ public class WamLogService extends AService {
             log.debug("militeLoggato is null");
         }
 
-        if (croce == null || militeLoggato == null) {
-            log.error("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
-            return;
-        }
-
         WamLog wamLog = newEntity(croce, type, militeLoggato, message);
         wamLog.id = croce.code + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
 
-        adminLogger.info(message);
+        if (croce == null || militeLoggato == null) {
+            log.info("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
+        }
 
+        sendLog(croce, militeLoggato, type, message);
     }
 
 
-//    public WamLogin getWamLoginOld() {
-//        WamLogin wamLogin = null;
-//        AContext context = null;
-//        VaadinSession vaadSession = UI.getCurrent().getSession();
-//
-//        if (vaadSession != null) {
-//            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
-//        }// end of if cycle
-//
-//        if (context != null && context.getLogin() != null) {
-//            wamLogin = (WamLogin) context.getLogin();
-//        }// end of if cycle
-//
-//        return wamLogin;
-//    }
+    public void sendLog(Croce croce, Milite milite, EAWamLogType type, String message) {
+        String doppioSpazio = SPAZIO + SPAZIO;
+        String tag = "System";
+        String sep = " - ";
+        String croceTxt = VUOTA;
+        String militeTxt = VUOTA;
+        String typeTxt = VUOTA;
+        int max = 30;
+        int min = 5;
+
+        croceTxt = croce != null ? croce.code : tag;
+        croceTxt = StringUtils.rightPad(croceTxt, max);
+        croceTxt = croceTxt.substring(0, 4);
+        croceTxt = "[" + croceTxt + "]" + doppioSpazio;
+
+        militeTxt = milite != null ? milite.username : tag;
+        militeTxt = StringUtils.rightPad(militeTxt, max);
+        militeTxt = militeTxt.substring(0, 20);
+        militeTxt = "[" + militeTxt + "]" + doppioSpazio;
+
+        typeTxt = type != null ? type.getTag() : tag;
+        typeTxt = StringUtils.rightPad(type.getTag(), max);
+        typeTxt = typeTxt.substring(0, 15);
+        typeTxt = "[" + typeTxt + "]" + doppioSpazio;
+
+        message = croceTxt + militeTxt + typeTxt + message;
+        message = message.replaceAll(A_CAPO, sep);
+        adminLogger.info(message.trim());
+    }
+
+
+    //    public WamLogin getWamLoginOld() {
+    //        WamLogin wamLogin = null;
+    //        AContext context = null;
+    //        VaadinSession vaadSession = UI.getCurrent().getSession();
+    //
+    //        if (vaadSession != null) {
+    //            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+    //        }// end of if cycle
+    //
+    //        if (context != null && context.getLogin() != null) {
+    //            wamLogin = (WamLogin) context.getLogin();
+    //        }// end of if cycle
+    //
+    //        return wamLogin;
+    //    }
 
 
     public WamLogin getWamLogin() {
