@@ -177,7 +177,6 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      * Riempie il modello con i dati del turno
      */
     private void populateModel() {
-
         getModel().setMilite(milite.getSigla());
 
         // data di esecuzione del turno
