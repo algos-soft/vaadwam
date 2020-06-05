@@ -61,7 +61,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Qualifier(TAG_MIL)
 @Slf4j
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "cognome", sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
+@AIView(vaadflow = false, menuName = "militi", menuIcon = VaadinIcon.GROUP, searchProperty = "cognome", sortProperty = "cognome", sortDirection = "ASC", roleTypeVisibility = EARoleType.user)
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class MiliteList extends WamViewList {
 
