@@ -160,6 +160,10 @@ public class WamLogService extends AService {
     }
 
 
+    public void modificaPreferenza(String message) {
+        log(EAWamLogType.modificaPreferenza, message);
+    }
+
     //    public void log(EAWamLogType type) {
     //        log(type, VUOTA);
     //    }
@@ -199,20 +203,15 @@ public class WamLogService extends AService {
         String croceTxt = VUOTA;
         String militeTxt = VUOTA;
         String typeTxt = VUOTA;
-        int max = 30;
-        int min = 5;
 
         croceTxt = croce != null ? croce.code : tag;
-        croceTxt = text.fixSize(croceTxt, 5);
-        croceTxt = text.setQuadre(croceTxt);
+        croceTxt = text.fixSizeQuadre(croceTxt, 4);
 
         militeTxt = milite != null ? milite.username : tag;
-        militeTxt = text.fixSize(militeTxt, 12);
-        militeTxt = text.setQuadre(militeTxt);
+        militeTxt = text.fixSizeQuadre(militeTxt, 14);
 
         typeTxt = type != null ? type.getTag() : tag;
-        typeTxt = text.fixSize(typeTxt, 16);
-        typeTxt = text.setQuadre(typeTxt);
+        typeTxt = text.fixSizeQuadre(typeTxt, 18);
 
         message = croceTxt + dueSpazi + militeTxt + dueSpazi + typeTxt + dueSpazi + message;
         message = message.replaceAll(A_CAPO, sep);

@@ -1347,7 +1347,8 @@ public class ATextService extends AbstractService {
      * @return stringa con parentesi quadre aggiunte
      */
     public String setQuadre(String stringaIn) {
-        String stringaOut = stringaIn.trim();
+        String stringaOut = stringaIn;
+        int cicli = 3;
 
         if (this.isValid(stringaOut)) {
             stringaOut = this.setNoQuadre(stringaIn);
@@ -1394,7 +1395,6 @@ public class ATextService extends AbstractService {
         return stringaOut.trim();
     }
 
-
     /**
      * Allunga un testo alla lunghezza desiderata. <br>
      * Se è più corta, aggiunge spazi vuoti <br>
@@ -1435,6 +1435,36 @@ public class ATextService extends AbstractService {
         }
 
         return testoOut;
+    }
+
+
+    /**
+     * Forza un testo alla lunghezza desiderata ed aggiunge parentesi quadre in testa e coda. <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con lunghezza prefissata e parentesi quadre aggiunte
+     */
+    public String fixSizeQuadre(String stringaIn, int size) {
+        String stringaOut = stringaIn;
+        int cicli = 3;
+
+        if (this.isValid(stringaOut)) {
+            stringaOut = this.setNoQuadre(stringaIn);
+            stringaOut = rightPad(stringaOut, size);
+            stringaOut = fixSize(stringaOut, size);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(QUADRA_INI)) {
+                    stringaOut = QUADRA_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(QUADRA_END)) {
+                    stringaOut = stringaOut + QUADRA_END;
+                }
+            }
+        }
+
+        return stringaOut.trim();
     }
 
 

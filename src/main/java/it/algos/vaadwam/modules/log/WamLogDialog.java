@@ -73,7 +73,7 @@ public class WamLogDialog extends AViewDialog<WamLog> {
 
         alertPlacehorder.add(text.getLabelAdmin("Scheda di log non modificabile"));
 
-        if (login != null && login.isDeveloper()) {
+        if (wamLogin != null && wamLogin.isDeveloper()) {
             alertPlacehorder.add(text.getLabelDev("Scheda di log modificabile solo nella descrizione"));
             alertPlacehorder.add(text.getLabelDev("Le modifiche alle altre properties non vengono comunque registrate"));
         }

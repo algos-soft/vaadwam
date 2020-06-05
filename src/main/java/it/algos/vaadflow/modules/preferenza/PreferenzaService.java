@@ -6,6 +6,7 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EAPrefType;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARole;
@@ -991,6 +992,20 @@ public class PreferenzaService extends AService {
 
         return salvata;
     } // end of method
+
+
+    /**
+     * Proviene da List e da Form (quasi sempre) <br>
+     * Primo ingresso nel service dopo il click sul bottone <br>
+     *
+     * @param entityBean
+     * @param operation
+     */
+    @Override
+    public AEntity save(AEntity entityBean, EAOperation operation) {
+        wamLogger.modificaPreferenza(entityBean.id + " -> " + ((Preferenza) entityBean).getValue());
+        return super.save(entityBean, operation);
+    }
 
     //    public  Boolean getBool(String code, Object defaultValue) {
     //        return getBool(code, CompanySessionLib.getCompany(), defaultValue);

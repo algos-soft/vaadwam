@@ -13,9 +13,11 @@ import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.MainLayout14;
+import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.enumeration.EAWamLogType;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +46,20 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
 public class WamLogList extends AGridViewList {
 
     public static final String IRON_ICON = "history";
+
+    /**
+     * Popup di selezione dei militi <br>
+     */
+    protected AComboBox filtroMilitiComboBox;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MiliteService militeService;
 
 
     /**
@@ -94,6 +110,7 @@ public class WamLogList extends AGridViewList {
         super.usaButtonNew = false;
         super.isEntityAdmin = true;
         super.usaPagination = true;
+        super.isEntityModificabile = false;
     }// end of method
 
 
@@ -105,8 +122,13 @@ public class WamLogList extends AGridViewList {
      */
     @Override
     protected void creaAlertLayout() {
+        super.creaAlertLayout();
+        alertPlacehorder.removeAll();
+
+        alertPlacehorder.add(text.getLabelAdmin("Registro di tutte le principali operazioni compiute."));
         alertPlacehorder.add(text.getLabelAdmin("Lista visibile solo perché sei collegato come admin. Gli utenti normali non la vedono."));
-        alertPlacehorder.add(text.getLabelAdmin("Lista creata dal programma."));
+        alertPlacehorder.add(text.getLabelAdmin("Lista di controllo creata dal programma."));
+        alertPlacehorder.add(text.getLabelAdmin("Puoi selezionare sia il tipo di operazione sia il milite che l'ha effettuata."));
     }// end of method
 
 
@@ -126,6 +148,14 @@ public class WamLogList extends AGridViewList {
             updateFiltri();
             updateGrid();
         });
+
+        filtroMilitiComboBox = new AComboBox();
+        filtroMilitiComboBox.setWidth("10em");
+        filtroMilitiComboBox.setPlaceholder("Milite ...");
+
+        filtroMilitiComboBox.setItems(militeService.findAll());
+        //        filtroMilitiComboBox.setValue(EAFiltroMilite.attivi);
+        topPlaceholder.add(filtroMilitiComboBox);
     }// end of method
 
 
