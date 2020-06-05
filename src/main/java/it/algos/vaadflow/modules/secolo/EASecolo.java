@@ -7,46 +7,86 @@ package it.algos.vaadflow.modules.secolo;
  */
 public enum EASecolo {
 
-    //    XXac("XX", 2000, 1901, true),
-//    XIXac("XIX", 1900, 1801, true),
-//    XVIIIac("XVII", 1800, 1701, true),
-//    XVIIac("XVII", 1700, 1601, true),
-//    XVIac("XVI", 1600, 1501, true),
-//    XVac("XV", 1500, 1401, true),
-//    XIVac("XIV", 1400, 1301, true),
-//    XIIIac("XIII", 1300, 1201, true),
-//    XIIac("XII", 1200, 1101, true),
-//    XIac("XI", 1100, 1001, true),
+    XXac("XX", 2000, 1901, true),
+
+    XIXac("XIX", 1900, 1801, true),
+
+    XVIIIac("XVII", 1800, 1701, true),
+
+    XVIIac("XVII", 1700, 1601, true),
+
+    XVIac("XVI", 1600, 1501, true),
+
+    XVac("XV", 1500, 1401, true),
+
+    XIVac("XIV", 1400, 1301, true),
+
+    XIIIac("XIII", 1300, 1201, true),
+
+    XIIac("XII", 1200, 1101, true),
+
+    XIac("XI", 1100, 1001, true),
+
     Xac("X", 1000, 901, true),
+
     IXac("IX", 900, 801, true),
+
     VIIIac("VIII", 800, 701, true),
+
     VIIac("VII", 700, 601, true),
+
     VIac("VI", 600, 501, true),
+
     Vac("V", 500, 401, true),
+
     IVac("IV", 400, 301, true),
+
     IIIac("III", 300, 201, true),
+
     IIac("II", 200, 101, true),
+
     Iac("I", 100, 1, true),
+
     I("I", 1, 100, false),
+
     II("II", 101, 200, false),
+
     III("III", 201, 300, false),
+
     IV("IV", 301, 400, false),
+
     V("V", 401, 500, false),
+
     VI("VI", 501, 600, false),
+
     VII("VII", 601, 700, false),
+
     VIII("VIII", 701, 800, false),
+
     IX("IX", 801, 900, false),
+
     X("X", 901, 1000, false),
+
     XI("XI", 1001, 1100, false),
+
     XII("XII", 1101, 1200, false),
+
     XIII("XIII", 1201, 1300, false),
+
     XIV("XIV", 1301, 1400, false),
+
     XV("XV", 1401, 1500, false),
+
     XVI("XVI", 1501, 1600, false),
+
     XVII("XVII", 1601, 1700, false),
+
     XVIII("XVIII", 1701, 1800, false),
+
     XIX("XIX", 1801, 1900, false),
+
     XX("XX", 1901, 2000, false),
+
     XXI("XXI", 2001, 2100, false);
 
     public final static String TAG_AC = " a.C.";

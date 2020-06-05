@@ -10,7 +10,6 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.wam.WamLogin;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,7 +193,7 @@ public class WamLogService extends AService {
 
 
     public void sendLog(Croce croce, Milite milite, EAWamLogType type, String message) {
-        String doppioSpazio = SPAZIO + SPAZIO;
+        String dueSpazi = SPAZIO + SPAZIO;
         String tag = "System";
         String sep = " - ";
         String croceTxt = VUOTA;
@@ -204,21 +203,18 @@ public class WamLogService extends AService {
         int min = 5;
 
         croceTxt = croce != null ? croce.code : tag;
-        croceTxt = StringUtils.rightPad(croceTxt, max);
-        croceTxt = croceTxt.substring(0, 4);
-        croceTxt = "[" + croceTxt + "]" + doppioSpazio;
+        croceTxt = text.fixSize(croceTxt, 5);
+        croceTxt = text.setQuadre(croceTxt);
 
         militeTxt = milite != null ? milite.username : tag;
-        militeTxt = StringUtils.rightPad(militeTxt, max);
-        militeTxt = militeTxt.substring(0, 20);
-        militeTxt = "[" + militeTxt + "]" + doppioSpazio;
+        militeTxt = text.fixSize(militeTxt, 12);
+        militeTxt = text.setQuadre(militeTxt);
 
         typeTxt = type != null ? type.getTag() : tag;
-        typeTxt = StringUtils.rightPad(type.getTag(), max);
-        typeTxt = typeTxt.substring(0, 15);
-        typeTxt = "[" + typeTxt + "]" + doppioSpazio;
+        typeTxt = text.fixSize(typeTxt, 16);
+        typeTxt = text.setQuadre(typeTxt);
 
-        message = croceTxt + militeTxt + typeTxt + message;
+        message = croceTxt + dueSpazi + militeTxt + dueSpazi + typeTxt + dueSpazi + message;
         message = message.replaceAll(A_CAPO, sep);
         adminLogger.info(message.trim());
     }

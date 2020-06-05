@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.Label;
 import it.algos.vaadflow.enumeration.EAFirstChar;
 import it.algos.vaadflow.enumeration.EAPrefType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,8 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static it.algos.vaadflow.application.FlowCost.SLASH;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 
 /**
  * Project springvaadin
@@ -1308,6 +1308,134 @@ public class ATextService extends AbstractService {
 
         return matrice;
     }// end of method
+
+
+    /**
+     * Elimina (eventuali) parentesi quadre in testa e coda della stringa. <br>
+     * Funziona solo se le quadre sono esattamente in TESTA ed in CODA alla stringa <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con doppie quadre eliminate
+     */
+    public String setNoQuadre(String stringaIn) {
+        String stringaOut = stringaIn.trim();
+        int cicli = 3;
+
+        if (this.isValid(stringaOut)) {
+            for (int k = 0; k < cicli; k++) {
+                stringaOut = this.levaTesta(stringaOut, QUADRA_INI);
+                stringaOut = this.levaCoda(stringaOut, QUADRA_END);
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Aggiunge parentesi quadre in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con parentesi quadre aggiunte
+     */
+    public String setQuadre(String stringaIn) {
+        String stringaOut = stringaIn.trim();
+
+        if (this.isValid(stringaOut)) {
+            stringaOut = this.setNoQuadre(stringaIn);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(QUADRA_INI)) {
+                    stringaOut = QUADRA_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(QUADRA_END)) {
+                    stringaOut = stringaOut + QUADRA_END;
+                }
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Aggiunge doppie parentesi quadre in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono (ne doppie, ne singole) <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con doppie parentesi quadre aggiunte
+     */
+    public String setDoppieQuadre(String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (stringaIn != null && stringaIn.length() > 0) {
+            stringaOut = this.setNoQuadre(stringaIn);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(QUADRA_INI)) {
+                    stringaOut = QUADRE_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(QUADRA_END)) {
+                    stringaOut = stringaOut + QUADRE_END;
+                }
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Allunga un testo alla lunghezza desiderata. <br>
+     * Se è più corta, aggiunge spazi vuoti <br>
+     * Se è più lungo, rimane inalterato <br>
+     * La stringa in ingresso viene 'giustificata' a sinistra <br>
+     * Vengono eliminati gli spazi vuoti che precedono la stringa <br>
+     *
+     * @param testoIn ingresso
+     *
+     * @return testo della 'lunghezza' richiesta
+     */
+
+    public String rightPad(final String testoIn, int size) {
+        String testoOut = testoIn.trim();
+        testoOut = StringUtils.rightPad(testoOut, size);
+        return testoOut;
+    }
+
+
+    /**
+     * Forza un testo alla lunghezza desiderata. <br>
+     * Se è più corta, aggiunge spazi vuoti <br>
+     * Se è più lungo, lo tronca <br>
+     * La stringa in ingresso viene 'giustificata' a sinistra <br>
+     * Vengono eliminati gli spazi vuoti che precedono la stringa <br>
+     *
+     * @param testoIn ingresso
+     *
+     * @return testo della 'lunghezza' richiesta
+     */
+
+    public String fixSize(final String testoIn, int size) {
+        String testoOut = testoIn.trim();
+        testoOut = rightPad(testoIn, size);
+
+        if (testoOut.length() > size) {
+            testoOut = testoOut.substring(0, size);
+        }
+
+        return testoOut;
+    }
 
 
 }// end of class

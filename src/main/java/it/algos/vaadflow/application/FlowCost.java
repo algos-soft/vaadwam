@@ -399,4 +399,12 @@ public abstract class FlowCost {
 
     public static final List<String> COMPANY_OPTIONAL = Arrays.asList(companyMatrice);
 
+    public static final String QUADRA_INI = "[";
+
+    public static final String QUADRE_INI = QUADRA_INI + QUADRA_INI;
+
+    public static final String QUADRA_END = "]";
+
+    public static final String QUADRE_END = QUADRA_END + QUADRA_END;
+
 }// end of static class
