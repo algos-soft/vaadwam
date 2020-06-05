@@ -148,6 +148,7 @@ public class LogList extends AGridViewList {
             updateFiltri();
             updateGrid();
         });
+        topPlaceholder.add(filtroComboBox);
     }// end of method
 
 

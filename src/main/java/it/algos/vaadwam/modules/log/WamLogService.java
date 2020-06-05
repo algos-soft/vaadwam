@@ -105,10 +105,10 @@ public class WamLogService extends AService {
         List<String> lista = null;
 
         if (context.getLogin() != null && context.getLogin().isDeveloper()) {
-            lista = array.getList("id,croce,milite,type,evento,descrizione");
+            lista = array.getList("id,croce,type,milite,evento,descrizione");
         } else {
             if (context.getLogin().isAdmin()) {
-                lista = array.getList("milite,type,evento,descrizione");
+                lista = array.getList("type,milite,evento,descrizione");
             }
         }
 

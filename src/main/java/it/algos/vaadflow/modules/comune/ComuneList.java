@@ -271,18 +271,18 @@ public class ComuneList extends AGridViewList {
     }// end of method
 
 
-    /**
-     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
-     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    protected void creaPopupFiltro() {
-        super.creaPopupFiltro();
-
-        //--esempio
-        //filtroComboBox.setPlaceholder("nazionalità ...");
-        //filtroComboBox.setItems(new ArrayList(Arrays.asList("francese", "inglese", "tedesca")));
-    }// end of method
+    //    /**
+    //     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
+    //     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
+    //     * Invocare PRIMA il metodo della superclasse <br>
+    //     */
+    //    protected void creaPopupFiltro() {
+    //        super.creaPopupFiltro();
+    //
+    //        //--esempio
+    //        //filtroComboBox.setPlaceholder("nazionalità ...");
+    //        //filtroComboBox.setItems(new ArrayList(Arrays.asList("francese", "inglese", "tedesca")));
+    //    }// end of method
 
 
     /**

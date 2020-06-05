@@ -196,6 +196,7 @@ public class PreferenzaList extends AGridViewList {
             updateFiltri();
             updateGrid();
         });
+        topPlaceholder.add(filtroComboBox);
     }// end of method
 
 

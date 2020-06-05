@@ -144,6 +144,7 @@ public class AnnoList extends AGridViewList {
         filtroComboBox.setWidth("12em");
         filtroComboBox.setPlaceholder("Secolo ...");
         filtroComboBox.setItems(secoloService.findAll());
+        topPlaceholder.add(filtroComboBox);
     }// end of method
 
 

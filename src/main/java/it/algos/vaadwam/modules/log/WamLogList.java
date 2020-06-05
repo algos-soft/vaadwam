@@ -17,6 +17,7 @@ import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.enumeration.EAWamLogType;
+import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,17 @@ public class WamLogList extends AGridViewList {
     public static final String IRON_ICON = "history";
 
     /**
-     * Popup di selezione dei militi <br>
-     */
-    protected AComboBox filtroMilitiComboBox;
-
-
-    /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
     public MiliteService militeService;
+
+    /**
+     * Popup di selezione dei militi <br>
+     */
+    protected AComboBox filtroMilitiComboBox;
 
 
     /**
@@ -141,20 +141,24 @@ public class WamLogList extends AGridViewList {
     protected void creaPopupFiltro() {
         super.creaPopupFiltro();
 
-        filtroComboBox.setWidth("16em");
+        filtroComboBox.setWidth("15em");
         filtroComboBox.setPlaceholder("Types ...");
         filtroComboBox.setItems(EAWamLogType.values());
         filtroComboBox.addValueChangeListener(e -> {
             updateFiltri();
             updateGrid();
         });
+        topPlaceholder.add(filtroComboBox);
 
         filtroMilitiComboBox = new AComboBox();
-        filtroMilitiComboBox.setWidth("10em");
+        filtroMilitiComboBox.setWidth("15em");
         filtroMilitiComboBox.setPlaceholder("Milite ...");
 
         filtroMilitiComboBox.setItems(militeService.findAll());
-        //        filtroMilitiComboBox.setValue(EAFiltroMilite.attivi);
+        filtroMilitiComboBox.addValueChangeListener(e -> {
+            updateFiltri();
+            updateGrid();
+        });
         topPlaceholder.add(filtroMilitiComboBox);
     }// end of method
 
@@ -168,15 +172,34 @@ public class WamLogList extends AGridViewList {
     @Override
     protected void updateFiltriSpecifici() {
         super.updateFiltriSpecifici();
+        String fieldName;
+        String fieldSort;
+        AFiltro filtro;
+        Sort sort;
+        EAWamLogType type;
+        Milite milite;
 
-        String fieldName = "type";
-        String fieldSort = "evento";
-        EAWamLogType type = (EAWamLogType) filtroComboBox.getValue();
+        fieldName = "type";
+        fieldSort = "evento";
+        type = (EAWamLogType) filtroComboBox.getValue();
 
         if (type != null) {
             CriteriaDefinition criteria = Criteria.where(fieldName).is(type);
-            Sort sort = new Sort(Sort.Direction.DESC, fieldSort);
-            AFiltro filtro = new AFiltro(criteria, sort);
+            sort = new Sort(Sort.Direction.DESC, fieldSort);
+            filtro = new AFiltro(criteria, sort);
+
+            filtri.add(filtro);
+        }// end of if cycle
+
+
+        fieldName = "milite";
+        fieldSort = "milite";
+        milite = (Milite) filtroMilitiComboBox.getValue();
+
+        if (milite != null) {
+            CriteriaDefinition criteria = Criteria.where(fieldName).is(milite);
+            sort = new Sort(Sort.Direction.DESC, fieldSort);
+            filtro = new AFiltro(criteria, sort);
 
             filtri.add(filtro);
         }// end of if cycle

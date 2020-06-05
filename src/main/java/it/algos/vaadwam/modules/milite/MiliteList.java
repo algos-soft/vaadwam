@@ -187,6 +187,7 @@ public class MiliteList extends WamViewList {
 
             filtroComboBox.setItems(EAFiltroMilite.values());
             filtroComboBox.setValue(EAFiltroMilite.attivi);
+            topPlaceholder.add(filtroComboBox);
         }// end of if cycle
     }// end of method
 

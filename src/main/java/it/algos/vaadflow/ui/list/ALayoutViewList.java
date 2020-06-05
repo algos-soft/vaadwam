@@ -259,9 +259,9 @@ public abstract class ALayoutViewList extends APrefViewList {
         //--eventuale filtro specifico
         if (usaPopupFiltro) {
             creaPopupFiltro();
-            if (filtroComboBox != null) {
-                topPlaceholder.add(filtroComboBox);
-            }// end of if cycle
+            //            if (filtroComboBox != null) {
+            //                topPlaceholder.add(filtroComboBox);
+            //            }// end of if cycle
         }// end of if cycle
     }// end of method
 

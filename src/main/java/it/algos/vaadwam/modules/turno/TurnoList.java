@@ -209,6 +209,7 @@ public class TurnoList extends WamViewList {
                 updateFiltri();
                 updateGrid();
             });
+            topPlaceholder.add(filtroComboBox);
         }// end of if cycle
     }// end of method
 
