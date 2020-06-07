@@ -1154,7 +1154,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                     addNuovaRiga(select.getValue());
                 });
 
-                ConfirmDialog.createQuestion().withCaption("Selezione servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
+                ConfirmDialog.createQuestion().withCaption("Aggiungi servizio").withMessage(select).withButton(new Button(), ButtonOption.caption("Annulla")).withButton(bConferma, ButtonOption.caption("Conferma"), ButtonOption.focus()).open();
             }
 
 
