@@ -6,6 +6,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.fields.ACheckBox;
 import it.algos.vaadwam.wam.WamViewDialog;
@@ -230,6 +231,18 @@ public class MiliteProfile extends WamViewDialog<Milite> {
                 }
             }
         }
+    }
+
+
+    /**
+     * Azione proveniente dal click sul bottone Registra
+     * Inizio delle operazioni di registrazione
+     *
+     * @param operation
+     */
+    @Override
+    protected void saveClicked(EAOperation operation) {
+        super.saveClicked(operation);
     }
 
 }// end of class
