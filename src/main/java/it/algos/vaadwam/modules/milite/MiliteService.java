@@ -1,7 +1,5 @@
 package it.algos.vaadwam.modules.milite;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
@@ -39,7 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.application.FlowCost.A_CAPO;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadwam.application.WamCost.*;
 
@@ -1203,7 +1202,7 @@ public class MiliteService extends WamService implements IUtenteService {
             message += A_CAPO;
         }
         if (milite.managerTabellone != militeOld.managerTabellone) {
-            message += "admin is now ";
+            message += "managerTabellone is now ";
             message += milite.managerTabellone ? "true" : "false";
             message += A_CAPO;
         }

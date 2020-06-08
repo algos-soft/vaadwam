@@ -1298,12 +1298,15 @@ public abstract class AService extends AbstractService implements IAService {
      * @return context della sessione
      */
     public AContext getContext() {
+        AContext context = null;
+
         VaadinSession vaadSession = VaadinSession.getCurrent();
-        AContext context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+        if (vaadSession != null) {
+            context = (AContext) vaadSession.getAttribute(KEY_CONTEXT);
+        }
+
         return context;
     }
-
-
 
 
     /**

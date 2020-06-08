@@ -62,11 +62,11 @@
     </appender>
 
 
-
     <!--additivity = false: il log si ferma qui-->
     <!--additivity = true: il log attraversa questo logger e viene propagato agli ancestors-->
     <!--un logger può avere più appenders e invia il log a tutti i suoi appenders-->
-    <logger name="it.algos" level="INFO" additivity="true">
+    <!--    <logger name="it.algos" level="INFO" additivity="true">-->
+    <logger name="it.algos" level="DEBUG" additivity="true">
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
@@ -85,7 +85,8 @@
 
     <!--qui arrivano tutti i logger che hanno additivity = true-->
     <!-- vengono stampati in console solo se la property LOG_TO_CONSOLE è a true-->
-    <root level="INFO">
+    <!--    <root level="INFO">-->
+    <root level="DEBUG">
         <if condition='property("LOG_TO_CONSOLE").contains("true")'>
             <then>
                 <appender-ref ref="STDOUT"/>

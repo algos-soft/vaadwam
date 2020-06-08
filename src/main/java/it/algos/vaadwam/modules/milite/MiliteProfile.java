@@ -243,6 +243,7 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     @Override
     protected void saveClicked(EAOperation operation) {
         super.saveClicked(operation);
+        logger.error("saveClicked", MiliteProfile.class, "saveClicked");
     }
 
 }// end of class

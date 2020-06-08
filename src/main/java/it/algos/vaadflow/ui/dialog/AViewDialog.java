@@ -25,6 +25,7 @@ import it.algos.vaadflow.application.AContext;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.modules.log.LogService;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.*;
@@ -107,6 +108,12 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     protected final HorizontalLayout bottomLayout = new HorizontalLayout();
 
     private final String confirmText = "Conferma";
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    public LogService logger;
 
     /**
      * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
@@ -936,13 +943,19 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         if (currentItem != null) {
             //--trasferisce tutti i valori (se accettabili nel loro insieme) dai campi GUI al currentItem
             isValid = binder.writeBeanIfValid(currentItem);
-        }// end of if cycle
+            logger.warn("trasferisce tutti i valori (se accettabili nel loro insieme) dai campi GUI al currentItem", AViewDialog.class, "saveClicked");
+        } else {
+            logger.error("manca currentItem", AViewDialog.class, "saveClicked");
+        }
+
 
         if (isValid) {
             writeSpecificFields();
+            logger.warn("valid", AViewDialog.class, "saveClicked");
             itemSaver.accept(currentItem, operation);
             close();
         } else {
+            logger.error(" non valid", AViewDialog.class, "saveClicked");
             BinderValidationStatus<T> status = binder.validate();
             Notification.show(status.getValidationErrors().stream().map(ValidationResult::getErrorMessage).collect(Collectors.joining("; ")), 3000, Notification.Position.BOTTOM_START);
         }
