@@ -18,7 +18,7 @@ import it.algos.vaadflow.service.AMailService;
 import it.algos.vaadflow.service.AMongoService;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadflow.service.AVaadinService;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -43,7 +43,8 @@ import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.KEY_SECURITY_CONTEXT;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.PROPERTY_CROCE;
+import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
  * Project vaadwam
@@ -102,7 +103,7 @@ public abstract class WamService extends AService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    protected MigrationService migration;
+    protected ImportService migration;
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
@@ -171,7 +172,7 @@ public abstract class WamService extends AService {
         super.fixPreferenze();
 
         super.usaRegistrazioneModifica = true;
-        this.usaDaemon = USA_DAEMON_CROCI;
+        this.usaDaemon = VUOTA;
         this.lastImport = VUOTA;
         this.durataLastImport = VUOTA;
         this.eaTempoTypeImport = EATempo.nessuno;

@@ -11,8 +11,8 @@ import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.migration.ImportView;
-import it.algos.vaadwam.migration.MigrationService;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
@@ -73,7 +73,7 @@ public class WamBoot extends ABoot {
      * Inietta da Spring come 'singleton'
      */
     @Autowired
-    public MigrationService migration;
+    public ImportService migration;
 
     /**
      * Service (@Scope = 'singleton') iniettato da Spring <br>

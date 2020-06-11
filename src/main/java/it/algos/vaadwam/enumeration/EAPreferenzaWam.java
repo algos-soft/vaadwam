@@ -19,14 +19,15 @@ import static it.algos.vaadwam.application.WamCost.*;
 public enum EAPreferenzaWam implements IAPreferenza {
 
     //--generali
-    redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reidirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
+    redirectTabellone(SECURED_VIEW_REDIRECT_TABELLONE, "Reindirizza al tabellone in caso accesso non consentito ad una view", EAPrefType.bool, EARole.developer, false, true),
 
     //--scheduled task suddivise per croce
-    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download completo di tutte le croci", EAPrefType.bool, false, true),
+    //    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download completo di tutte le croci", EAPrefType.bool, false, true),
 
-    usaDaemonElabora(USA_DAEMON_ELABORA, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true, true),
+    usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati da tutte le croci", EAPrefType.bool, EARole.developer, true, true, true),
 
-    usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati da tutte le croci", EAPrefType.bool, EARole.developer, false, true, true),
+    usaDaemonElabora(USA_DAEMON_STATISTICHE, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true, true),
+
 
     //--cronologia degli import
     lastImportCroci(LAST_IMPORT_CROCI, "Data ultimo import di tutte le croci", EAPrefType.localdatetime, null),

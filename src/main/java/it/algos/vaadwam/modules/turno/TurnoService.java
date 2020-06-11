@@ -1,6 +1,5 @@
 package it.algos.vaadwam.modules.turno;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
@@ -11,7 +10,7 @@ import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.ARandomService;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
@@ -93,7 +92,7 @@ public class TurnoService extends WamService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private MigrationService migration;
+    private ImportService migration;
 
     /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>

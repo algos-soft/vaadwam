@@ -261,7 +261,7 @@ public class StatisticaService extends WamService {
     public void elabora() {
         for (Croce croce : croceService.findAll()) {
             if (croce != null) {
-                if (pref.isBool(USA_DAEMON_ELABORA, croce.code)) {
+                if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
                     elabora(croce);
                 }// end of if cycle
             }// end of if cycle

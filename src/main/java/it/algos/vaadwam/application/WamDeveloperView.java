@@ -9,14 +9,13 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.AVaadinService;
 import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.fields.ACheckBox;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.wam.WamService;
@@ -29,7 +28,7 @@ import java.util.List;
 
 import static it.algos.vaadflow.application.FlowVar.projectName;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
-import static it.algos.vaadwam.application.WamCost.TAG_WAMDEV;
+import static it.algos.vaadwam.application.WamCost.TAG_WAM_DEV;
 
 /**
  * Project vaadbase
@@ -39,8 +38,8 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAMDEV;
  * Time: 17:10
  */
 @UIScope
-@Route(value = TAG_WAMDEV, layout = MainLayout.class)
-@Qualifier(TAG_WAMDEV)
+@Route(value = TAG_WAM_DEV, layout = MainLayout.class)
+@Qualifier(TAG_WAM_DEV)
 @AIView(roleTypeVisibility = EARoleType.developer)
 @Slf4j
 public class WamDeveloperView extends VerticalLayout {
@@ -84,7 +83,7 @@ public class WamDeveloperView extends VerticalLayout {
 
 
     //    @Autowired
-    private MigrationService migration;
+    private ImportService migration;
 
     private Label labelUno;
 
@@ -106,7 +105,7 @@ public class WamDeveloperView extends VerticalLayout {
 
 
     @Autowired
-    public WamDeveloperView(ALogin login, CroceService croceService, MigrationService migration) {
+    public WamDeveloperView(ALogin login, CroceService croceService, ImportService migration) {
         this.login = login;
         this.croceService = croceService;
         this.migration = migration;

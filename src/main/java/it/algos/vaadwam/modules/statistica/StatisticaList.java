@@ -19,7 +19,6 @@ import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.schedule.ATask;
-import it.algos.vaadwam.wam.WamService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,7 +297,7 @@ public class StatisticaList extends WamViewList {
         String tag = "Elaborazione automatica statistiche: ";
         String nota = taskStatistica != null ? taskStatistica.getSchedule().getNota() : VUOTA;
         int durata = pref.getInt(flagDurataLastImport);
-        boolean elaborazioneAutomaticaDiQuestaCroce = pref.isBool(USA_DAEMON_ELABORA);
+        boolean elaborazioneAutomaticaDiQuestaCroce = pref.isBool(USA_DAEMON_STATISTICHE);
 
         if (login.isDeveloper()) {
             LocalDateTime lastImport = pref.getDateTime(flagLastImport);

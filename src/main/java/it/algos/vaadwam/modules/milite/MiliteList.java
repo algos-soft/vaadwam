@@ -20,7 +20,6 @@ import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.application.WamCost.USA_CHECK_FUNZIONI_MILITE;
 
 /**
  * Project vaadwam <br>
@@ -90,14 +90,6 @@ public class MiliteList extends WamViewList {
     @Autowired
     private FunzioneService funzioneService;
 
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    @Qualifier(TASK_MIL)
-    private ATask task;
 
 
     /**

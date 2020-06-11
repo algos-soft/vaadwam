@@ -1,13 +1,13 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-<!--    In the current release of Logback, if spring properties are used, configuration scan does not work.-->
-<!--    We prefer to have configuration scan and give up with the spring properties. We use local variables instead.-->
-<!--    <springProperty name="loggingFile" source="logging.file"/>-->
-<!--    <springProperty name="springLoggingFile" source="wam.logging.spring.file"/>-->
-<!--    <springProperty name="consoleLog" source="wam.logging.console.log.enable"/>-->
+    <!--    In the current release of Logback, if spring properties are used, configuration scan does not work.-->
+    <!--    We prefer to have configuration scan and give up with the spring properties. We use local variables instead.-->
+    <!--    <springProperty name="loggingFile" source="logging.file"/>-->
+    <!--    <springProperty name="springLoggingFile" source="wam.logging.spring.file"/>-->
+    <!--    <springProperty name="consoleLog" source="wam.logging.console.log.enable"/>-->
 
     <!-- enable console logging. to be disabled in production-->
-    <variable name="LOG_TO_CONSOLE" value="true" />
+    <variable name="LOG_TO_CONSOLE" value="true"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -65,8 +65,8 @@
     <!--additivity = false: il log si ferma qui-->
     <!--additivity = true: il log attraversa questo logger e viene propagato agli ancestors-->
     <!--un logger può avere più appenders e invia il log a tutti i suoi appenders-->
-    <!--    <logger name="it.algos" level="INFO" additivity="true">-->
-    <logger name="it.algos" level="DEBUG" additivity="true">
+    <logger name="it.algos" level="INFO" additivity="true">
+        <!--    <logger name="it.algos" level="DEBUG" additivity="true">-->
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
@@ -85,8 +85,8 @@
 
     <!--qui arrivano tutti i logger che hanno additivity = true-->
     <!-- vengono stampati in console solo se la property LOG_TO_CONSOLE è a true-->
-    <!--    <root level="INFO">-->
-    <root level="DEBUG">
+    <root level="INFO">
+        <!--    <root level="DEBUG">-->
         <if condition='property("LOG_TO_CONSOLE").contains("true")'>
             <then>
                 <appender-ref ref="STDOUT"/>

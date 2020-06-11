@@ -119,7 +119,7 @@ public class ImportView extends VerticalLayout {
      * Libreria di servizio. Inietta da Spring nel costruttore come 'singleton'
      */
     @Autowired
-    private MigrationService migration;
+    private ImportService migration;
 
 
     public ImportView() {

@@ -5,7 +5,7 @@ import it.algos.vaadflow.enumeration.EASchedule;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AMailService;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.sauronsoftware.cron4j.Task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public abstract class ATask extends Task {
      * La injection viene fatta da SpringBoot in automatico <br>
      */
     @Autowired
-    protected MigrationService migrationService;
+    protected ImportService migrationService;
 
 
     /**

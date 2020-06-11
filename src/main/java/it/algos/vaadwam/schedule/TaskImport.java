@@ -2,7 +2,7 @@ package it.algos.vaadwam.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.enumeration.EASchedule;
-import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.ServizioService;
@@ -15,8 +15,9 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 
-import static it.algos.vaadwam.application.WamCost.TASK_FUN;
-import static it.algos.vaadwam.application.WamCost.USA_DAEMON_IMPORT;
+import static it.algos.vaadwam.application.WamCost.TASK_IMPORT;
+
+//import static it.algos.vaadwam.application.WamCost.TASK_FUN;
 
 /**
  * Project vaadwam
@@ -29,9 +30,17 @@ import static it.algos.vaadwam.application.WamCost.USA_DAEMON_IMPORT;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Qualifier(TASK_FUN)
+@Qualifier(TASK_IMPORT)
 public class TaskImport extends ATask {
 
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ImportService importService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -78,18 +87,7 @@ public class TaskImport extends ATask {
 
     @Override
     public void execute(TaskExecutionContext context) throws RuntimeException {
-        long inizio = System.currentTimeMillis();
-
-        if (pref.isBool(USA_DAEMON_IMPORT)) {
-            funzioneService.importAll();
-            servizioService.importAll();
-            militeService.importAll();
-            turnoService.importAll();
-
-            if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
-                mailService.sendIP("Import", inizio);
-            }// end of if cycle
-        }// end of if cycle
+        importService.importAll();
     }// end of method
 
 }// end of class

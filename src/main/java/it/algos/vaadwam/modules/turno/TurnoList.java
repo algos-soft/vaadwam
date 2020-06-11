@@ -17,11 +17,10 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
-import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ import java.util.List;
 import static it.algos.vaadflow.application.FlowCost.SPAZIO;
 import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
-import static it.algos.vaadwam.application.WamCost.TASK_TUR;
+//import static it.algos.vaadwam.application.WamCost.TASK_TUR;
 
 /**
  * Project vaadwam <br>
@@ -86,22 +85,13 @@ public class TurnoList extends WamViewList {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private MigrationService migration;
+    private ImportService migration;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     private IscrizioneService iscrizioneService;
-
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    @Qualifier(TASK_TUR)
-    private ATask task;
 
 
     /**

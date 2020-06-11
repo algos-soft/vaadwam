@@ -15,6 +15,7 @@ import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.service.*;
 import it.algos.vaadwam.application.WamCost;
+import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.croce.EACroce;
@@ -61,7 +62,7 @@ import static it.algos.vaadwam.application.WamCost.*;
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
-public class MigrationService extends AService {
+public class ImportService extends AService {
 
     private final static String PERSISTENCE_UNIT_NAME = "Webambulanzelocal";
 
@@ -187,23 +188,22 @@ public class MigrationService extends AService {
     }// end of constructor
 
 
-    /**
-     * Importa tutte le companies esistenti in webambulanze, in fase iniziale di setup
-     */
-    public void importAllSetup() {
-        setup();
-        if (croceService.count() == 0) {
-            importAll();
-        }// end of if cycle
-    }// end of method
+    //    /**
+    //     * Importa tutte le companies esistenti in webAmbulanze, in fase iniziale di setup
+    //     */
+    //    public void importAllSetup() {
+    //        setup();
+    //        if (croceService.count() == 0) {
+    //            importAll();
+    //        }// end of if cycle
+    //    }// end of method
 
 
     /**
-     * Importa tutte le croci <br>
+     * Importa funzioni, servizi, militi e turni di tutte le croci <br>
      * Controlla il flag di attivazione specifico di ogni croce <br>
      */
     public void importAll() {
-        ImportResult result = null;
         Croce croceNew;
 
         setup();
@@ -212,28 +212,35 @@ public class MigrationService extends AService {
             croceNew = getCroce(croceOld);
 
             if (croceNew != null) {
-                //                if (pref.isBool(USA_DAEMON_CROCE, croceNew.code)) {
-                importCroce(croceNew);
-                //                }// end of if cycle
+                if (pref.isBool(USA_DAEMON_IMPORT, croceNew.code)) {
+                    importCroce(croceNew);
+                }// end of if cycle
             }// end of if cycle
         }// end of for cycle
     }// end of method
 
 
     /**
-     * Importa tutte le croci <br>
-     * Controlla il flag di attivazione specifico di ogni croce <br>
+     * Importa funzioni, servizi, militi e turni della croce <br>
      */
     public void importCroce(Croce croceNew) {
-        funzioneService.importa(croceNew);
-        servizioService.importa(croceNew);
-        militeService.importa(croceNew);
-        turnoService.importa(croceNew);
+        long inizio = System.currentTimeMillis();
+
+        if (croceNew != null) {
+            this.importFunzioni(croceNew);
+            this.importServizi(croceNew);
+            this.importMiliti(croceNew);
+            this.importTurni(croceNew);
+
+            if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
+                mail.sendIP("Import della croce " + croceNew.code, inizio);
+            }// end of if cycle
+        }
     }// end of method
 
 
     /**
-     * Importa tutte le companies esistenti in webambulanze
+     * Importa tutte le companies esistenti in webAmbulanze
      */
     public boolean importOnlyCroci() {
         boolean status = true;
@@ -253,7 +260,7 @@ public class MigrationService extends AService {
 
 
     /**
-     * Importa da webambulanze le funzioni di tutte le croci esistenti <br>
+     * Importa da webAmbulanze le funzioni di tutte le croci esistenti <br>
      */
     @Deprecated
     public boolean importFunzioni() {
@@ -275,9 +282,9 @@ public class MigrationService extends AService {
 
 
     /**
-     * Importa da webambulanze le funzioni di una sola croce <br>
+     * Importa da webAmbulanze le funzioni di una sola croce <br>
      *
-     * @param croceOld esistente su webambulanze
+     * @param croceOld esistente su webAmbulanze
      */
     @Deprecated
     private boolean importFunzioni(CroceAmb croceOld) {
@@ -286,7 +293,7 @@ public class MigrationService extends AService {
 
 
     /**
-     * Importa da webambulanze le funzioni di una sola croce <br>
+     * Importa da webAmbulanze le funzioni di una sola croce <br>
      *
      * @param croceNew di waadWam
      */

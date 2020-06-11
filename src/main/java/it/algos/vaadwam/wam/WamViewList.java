@@ -24,7 +24,7 @@ import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
-import static it.algos.vaadwam.application.WamCost.TASK_CROCE;
+import static it.algos.vaadwam.application.WamCost.TASK_IMPORT;
 
 /**
  * Project vaadwam
@@ -102,8 +102,8 @@ public abstract class WamViewList extends AGridViewList {
      * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
      */
     @Autowired
-    @Qualifier(TASK_CROCE)
-    private ATask taskCroce;
+    @Qualifier(TASK_IMPORT)
+    private ATask taskImport;
 
 
     /**
@@ -331,7 +331,7 @@ public abstract class WamViewList extends AGridViewList {
         Label label = null;
         String testo = "";
         String tag = "Import automatico ";
-        String nota = taskCroce != null ? taskCroce.getSchedule().getNota() : VUOTA;
+        String nota = taskImport != null ? taskImport.getSchedule().getNota() : VUOTA;
         int durata = text.isValid(flagDurataLastImport) ? pref.getInt(flagDurataLastImport) : 0;
         boolean previsto = text.isValid(flagDaemon);
         boolean importAutomatico = pref.isBool(flagDaemon);

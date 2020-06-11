@@ -29,7 +29,7 @@ import java.util.List;
 @AIScript(sovrascrivibile = false)
 public class WamCost {
 
-    public final static String TAG_WAM_LOG = "wamlog";
+    public final static String TAG_WAM_LOG = "wamLog";
 
     public final static String TAG_STA = "statistica";
 
@@ -37,11 +37,11 @@ public class WamCost {
 
     public final static String TAG_TUR = "turno";
 
-    public final static String KEY_WAM_CONTEXT = "wamcontext";
+    public final static String KEY_WAM_CONTEXT = "wamContext";
 
-    public final static String TAG_TURNO_EDIT = "turnoedit";
+    public final static String TAG_TURNO_EDIT = "turnoEdit";
 
-    public final static String TAG_TURNO_EDIT_OLD = "turnoeditold";
+    public final static String TAG_TURNO_EDIT_OLD = "turnoEditOld";
 
     public final static String TAG_TURNO_EDIT_UNO = TAG_TURNO_EDIT + "uno";
 
@@ -55,7 +55,7 @@ public class WamCost {
 
     public final static String TAG_SELEZIONE = "selezione";
 
-    public final static String TAG_WAM_LOGIN = "wamlogin";
+    public final static String TAG_WAM_LOGIN = "wamLogin";
 
     public final static String TAG_TUR_EDIT = "turnoEdit";
 
@@ -75,36 +75,37 @@ public class WamCost {
 
     public final static String TAG_IMP = "import";
 
-    public final static String TAG_TAB = "tabellonesuperato";
+    public final static String TAG_TAB = "tabelloneSuperato";
 
     public final static String TAG_TAB_LIST = "";
 
     public final static String TAG_TAB_GRID = "nonFunziona";
 
-    public final static String TAG_WAMDEV = "wamdeveloper";
+    public final static String TAG_WAM_DEV = "wamDeveloper";
 
     //--daemons
-    public final static String USA_DAEMON_CROCE_GAPS = "usaDaemonCroceGaps";
+    //    public final static String USA_DAEMON_IMPORT_GAPS = "usaDaemonCroceGaps";
+    //
+    //    public final static String USA_DAEMON_IMPORT_CRF = "usaDaemonCroceCrf";
+    //
+    //    public final static String USA_DAEMON_IMPORT_CRPT = "usaDaemonCroceCrpt";
+    //
+    //    public final static String USA_DAEMON_IMPORT_PAP = "usaDaemonCrocePap";
 
-    public final static String USA_DAEMON_CROCE_CRF = "usaDaemonCroceCrf";
-
-    public final static String USA_DAEMON_CROCE_CRPT = "usaDaemonCroceCrpt";
-
-    public final static String USA_DAEMON_CROCE_PAP = "usaDaemonCrocePap";
-
-    public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
-
-    public final static String USA_DAEMON_ELABORA = "usaDaemonElabora";
+    //    public final static String USA_DAEMON_CROCI = "usaDaemonCroci";
 
     public final static String USA_DAEMON_IMPORT = "usaDaemonImport";
 
-    public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
+    public final static String USA_DAEMON_STATISTICHE = "usaDaemonStatistiche";
 
-    public final static String USA_DAEMON_SERVIZI = "usaDaemonServizi";
 
-    public final static String USA_DAEMON_MILITI = "usaDaemonMiliti";
-
-    public final static String USA_DAEMON_TURNI = "usaDaemonTurni";
+    //    public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
+    //
+    //    public final static String USA_DAEMON_SERVIZI = "usaDaemonServizi";
+    //
+    //    public final static String USA_DAEMON_MILITI = "usaDaemonMiliti";
+    //
+    //    public final static String USA_DAEMON_TURNI = "usaDaemonTurni";
 
     public final static String LAST_IMPORT_CROCI = "lastImportCroci";
 
@@ -144,13 +145,13 @@ public class WamCost {
 
     public final static String TASK_STATISTICA = "taskStatistica";
 
-    public final static String TASK_FUN = "taskFunzioni";
+    public final static String TASK_IMPORT = "taskImport";
 
-    public final static String TASK_SER = "taskServizi";
-
-    public final static String TASK_MIL = "taskMiliti";
-
-    public final static String TASK_TUR = "taskTurni";
+    //    public final static String TASK_SER = "taskServizi";
+    //
+    //    public final static String TASK_MIL = "taskMiliti";
+    //
+    //    public final static String TASK_TUR = "taskTurni";
 
     //--tag per i logs
     public final static String IMPORT_MILITI = "ImportMilite";

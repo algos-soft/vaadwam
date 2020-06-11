@@ -15,7 +15,7 @@ import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
-import it.algos.vaadwam.migration.MigrationService;
+import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
@@ -117,7 +117,7 @@ public class MiliteService extends WamService implements IUtenteService {
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
-    private MigrationService migration;
+    private ImportService migration;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
