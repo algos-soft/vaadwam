@@ -7,8 +7,8 @@ import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.security.SecurityUtils;
-import it.algos.vaadflow.ui.login.LoginView;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.login.WamLoginView;
 import it.algos.vaadwam.tabellone.Tabellone;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,10 +72,10 @@ String alfa=event.getLocation().getFirstSegment();
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {
                     event.rerouteTo(Tabellone.class);
                 } else {
-                    event.rerouteTo(LoginView.class);
+                    event.rerouteTo(WamLoginView.class);
                 }// end of if/else cycle
             } else {
-                event.rerouteTo(LoginView.class);
+                event.rerouteTo(WamLoginView.class);
             }// end of if/else cycle
         }// end of if cycle
         //

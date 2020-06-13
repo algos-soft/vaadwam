@@ -6,6 +6,7 @@ import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadflow.security.CustomRequestCache;
 import it.algos.vaadflow.security.SecurityUtils;
+import it.algos.vaadwam.login.WamLoginView;
 import net.bull.javamelody.MonitoredWithSpring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -37,9 +38,9 @@ import javax.annotation.PostConstruct;
 @MonitoredWithSpring
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String LOGIN_PROCESSING_URL = "/login";
-    private static final String LOGIN_FAILURE_URL = "/login?error";
-    private static final String LOGIN_URL = "/login";
+    private static final String LOGIN_PROCESSING_URL = "/" + WamLoginView.ROUTE;
+    private static final String LOGIN_FAILURE_URL = "/"+ WamLoginView.ROUTE+"?error";
+    private static final String LOGIN_URL = "/"+ WamLoginView.ROUTE;
     private static final String LOGOUT_SUCCESS_URL = "/";
 
     private final UserDetailsService userDetailsService;

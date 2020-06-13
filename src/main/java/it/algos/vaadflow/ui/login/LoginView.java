@@ -56,7 +56,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 	 */
 	@PostConstruct
 	protected void postConstruct() {
-		login.setAction("login");
+		login.setAction(ROUTE);
 		login.setOpened(true);
 		getElement().appendChild(login.getElement());
 
@@ -81,7 +81,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 	private void creaHeader() {
 		login.setTitle(FlowVar.projectName.toUpperCase());
 		login.setDescription(FlowVar.projectBanner);
-	}// end of method
+		login.setForgotPasswordButtonVisible(false);
+	}
 
 	/**
 	 * Crea un'istanza per la visualizzazione di messaggi: di avviso e/o di errore <br>
@@ -92,7 +93,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 		login.setI18n(i18n);
 		addMessage();
 		fixError();
-	}// end of method
+	}
 
 	/**
 	 * Aggiunge un messaggio di avviso <br>
