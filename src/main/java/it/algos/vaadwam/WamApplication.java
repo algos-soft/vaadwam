@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
@@ -44,6 +45,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EntityScan({"it.algos"})
 @EnableMongoRepositories({"it.algos"})
 @AIScript(sovrascrivibile = false)
+@ComponentScan(basePackages = "it.algos")
+
 public class WamApplication extends SpringBootServletInitializer {
 
     /**

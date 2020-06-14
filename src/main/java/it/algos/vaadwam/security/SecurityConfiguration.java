@@ -129,6 +129,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
+
         web.ignoring().antMatchers(
                 // Vaadin Flow static resources
                 "/VAADIN/**",
@@ -156,6 +157,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // (production mode) static resources
                 "/frontend-es5/**", "/frontend-es6/**");
+
+
+
     }
 
 }
