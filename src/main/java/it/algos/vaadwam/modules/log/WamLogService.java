@@ -164,6 +164,11 @@ public class WamLogService extends AService {
         log(EAWamLogType.modificaPreferenza, message);
     }
 
+
+    public void importOld(String message) {
+        log(EAWamLogType.importOld, message);
+    }
+
     //    public void log(EAWamLogType type) {
     //        log(type, VUOTA);
     //    }
@@ -185,7 +190,7 @@ public class WamLogService extends AService {
         }
 
         WamLog wamLog = newEntity(croce, type, militeLoggato, message);
-        wamLog.id = croce.code + System.currentTimeMillis();
+        wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
 
         if (croce == null || militeLoggato == null) {

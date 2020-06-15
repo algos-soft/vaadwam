@@ -232,6 +232,7 @@ public class ImportService extends AService {
             this.importMiliti(croceNew);
             this.importTurni(croceNew);
 
+            logger.importOld("Import della croce " + croceNew.code);
             if (pref.isBool(EAPreferenzaWam.usaMailImport)) {
                 mail.sendIP("Import della croce " + croceNew.code, inizio);
             }// end of if cycle

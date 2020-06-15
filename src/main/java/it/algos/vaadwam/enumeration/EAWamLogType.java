@@ -40,6 +40,8 @@ public enum EAWamLogType {
     cancellazioneTurnoPieno("cancellazioneTurnoPieno"),
 
     modificaPreferenza("modificaPreferenza"),
+
+    importOld("import"),
     ;
 
 
