@@ -19,8 +19,6 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.InitialPageSettings;
-import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.shared.Registration;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.application.AContext;
@@ -54,7 +52,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -63,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -99,7 +97,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     protected Map<String, String> parametersMap = null;
 
-    @Value("${wam.tabellone.banner}")
+    //    @Value("${wam.tabellone.banner}")
     private String banner;
 
     @Autowired
@@ -240,7 +238,19 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // app footer
         divAppFooter.add(appFooter);
 
+        // provvisorio finche dura la transizione
+        banner = VUOTA;
+        if (wamLogin != null && wamLogin.isDeveloper()) {
+            banner = "developer mode";
+        } else {
+            if (wamLogin != null && wamLogin.getCroce() != null) {
+                if (preferenzaService.isBool(USA_DAEMON_IMPORT)) {
+                    banner = "demo";
+                }
+            }
+        }
         getModel().setBanner(banner);
+
 
         // costruisce la grid
         buildAllGrid();
@@ -889,7 +899,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         turnoService.save(turno);
 
-        if(nuovoTurno){
+        if (nuovoTurno) {
             tabelloneService.logCreazioneTurno(turno);
         }
 
@@ -907,7 +917,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
         turnoService.save(turno);
 
-        if(nuovoTurno){
+        if (nuovoTurno) {
             tabelloneService.logCreazioneTurno(turno);
         }
 
@@ -974,7 +984,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             // recupera il turno
             try {
 
-                boolean nuovoTurno=false;
+                boolean nuovoTurno = false;
 
                 List<Turno> turni = turnoService.findByDateAndServizio(giorno, servizio);
                 Turno turno = null;
@@ -987,7 +997,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                     Milite milite = wamLogin.getMilite();
                     if (milite.isCreatoreTurni() || isSuperUser()) {
                         turno = turnoService.newEntity(giorno, servizio);
-                        nuovoTurno=true;
+                        nuovoTurno = true;
                     } else {
                         log.info("Creazione turno rifiutata a " + wamLogin.getMilite().getSigla() + " durante ripetizione iscrizioni per il giorno " + giorno + " perché non ha il permesso di creazione turni");
                         continue;   // skip iteration
@@ -1020,7 +1030,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 // registra il turno e lo aggiunge all'elenco dei turni modificati
                 turnoService.save(turno);
 
-                if(nuovoTurno){
+                if (nuovoTurno) {
                     tabelloneService.logCreazioneTurno(turno, true);
                 }
 
