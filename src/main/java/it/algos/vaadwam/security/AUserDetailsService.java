@@ -101,7 +101,7 @@ public class AUserDetailsService implements UserDetailsService {
                     passwordHash = passwordEncoder.encode(milite.getPassword());
                     authorities = roleService.getAuthorities(milite);
                     FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
-                    logger.login(milite);
+//                    logger.login(milite);
                     return new User(username, passwordHash, authorities);
                 } else {
                     throw new UsernameNotFoundException(username + " non è più attivo");

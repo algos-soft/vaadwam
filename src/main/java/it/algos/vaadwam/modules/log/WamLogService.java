@@ -56,7 +56,6 @@ public class WamLogService extends AService {
         this.repository = (WamLogRepository) repository;
 
         adminLogger = LoggerFactory.getLogger("wam.admin");
-
     }// end of Spring constructor
 
 
@@ -116,20 +115,18 @@ public class WamLogService extends AService {
     }// end of method
 
 
-    public void login(Milite milite) {
-        login(milite, VUOTA);
-    }
-
-
-    public void login(Milite milite, String message) {
-        WamLog wamLog = newEntity(milite.croce, EAWamLogType.login, milite, message);
-        wamLog.id = milite.croce.code + System.currentTimeMillis();
-        mongo.update(wamLog, WamLog.class);
-
-        sendLog(milite.croce, milite, EAWamLogType.login, message);
-        String ipAddress = VaadinSession.getCurrent().getBrowser().getAddress();
-        int a = 87;
-    }
+    //    public void login(Milite milite) {
+    //        login(milite, VUOTA);
+    //    }
+    //
+    //
+    //    public void login(Milite milite, String message) {
+    //        WamLog wamLog = newEntity(milite.croce, EAWamLogType.login, milite, message);
+    //        wamLog.id = milite.croce.code + System.currentTimeMillis();
+    //        mongo.update(wamLog, WamLog.class);
+    //
+    //        sendLog(milite.croce, milite, EAWamLogType.login, message);
+    //    }
 
 
     public void creazioneTurno(String message) {
@@ -199,11 +196,11 @@ public class WamLogService extends AService {
             log.info("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
         }
 
-        sendLog(croce, militeLoggato, type, message);
+        sendLog(croce, militeLoggato, VUOTA, type, message);
     }
 
 
-    public void sendLog(Croce croce, Milite milite, EAWamLogType type, String message) {
+    public void sendLog(Croce croce, Milite milite, String addressIP, EAWamLogType type, String message) {
         String dueSpazi = SPAZIO + SPAZIO;
         String tag = "System";
         String sep = " - ";
@@ -215,12 +212,14 @@ public class WamLogService extends AService {
         croceTxt = text.fixSizeQuadre(croceTxt, 4);
 
         militeTxt = milite != null ? milite.username : tag;
-        militeTxt = text.fixSizeQuadre(militeTxt, 14);
+        militeTxt = text.fixSizeQuadre(militeTxt, 15);
+
+        addressIP = text.fixSizeQuadre(addressIP, 15);
 
         typeTxt = type != null ? type.getTag() : tag;
         typeTxt = text.fixSizeQuadre(typeTxt, 18);
 
-        message = croceTxt + dueSpazi + militeTxt + dueSpazi + typeTxt + dueSpazi + message;
+        message = croceTxt + dueSpazi + militeTxt + dueSpazi + addressIP + dueSpazi + typeTxt + dueSpazi + message;
         message = message.replaceAll(A_CAPO, sep);
         adminLogger.info(message.trim());
     }

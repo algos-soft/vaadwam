@@ -355,14 +355,10 @@ public class WamBoot extends ABoot {
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
 
         //--patch di accesso come admin
-        utenteService.creaIfNotExist(croceService.getGAPS(), "gacgaps", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRF(), "gaccrf", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "gaccrpt", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getPAP(), "gacpap", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getGAPS(), "alexgaps", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRF(), "alexcrf", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "alexcrpt", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
-        utenteService.creaIfNotExist(croceService.getPAP(), "alexpap", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
+        utenteService.creaIfNotExist(croceService.getGAPS(), "admin-gaps", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRF(), "admin-crf", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRPT(), "admin-crpt", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getPAP(), "admin-pap", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
     }// end of method
 
 

@@ -33,6 +33,7 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     @Autowired
     protected PreferenzaService pref;
 
+
     @Override
     public void serviceInit(ServiceInitEvent event) {
         event.getSource().addUIInitListener(uiEvent -> {
@@ -42,33 +43,14 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     }
 
 
-//    /**
-//     * Reroutes the user if (s)he is not authorized to access the view.
-//     *
-//     * @param event before navigation event with event details
-//     */
-//    private void beforeEnter(BeforeEnterEvent event) {
-//        if (!LoginView.class.equals(event.getNavigationTarget())
-//                && !SecurityUtils.isUserLoggedIn()) {
-//            event.rerouteTo(LoginView.class);
-//        }
-//    }// end of method
-
-
     /**
      * Reroutes the user if (s)he is not authorized to access the view.
      *
      * @param event before navigation event with event details
      */
     private void beforeEnter(BeforeEnterEvent event) {
-String alfa=event.getLocation().getFirstSegment();
-
-        if (alfa!=null&&alfa.equals("gaps")) {
-            event.rerouteTo(Tabellone.class);
-        }// end of if cycle
-
-        if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
-            if(SecurityUtils.isUserLoggedIn()) {
+        if (!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
+            if (SecurityUtils.isUserLoggedIn()) {
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {
                     event.rerouteTo(Tabellone.class);
                 } else {
@@ -78,7 +60,7 @@ String alfa=event.getLocation().getFirstSegment();
                 event.rerouteTo(WamLoginView.class);
             }// end of if/else cycle
         }// end of if cycle
-        //
     }// end of method
+
 
 }// end of class

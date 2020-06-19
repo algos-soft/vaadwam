@@ -1,20 +1,27 @@
 package it.algos.vaadwam.wam;
 
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WebBrowser;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
+import it.algos.vaadflow.application.FlowCost;
 import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.PostConstruct;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOGIN;
 
 /**
@@ -27,7 +34,18 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOGIN;
 @SpringComponent
 @VaadinSessionScope
 @Qualifier(TAG_WAM_LOGIN)
+@Slf4j
 public class WamLogin extends ALogin {
+
+    //    private Logger adminLogger;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WamLogService logger;
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -47,12 +65,19 @@ public class WamLogin extends ALogin {
 
     private EARoleType roleType;
 
+    private String addressIP;
+
+    private String browser;
+
+    private boolean mobile;
+
 
     public WamLogin() {
     }
 
 
     public WamLogin(Object utente, Company company, EARoleType roleType) {
+        //        adminLogger = LoggerFactory.getLogger("wam.admin");
         if (company instanceof Croce) {
             this.croce = (Croce) company;
         }// end of if cycle
@@ -90,6 +115,35 @@ public class WamLogin extends ALogin {
         super.company = company;
 
         this.roleType = utenteService.getRole((Utente) utente);
+
+        this.logLogin();
+    }// end of method
+
+
+    public void logLogin() {
+        VaadinSession vaadSession = null;
+        WebBrowser webBrowser = null;
+        String message = VUOTA;
+        String sep = FlowCost.SEP;
+
+        try {
+            vaadSession = VaadinSession.getCurrent();
+            webBrowser = vaadSession.getBrowser();
+            mobile = webBrowser.isAndroid() || webBrowser.isIPhone() || webBrowser.isWindowsPhone();
+            addressIP = webBrowser.getAddress();
+            browser = webBrowser.getBrowserApplication();
+            message = mobile ? "mobile" : "desktop";
+            message += sep;
+            message += browser;
+
+            logger.sendLog(croce, milite, addressIP, EAWamLogType.login, message);
+        } catch (Exception unErrore) {
+            log.error(unErrore.toString());
+        }
+
+        //        WamLog wamLog = newEntity(milite.croce, EAWamLogType.login, milite, message);
+        //        wamLog.id = milite.croce.code + System.currentTimeMillis();
+        //        mongo.update(wamLog, WamLog.class);
     }// end of method
 
 
