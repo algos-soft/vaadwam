@@ -77,7 +77,6 @@ public class WamLogin extends ALogin {
 
 
     public WamLogin(Object utente, Company company, EARoleType roleType) {
-        //        adminLogger = LoggerFactory.getLogger("wam.admin");
         if (company instanceof Croce) {
             this.croce = (Croce) company;
         }// end of if cycle
@@ -204,5 +203,20 @@ public class WamLogin extends ALogin {
     public boolean isAdminOrDev() {
         return isAdmin() || isDeveloper();
     }// end of method
+
+
+    public String getAddressIP() {
+        return addressIP;
+    }
+
+
+    public String getBrowser() {
+        return browser;
+    }
+
+
+    public boolean isMobile() {
+        return mobile;
+    }
 
 }// end of class

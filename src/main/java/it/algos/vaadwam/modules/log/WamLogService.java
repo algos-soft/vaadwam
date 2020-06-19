@@ -41,6 +41,15 @@ public class WamLogService extends AService {
     private Logger adminLogger;
 
 
+    //    /**
+    //     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+    //     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+    //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    @Autowired
+    //    public WamLogin wamLogin;
+
+
     /**
      * Costruttore @Autowired <br>
      * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
@@ -187,7 +196,7 @@ public class WamLogService extends AService {
         } else {
             log.debug("militeLoggato is null");
         }
-
+        WamLogin wamLogin = getWamLogin();
         WamLog wamLog = newEntity(croce, type, militeLoggato, message);
         wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
@@ -196,7 +205,7 @@ public class WamLogService extends AService {
             log.info("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
         }
 
-        sendLog(croce, militeLoggato, VUOTA, type, message);
+        sendLog(croce, militeLoggato, wamLogin.getAddressIP(), type, message);
     }
 
 
