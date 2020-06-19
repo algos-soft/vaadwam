@@ -12,7 +12,6 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
-import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Arrays;
 
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
-import static it.algos.vaadwam.application.WamCost.TASK_CRO;
 
 /**
  * Project vaadwam <br>
@@ -64,15 +62,6 @@ public class CroceList extends WamViewList {
     public static final String IRON_ICON = "camera-enhance";
 
     public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";
-
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     * Si usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
-     * Si usa un @Qualifier(), per avere la sottoclasse specifica <br>
-     */
-    @Autowired
-    @Qualifier(TASK_CRO)
-    private ATask task;
 
 
     /**
