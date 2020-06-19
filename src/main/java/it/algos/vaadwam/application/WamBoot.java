@@ -350,74 +350,21 @@ public class WamBoot extends ABoot {
      * Inizializzazione dei dati di alcune collections specifiche sul DB Mongo
      */
     protected void iniziaDataProgettoSpecifico() {
-
-
-        // Avvia lo schedulatore che esegue i schedule periodici sul server
-//        scheduler.start();
-
-        // Qui eventuali revisioni dei dati in funzione della versione
-
-//        //--Esegue dei controlli iniziali per ogni Company
-//        List<WamCompany> comps = WamCompany.findAll();
-//        for (WamCompany company : comps) {
-//            doForCompany(company);
-//        }// end of for cycle
-
-
-//        uno(EACompany.algos, "gac", "fulvia", EARole.developer, "gac@algos.it"),
-//                due(EACompany.algos, "alex", "axel01", EARole.developer, "alex@algos.it"),
-//                tre(EACompany.demo, "admin", "admin", EARole.admin, "info@algos.it"),
-//                quattro((EACompany) null, "anonymous", "anonymous", EARole.user, ""),
-//                cinque(EACompany.test, "Addabbo Andrea", "addabbo123", EARole.user, "");
-
-//        //--importazioni dal vecchio webambulanze
-//        if (croceService.isVuoto()) {
-//            migration.importOnlyCroci();
-//        }// end of if cycle
-
-        if (funzioneService.isVuoto()) {
-//            migration.importFunzioni();
-        }// end of if cycle
-
-        if (servizioService.isVuoto()) {
-//            migration.importServizi();
-        }// end of if cycle
-
-        if (militeService.isVuoto()) {
-//            migration.importMiliti();
-        }// end of if cycle
-
-
-        //--patch di accesso
+        //--patch di accesso come developer
         utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
-        militeService.creaIfNotExist(croceService.getGAPS(), "gac", "gac", "Guido", "fulvia", roleService.getRoles(EARole.developer));
-//        utenteService.creaIfNotExist(croceService.getGAPS(), "Guido Ceresa", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
-//        utenteService.creaIfNotExist(croceService.getGAPS(), "Rino Olivieri", "rino123", roleService.getRoles(EARole.admin), "gac@algos.it");
-//        utenteService.creaIfNotExist(croceService.getGAPS(), "Enrico Delfanti", "enrico123", roleService.getRoles(EARole.user), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
-//        utenteService.creaIfNotExist(croceService.getCRPT(), "admin", "admin", roleService.getRoles(EARole.admin), "");
-//        utenteService.creaIfNotExist(croceService.getCRF(), "Addabbo Andrea", "addabbo123", roleService.getRoles(EARole.user), "");
-//        utenteService.creaIfNotExist(croceService.getCRF(), "Porcari Stefano", "7777", roleService.getRoles(EARole.admin), "");
-//        utenteService.creaIfNotExist(croceService.getPAP(), "Piana Silvano", "piana987", roleService.getRoles(EARole.admin), "");
-//        utenteService.creaIfNotExist(croceService.getCRPT(), "Michelini Mauro", "ginevracrpt", roleService.getRoles(EARole.admin), "");
 
-//        Utente utente = (Utente) utenteService.findById("Addabbo Andrea");
-//        utente.company = croceService.getCRF();
-//        utenteService.save(utente);
-//        utente = (Utente) utenteService.findById("admin");
-//        utente.company = croceService.getCRPT();
-//        utenteService.save(utente);
-//        utente = (Utente) utenteService.findById("gac");
-//        utente.company = croceService.getPAP();
-//        utenteService.save(utente);
-
-//        this.wamData.loadAllData();
+        //--patch di accesso come admin
+        utenteService.creaIfNotExist(croceService.getGAPS(), "gacgaps", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRF(), "gaccrf", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRPT(), "gaccrpt", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getPAP(), "gacpap", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        utenteService.creaIfNotExist(croceService.getGAPS(), "alexgaps", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRF(), "alexcrf", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
+        utenteService.creaIfNotExist(croceService.getCRPT(), "alexcrpt", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
+        utenteService.creaIfNotExist(croceService.getPAP(), "alexpap", "axel01", roleService.getRoles(EARole.admin), "alex@algos.it");
     }// end of method
 
-//    private User createAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        return userRepository.save(createUser("admin@vaadin.com", "Göran", "Rich", passwordEncoder.encode("admin"),
-//                Role.ADMIN, "https://randomuser.me/api/portraits/men/34.jpg", true));
-//    }
 
 
     /**

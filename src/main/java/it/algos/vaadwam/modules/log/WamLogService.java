@@ -127,6 +127,8 @@ public class WamLogService extends AService {
         mongo.update(wamLog, WamLog.class);
 
         sendLog(milite.croce, milite, EAWamLogType.login, message);
+        String ipAddress = VaadinSession.getCurrent().getBrowser().getAddress();
+        int a = 87;
     }
 
 

@@ -6,6 +6,7 @@ import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
+import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -34,11 +35,18 @@ public class WamLogin extends ALogin {
     @Autowired
     protected CroceService croceService;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected UtenteService utenteService;
+
     private Milite milite;
 
     private Croce croce;
 
     private EARoleType roleType;
+
 
     public WamLogin() {
     }
@@ -53,6 +61,7 @@ public class WamLogin extends ALogin {
             this.milite = (Milite) utente;
             this.croce = milite.getCroce();
         }// end of if cycle
+
         this.roleType = roleType;
 
         super.utente = (Utente) utente;
@@ -79,6 +88,8 @@ public class WamLogin extends ALogin {
         Company company = croceService.findByKeyUnica(croce.code);
         company.setDescrizione(croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione());
         super.company = company;
+
+        this.roleType = utenteService.getRole((Utente) utente);
     }// end of method
 
 
