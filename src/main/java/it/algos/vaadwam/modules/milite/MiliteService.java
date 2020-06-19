@@ -318,6 +318,7 @@ public class MiliteService extends WamService implements IUtenteService {
         entity.setInfermiere(infermiere);
         entity.setFunzioni(funzioni);
         entity.croce = croce;
+        entity.setManagerTabellone(admin);
 
         return (Milite) addCompanySeManca(entity);
     }// end of method
