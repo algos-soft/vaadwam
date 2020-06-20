@@ -198,7 +198,7 @@ public class WamLogService extends AService {
         }
         WamLogin wamLogin = getWamLogin();
         WamLog wamLog = newEntity(croce, type, militeLoggato, message);
-        wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
+//        wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
         mongo.update(wamLog, WamLog.class);
 
         if (croce == null || militeLoggato == null) {

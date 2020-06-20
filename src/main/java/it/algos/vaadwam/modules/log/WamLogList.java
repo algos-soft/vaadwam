@@ -213,7 +213,7 @@ public class WamLogList extends AGridViewList {
     protected void openDialog(AEntity entityBean) {
         EAOperation eaOperation;
         if (login != null && login.isDeveloper()) {
-            eaOperation = EAOperation.editNoDelete;
+            eaOperation = EAOperation.edit;
         } else {
             eaOperation = EAOperation.showOnly;
         }
