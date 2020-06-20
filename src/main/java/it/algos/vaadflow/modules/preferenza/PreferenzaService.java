@@ -349,8 +349,15 @@ public class PreferenzaService extends AService {
      *
      * @return istanza della Entity, null se non trovata
      */
-    public Preferenza findByKeyUnica2(String prefCode) {
-        return findByKeyUnica(prefCode, VUOTA);
+    public Preferenza findByKeyUnica(String prefCode) {
+        Preferenza pref = null;
+        List<Preferenza> lista = repository.findAllByCode(prefCode);
+
+        if (lista.size() == 1) {
+            pref = lista.get(0);
+        }
+
+        return pref;
     }// end of method
 
 
@@ -1007,20 +1014,29 @@ public class PreferenzaService extends AService {
      */
     @Override
     public AEntity save(AEntity entityBean, EAOperation operation) {
-        wamLogger.modificaPreferenza(entityBean.id + " -> " + ((Preferenza) entityBean).getValue());
-        return super.save(entityBean, operation);
+        Preferenza pref;
+        if (entityBean != null && entityBean instanceof Preferenza) {
+            pref = (Preferenza) entityBean;
+            wamLogger.modificaPreferenza(pref.code + " -> " + pref.getType().bytesToObject(pref.value));
+            return super.save(pref, operation);
+        } else {
+            return null;
+        }
     }
 
-    //    public  Boolean getBool(String code, Object defaultValue) {
-    //        return getBool(code, CompanySessionLib.getCompany(), defaultValue);
+
+    //    public Boolean getBool(String keyCode, boolean defaultValue) {
+    //        return getBool(keyCode, CompanySessionLib.getCompany(), defaultValue);
     //    } // end of method
     //
-    //    public  Boolean getBool(String code, BaseCompany company) {
-    //        return getBool(code, company, "");
+    //
+    //    public Boolean getBool(String keyCode, String companyPrefix) {
+    //        return getBool(keyCode, companyPrefix, "");
     //    } // end of static method
     //
-    //    public  Boolean getBool(String code, BaseCompany company, Object defaultValue) {
-    //        Pref pref = Pref.findByCode(code, company);
+    //
+    //    public Boolean getBool(String keyCode, String companyPrefix, boolean defaultValue) {
+    //        Preferenza pref = findByKeyUnica(keyCode, companyPrefix);
     //
     //        if (pref != null) {
     //            return (boolean) pref.getValore();
