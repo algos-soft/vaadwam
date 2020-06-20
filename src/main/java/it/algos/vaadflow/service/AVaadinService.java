@@ -11,6 +11,8 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.milite.Milite;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
