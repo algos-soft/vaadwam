@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -81,6 +82,13 @@ public class Milite extends Person {
 
     @Transient
     public boolean usaSuperClasse;
+
+    /**
+     * milite fantasma che non è registrato sul db e non logga nel lod dell'admin
+     */
+    @Transient
+    public boolean fantasma;
+
 
     /**
      * Riferimento alla croce (obbligatorio)
@@ -153,18 +161,24 @@ public class Milite extends Person {
 
 
     /**
-     * Presentazione della persona sul tabellone <br>
-     * Alcune Croci usano il cognome, altre il nome (le croci con meno persone) <br>
-     * Segue la prima iniziale di nome/cognome nel caso ci siano omonimie <br>
+     * Sigla breve del milite per presentazione sul tabellone e altro
      */
     public String getSigla() {
-        //@da aggiungere una preferenza alla croce
-        if (true) {
-            return cognome + " " + nome.substring(0, 1) + ".";
-        } else {
-            return nome + " " + cognome.substring(0, 1) + ".";
-        }// end of if/else cycle
-    }// end of method
+        String sigla="";
+
+        if(!StringUtils.isEmpty(cognome)){
+            sigla+=cognome;
+        }
+
+        if(!StringUtils.isEmpty(nome)){
+            if(!StringUtils.isEmpty(sigla)){
+                sigla+=" ";
+            }
+            sigla+=nome.substring(0, 1) + ".";
+        }
+
+        return sigla;
+    }
 
 
     /**

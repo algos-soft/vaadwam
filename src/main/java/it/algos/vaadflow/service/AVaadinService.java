@@ -12,6 +12,8 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.milite.Milite;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -104,7 +106,7 @@ public class AVaadinService {
         AContext context;
         String uniqueUsername;
         ALogin login;
-        IUtenteService service;
+        IUtenteService uService;
         Utente utente;
         EARoleType roleType = null;
 
@@ -118,28 +120,39 @@ public class AVaadinService {
 
         if (context == null) {
             if (usaSecurity) {
-                try {
-                    service = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
-                    utente = service.findByKeyUnica(uniqueUsername);
+                uService = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
+                utente = uService.findByKeyUnica(uniqueUsername);
 
-                    //--accesso diretto per developer ed altri registrati come utenti e non come sottoclasse di utenti
-                    if (utente == null) {
-                        utente = utenteService.findByKeyUnica(uniqueUsername);
-                        roleType = EARoleType.developer;
-                    }// end of if cycle
+                //--accesso diretto per developer ed altri registrati come utenti e non come sottoclasse di utenti
+                if (utente == null) {
+                    utente = this.utenteService.findByKeyUnica(uniqueUsername);
+                    roleType = EARoleType.developer;
 
-                    if (utente != null) {
-                        if (roleType == null) {
-                            roleType = service.getRoleType(utente);
-                        }// end of if cycle
-                        login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
-                        context = appContext.getBean(AContext.class, login);
-                        context.setUsaLogin(true);
-                        context.setLoginValido(true);
-                    }// end of if cycle
-                } catch (Exception unErrore) { // intercetta l'errore
-                    log.error(unErrore.toString());
-                }// fine del blocco try-catch
+
+                    // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
+                    Milite milite = new Milite();
+                    milite.setFantasma(true);
+                    milite.setId(utente.getUsername());
+                    milite.setCognome(utente.getUsername());
+                    milite.setAdmin(true);
+                    milite.setCroce((Croce)utente.getCompany());
+                    milite.setCreatoreTurni(true);
+                    milite.setManagerTabellone(true);
+                    milite.setUsername(utente.getUsername());
+                    utente=milite;
+
+                }
+
+                if (utente != null) {
+                    if (roleType == null) {
+                        roleType = uService.getRoleType(utente);
+                    }
+                    login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
+                    context = appContext.getBean(AContext.class, login);
+                    context.setUsaLogin(true);
+                    context.setLoginValido(true);
+                }
+
             } else {
                 login = (ALogin) appContext.getBean(FlowVar.loginClazz, EARoleType.developer);
                 context = appContext.getBean(AContext.class, login);

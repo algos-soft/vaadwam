@@ -79,17 +79,17 @@ public class WamLogin extends ALogin {
     public WamLogin(Object utente, Company company, EARoleType roleType) {
         if (company instanceof Croce) {
             this.croce = (Croce) company;
-        }// end of if cycle
+        }
 
         if (utente instanceof Milite) {
-            this.milite = (Milite) utente;
+            setMilite((Milite) utente);
             this.croce = milite.getCroce();
-        }// end of if cycle
+        }
 
         this.roleType = roleType;
 
         super.utente = (Utente) utente;
-    }// end of constructor
+    }
 
 
     /**
@@ -143,17 +143,17 @@ public class WamLogin extends ALogin {
         //        WamLog wamLog = newEntity(milite.croce, EAWamLogType.login, milite, message);
         //        wamLog.id = milite.croce.code + System.currentTimeMillis();
         //        mongo.update(wamLog, WamLog.class);
-    }// end of method
+    }
 
 
     public Milite getMilite() {
         return milite;
-    }// end of method
+    }
 
 
     public void setMilite(Milite milite) {
         this.milite = milite;
-    }// end of method
+    }
 
 
     public Croce getCroce() {
@@ -178,7 +178,7 @@ public class WamLogin extends ALogin {
 
     public boolean isDeveloper() {
         return roleType == EARoleType.developer;
-    }// end of method
+    }
 
 
     /**
@@ -186,7 +186,7 @@ public class WamLogin extends ALogin {
      */
     public boolean isAdmin() {
         return roleType == EARoleType.admin;
-    }// end of method
+    }
 
 
     /**

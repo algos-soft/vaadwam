@@ -183,6 +183,7 @@ public class WamLogService extends AService {
 
 
     public void log(EAWamLogType type, String message) {
+
         Croce croce = getCroce();
         if (croce != null) {
             log.debug("croce is: " + croce.getCode());
@@ -192,20 +193,23 @@ public class WamLogService extends AService {
 
         Milite militeLoggato = getMiliteLoggato();
         if (militeLoggato != null) {
-            log.debug("militeLoggato is: " + militeLoggato.getSigla());
+            log.debug("militeLoggato is: " + militeLoggato.getUsername());
         } else {
             log.debug("militeLoggato is null");
         }
-        WamLogin wamLogin = getWamLogin();
-        WamLog wamLog = newEntity(croce, type, militeLoggato, message);
-        wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
-        mongo.update(wamLog, WamLog.class);
+
+        if(!militeLoggato.isFantasma()){
+            WamLog wamLog = newEntity(croce, type, militeLoggato, message);
+            wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
+            mongo.update(wamLog, WamLog.class);
+        }
 
         if (croce == null || militeLoggato == null) {
             log.info("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
         }
 
-        sendLog(croce, militeLoggato, wamLogin.getAddressIP(), type, message);
+        sendLog(croce, militeLoggato, getWamLogin().getAddressIP(), type, message);
+
     }
 
 
