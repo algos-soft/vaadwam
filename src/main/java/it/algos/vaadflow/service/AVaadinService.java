@@ -134,12 +134,12 @@ public class AVaadinService {
                     milite.setCognome(utente.getUsername());
                     milite.setNome(utente.getUsername());
                     milite.setAdmin(true);
-                    milite.setCroce((Croce)utente.getCompany());
+                    milite.setCroce((Croce) utente.getCompany());
                     milite.setCreatoreTurni(true);
                     milite.setManagerTabellone(true);
                     milite.setUsername(utente.getUsername());
                     milite.setRuoli(utente.getRuoli());
-                    utente=milite;
+                    utente = milite;
 
                 }
 
@@ -199,14 +199,13 @@ public class AVaadinService {
     /**
      * Ritorna lo username dell'utente loggato
      */
-    public String  getLoggedUsername() {
+    public String getLoggedUsername() {
         VaadinSession vs = VaadinSession.getCurrent();
         WrappedSession ws = vs.getSession();
-        SecurityContext sc = (SecurityContext)ws.getAttribute(KEY_SECURITY_CONTEXT);
-        User user = (User)sc.getAuthentication().getPrincipal();
+        SecurityContext sc = (SecurityContext) ws.getAttribute(KEY_SECURITY_CONTEXT);
+        User user = (User) sc.getAuthentication().getPrincipal();
         return user.getUsername();
     }
-
 
 
     /**

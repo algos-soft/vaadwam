@@ -312,7 +312,7 @@ public class MiliteService extends WamService implements IUtenteService {
         //        entity.company = croce;
         entity.setCroce(croce);
         entity.setOrdine(ordine != 0 ? ordine : this.getNewOrdine(croce));
-        entity.setEnabled(true);
+        entity.setEnabled(enabled);
         entity.setAdmin(admin);
         entity.setDipendente(dipendente);
         entity.setInfermiere(infermiere);

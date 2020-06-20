@@ -52,7 +52,7 @@ import java.util.List;
  * <p>
  * Annotated with @SpringComponent (obbligatorio) <br>
  * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
- * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
+ * Annotated with @Slf4j (facoltativo) per i logs automatici <br>
  * Annotated with @AIScript (facoltativo Algos) per controllare la ri-creazione di questo file dal Wizard <br>
  */
 @SpringComponent
