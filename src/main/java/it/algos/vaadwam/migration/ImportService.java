@@ -521,6 +521,9 @@ public class ImportService extends AService {
                             listaMilitiOldAssenti.add(militeOld);
                         }// end of if/else cycle
                     } else {
+                        if (!creaSingoloMilite(militeOld, null, null, croceNew)) {
+                            status = false;
+                        }// end of if cycle
                         System.out.println("Manca in " + getCroce(croceNew).getSigla() + " militeOld: " + militeOld.getCognome());
                         //@todo rimettere
                         //                        logger.debug(logtype.getImport(), "Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
@@ -1225,36 +1228,36 @@ public class ImportService extends AService {
         boolean status = true;
         Milite militeNew;
         boolean militeSaved;
-        int ordine = 0;
-        boolean locked = !militeOld.isAttivo();
+        //        int ordine = 0;
+        //        boolean locked = !militeOld.isAttivo();
         String cognome = militeOld.getCognome();
-        long croce_id = militeOld.getCroce_id();
-        Date data_nascita = militeOld.getData_nascita();
+        //        long croce_id = militeOld.getCroce_id();
+        //        Date data_nascita = militeOld.getData_nascita();
         boolean dipendente = militeOld.isDipendente();
         String mail = militeOld.getEmail();
         String nome = militeOld.getNome();
-        String note = militeOld.getNote();
-        int ore_anno = militeOld.getOre_anno();
-        Date scadenzablsd = militeOld.getScadenzablsd();
-        Date scadenza_non_trauma = militeOld.getScadenza_non_trauma();
-        Date scadenza_trauma = militeOld.getScadenza_trauma();
+        //        String note = militeOld.getNote();
+        //        int ore_anno = militeOld.getOre_anno();
+        //        Date scadenzablsd = militeOld.getScadenzablsd();
+        //        Date scadenza_non_trauma = militeOld.getScadenza_non_trauma();
+        //        Date scadenza_trauma = militeOld.getScadenza_trauma();
         String telefono = militeOld.getTelefono_cellulare();
-        String telefono_fisso = militeOld.getTelefono_fisso();
-        int turni_anno = militeOld.getTurni_anno();
-        int ore_extra = militeOld.getOre_extra();
+        //        String telefono_fisso = militeOld.getTelefono_fisso();
+        //        int turni_anno = militeOld.getTurni_anno();
+        //        int ore_extra = militeOld.getOre_extra();
 
-        boolean account_expired = utenteOld.isAccount_expired();
-        boolean account_locked = utenteOld.isAccount_locked();
-        boolean enabled = utenteOld.isEnabled();
-        boolean admin = utenteRuoloAmb.isAdmin(utenteOld);
+        //        boolean account_expired = utenteOld.isAccount_expired();
+        //        boolean account_locked = utenteOld.isAccount_locked();
+        boolean enabled = utenteOld != null ? utenteOld.isEnabled() : false;
+        boolean admin = utenteOld != null ? utenteRuoloAmb.isAdmin(utenteOld) : false;
         boolean infermiere = getInfermiereNew(militeOld);
-        String pass = utenteOld.getPass();
-        String password = utenteOld.getPassword();//--non utilizzato
-        boolean password_expired = utenteOld.isPassword_expired();
-        String userName = utenteOld.getUsername();//--non utilizzato
-        String nickname = utenteOld.getNickname();
+        String pass = utenteOld != null ? utenteOld.getPass() : militeOld.getNome().toLowerCase() + "123";
+        //        String password = utenteOld.getPassword();//--non utilizzato
+        //        boolean password_expired = utenteOld.isPassword_expired();
+        //        String userName = utenteOld.getUsername();//--non utilizzato
+        String nickname = utenteOld != null ? utenteOld.getNickname() : militeOld.getNome().toLowerCase().substring(0, 1) + "." + militeOld.getCognome().toLowerCase();
         String nickname2 = "";
-        Role ruoloNew = getRoleNew(ruoloOld);
+        Role ruoloNew = ruoloOld != null ? getRoleNew(ruoloOld) : roleService.getUser();
         Set<Role> ruoliNew = getRuoli(ruoloNew);
 
         Set<Funzione> funzioni = getFunzioniNew(croceNew, militeOld);

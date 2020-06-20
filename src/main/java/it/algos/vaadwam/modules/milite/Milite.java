@@ -9,7 +9,10 @@ import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -160,9 +163,8 @@ public class Milite extends Person {
      */
     @Field("disabIscr")
     @AIField(type = EAFieldType.checkbox, name = "Il milite non può effettuare iscrizioni autonomamente")
-//    @AIColumn(name = "bloccaIscrizione", widthEM = 20)
+    //    @AIColumn(name = "bloccaIscrizione", widthEM = 20)
     public boolean disabIscr;
-
 
 
     @Transient
@@ -170,20 +172,28 @@ public class Milite extends Person {
 
 
     /**
+     * Nickname del milite per per il login
+     */
+    public String getNick() {
+        return getNome().toLowerCase().substring(0, 1) + "." + getCognome().toLowerCase();
+    }
+
+
+    /**
      * Sigla breve del milite per presentazione sul tabellone e altro
      */
     public String getSigla() {
-        String sigla="";
+        String sigla = "";
 
-        if(!StringUtils.isEmpty(cognome)){
-            sigla+=cognome;
+        if (!StringUtils.isEmpty(cognome)) {
+            sigla += cognome;
         }
 
-        if(!StringUtils.isEmpty(nome)){
-            if(!StringUtils.isEmpty(sigla)){
-                sigla+=" ";
+        if (!StringUtils.isEmpty(nome)) {
+            if (!StringUtils.isEmpty(sigla)) {
+                sigla += " ";
             }
-            sigla+=nome.substring(0, 1) + ".";
+            sigla += nome.substring(0, 1) + ".";
         }
 
         return sigla;
@@ -197,8 +207,6 @@ public class Milite extends Person {
     public String toString() {
         return getUsername();
     }// end of method
-
-
 
 
 }// end of entity class
