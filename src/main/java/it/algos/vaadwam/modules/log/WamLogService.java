@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
@@ -200,7 +201,7 @@ public class WamLogService extends AService {
 
         if(!militeLoggato.isFantasma()){
             WamLog wamLog = newEntity(croce, type, militeLoggato, message);
-            wamLog.id = croce != null ? croce.code : "system" + System.currentTimeMillis();
+            wamLog.id = UUID.randomUUID().toString();
             mongo.update(wamLog, WamLog.class);
         }
 

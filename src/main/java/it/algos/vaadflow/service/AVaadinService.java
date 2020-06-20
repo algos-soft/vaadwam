@@ -128,17 +128,18 @@ public class AVaadinService {
                     utente = this.utenteService.findByKeyUnica(uniqueUsername);
                     roleType = EARoleType.developer;
 
-
                     // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
                     Milite milite = new Milite();
                     milite.setFantasma(true);
                     milite.setId(utente.getUsername());
                     milite.setCognome(utente.getUsername());
+                    milite.setNome(utente.getUsername());
                     milite.setAdmin(true);
                     milite.setCroce((Croce)utente.getCompany());
                     milite.setCreatoreTurni(true);
                     milite.setManagerTabellone(true);
                     milite.setUsername(utente.getUsername());
+                    milite.setRuoli(utente.getRuoli());
                     utente=milite;
 
                 }

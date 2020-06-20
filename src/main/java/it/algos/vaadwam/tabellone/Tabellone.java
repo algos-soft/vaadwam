@@ -610,6 +610,25 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     @Override
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione) {
 
+
+        // se l'utente ha le iscrizioni disabilitate, e il turno è nullo o l'iscrizione è vuota, esce senza fare nulla
+        if (wamLogin.getMilite().isDisabIscr()){
+            if(turno==null){
+                return;
+            }else{
+                Funzione funzione = funzioneService.findByKeyUnica(codFunzione);
+                Iscrizione iscrizione = iscrizioneService.getByTurnoAndFunzione(turno, funzione);
+                if (iscrizione==null){
+                    return;
+                }else{
+                    if(iscrizione.getMilite()==null){
+                        return;
+                    }
+                }
+            }
+        }
+
+
         // creazione del turno se non esiste
         boolean nuovoTurno = false;
         if (turno == null) {

@@ -155,6 +155,15 @@ public class Milite extends Person {
     @AIColumn(name = "note", widthEM = 20)
     public String noteWam;
 
+    /**
+     * iscrizioni bloccate
+     */
+    @Field("disabIscr")
+    @AIField(type = EAFieldType.checkbox, name = "Il milite non può effettuare iscrizioni autonomamente")
+//    @AIColumn(name = "bloccaIscrizione", widthEM = 20)
+    public boolean disabIscr;
+
+
 
     @Transient
     public String sigla;
