@@ -1,6 +1,5 @@
 package it.algos.vaadflow.service;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -12,8 +11,6 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.milite.Milite;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -129,17 +126,17 @@ public class AVaadinService {
                     roleType = EARoleType.developer;
 
 
-                    // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
-                    Milite milite = new Milite();
-                    milite.setFantasma(true);
-                    milite.setId(utente.getUsername());
-                    milite.setCognome(utente.getUsername());
-                    milite.setAdmin(true);
-                    milite.setCroce((Croce)utente.getCompany());
-                    milite.setCreatoreTurni(true);
-                    milite.setManagerTabellone(true);
-                    milite.setUsername(utente.getUsername());
-                    utente=milite;
+                    //                    // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
+                    //                    Milite milite = new Milite();
+                    //                    milite.setFantasma(true);
+                    //                    milite.setId(utente.getUsername());
+                    //                    milite.setCognome(utente.getUsername());
+                    //                    milite.setAdmin(true);
+                    //                    milite.setCroce((Croce)utente.getCompany());
+                    //                    milite.setCreatoreTurni(true);
+                    //                    milite.setManagerTabellone(true);
+                    //                    milite.setUsername(utente.getUsername());
+                    //                    utente=milite;
 
                 }
 

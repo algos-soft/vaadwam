@@ -521,6 +521,7 @@ public class ImportService extends AService {
                             listaMilitiOldAssenti.add(militeOld);
                         }// end of if/else cycle
                     } else {
+                        System.out.println("Manca in " + getCroce(croceNew).getSigla() + " militeOld: " + militeOld.getCognome());
                         //@todo rimettere
                         //                        logger.debug(logtype.getImport(), "Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
                     }// end of if/else cycle
