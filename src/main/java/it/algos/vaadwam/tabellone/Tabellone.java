@@ -611,19 +611,20 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
     public void cellClicked(Turno turno, LocalDate giorno, Servizio servizio, String codFunzione) {
 
 
-        // se l'utente ha le iscrizioni disabilitate, e il turno è nullo o l'iscrizione è vuota, esce senza fare nulla
+        // se l'utente ha le iscrizioni disabilitate, e il turno è nullo o l'iscrizione è vuota, avvisa ed esce
         if (wamLogin.getMilite().isDisabIscr()){
-            if(turno==null){
+
+            Notification n = new Notification("Non sei abilitato ad effettuare iscrizioni, chiedi ad un admin", 3000, Notification.Position.MIDDLE);
+
+            if(turno==null){    // turno non esistente
+                n.open();
                 return;
-            }else{
+            }else{  // nessun iscritto
                 Funzione funzione = funzioneService.findByKeyUnica(codFunzione);
                 Iscrizione iscrizione = iscrizioneService.getByTurnoAndFunzione(turno, funzione);
-                if (iscrizione==null){
+                if (iscrizione==null || iscrizione.getMilite()==null){
+                    n.open();
                     return;
-                }else{
-                    if(iscrizione.getMilite()==null){
-                        return;
-                    }
                 }
             }
         }
