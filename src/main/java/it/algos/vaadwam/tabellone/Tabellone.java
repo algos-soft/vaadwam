@@ -639,12 +639,12 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 if (isUtenteManagerTabellone()) {
                     creaTurno = true;
                 } else {
-                    if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno)) {
+                    if (preferenzaService.isBool(EAPreferenzaWam.nuovoTurno) || isSuperUser()) {
                         creaTurno = true;
                     }
                 }
-            } else { //turni non-standard: li possono creare solo manager e utente abilitato
-                if (isUtenteManagerTabellone() || isUtenteAbilitatoCreareTurniExtra()) {
+            } else { //turni non-standard: li possono creare solo manager e utente abilitato più il superuser
+                if (isUtenteManagerTabellone() || isUtenteAbilitatoCreareTurniExtra() || isSuperUser()) {
                     creaTurno = true;
                 }
             }
