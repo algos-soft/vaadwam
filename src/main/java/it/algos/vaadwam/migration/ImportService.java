@@ -1491,7 +1491,7 @@ public class ImportService extends AService {
                     iscr.fine = fineNew;
                 }// end of if cycle
             }// end of for cycle
-        }// end of if cycle
+        }
 
         turnoService.save(turnoNew);
         return status;
@@ -1632,7 +1632,16 @@ public class ImportService extends AService {
             username = utente.getNickname();
         }// end of if cycle
 
-        return (Milite) militeService.findById(username);
+        if (username.equals("")) {
+            MiliteAmb militeOld = militeAmb.findByID(keyID);
+            if (militeOld != null) {
+                String nome = militeOld.getNome();
+                String cognome = militeOld.getCognome();
+                return militeService.findByNomeAndCognome(nome, cognome);
+            }
+        }
+
+        return militeService.findById(username);
     }// end of method
 
 

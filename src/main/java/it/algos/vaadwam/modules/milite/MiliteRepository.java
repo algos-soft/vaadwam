@@ -33,6 +33,8 @@ public interface MiliteRepository extends MongoRepository<Milite, String> {
 
     public Milite findByUsername(String username);
 
+    public Milite findByNomeAndCognome(String nome, String cognome);
+
     public List<Milite> findAllByCroceOrderByOrdineAsc(Croce croce);
 
     public List<Milite> findAllByCroceOrderByUsernameAsc(Croce croce);

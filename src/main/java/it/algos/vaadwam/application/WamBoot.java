@@ -15,6 +15,7 @@ import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.croce.EACroce;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneList;
@@ -134,21 +135,21 @@ public class WamBoot extends ABoot {
     @Autowired
     public WamBoot() {
         super();
-//        this.wamVers = wamVers;
+        //        this.wamVers = wamVers;
     }// end of Spring constructor
 
 
-//    /**
-//     * Executed on container startup <br>
-//     * Setup non-UI logic here <br>
-//     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
-//     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
-//     * questa sottoclasse concreta può singolarmente modificarle <br>
-//     */
-//    @Override
-//    public void contextInitialized(ServletContextEvent servletContextEvent) {
-////        super.inizia();
-//    }// end of method
+    //    /**
+    //     * Executed on container startup <br>
+    //     * Setup non-UI logic here <br>
+    //     * Viene sovrascritto in questa sottoclasse concreta che invoca il metodo super.inizia() <br>
+    //     * Nella superclasse vengono effettuate delle regolazioni standard; <br>
+    //     * questa sottoclasse concreta può singolarmente modificarle <br>
+    //     */
+    //    @Override
+    //    public void contextInitialized(ServletContextEvent servletContextEvent) {
+    ////        super.inizia();
+    //    }// end of method
 
 
     /**
@@ -159,7 +160,7 @@ public class WamBoot extends ABoot {
      */
     @Override
     protected void iniziaVersioni() {
-//        wamVers.inizia();
+        //        wamVers.inizia();
     }// end of method
 
 
@@ -182,7 +183,7 @@ public class WamBoot extends ABoot {
         //--importazioni dal vecchio webambulanze
         if (croceService.isVuoto()) {
             migration.importOnlyCroci();
-//            migration.importAll();
+            //            migration.importAll();
         }// end of if cycle
     }// end of method
 
@@ -246,19 +247,19 @@ public class WamBoot extends ABoot {
         return numPref;
     }// end of method
 
-//    /**
-//     * Eventuali regolazione delle preferenze standard effettuata nella sottoclasse specifica <br>
-//     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
-//     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
-//     * Metodo che DEVE essere sovrascritto <br>
-//     */
-//    @Override
-//    protected void fixPreferenze() {
-////        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
-////        pref.saveValue(FlowCost.USA_COMPANY, true);
-////        pref.saveValue(FlowCost.SHOW_COMPANY, false);
-//        usaSecurity = true;
-//    }// end of method
+    //    /**
+    //     * Eventuali regolazione delle preferenze standard effettuata nella sottoclasse specifica <br>
+    //     * Serve per modificare solo per l'applicazione specifica il valore standard della preferenza <br>
+    //     * Eventuali modifiche delle preferenze specifiche (che peraltro possono essere modificate all'origine) <br>
+    //     * Metodo che DEVE essere sovrascritto <br>
+    //     */
+    //    @Override
+    //    protected void fixPreferenze() {
+    ////        pref.saveValue(EAPreferenza.loadUtenti.getCode(), false);
+    ////        pref.saveValue(FlowCost.USA_COMPANY, true);
+    ////        pref.saveValue(FlowCost.SHOW_COMPANY, false);
+    //        usaSecurity = true;
+    //    }// end of method
 
 
     /**
@@ -350,17 +351,17 @@ public class WamBoot extends ABoot {
      * Inizializzazione dei dati di alcune collections specifiche sul DB Mongo
      */
     protected void iniziaDataProgettoSpecifico() {
+        utenteService.deleteAll();
+
         //--patch di accesso come developer
         utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
         utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
 
-        //--patch di accesso come admin
-        utenteService.creaIfNotExist(croceService.getGAPS(), "admin-gaps", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRF(), "admin-crf", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "admin-crpt", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getPAP(), "admin-pap", "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        //--patch di accesso come admin per TUTTE le croci
+        for (String sigla : EACroce.getValues()) {
+            utenteService.creaIfNotExist(croceService.findByKeyUnica(sigla), "admin-" + sigla, "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        }
     }// end of method
-
 
 
     /**
@@ -397,34 +398,34 @@ public class WamBoot extends ABoot {
      * <p>
      * La crea SOLO se non esiste già
      */
-//    public void creaCompanyDemo() {
-//        Croce croce = creaCroceDemo();
-//        initCroce(croce, true, true);
-//    }// end of static method
-//
+    //    public void creaCompanyDemo() {
+    //        Croce croce = creaCroceDemo();
+    //        initCroce(croce, true, true);
+    //    }// end of static method
+    //
     /**
      * Creazione iniziale dei dati generali per la croce demo
      * Li crea SOLO se non esistono già
      */
-//    private Croce creaCroceDemo() {
-//        Croce croce = croceService.findOrCrea(DEMO_COMPANY_CODE);
-//
-//        if (croce != null) {
-//            croceService.delete(croce);
-//        }// fine del blocco if
-//
-//        croce = croceService.newEntity(DEMO_COMPANY_CODE, "Company dimostrativa");
-////        croce.setIndirizzo("Via Turati, 12");
-////        croce.setAddress1("20199 Garbagnate Milanese");
-////        croce.setContact("Mario Bianchi");
-//
-//
-//        //--flag vari
-////        CompanyPrefs.usaGestioneCertificati.put(company, true);
-////        CompanyPrefs.usaStatisticheSuddivise.put(company, true);
-//
-//        return croce;
-//    }// end of static method
+    //    private Croce creaCroceDemo() {
+    //        Croce croce = croceService.findOrCrea(DEMO_COMPANY_CODE);
+    //
+    //        if (croce != null) {
+    //            croceService.delete(croce);
+    //        }// fine del blocco if
+    //
+    //        croce = croceService.newEntity(DEMO_COMPANY_CODE, "Company dimostrativa");
+    ////        croce.setIndirizzo("Via Turati, 12");
+    ////        croce.setAddress1("20199 Garbagnate Milanese");
+    ////        croce.setContact("Mario Bianchi");
+    //
+    //
+    //        //--flag vari
+    ////        CompanyPrefs.usaGestioneCertificati.put(company, true);
+    ////        CompanyPrefs.usaStatisticheSuddivise.put(company, true);
+    //
+    //        return croce;
+    //    }// end of static method
 
     /**
      * Inizializza una croce appena creata, con alcuni dati di esempio
@@ -435,9 +436,9 @@ public class WamBoot extends ABoot {
      *
      * @param company croce di appartenenza
      */
-//    public void initCroce(Croce croce) {
-//        initCroce(croce, true, false);
-//    }// end of static method
+    //    public void initCroce(Croce croce) {
+    //        initCroce(croce, true, false);
+    //    }// end of static method
 
 
     /**
@@ -453,47 +454,47 @@ public class WamBoot extends ABoot {
      * @param creaTurni flag per la creazione di turni vuoti
      * @param company   flag per la creazione delle iscrizioni per i turni
      */
-//    public void initCroce(Croce croce, boolean creaTurni, boolean creaIscrizioni) {
-//        ArrayList<Funzione> listaFunzioni;
-//        ArrayList<Servizio> listaServizi;
-//        ArrayList<Volontario> listaVolontari;
-//        ArrayList<Turno> listaTurni = null;
-//        EntityManager manager = EM.createEntityManager();
-//        manager.getTransaction().begin();
+    //    public void initCroce(Croce croce, boolean creaTurni, boolean creaIscrizioni) {
+    //        ArrayList<Funzione> listaFunzioni;
+    //        ArrayList<Servizio> listaServizi;
+    //        ArrayList<Volontario> listaVolontari;
+    //        ArrayList<Turno> listaTurni = null;
+    //        EntityManager manager = EM.createEntityManager();
+    //        manager.getTransaction().begin();
 
-//        creaPreferenze(company);
-//        listaFunzioni = creaFunzioni(company, manager);
-//        creaFunzioniDipendenti(company, manager);
-//        listaServizi = creaServizi(company, manager, listaFunzioni);
-//        listaVolontari = creaVolontari(company, manager, listaFunzioni);
+    //        creaPreferenze(company);
+    //        listaFunzioni = creaFunzioni(company, manager);
+    //        creaFunzioniDipendenti(company, manager);
+    //        listaServizi = creaServizi(company, manager, listaFunzioni);
+    //        listaVolontari = creaVolontari(company, manager, listaFunzioni);
 
-//        if (creaTurni) {
-//            listaTurni = creaTurniVuoti(company, manager, listaServizi);
-//        }// end of if cycle
+    //        if (creaTurni) {
+    //            listaTurni = creaTurniVuoti(company, manager, listaServizi);
+    //        }// end of if cycle
 
-//        if (creaIscrizioni) {
-//            riempieTurni(company, manager, listaTurni, listaVolontari);
-//        }// end of if cycle
+    //        if (creaIscrizioni) {
+    //            riempieTurni(company, manager, listaTurni, listaVolontari);
+    //        }// end of if cycle
 
-//        manager.getTransaction().commit();
-//        manager.close();
+    //        manager.getTransaction().commit();
+    //        manager.close();
 
-//        croce.setOrganizzazione(EAOrganizzazione.anpas);
-//        croceService.save(croce);
-//}// end of static method
+    //        croce.setOrganizzazione(EAOrganizzazione.anpas);
+    //        croceService.save(croce);
+    //}// end of static method
 
 
-//    private User createUser(String email, String firstName, String lastName, String passwordHash, String role,
-//                            String photoUrl, boolean locked) {
-//        User user = new User();
-//        user.setEmail(email);
-//        user.setFirstName(firstName);
-//        user.setLastName(lastName);
-//        user.setPasswordHash(passwordHash);
-//        user.setRole(role);
-//        user.setPhotoUrl(photoUrl);
-//        user.setLocked(locked);
-//        return user;
-//    }
+    //    private User createUser(String email, String firstName, String lastName, String passwordHash, String role,
+    //                            String photoUrl, boolean locked) {
+    //        User user = new User();
+    //        user.setEmail(email);
+    //        user.setFirstName(firstName);
+    //        user.setLastName(lastName);
+    //        user.setPasswordHash(passwordHash);
+    //        user.setRole(role);
+    //        user.setPhotoUrl(photoUrl);
+    //        user.setLocked(locked);
+    //        return user;
+    //    }
 
 }// end of boot class
