@@ -138,7 +138,7 @@ public class Iscrizione extends AEntity {
 
     /**
      * eventuali problemi di presenza del milite/volontario di questa iscrizione nel turno (facoltativa)
-     * serve per evidenziare il problema nel tabellonesuperato
+     * serve per evidenziare il problema nel tabellone
      */
     @Field("prob")
     @AIField(type = EAFieldType.checkboxreverse)

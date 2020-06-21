@@ -1536,21 +1536,33 @@ public class ImportService extends AService {
 
         iscrizione = recuperaIscrizione(turnoOld.getFunzione1_id(), turnoOld.getMilite_funzione1_id(), turnoOld.getOre_milite1(), turnoOld.isProblemi_funzione1(), servizio);
         if (iscrizione != null) {
+            if (turnoOld.isProblemi_funzione1()) {
+                iscrizione.setNote(turnoOld.getNote());
+            }
             iscrizioni.add(iscrizione);
         }// end of if cycle
 
         iscrizione = recuperaIscrizione(turnoOld.getFunzione2_id(), turnoOld.getMilite_funzione2_id(), turnoOld.getOre_milite2(), turnoOld.isProblemi_funzione2(), servizio);
         if (iscrizione != null) {
+            if (turnoOld.isProblemi_funzione2()) {
+                iscrizione.setNote(turnoOld.getNote());
+            }
             iscrizioni.add(iscrizione);
         }// end of if cycle
 
         iscrizione = recuperaIscrizione(turnoOld.getFunzione3_id(), turnoOld.getMilite_funzione3_id(), turnoOld.getOre_milite3(), turnoOld.isProblemi_funzione3(), servizio);
         if (iscrizione != null) {
+            if (turnoOld.isProblemi_funzione3()) {
+                iscrizione.setNote(turnoOld.getNote());
+            }
             iscrizioni.add(iscrizione);
         }// end of if cycle
 
         iscrizione = recuperaIscrizione(turnoOld.getFunzione4_id(), turnoOld.getMilite_funzione4_id(), turnoOld.getOre_milite4(), turnoOld.isProblemi_funzione4(), servizio);
         if (iscrizione != null) {
+            if (turnoOld.isProblemi_funzione4()) {
+                iscrizione.setNote(turnoOld.getNote());
+            }
             iscrizioni.add(iscrizione);
         }// end of if cycle
 
