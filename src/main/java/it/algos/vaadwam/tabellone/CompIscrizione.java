@@ -53,7 +53,9 @@ public class CompIscrizione extends Div {
 
     private TimePicker pickerFine;
 
-    private TextField textField;
+    //private TextField textField;
+
+    private Label noteLabel;
 
     public CompIscrizione(Iscrizione iscrizione, TurnoEditPolymer turnoEditPolymer) {
         this.iscrizione = iscrizione;
@@ -187,10 +189,11 @@ public class CompIscrizione extends Div {
 //        }
 //        return textField;
 
-        Label label = new Label();
-        label.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+        noteLabel = new Label();
+        noteLabel.setClassName("fieldNote");
+        noteLabel.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur ipsum dolor sit amet, consectetur adipiscing elit Lorem.");
 
-        return label;
+        return noteLabel;
 
 
     }
@@ -245,7 +248,8 @@ public class CompIscrizione extends Div {
     }
 
     String getNote(){
-        return textField.getValue();
+        return noteLabel.getText();
+        //return textField.getValue();
     }
 
     /**
@@ -254,13 +258,15 @@ public class CompIscrizione extends Div {
     private void resetTimeNote(){
         pickerInizio.setValue(null);
         pickerFine.setValue(null);
-        textField.setValue("");
+        noteLabel.setText(null);
+        //textField.setValue("");
     }
 
     private void enableTimeNote(boolean b) {
         pickerInizio.setEnabled(b);
         pickerFine.setEnabled(b);
-        textField.setEnabled(b);
+        //textField.setEnabled(b);
+        noteLabel.setEnabled(b);
     }
 
     private Turno getTurno(){
