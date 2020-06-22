@@ -119,39 +119,49 @@ public class AVaadinService {
 
         if (context == null) {
             if (usaSecurity) {
-                uService = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
-                utente = uService.findByKeyUnica(uniqueUsername);
 
-                //--accesso diretto per developer ed altri registrati come utenti e non come sottoclasse di utenti
-                if (utente == null) {
-                    utente = this.utenteService.findByKeyUnica(uniqueUsername);
-                    roleType = EARoleType.developer;
+                if(uniqueUsername!=null){
 
-                    // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
-                    Milite milite = new Milite();
-                    milite.setFantasma(true);
-                    milite.setId(utente.getUsername());
-                    milite.setCognome(utente.getUsername());
-                    milite.setNome(utente.getUsername());
-                    milite.setAdmin(true);
-                    milite.setCroce((Croce) utente.getCompany());
-                    milite.setCreatoreTurni(true);
-                    milite.setManagerTabellone(true);
-                    milite.setUsername(utente.getUsername());
-                    milite.setRuoli(utente.getRuoli());
-                    utente = milite;
+                    uService = (IUtenteService) appContext.getBean(FlowVar.loginServiceClazz);
+                    utente = uService.findByKeyUnica(uniqueUsername);
 
-                }
+                    //--accesso diretto per developer ed altri registrati come utenti e non come sottoclasse di utenti
+                    if (utente == null) {
+                        utente = this.utenteService.findByKeyUnica(uniqueUsername);
+                        roleType = EARoleType.developer;
 
-                if (utente != null) {
-                    if (roleType == null) {
-                        roleType = uService.getRoleType(utente);
+                        // crea un milite fittizio che non è presente sul db e non logga nel log dell'admin
+                        Milite milite = new Milite();
+                        milite.setFantasma(true);
+                        milite.setAdmin(true);
+                        milite.setCreatoreTurni(true);
+                        milite.setManagerTabellone(true);
+
+                        if(utente!=null){
+                            milite.setId(utente.getUsername());
+                            milite.setCognome(utente.getUsername());
+                            milite.setNome(utente.getUsername());
+                            milite.setCroce((Croce) utente.getCompany());
+                            milite.setUsername(utente.getUsername());
+                            milite.setRuoli(utente.getRuoli());
+                        }
+
+                        utente = milite;
+
                     }
-                    login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
-                    context = appContext.getBean(AContext.class, login);
-                    context.setUsaLogin(true);
-                    context.setLoginValido(true);
+
+                    if (utente != null) {
+                        if (roleType == null) {
+                            roleType = uService.getRoleType(utente);
+                        }
+                        login = (ALogin) appContext.getBean(FlowVar.loginClazz, utente, utente.getCompany(), roleType);
+                        context = appContext.getBean(AContext.class, login);
+                        context.setUsaLogin(true);
+                        context.setLoginValido(true);
+                    }
                 }
+
+
 
             } else {
                 login = (ALogin) appContext.getBean(FlowVar.loginClazz, EARoleType.developer);
@@ -200,11 +210,15 @@ public class AVaadinService {
      * Ritorna lo username dell'utente loggato
      */
     public String getLoggedUsername() {
+        String username=null;
         VaadinSession vs = VaadinSession.getCurrent();
         WrappedSession ws = vs.getSession();
         SecurityContext sc = (SecurityContext) ws.getAttribute(KEY_SECURITY_CONTEXT);
-        User user = (User) sc.getAuthentication().getPrincipal();
-        return user.getUsername();
+        if (sc!=null){
+            User user = (User) sc.getAuthentication().getPrincipal();
+            username=user.getUsername();
+        }
+        return username;
     }
 
 
