@@ -1,9 +1,11 @@
 package it.algos.vaadwam.tabellone;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
@@ -81,7 +83,7 @@ public class CompIscrizione extends Div {
         Div div = new Div();
         div.setClassName("iscrizioneRow");
         div.add(buildPickerInizio());
-        div.add(buildTextFieldNote());
+        div.add(buildCompNote());
         div.add(buildPickerFine());
         return div;
     }
@@ -177,13 +179,20 @@ public class CompIscrizione extends Div {
         return pickerInizio;
     }
 
-    private TextField buildTextFieldNote() {
-        textField=new TextField();
-        textField.setClassName("fieldNote");
-        if(iscrizione.getNote()!=null){
-            textField.setValue(iscrizione.getNote());
-        }
-        return textField;
+    private Component buildCompNote() {
+//        textField=new TextField();
+//        textField.setClassName("fieldNote");
+//        if(iscrizione.getNote()!=null){
+//            textField.setValue(iscrizione.getNote());
+//        }
+//        return textField;
+
+        Label label = new Label();
+        label.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+
+        return label;
+
+
     }
 
     private TimePicker buildPickerFine() {
