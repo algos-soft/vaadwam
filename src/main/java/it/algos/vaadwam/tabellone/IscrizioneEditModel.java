@@ -10,6 +10,8 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     void setOrario(String orario);
 
+    void setNoteTurno(String note);
+
     void setUsaOrarioLabel(boolean usaOrarioLabel);
 
     void setUsaOrarioPicker(boolean usaOrarioPicker);
@@ -40,6 +42,9 @@ public interface IscrizioneEditModel extends TemplateModel  {
 
     void setMaxSettimaneRipeti(int max);
     int getMaxSettimaneRipeti();
+
+    String getNoteTurno();
+
 
 
 }

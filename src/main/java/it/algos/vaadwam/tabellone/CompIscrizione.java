@@ -1,14 +1,13 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadwam.components.NoteEditor;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -51,7 +50,10 @@ public class CompIscrizione extends Div {
 
     private TimePicker pickerFine;
 
-    private TextField textField;
+    //private TextField textField;
+
+    private NoteEditor noteEditor;
+
 
     public CompIscrizione(Iscrizione iscrizione, TurnoEditPolymer turnoEditPolymer) {
         this.iscrizione = iscrizione;
@@ -59,12 +61,13 @@ public class CompIscrizione extends Div {
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         this.setClassName("iscrizione");
         this.add(buildPrimaRiga());
         this.add(buildSecondaRiga());
 
-        enableTimeNote(combo.getValue()!=null);
+        enableTimeNote(combo.getValue() != null);
+
 
     }
 
@@ -81,7 +84,7 @@ public class CompIscrizione extends Div {
         Div div = new Div();
         div.setClassName("iscrizioneRow");
         div.add(buildPickerInizio());
-        div.add(buildTextFieldNote());
+        div.add(buildCompNote());
         div.add(buildPickerFine());
         return div;
     }
@@ -89,11 +92,11 @@ public class CompIscrizione extends Div {
 
     /**
      * Construisce il Div con icona e nome funzione
-    */
-    private Div buildDivFunzione(){
+     */
+    private Div buildDivFunzione() {
         Div div = new Div();
         div.setClassName("funzione");
-        Icon icona=getFunzione().getIcona().create();
+        Icon icona = getFunzione().getIcona().create();
         icona.setClassName("funzioneIcona");
         div.add(icona);
         div.add(getFunzione().getSigla());
@@ -108,34 +111,36 @@ public class CompIscrizione extends Div {
         combo.setItems(militiCombo);
 
         // se esiste un milite in ingresso lo preseleziona nel combo
-        if(getMiliteOriginale()!=null){
-            MiliteComboBean comboMilite=new MiliteComboBean(getMiliteOriginale());
-            if (militiCombo.contains(comboMilite)){
+        if (getMiliteOriginale() != null) {
+            MiliteComboBean comboMilite = new MiliteComboBean(getMiliteOriginale());
+            if (militiCombo.contains(comboMilite)) {
                 combo.setValue(comboMilite);
             }
         }
 
         combo.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<ComboBox<MiliteComboBean>, MiliteComboBean>>) event -> {
             MiliteComboBean value = event.getValue();
-            if(value==null){
+
+            enableTimeNote(value != null);
+
+            if (value == null) {
                 resetTimeNote();
             }
-            enableTimeNote(value!=null);
 
             // inserito/modificato un milite
-            if(value!=null){
+            if (value != null) {
 
                 // controllo che non sia già iscritto in altra posizione
-                boolean passed=true;
-                for(CompIscrizione comp : turnoEditPolymer.getCompIscrizioni()){
-                    if (comp!=this){
-                        String idAltroMilite=comp.getIdMiliteSelezionato();
-                        if(idAltroMilite!=null){
-                            String idQuestoMilite=value.getIdMilite();
-                            if (idQuestoMilite.equals(idAltroMilite)){
+                boolean passed = true;
+                for (CompIscrizione comp : turnoEditPolymer.getCompIscrizioni()) {
+                    if (comp != this) {
+                        String idAltroMilite = comp.getIdMiliteSelezionato();
+                        if (idAltroMilite != null) {
+                            String idQuestoMilite = value.getIdMilite();
+                            if (idQuestoMilite.equals(idAltroMilite)) {
                                 mostraAvvisoGiaPresente(value.getSiglaMilite());
                                 combo.setValue(event.getOldValue());
-                                passed=false;
+                                passed = false;
                                 break;
                             }
                         }
@@ -144,7 +149,7 @@ public class CompIscrizione extends Div {
 
                 // assegno ora inizio e fine prendendole da quanto
                 // mostrato nei picker del turno
-                if (passed){
+                if (passed) {
                     LocalTime oraInizio = turnoEditPolymer.getOraInizioPicker();
                     pickerInizio.setValue(oraInizio);
                     LocalTime oraFine = turnoEditPolymer.getOraFinePicker();
@@ -158,7 +163,7 @@ public class CompIscrizione extends Div {
         return combo;
     }
 
-    private void mostraAvvisoGiaPresente(String nome){
+    private void mostraAvvisoGiaPresente(String nome) {
         ConfirmDialog
                 .createError()
                 .withMessage(nome + " è già iscritto a questo turno")
@@ -171,37 +176,45 @@ public class CompIscrizione extends Div {
         pickerInizio = new TimePicker();
         pickerInizio.setClassName("timePicker");
         pickerInizio.setStep(Duration.ofSeconds(900));
-        if (iscrizione.getInizio()!=null){
+        if (iscrizione.getInizio() != null) {
             pickerInizio.setValue(iscrizione.getInizio());
         }
         return pickerInizio;
     }
 
-    private TextField buildTextFieldNote() {
-        textField=new TextField();
-        textField.setClassName("fieldNote");
-        if(iscrizione.getNote()!=null){
-            textField.setValue(iscrizione.getNote());
-        }
-        return textField;
+    private Component buildCompNote() {
+
+        noteEditor = new NoteEditor();
+        noteEditor.setNote(iscrizione.getNote());
+        noteEditor.setClassName("noteIscrizioneEditor");
+
+        noteEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+            @Override
+            public void onNoteChanged(String newText, String oldText) {
+                iscrizione.setNote(newText);
+            }
+        });
+
+        return noteEditor;
+
     }
 
     private TimePicker buildPickerFine() {
         pickerFine = new TimePicker();
         pickerFine.setClassName("timePicker");
         pickerFine.setStep(Duration.ofSeconds(900));
-        if (iscrizione.getFine()!=null){
+        if (iscrizione.getFine() != null) {
             pickerFine.setValue(iscrizione.getFine());
         }
         return pickerFine;
     }
 
 
-    private List<MiliteComboBean> getMilitiCombo(){
-        List<MiliteComboBean> militiCombo=new ArrayList<>();
-        List<Milite>  militi = militeService.findAllByFunzione(getFunzione());
+    private List<MiliteComboBean> getMilitiCombo() {
+        List<MiliteComboBean> militiCombo = new ArrayList<>();
+        List<Milite> militi = militeService.findAllByFunzione(getFunzione());
 
-        for(Milite milite : militi){
+        for (Milite milite : militi) {
             MiliteComboBean mc = new MiliteComboBean(milite);
             militiCombo.add(mc);
         }
@@ -209,52 +222,56 @@ public class CompIscrizione extends Div {
     }
 
 
-    private Funzione getFunzione(){
+    private Funzione getFunzione() {
         return iscrizione.getFunzione();
     }
 
 
-    private Milite getMiliteOriginale(){
+    private Milite getMiliteOriginale() {
         return iscrizione.getMilite();
     }
 
-    String getIdMiliteSelezionato(){
-        String idMilite=null;
+    String getIdMiliteSelezionato() {
+        String idMilite = null;
         MiliteComboBean mc = combo.getValue();
-        if (mc!=null){
-            idMilite=mc.getIdMilite();
+        if (mc != null) {
+            idMilite = mc.getIdMilite();
         }
         return idMilite;
     }
 
-    LocalTime getOraInizio(){
+    LocalTime getOraInizio() {
         return pickerInizio.getValue();
     }
 
-    LocalTime getOraFine(){
+    LocalTime getOraFine() {
         return pickerFine.getValue();
     }
 
-    String getNote(){
-        return textField.getValue();
+    String getNote() {
+        return noteEditor.getNote();
+        //return textField.getValue();
     }
 
     /**
      * Resetta orari e note
      */
-    private void resetTimeNote(){
+    private void resetTimeNote() {
         pickerInizio.setValue(null);
         pickerFine.setValue(null);
-        textField.setValue("");
+        noteEditor.setNote(null);
+        //textField.setValue("");
     }
 
     private void enableTimeNote(boolean b) {
         pickerInizio.setEnabled(b);
         pickerFine.setEnabled(b);
-        textField.setEnabled(b);
+        //textField.setEnabled(b);
+        noteEditor.setEnabled(b);
     }
 
-    private Turno getTurno(){
+
+    private Turno getTurno() {
         return turnoEditPolymer.getTurno();
     }
 
@@ -266,5 +283,7 @@ public class CompIscrizione extends Div {
     public void setOraFine(LocalTime value) {
         pickerFine.setValue(value);
     }
+
+
 }
 

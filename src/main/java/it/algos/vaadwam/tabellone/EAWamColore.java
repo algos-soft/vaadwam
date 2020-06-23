@@ -95,6 +95,6 @@ public enum EAWamColore {
 
     public String getContrasto() {
         return contrasto;
-    }// end of method
+    }
 
-}// end of enum class
+}

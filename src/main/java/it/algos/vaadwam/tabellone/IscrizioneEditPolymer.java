@@ -18,6 +18,7 @@ import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadwam.components.NoteEditor;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -85,6 +86,12 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     @Id
     private IntegerField settimaneRipeti;
 
+    @Id
+    private Div noteTurnoViewer;
+
+    @Id
+    private Div noteIscrizioneEditor;
+
     @Autowired
     private ADateService dateService;
 
@@ -133,10 +140,35 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             milite = wamLogin.getMilite();
         }
 
+        populateModel();
+
+
+        // aggiunge il componente visualizzatore delle note turno nel suo placeholder
+        NoteEditor noteTurnoViewer = new NoteEditor();
+        noteTurnoViewer.setEnabled(false);  // read only
+        noteTurnoViewer.setClassName("noteTurnoViewer");
+        noteTurnoViewer.setNote(getModel().getNoteTurno());
+        this.noteTurnoViewer.add(noteTurnoViewer);
+
+
+        // aggiunge il componente visualizzatore/editor delle note iscrizione nel suo placeholder
+        NoteEditor noteIscrEditor = new NoteEditor();
+        noteIscrEditor.setEnabled(!readOnly);
+        noteIscrEditor.setClassName("noteTurnoViewer");
+        noteIscrEditor.setNote(getModel().getNote());
+        noteIscrEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+            @Override
+            public void onNoteChanged(String newText, String oldText) {
+                getModel().setNote(newText);
+            }
+        });
+        noteIscrizioneEditor.add(noteIscrEditor);
+
+
         initRipetizioni();
 
-        populateModel();
         regolaBottoni();
+
     }
 
 
@@ -203,6 +235,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             }
         }
 
+        // note turno
+        getModel().setNoteTurno(turno.getNote());
+
         // orario di inizio
         String oraInizio = dateService.getOrario(iscrizione.getInizio());
         getModel().setOraInizio(oraInizio);
@@ -248,16 +283,14 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         } else {
             bConferma.setText("Iscriviti");
         }
-        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-            bConferma.addClickShortcut(Key.ENTER);
-        }
+
+        // NO! va in conflitto col return nelle note
+//        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+//            bConferma.addClickShortcut(Key.ENTER);
+//        }
+
         bConferma.addClickListener(e -> {
             validateInputAndProceed();
-//            if (validateInputAndProceed()) {
-//                syncIscrizione();
-//                // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-//                tabellone.confermaDialogoTurno(dialogo, turno);
-//            }
         });
 
         // se read only questo bottone non c'è

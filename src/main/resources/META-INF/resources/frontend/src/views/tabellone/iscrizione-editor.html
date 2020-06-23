@@ -19,6 +19,17 @@
                 justify-content: center;
             }
 
+            .noteTurnoViewer{
+                max-width: 17em;
+                margin-top:0.5em;
+                margin-bottom:0.7em;
+                margin-left:auto;
+                margin-right:auto;
+                font-size:70%;
+                line-height:110%;
+            }
+
+
             .iscrizione {
                 display: flex;
                 flex-direction: column;
@@ -48,7 +59,7 @@
         <div id="container" style="display: flex; flex-direction: column">
 
             <!--header-->
-            <div style="display: flex; flex-direction:column;">
+            <div style="display: flex; flex-direction:column; border-bottom:0.05em solid">
                 <div class="headerRow" div>
                     [[giorno]]
                 </div>
@@ -62,6 +73,9 @@
                         [[orario]]
                     </div>
                 </template>
+
+                <!--placeholder per il componente view/edit note turno-->
+                <div id="noteTurnoViewer" style="display:flex; justify-content:center"></div>
 
             </div>
             <!--end header-->
@@ -109,16 +123,18 @@
                     <!--end seconda riga -->
 
 
-                    <!--terza riga-->
-                    <div>
-                        <vaadin-text-field
-                                disabled=[[readOnly]]
-                                style="width:100%;"
-                                value="{{note}}">
-                        </vaadin-text-field>
-                    </div>
-                    <!--end terza riga -->
+<!--                    &lt;!&ndash;terza riga&ndash;&gt;-->
+<!--                    <div>-->
+<!--                        <vaadin-text-field-->
+<!--                                disabled=[[readOnly]]-->
+<!--                                style="width:100%;"-->
+<!--                                value="{{note}}">-->
+<!--                        </vaadin-text-field>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash;end terza riga &ndash;&gt;-->
 
+                    <!--placeholder per il componente view/edit note turno-->
+                    <div id="noteIscrizioneEditor" style="display:flex; justify-content:center"></div>
 
 
                 </div>

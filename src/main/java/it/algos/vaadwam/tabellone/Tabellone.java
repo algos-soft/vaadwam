@@ -97,7 +97,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
      */
     protected Map<String, String> parametersMap = null;
 
-    //    @Value("${wam.tabellone.banner}")
     private String banner;
 
     @Autowired
