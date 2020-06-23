@@ -283,16 +283,14 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         } else {
             bConferma.setText("Iscriviti");
         }
-        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-            bConferma.addClickShortcut(Key.ENTER);
-        }
+
+        // NO! va in conflitto col return nelle note
+//        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+//            bConferma.addClickShortcut(Key.ENTER);
+//        }
+
         bConferma.addClickListener(e -> {
             validateInputAndProceed();
-//            if (validateInputAndProceed()) {
-//                syncIscrizione();
-//                // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-//                tabellone.confermaDialogoTurno(dialogo, turno);
-//            }
         });
 
         // se read only questo bottone non c'è
