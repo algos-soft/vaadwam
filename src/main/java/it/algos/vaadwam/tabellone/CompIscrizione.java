@@ -1,17 +1,13 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadwam.components.NoteEditor;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -19,15 +15,12 @@ import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.Turno;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.claspina.confirmdialog.ButtonOption;
 import org.claspina.confirmdialog.ConfirmDialog;
-import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
-import javax.lang.model.element.Element;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -59,7 +52,7 @@ public class CompIscrizione extends Div {
 
     //private TextField textField;
 
-    private PlaceHolderNote placeHolderNote;
+    private NoteEditor noteEditor;
 
 
     public CompIscrizione(Iscrizione iscrizione, TurnoEditPolymer turnoEditPolymer) {
@@ -127,10 +120,12 @@ public class CompIscrizione extends Div {
 
         combo.addValueChangeListener((HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<ComboBox<MiliteComboBean>, MiliteComboBean>>) event -> {
             MiliteComboBean value = event.getValue();
+
+            enableTimeNote(value != null);
+
             if (value == null) {
                 resetTimeNote();
             }
-            enableTimeNote(value != null);
 
             // inserito/modificato un milite
             if (value != null) {
@@ -188,30 +183,19 @@ public class CompIscrizione extends Div {
     }
 
     private Component buildCompNote() {
-//        textField=new TextField();
-//        textField.setClassName("fieldNote");
-//        if(iscrizione.getNote()!=null){
-//            textField.setValue(iscrizione.getNote());
-//        }
-//        return textField;
 
-//        noteLabel = new Label();
-//        noteLabel.setClassName("fieldNote");
-//
-//        String t;
-//        if ((Math.random() < 0.5)) {
-//            t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur ipsum dolor sit amet.";
-//        } else {
-//            t = "Lorem ipsum dolor sit amet, consectetur";
-//        }
-//
-//        noteLabel.setText(t);
-//
-//        return noteLabel;
+        noteEditor = new NoteEditor();
+        noteEditor.setNote(iscrizione.getNote());
+        noteEditor.setClassName("noteIscrizioneEditor");
 
-        placeHolderNote = new PlaceHolderNote();
-        return placeHolderNote;
+        noteEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+            @Override
+            public void onNoteChanged(String newText, String oldText) {
+                iscrizione.setNote(newText);
+            }
+        });
 
+        return noteEditor;
 
     }
 
@@ -265,7 +249,7 @@ public class CompIscrizione extends Div {
     }
 
     String getNote() {
-        return placeHolderNote.getLabelText();
+        return noteEditor.getNote();
         //return textField.getValue();
     }
 
@@ -275,7 +259,7 @@ public class CompIscrizione extends Div {
     private void resetTimeNote() {
         pickerInizio.setValue(null);
         pickerFine.setValue(null);
-        placeHolderNote.setLabelText(null);
+        noteEditor.setNote(null);
         //textField.setValue("");
     }
 
@@ -283,8 +267,9 @@ public class CompIscrizione extends Div {
         pickerInizio.setEnabled(b);
         pickerFine.setEnabled(b);
         //textField.setEnabled(b);
-        placeHolderNote.setEnabled(b);
+        noteEditor.setEnabled(b);
     }
+
 
     private Turno getTurno() {
         return turnoEditPolymer.getTurno();
@@ -299,66 +284,6 @@ public class CompIscrizione extends Div {
         pickerFine.setValue(value);
     }
 
-    /**
-     * Mostra un dialogo di editing delle note
-     */
-    private void editNote() {
-
-    }
-
-
-    /**
-     * Placeholder per il campo Note.
-     * Se il testo è vuoto mostra un bottone altrimenti mostra il testo
-     */
-    class PlaceHolderNote extends Div {
-        private Button noteButton;
-        private Label noteLabel;
-
-        public PlaceHolderNote() {
-            setClassName("fieldNote");
-
-            this.noteButton = new Button("note...");
-            noteButton.setWidthFull();
-            this.noteLabel = new Label();
-
-            noteLabel.getElement().addEventListener("click", e -> {
-                editNote();
-            });
-
-            String t="";
-            double r = Math.random();
-            if (r >0 & r<0.3) {
-                t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur ipsum dolor sit amet.";
-            } else if(r>0.3 & r<0.6) {
-                t = "Lorem ipsum dolor sit amet, consectetur";
-            } else if(r>0.6) {
-                t="";
-            }
-            noteLabel.setText(t);
-
-
-            sync();
-        }
-
-        private void sync() {
-            removeAll();
-            if (StringUtils.isEmpty(getLabelText())){
-                add(noteButton);
-            }else{
-                add(noteLabel);
-            }
-        }
-
-        String getLabelText() {
-            return noteLabel.getText();
-        }
-
-        void setLabelText(String text) {
-            noteLabel.setText(text);
-        }
-
-    }
 
 }
 

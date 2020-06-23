@@ -17,6 +17,7 @@ import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
+import it.algos.vaadwam.components.NoteEditor;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
@@ -117,6 +118,9 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
     @Id
     private TimePicker pickerFine;
 
+    @Id
+    private Div noteEditorDiv;
+
     /**
      * @param tabellone            il tabellone di riferimento per effettuare le callbacks
      * @param dialogo              il dialogo contenitore
@@ -142,6 +146,18 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
     private void init() {
 
         populateModel();
+
+        // aggiunge il componente visualizzatore/editor delle note nel suo placeholder
+        NoteEditor noteEditor = new NoteEditor();
+        noteEditor.setClassName("noteTurnoEditor");
+        noteEditor.setNote(getModel().getNote());
+        noteEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+            @Override
+            public void onNoteChanged(String newText, String oldText) {
+                getModel().setNote(newText);
+            }
+        });
+        noteEditorDiv.add(noteEditor);
 
         // crea e aggiunge l'area Iscrizioni
         compIscrizioni = buildCompIscrizioni();

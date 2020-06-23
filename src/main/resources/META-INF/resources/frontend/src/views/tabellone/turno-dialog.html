@@ -68,16 +68,27 @@
                width: 5.7em;
             }
 
-            .fieldNote{
-                width: 2em;
-                display:flex;
-                flex-grow: 1;
-                align-items: center;
-                margin-left:0.4em;
-                margin-right:0.2em;
+
+            .noteTurnoEditor{
+                max-width: 25em;
+                margin-left:auto;
+                margin-right:auto;
                 font-size:70%;
                 line-height:110%;
             }
+
+            .noteIscrizioneEditor{
+                width: 2em;
+                display: flex;
+                flex-grow: 1;
+                align-items: center;
+                margin-left:0.4em;
+                margin-right:0.4em;
+                font-size:70%;
+                line-height:110%;
+            }
+
+
 
             .comboMilite{
                 margin-left:0.2em;
@@ -136,6 +147,9 @@
                         placeholder="Note"
                         value="{{note}}">
                 </vaadin-text-field>
+
+                <!--placeholder per il componente view/edit note turno-->
+                <div id="noteEditorDiv" style="display:flex; justify-content:center"></div>
 
             </div>
             <!--end header-->
