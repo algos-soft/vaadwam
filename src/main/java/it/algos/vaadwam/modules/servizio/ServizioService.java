@@ -551,14 +551,23 @@ public class ServizioService extends WamService {
         LocalTime inizio = entityBean.inizio != null ? entityBean.inizio : LocalTime.MIDNIGHT;
         LocalTime fine = entityBean.fine != null ? entityBean.fine : LocalTime.MIDNIGHT;
 
-        if (inizio != null && fine != null && inizio != LocalTime.MIDNIGHT && fine != LocalTime.MIDNIGHT) {
-            orario = inizio + " - " + fine;
-        } else {
-            orario = tagVuoto;
-        }// end of if/else cycle
+//        if (inizio != null && fine != null && inizio != LocalTime.MIDNIGHT && fine != LocalTime.MIDNIGHT) {
+//            orario = inizio + " - " + fine;
+//        } else {
+//            orario = tagVuoto;
+//        }
+
+        // il codice commentato sopra non funzionava con turni che
+        // iniziano o finiscono alle ore 00:00 (cosa legittima)
+        if (inizio != null) {
+            orario = ""+inizio;
+            if (fine!=null){
+                orario += " - "+fine;
+            }
+        }
 
         return orario;
-    }// end of method
+    }
 
 
     /**
