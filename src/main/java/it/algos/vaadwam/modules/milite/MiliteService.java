@@ -249,7 +249,7 @@ public class MiliteService extends WamService implements IUtenteService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Milite newEntity(Croce croce, String nome, String cognome, String userName, String passwordInChiaro) {
-        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (Set<Role>) null, "", false, false, false, false, (Set<Funzione>) null, true);
+        return newEntity(croce, 0, nome, cognome, "", (Address) null, userName, passwordInChiaro, (Set<Role>) null, "", true, false, false, false, (Set<Funzione>) null, true);
     }// end of method
 
 
@@ -396,7 +396,7 @@ public class MiliteService extends WamService implements IUtenteService {
         }// end of if cycle
 
         if (text.isEmpty(entity.getUsername())) {
-            entity.username = entity.nome + entity.cognome;
+            entity.username = entity.nome.substring(0, 1) + "." + entity.cognome;
         }// end of if cycle
 
         if (operation == EAOperation.addNew) {
@@ -421,6 +421,14 @@ public class MiliteService extends WamService implements IUtenteService {
         if (true) {
             ((Milite) entityBean).nome = text.primaMaiuscola(((Milite) entityBean).nome);
             ((Milite) entityBean).cognome = text.primaMaiuscola(((Milite) entityBean).cognome);
+        }
+
+        //niente spazi vuoti
+        if (text.isValid(entity.id)) {
+            entity.id = entity.id.trim();
+        }
+        if (text.isValid(entity.username)) {
+            entity.username = entity.username.trim();
         }
 
         return entity;
@@ -824,7 +832,7 @@ public class MiliteService extends WamService implements IUtenteService {
         List<String> lista;
 
         if (getWamLogin() != null && getWamLogin().isAdminOrDev()) {
-            lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
+            lista = array.getList("ordine,username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,enabled,noteWam");
         } else {
             lista = array.getList("username,enabled,nome,cognome,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
         }
