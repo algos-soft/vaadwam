@@ -1,17 +1,17 @@
 package it.algos.vaadwam.modules.statistica;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.presenter.IAPresenter;
-import it.algos.vaadflow.ui.dialog.AViewDialog;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.dialog.AViewDialog;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+
+import java.util.List;
+
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 
 /**
@@ -61,6 +61,24 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
     public StatisticaDialog(IAService service, Class<? extends AEntity> binderClass) {
         super(service, binderClass);
     }// end of constructor
+
+
+    /**
+     * Costruisce ogni singolo field <br>
+     * Fields normali indicati in @AIForfm(fields =... , aggiunti in automatico
+     * Costruisce i fields (di tipo AbstractField) della lista, in base ai reflectedFields ricevuti dal service <br>
+     * Inizializza le properties grafiche (caption, visible, editable, width, ecc) <br>
+     * Aggiunge il field al binder, nel metodo create() del fieldService <br>
+     * Aggiunge il field ad una fieldMap, per recuperare i fields dal nome <br>
+     * Controlla l'esistenza tra i field di un eventuale field di tipo textArea. Se NON esiste, abilita il tasto 'return'
+     *
+     * @param entityBean
+     * @param propertyNamesList
+     */
+    @Override
+    protected void creaFieldsBase(AEntity entityBean, List<String> propertyNamesList) {
+    }
+
 
     /**
      * Regola in lettura l'eeventuale field company (un combo)

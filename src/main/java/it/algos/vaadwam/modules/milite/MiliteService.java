@@ -424,7 +424,7 @@ public class MiliteService extends WamService implements IUtenteService {
         }
 
         //niente spazi vuoti
-        if (text.isValid(entity.id)) {
+        if (operation == EAOperation.addNew && text.isValid(entity.id)) {
             entity.id = entity.id.trim();
         }
         if (text.isValid(entity.username)) {
