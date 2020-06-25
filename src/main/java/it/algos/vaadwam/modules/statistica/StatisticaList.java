@@ -27,8 +27,10 @@ import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDateTime;
 
+import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.application.WamCost.TAG_STA;
+import static it.algos.vaadwam.application.WamCost.TASK_STATISTICA;
 
 /**
  * Project vaadwam <br>
@@ -136,7 +138,9 @@ public class StatisticaList extends WamViewList {
      */
     @Autowired
     @Qualifier(TASK_STATISTICA)
-    private ATask taskStatistica;
+    private ATask taskElabora;
+
+    private StatisticaService service;
 
 
     /**
@@ -177,10 +181,11 @@ public class StatisticaList extends WamViewList {
     @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
+        this.service = (StatisticaService) super.service;
 
-        if (wamLogin.isAdmin()) {
-            super.usaButtonDelete = true;
-        }// end of if cycle
+        //        if (wamLogin.isAdmin()) {
+        //            super.usaButtonDelete = true;
+        //        }// end of if cycle
 
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
@@ -189,7 +194,6 @@ public class StatisticaList extends WamViewList {
         super.soloVisioneUser = false;
         super.soloVisioneAdmin = false;
     }// end of method
-
 
 
     /**
@@ -202,12 +206,52 @@ public class StatisticaList extends WamViewList {
     protected void creaAlertLayout() {
         fixPreferenze();
 
-        alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte.");
-        alertDev.add("Come developer si possono elaborare in ogni momento per la croce corrente");
+        alertAdmin.add("Statistiche dei turni effettuati da ogni milite dal 1° gennaio dell'anno alla data odierna.");
+        alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte. Come admin si possono ri-elaborare in ogni momento.");
+        alertAdmin.add("Nome del milite, data dell'ultimo turno effettuato, giorni trascorsi dall'ultimo turno, validità della frequenza (sulla base di 2 turni/mese),");
+        alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
         super.creaAlertLayout();
+        alertPlacehorder.add(getInfoElabora());
     }// end of method
 
+
+    /**
+     * Costruisce le info di elaborazione <br>
+     * Può essere attivo lo scheduler della croce <br>
+     * Tre possibilità:
+     * Non previsto
+     * Disattivato
+     * Scheduled alle....
+     */
+    protected Label getInfoElabora() {
+        Label label = null;
+        String testo = "";
+        String tag = "Elaborazione automatica ";
+        boolean elaborazioneAutomatica = pref.isBool(service.usaDaemonElabora);
+        String nota = taskElabora != null ? taskElabora.getSchedule().getNota() : VUOTA;
+        int durata = text.isValid(service.durataLastElabora) ? pref.getInt(service.durataLastElabora) : 0;
+
+        if (wamLogin.isAdminOrDev()) {
+            LocalDateTime lastImport = text.isValid(service.lastElabora) ? pref.getDateTime(service.lastElabora) : START_DATE_TIME;
+            testo = tag;
+
+            if (elaborazioneAutomatica) {
+                testo += nota;
+            } else {
+                testo += "disattivata.";
+            }// end of if/else cycle
+
+            if (lastImport != null) {
+                label = text.getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
+            } else {
+                label = text.getLabelDev(tag + nota + " Non ancora effettuata.");
+            }// end of if/else cycle
+
+        }// end of if cycle
+
+        return label;
+    }// end of method
 
 
     /**
@@ -233,9 +277,10 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.remove(importButton);
         }// end of if cycleì
 
-        if (wamLogin.isDeveloper()) {
+        if (wamLogin.isAdminOrDev()) {
             Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
             elaboraButton.getElement().setAttribute("theme", "primary");
+            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
             elaboraButton.addClassName("view-toolbar__button");
             elaboraButton.addClickListener(e -> elabora());
             topPlaceholder.add(elaboraButton);
@@ -246,19 +291,19 @@ public class StatisticaList extends WamViewList {
 
     /**
      * Elabora (nel service) le statistiche <br>
-     * Se developer=true, elabora tutte le croci <br>
-     * Se admin=true, elabora SOLO la proipria croce <br>
+     * Se developer=true or admin=true, elabora SOLO la propria croce <br>
      * Se user=true, non vede questa lista <br>
      */
     public void elabora() {
-        if (wamLogin.isDeveloper()) {
-            ((StatisticaService) service).elabora(wamLogin.getCroce());
+        if (wamLogin.isAdminOrDev()) {
+            service.elabora(wamLogin.getCroce());
         }// end of if cycle
+        updateGrid();
     }// end of method
 
 
     /**
-     * Crea un Popup di selezione della company <br>
+     * Crea un Popup di selezione della company <br>eeeeeeee4
      * Creato solo se developer=true e usaCompany=true <br>
      */
     @Override
@@ -286,42 +331,5 @@ public class StatisticaList extends WamViewList {
         appContext.getBean(StatisticaDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
-
-    /**
-     * Costruisce le info di import <br>
-     * Può essere attivo lo scheduler della croce <br>
-     */
-    protected Label getInfoElabora(String flagLastImport, String flagDurataLastImport) {
-        Label label = null;
-        String testo = "";
-        String tag = "Elaborazione automatica statistiche: ";
-        String nota = taskStatistica != null ? taskStatistica.getSchedule().getNota() : VUOTA;
-        int durata = pref.getInt(flagDurataLastImport);
-        boolean elaborazioneAutomaticaDiQuestaCroce = pref.isBool(USA_DAEMON_STATISTICHE);
-
-        if (login.isDeveloper()) {
-            LocalDateTime lastImport = pref.getDateTime(flagLastImport);
-            testo = tag;
-
-            if (elaborazioneAutomaticaDiQuestaCroce) {
-                testo += nota;
-            } else {
-                testo += "disattivato.";
-            }// end of if/else cycle
-
-            if (lastImport != null) {
-                label = text.getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
-            } else {
-                if (elaborazioneAutomaticaDiQuestaCroce) {
-                    label = text.getLabelDev(tag + nota + " Non ancora effettuata.");
-                } else {
-                    label = text.getLabelDev(testo);
-                }// end of if/else cycle
-            }// end of if/else cycle
-
-        }// end of if cycle
-
-        return label;
-    }// end of method
 
 }// end of class

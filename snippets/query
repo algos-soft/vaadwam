@@ -1,5 +1,7 @@
 ==Query per DBREF==
+db.getCollection('turno').count({'croce.$id':'crf'})
 db.getCollection('funzione').find({'croce.$id':'crf'})
 
 ==Query normale==
 db.getCollection('bio').find({'page':20275})
+

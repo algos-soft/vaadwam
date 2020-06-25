@@ -42,6 +42,8 @@ public enum EAWamLogType {
     modificaPreferenza("modificaPreferenza"),
 
     importOld("import"),
+
+    statistiche("statistiche"),
     ;
 
 

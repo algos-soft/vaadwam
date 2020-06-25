@@ -7,7 +7,6 @@ import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
-import org.bson.types.Decimal128;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -71,8 +70,8 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "statistica", company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"ordine", "milite", "last", "delta", "valido", "turni", "ore","media"})
-@AIForm(fields = { "ordine", "last", "delta", "valido", "turni", "ore", "media"})
+@AIList(fields = {"milite", "last", "delta", "valido", "turni", "ore", "media"})
+@AIForm(fields = {"ordine", "last", "delta", "valido", "turni", "ore", "media"})
 public class Statistica extends WamEntity {
 
 
@@ -101,7 +100,7 @@ public class Statistica extends WamEntity {
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 11)
+    @AIColumn(widthEM = 14)
     public Milite milite;
 
 
@@ -111,7 +110,7 @@ public class Statistica extends WamEntity {
     @NotNull
     @Field("last")
     @AIField(type = EAFieldType.monthdate)
-    @AIColumn()
+    @AIColumn(widthEM = 6)
     public LocalDate last;
 
 
@@ -122,7 +121,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("dif")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "Δ", widthEM = 3)
+    @AIColumn(name = "Giorni", widthEM = 5)
     public int delta;
 
     /**
@@ -130,7 +129,7 @@ public class Statistica extends WamEntity {
      */
     @Field("val")
     @AIField(type = EAFieldType.yesnobold)
-    @AIColumn(name = "OK")
+    @AIColumn(name = "OK", widthEM = 5)
     public boolean valido;
 
     /**
@@ -140,7 +139,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("tur")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "Σ", widthEM = 3)
+    @AIColumn(name = "Turni", widthEM = 5)
     public int turni;
 
     /**
@@ -150,7 +149,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("ore")
     @AIField(type = EAFieldType.integer, widthEM = 3)
-    @AIColumn(name = "Φ", widthEM = 5)
+    @AIColumn(name = "Ore", widthEM = 5)
     public int ore;
 
     /**
@@ -160,7 +159,7 @@ public class Statistica extends WamEntity {
     @Indexed()
     @Field("media")
     @AIField(type = EAFieldType.onedecimal, widthEM = 3)
-    @AIColumn(name = "=", widthEM = 5)
+    @AIColumn(name = "Media", widthEM = 5)
     public int media;
 
 

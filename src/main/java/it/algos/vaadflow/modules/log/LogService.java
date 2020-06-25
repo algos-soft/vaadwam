@@ -298,7 +298,14 @@ public class LogService extends AService {
      * @return istanza della Entity, null se non trovata
      */
     protected AEntity findByDescrizione(String descrizione) {
-        return repository.findByDescrizione(descrizione);
+        AEntity entityBean = null;
+        try {
+            entityBean = repository.findByDescrizione(descrizione);
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "findByDescrizione");
+        }
+
+        return entityBean;
     }// end of method
 
 

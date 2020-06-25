@@ -1,9 +1,11 @@
 package it.algos.vaadwam.modules.statistica;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
+import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
@@ -15,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ import static it.algos.vaadwam.application.WamCost.*;
  * - la documentazione precedente a questo tag viene SEMPRE riscritta <br>
  * - se occorre preservare delle @Annotation con valori specifici, spostarle DOPO @AIScript <br>
  */
-@Service
+@SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TAG_STA)
 @Slf4j
@@ -56,17 +57,35 @@ public class StatisticaService extends WamService {
     private final static long serialVersionUID = 1L;
 
     /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ADateService date;
+
+    /**
      * La repository viene iniettata dal costruttore e passata al costruttore della superclasse, <br>
      * Spring costruisce una implementazione concreta dell'interfaccia MongoRepository (prevista dal @Qualifier) <br>
      * Qui si una una interfaccia locale (col casting nel costruttore) per usare i metodi specifici <br>
      */
     public StatisticaRepository repository;
 
+
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     protected TurnoService turnoService;
+
+
+    public String usaDaemonElabora;
+
+    public String lastElabora;
+
+    public String durataLastElabora;
+
+    public EATempo eaTempoTypeElabora;
 
 
     /**
@@ -95,9 +114,10 @@ public class StatisticaService extends WamService {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.lastImport = LAST_ELABORA;
-        super.durataLastImport = DURATA_ELABORA;
-        super.eaTempoTypeImport = EATempo.secondi;
+        this.usaDaemonElabora = USA_DAEMON_STATISTICHE;
+        this.lastElabora = LAST_ELABORA;
+        this.durataLastElabora = DURATA_ELABORA;
+        this.eaTempoTypeElabora = EATempo.secondi;
     }// end of method
 
 
@@ -158,15 +178,7 @@ public class StatisticaService extends WamService {
     public Statistica newEntity(Croce croce, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
         Statistica entity = null;
 
-        entity = Statistica.builderStatistica()
-                .ordine(ordine != 0 ? ordine : this.getNewOrdine())
-                .milite(milite)
-                .last(last)
-                .delta(delta)
-                .valido(valido)
-                .turni(turni)
-                .ore(ore)
-                .build();
+        entity = Statistica.builderStatistica().ordine(ordine != 0 ? ordine : this.getNewOrdine()).milite(milite).last(last).delta(delta).valido(valido).turni(turni).ore(ore).build();
 
         return (Statistica) creaIdKeySpecifica(entity);
     }// end of method
@@ -258,44 +270,42 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
-    public void elabora() {
-        for (Croce croce : croceService.findAll()) {
-            if (croce != null) {
-                if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
-                    elabora(croce);
-                }// end of if cycle
-            }// end of if cycle
-        }// end of for cycle
-    }// end of method
+    //    public void elabora() {
+    //        for (Croce croce : croceService.findAll()) {
+    //            if (croce != null) {
+    //                if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
+    //                    elabora(croce);
+    //                }// end of if cycle
+    //            }// end of if cycle
+    //        }// end of for cycle
+    //    }// end of method
 
 
     public boolean elabora(Croce croce) {
         boolean status = false;
         long inizio = System.currentTimeMillis();
         List<Milite> militi;
+        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, date.getAnnoCorrente());
         deleteAllCroce(croce);
 
         militi = militeService.findAllByCroce(croce);
+
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
-                elaboraSingoloMilite(croce, milite);
+                elaboraSingoloMilite(croce, milite, listaTurniCroce);
             }// end of for cycle
             status = true;
         }// end of if cycle
 
         setLastElabora(croce, inizio);
+        wamLogger.statistiche(croce, "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + (System.currentTimeMillis() - inizio) + " millisecondi");
 
         return status;
     }// end of method
 
 
-    public void elaboraSingoloMilite(Croce croce, Milite milite) {
-        elaboraSingoloMilite(croce, milite, date.getAnnoCorrente());
-    }// end of method
-
-
-    public void elaboraSingoloMilite(Croce croce, Milite milite, int anno) {
-        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
+    public void elaboraSingoloMilite(Croce croce, Milite milite, List<Turno> listaTurniCroce) {
+        long inizio = System.currentTimeMillis();
         Milite militeIscritto;
         Turno turno;
         List<Turno> listaTurniMilite = new ArrayList<>();
@@ -304,12 +314,12 @@ public class StatisticaService extends WamService {
         LocalDate last = null;
         int delta = 0;
         boolean valido;
-        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD,croce.code);
+        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
         int media;
 
         for (int j = 0; j < listaTurniCroce.size(); j++) {
             turno = listaTurniCroce.get(j);
-            if (turno.iscrizioni!=null) {
+            if (turno.iscrizioni != null) {
                 for (int k = 0; k < turno.iscrizioni.size(); k++) {
                     if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null) {
                         militeIscritto = turno.iscrizioni.get(k).milite;
@@ -329,10 +339,11 @@ public class StatisticaService extends WamService {
 
         if (turni > 0) {
             Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turni, oreTotali);
-            media = 10 * oreTotali / turni;
+            media = oreTotali / turni;
             statistica.media = media;
             save(statistica);
         }// end of if cycle
+
     }// end of method
 
 
@@ -357,7 +368,7 @@ public class StatisticaService extends WamService {
      * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
      */
     protected void setLastElabora(Croce croce, long inizio) {
-        setLastElabora(croce, inizio, lastImport, durataLastImport, eaTempoTypeImport);
+        setLastElabora(croce, inizio, lastElabora, durataLastElabora, eaTempoTypeElabora);
     }// end of method
 
 

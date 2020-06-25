@@ -178,6 +178,11 @@ public class WamLogService extends AService {
         log(EAWamLogType.importOld, message);
     }
 
+
+    public void statistiche(Croce croce, String message) {
+        sendLog(croce, (Milite) null, VUOTA, EAWamLogType.statistiche, message);
+    }
+
     //    public void log(EAWamLogType type) {
     //        log(type, VUOTA);
     //    }
@@ -199,17 +204,19 @@ public class WamLogService extends AService {
             log.debug("militeLoggato is null");
         }
 
-        if(!militeLoggato.isFantasma()){
+        if (militeLoggato != null && !militeLoggato.isFantasma()) {
             WamLog wamLog = newEntity(croce, type, militeLoggato, message);
             wamLog.id = UUID.randomUUID().toString();
             mongo.update(wamLog, WamLog.class);
         }
 
         if (croce == null || militeLoggato == null) {
-            log.info("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
+            log.warn("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
         }
 
-        sendLog(croce, militeLoggato, getWamLogin().getAddressIP(), type, message);
+        if (getWamLogin() != null) {
+            sendLog(croce, militeLoggato, getWamLogin().getAddressIP(), type, message);
+        }
 
     }
 

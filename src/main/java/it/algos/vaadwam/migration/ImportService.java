@@ -729,14 +729,14 @@ public class ImportService extends AService {
     }// end of method
 
 
-    /**
-     * Elabopra le statistiche dei militi <br>
-     *
-     * @param croceNew di waadwam
-     */
-    public boolean elaboraStatistiche(Croce croceNew) {
-        return statisticaService.elabora(croceNew);
-    }// end of method
+    //    /**
+    //     * Elabora le statistiche dei militi <br>
+    //     *
+    //     * @param croceNew di waadwam
+    //     */
+    //    public boolean elaboraStatistiche(Croce croceNew) {
+    //        return statisticaService.elabora(croceNew);
+    //    }// end of method
 
     //    /**
     //     * Importa da webambulanze i turni di una sola croce per un breve periodo <br>

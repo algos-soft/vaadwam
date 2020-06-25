@@ -2,6 +2,7 @@ package it.algos.vaadwam.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.enumeration.EASchedule;
+import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.statistica.StatisticaService;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
@@ -12,10 +13,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 
-import static it.algos.vaadwam.application.WamCost.TASK_CROCE;
 import static it.algos.vaadwam.application.WamCost.TASK_STATISTICA;
+import static it.algos.vaadwam.application.WamCost.USA_DAEMON_STATISTICHE;
 
 /**
  * Project vaadwam
@@ -41,24 +41,32 @@ public class TaskStatistica extends ATask {
     @Autowired
     public StatisticaService statisticaService;
 
+    /**
+     * Service (@Scope = 'singleton') iniettato da Spring <br>
+     * Unico per tutta l'applicazione. Usato come libreria.
+     */
+    @Autowired
+    public CroceService croceService;
+
+
     @PostConstruct
     public void inizia() {
         super.schedule = EASchedule.oreQuattro;
+        //        super.schedule = EASchedule.minuto;
     }// end of method
 
 
     /**
-     * Controlla il flag 'xxxUsaDaemonElabora' (specifico) per usare o meno questa Task <br>
+     * Controlla il flag 'USA_DAEMON_STATISTICHE' (specifico per croce) per usare o meno questa Task <br>
      */
     @Override
     public void execute(TaskExecutionContext context) throws RuntimeException {
 
-        statisticaService.elabora();
-
-        if (true) {
-//            System.out.println("Task di elaborazione statistiche: " + date.getTime(LocalDateTime.now()));
-//            mailService.send("Import croci", "Eseguito alle " + LocalDateTime.now().toString());
-        }// end of if cycle
+        for (Croce croce : croceService.findAll()) {
+            if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
+                statisticaService.elabora(croce);
+            }
+        }
     }// end of method
 
 }// end of class
