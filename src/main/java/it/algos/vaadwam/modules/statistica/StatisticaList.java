@@ -2,11 +2,13 @@ package it.algos.vaadwam.modules.statistica;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
@@ -23,6 +25,7 @@ import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.vaadin.haijian.Exporter;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDateTime;
@@ -286,6 +289,24 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.add(elaboraButton);
         }// end of if cycle
 
+        if (wamLogin.isAdminOrDev()) {
+            Button exportButton = new Button("Excel", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            exportButton.getElement().setAttribute("theme", "error");
+            exportButton.getElement().setAttribute("title", "Foglio di excel");
+            exportButton.addClassName("view-toolbar__button");
+            exportButton.addClickListener(e -> exportExcel());
+            topPlaceholder.add(exportButton);
+        }// end of if cycle
+
+        //        if (wamLogin.isAdminOrDev()) {
+        //            Button exportButton = new Button("CSV", new Icon(VaadinIcon.DOWNLOAD_ALT));
+        //            exportButton.getElement().setAttribute("theme", "error");
+        //            exportButton.getElement().setAttribute("title", "Foglio di excel");
+        //            exportButton.addClassName("view-toolbar__button");
+        //            exportButton.addClickListener(e -> exportCSV());
+        //            topPlaceholder.add(exportButton);
+        //        }// end of if cycle
+
     }// end of method
 
 
@@ -331,5 +352,31 @@ public class StatisticaList extends WamViewList {
         appContext.getBean(StatisticaDialog.class, service, entityClazz).open(entityBean, isEntityModificabile ? EAOperation.edit : EAOperation.showOnly, this::save, this::delete);
     }// end of method
 
+
+    protected void exportExcel() {
+        Grid<Statistica> grid = new Grid(Statistica.class, false);
+        grid.setColumns("milite", "last", "delta", "valido", "turni", "ore", "media");
+        grid.setItems(items);
+
+        //        StreamResource stream=new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid));
+        Anchor esporta = new Anchor(new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid)), "Download As Excel");
+        esporta.getElement().setAttribute("Export", true);
+        esporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        topPlaceholder.add(esporta);
+        int a = 87;
+    }// end of method
+
+
+    protected void exportCSV() {
+        Grid<Statistica> grid = new Grid(Statistica.class);
+        grid.setItems(items);
+
+        //        StreamResource stream=new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid));
+        Anchor esporta = new Anchor(new StreamResource("my-file.csv", Exporter.exportAsCSV(grid)), "Download As CSV");
+        esporta.getElement().setAttribute("Export", true);
+        esporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        topPlaceholder.add(esporta);
+        int a = 87;
+    }// end of method
 
 }// end of class

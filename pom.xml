@@ -312,6 +312,12 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.vaadin.haijian</groupId>
+            <artifactId>exporter</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
