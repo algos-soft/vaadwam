@@ -10,7 +10,6 @@ import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.log.WamLogService;
@@ -135,7 +134,7 @@ public class WamLogin extends ALogin {
             message += sep;
             message += browser;
 
-            logger.sendLog(croce, milite, addressIP, EAWamLogType.login, message);
+            logger.login(croce, milite, addressIP, message);
         } catch (Exception unErrore) {
             log.error(unErrore.toString());
         }

@@ -7,6 +7,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
@@ -71,14 +72,6 @@ public class StatisticaService extends WamService {
      */
     public StatisticaRepository repository;
 
-
-    /**
-     * Istanza (@Scope = 'singleton') inietta da Spring <br>
-     */
-    @Autowired
-    protected TurnoService turnoService;
-
-
     public String usaDaemonElabora;
 
     public String lastElabora;
@@ -86,6 +79,12 @@ public class StatisticaService extends WamService {
     public String durataLastElabora;
 
     public EATempo eaTempoTypeElabora;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected TurnoService turnoService;
 
 
     /**
@@ -307,40 +306,44 @@ public class StatisticaService extends WamService {
     public void elaboraSingoloMilite(Croce croce, Milite milite, List<Turno> listaTurniCroce) {
         long inizio = System.currentTimeMillis();
         Milite militeIscritto;
-        Turno turno;
-        List<Turno> listaTurniMilite = new ArrayList<>();
-        int turni = 0;
+        int turniMilite = 0;
         int oreTotali = 0;
         LocalDate last = null;
         int delta = 0;
         boolean valido;
-        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
+        //        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
         int media;
+        List<Iscrizione> iscrizioniMilite = new ArrayList<>();
+        List<Iscrizione> iscrizioniTurno;
 
-        for (int j = 0; j < listaTurniCroce.size(); j++) {
-            turno = listaTurniCroce.get(j);
-            if (turno.iscrizioni != null) {
-                for (int k = 0; k < turno.iscrizioni.size(); k++) {
-                    if (turno.iscrizioni != null && turno.iscrizioni.get(k) != null && turno.iscrizioni.get(k).milite != null) {
-                        militeIscritto = turno.iscrizioni.get(k).milite;
+        for (Turno turno : listaTurniCroce) {
+            iscrizioniTurno = turno.iscrizioni;
+            if (iscrizioniTurno != null) {
+
+                for (Iscrizione iscriz : iscrizioniTurno) {
+                    if (iscriz.milite != null) {
+                        militeIscritto = iscriz.milite;
                         if (militeIscritto.id.equals(milite.id)) {
-                            listaTurniMilite.add(turno);
-                            oreTotali += turno.iscrizioni.get(k).durataEffettiva;
+                            iscrizioniMilite.add(iscriz);
+                            turniMilite++;
+                            oreTotali += iscriz.durataEffettiva;
                             last = turno.giorno;
                             delta = date.differenza(LocalDate.now(), last);
                         }// end of if cycle
-                    }// end of if cycle
-                }// end of for cycle
+                    }
+                }
             }// end of if cycle
         }// end of for cycle
 
-        turni = listaTurniMilite.size();
-        valido = checkValidita(turni);
+        valido = checkValidita(turniMilite);
 
-        if (turni > 0) {
-            Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turni, oreTotali);
-            media = oreTotali / turni;
+        if (turniMilite > 0) {
+            Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turniMilite, oreTotali);
+            media = oreTotali / turniMilite;
             statistica.media = media;
+            if (iscrizioniMilite.size() > 0) {
+                statistica.iscrizioni = iscrizioniMilite;
+            }
             save(statistica);
         }// end of if cycle
 

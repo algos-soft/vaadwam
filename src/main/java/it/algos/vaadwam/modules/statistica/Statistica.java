@@ -3,6 +3,7 @@ package it.algos.vaadwam.modules.statistica;
 import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.wam.WamEntity;
@@ -16,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Project vaadwam <br>
@@ -161,6 +163,15 @@ public class Statistica extends WamEntity {
     @AIField(type = EAFieldType.onedecimal, widthEM = 3)
     @AIColumn(name = "Media", widthEM = 5)
     public int media;
+
+    /**
+     * iscrizioni di questo milite (obbligatorio)
+     * riferimento statico SENZA @DBRef (embedded)
+     */
+    @NotNull
+    @Field("isc")
+    @AIField(type = EAFieldType.noone, widthEM = 20, name = "Iscrizioni per questo milite")
+    public List<Iscrizione> iscrizioni;
 
 
     /**

@@ -1,15 +1,21 @@
 package it.algos.vaadwam.modules.statistica;
 
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.service.AColumnService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
+import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
@@ -40,6 +46,16 @@ import static it.algos.vaadwam.application.WamCost.TAG_STA;
 @AIScript(sovrascrivibile = true)
 public class StatisticaDialog extends AViewDialog<Statistica> {
 
+    /**
+     * Service (pattern SINGLETON) recuperato come istanza dalla classe <br>
+     * The class MUST be an instance of Singleton Class and is created at the time of class loading <br>
+     */
+    public AColumnService columnService = AColumnService.getInstance();
+
+    private Grid<AEntity> grid;
+
+    private Collection items;
+
 
     /**
      * Costruttore senza parametri <br>
@@ -64,20 +80,79 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
 
 
     /**
-     * Costruisce ogni singolo field <br>
-     * Fields normali indicati in @AIForfm(fields =... , aggiunti in automatico
-     * Costruisce i fields (di tipo AbstractField) della lista, in base ai reflectedFields ricevuti dal service <br>
-     * Inizializza le properties grafiche (caption, visible, editable, width, ecc) <br>
-     * Aggiunge il field al binder, nel metodo create() del fieldService <br>
-     * Aggiunge il field ad una fieldMap, per recuperare i fields dal nome <br>
-     * Controlla l'esistenza tra i field di un eventuale field di tipo textArea. Se NON esiste, abilita il tasto 'return'
-     *
-     * @param entityBean
-     * @param propertyNamesList
+     * Regola il titolo del dialogo <br>
+     * Recupera recordName dalle @Annotation della classe Entity. Non dovrebbe mai essere vuoto. <br>
+     * Costruisce il titolo con la descrizione dell'operazione (New, Edit,...) ed il recordName <br>
+     * Sostituisce interamente il titlePlaceholder <br>
      */
-    @Override
-    protected void creaFieldsBase(AEntity entityBean, List<String> propertyNamesList) {
-    }
+    protected void fixTitleLayout() {
+        String title = "Turni del milite " + currentItem.milite.getCognome() + " " + currentItem.milite.getNome();
+
+        titlePlaceholder.removeAll();
+        titlePlaceholder.add(new H2(title));
+        titlePlaceholder.add("Periodo 1° gen 2020 - 25 giu 2020");
+    }// end of method
+
+
+    /**
+     * Crea i fields
+     * <p>
+     * Crea un nuovo binder (vuoto) per questo Dialog e questa Entity
+     * Crea una mappa fieldMap (vuota), per recuperare i fields dal nome
+     * Costruisce una lista di nomi delle properties. Ordinata. Sovrascrivibile.
+     * <p>
+     * Costruisce i fields (di tipo AbstractField) della lista, in base ai reflectedFields ricevuti dal service
+     * Inizializza le properties grafiche (caption, visible, editable, width, ecc)
+     * Aggiunge i fields al binder
+     * Aggiunge i fields alla mappa fieldMap
+     * <p>
+     * Aggiunge eventuali fields specifici (costruiti non come standard type) al binder ed alla fieldMap
+     * Aggiunge i fields della fieldMap al layout grafico
+     * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
+     * Legge la entityBean ed inserisce nella UI i valori di eventuali fields NON associati al binder
+     */
+    protected void creaFields(AEntity entityBean) {
+        grid = new Grid(Iscrizione.class);
+
+        for (Object column : grid.getColumns()) {
+            grid.removeColumn((Grid.Column) column);
+        }// end of for cycle
+
+
+        //--Colonne aggiunte in automatico
+        for (String propertyName : getGridPropertyNamesList()) {
+            columnService.create(grid, Iscrizione.class, propertyName);
+        }// end of for cycle
+
+        grid.setWidth("80em");
+        grid.setItems(getItems());
+
+        formSubLayout.add(grid);
+    }// end of method
+
+
+    protected List<String> getGridPropertyNamesList() {
+        List<String> properties = new ArrayList<>();
+
+        properties.add("funzione");
+        properties.add("inizio");
+        properties.add("fine");
+        properties.add("durataEffettiva");
+        properties.add("esisteProblema");
+
+        return properties;
+    }// end of method
+
+
+    protected Collection getItems() {
+        List<Iscrizione> iscrizioni = new ArrayList<>();
+
+        if (currentItem != null) {
+            iscrizioni = ((Statistica) currentItem).iscrizioni;
+        }
+
+        return iscrizioni;
+    }// end of method
 
 
     /**
@@ -90,4 +165,5 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
             companyField.setValue(((Statistica) getCurrentItem()).getCroce());
         }// end of if cycle
     }// end of method
+
 }// end of class

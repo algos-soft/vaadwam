@@ -183,9 +183,15 @@ public class WamLogService extends AService {
         sendLog(croce, (Milite) null, VUOTA, EAWamLogType.statistiche, message);
     }
 
-    //    public void log(EAWamLogType type) {
-    //        log(type, VUOTA);
-    //    }
+
+    public void login(Croce croce, Milite milite, String addressIP, String message) {
+        sendLog(croce, milite, addressIP, EAWamLogType.login, message);
+        if (milite != null && !milite.isFantasma()) {
+            WamLog wamLog = newEntity(croce, EAWamLogType.login, milite, VUOTA);
+            wamLog.id = UUID.randomUUID().toString();
+            mongo.update(wamLog, WamLog.class);
+        }
+    }
 
 
     public void log(EAWamLogType type, String message) {

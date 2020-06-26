@@ -83,7 +83,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("funz")
     @AIField(type = EAFieldType.combo, serviceClazz = FunzioneService.class)
-    @AIColumn(widthEM = 14)
+    @AIColumn(widthEM = 20)
     public Funzione funzione;
 
 
@@ -95,7 +95,7 @@ public class Iscrizione extends AEntity {
     @DBRef
     @Field("mil")
     @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
-    @AIColumn(widthEM = 22)
+    @AIColumn(widthEM = 20)
     public Milite milite;
 
 

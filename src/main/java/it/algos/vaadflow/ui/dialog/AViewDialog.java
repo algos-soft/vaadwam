@@ -656,7 +656,7 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
      * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
      * Legge la entityBean ed inserisce nella UI i valori di eventuali fields NON associati al binder
      */
-    private void creaFields(AEntity entityBean) {
+    protected void creaFields(AEntity entityBean) {
         List<String> propertyNamesList;
 
         //--Crea una mappa fieldMap (vuota), per recuperare i fields dal nome
