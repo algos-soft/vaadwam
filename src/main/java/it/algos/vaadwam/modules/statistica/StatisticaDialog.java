@@ -8,7 +8,6 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.service.AColumnService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.ui.dialog.AViewDialog;
-import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -112,27 +111,26 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
      * Legge la entityBean ed inserisce nella UI i valori di eventuali fields NON associati al binder
      */
     protected void creaFields(AEntity entityBean) {
-        grid = new Grid(Iscrizione.class);
-
-        for (Object column : grid.getColumns()) {
-            grid.removeColumn((Grid.Column) column);
-        }// end of for cycle
-
+        List<String> properties = annotation.getGridPropertiesName(StaTurnoIsc.class);
+        grid = new Grid(StaTurnoIsc.class, false);
 
         //--Colonne aggiunte in automatico
-        for (String propertyName : getGridPropertyNamesList()) {
-            columnService.create(grid, Iscrizione.class, propertyName);
-        }// end of for cycle
+        if (array.isValid(properties)) {
+            for (String propertyName : properties) {
+                columnService.create(grid, StaTurnoIsc.class, propertyName);
+            }// end of for cycle
+        }
 
-        grid.setWidth("80em");
         grid.setItems(getItems());
 
+        grid.setWidth("100em");
+        formSubLayout.setWidth("100em");
         formSubLayout.add(grid);
     }// end of method
 
 
     protected List<String> getGridPropertyNamesList() {
-        List<String> properties = new ArrayList<>();
+        List<String> properties = annotation.getGridPropertiesName(StaTurnoIsc.class);
 
         properties.add("funzione");
         properties.add("inizio");
@@ -145,7 +143,7 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
 
 
     protected Collection getItems() {
-        List<Iscrizione> iscrizioni = new ArrayList<>();
+        List<StaTurnoIsc> iscrizioni = new ArrayList<>();
 
         if (currentItem != null) {
             iscrizioni = ((Statistica) currentItem).iscrizioni;

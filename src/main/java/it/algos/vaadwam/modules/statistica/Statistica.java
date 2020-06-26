@@ -3,7 +3,6 @@ package it.algos.vaadwam.modules.statistica;
 import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.wam.WamEntity;
@@ -171,7 +170,7 @@ public class Statistica extends WamEntity {
     @NotNull
     @Field("isc")
     @AIField(type = EAFieldType.noone, widthEM = 20, name = "Iscrizioni per questo milite")
-    public List<Iscrizione> iscrizioni;
+    public List<StaTurnoIsc> iscrizioni;
 
 
     /**

@@ -12,10 +12,10 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadflow.wrapper.AFiltro;
+import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
@@ -38,7 +38,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_WAM_LOG;
  * Time: 09:36
  */
 @UIScope
-@Route(value = TAG_WAM_LOG, layout = MainLayout14.class)
+@Route(value = TAG_WAM_LOG, layout = WamLayout.class)
 @Qualifier(TAG_WAM_LOG)
 @Slf4j
 @Secured("admin")
@@ -106,7 +106,7 @@ public class WamLogList extends AGridViewList {
 
         super.searchType = EASearch.nonUsata;
         super.usaPopupFiltro = true;
-        super.usaBottoneEdit = true;
+        super.usaBottoneEdit = false;
         super.usaButtonNew = false;
         super.isEntityAdmin = true;
         super.usaPagination = true;
@@ -128,7 +128,7 @@ public class WamLogList extends AGridViewList {
         alertPlacehorder.add(text.getLabelAdmin("Registro di tutte le principali operazioni compiute."));
         alertPlacehorder.add(text.getLabelAdmin("Lista visibile solo perché sei collegato come admin. Gli utenti normali non la vedono."));
         alertPlacehorder.add(text.getLabelAdmin("Lista di controllo creata dal programma."));
-        alertPlacehorder.add(text.getLabelAdmin("Puoi selezionare sia il tipo di operazione sia il milite che l'ha effettuata."));
+        alertPlacehorder.add(text.getLabelAdmin("Puoi selezionare il tipo di operazione e il milite che l'ha effettuata."));
     }// end of method
 
 
@@ -161,6 +161,16 @@ public class WamLogList extends AGridViewList {
         });
         topPlaceholder.add(filtroMilitiComboBox);
     }// end of method
+
+
+    /**
+     * Apre il dialog di detail <br>
+     * Eventuale inserimento (se previsto nelle preferenze) del bottone Edit come prima o ultima colonna <br>
+     * Se si usa una PaginatedGrid, il metodo DEVE essere sovrascritto nella classe APaginatedGridViewList <br>
+     */
+    @Override
+    protected void addDetailDialog() {
+    }
 
 
     /**

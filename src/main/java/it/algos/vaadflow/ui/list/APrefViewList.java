@@ -131,7 +131,7 @@ public abstract class APrefViewList extends AViewList {
         //--Può comunque essere modificato nella sottoclasse specifica
         usaBottoneEdit = pref.isBool(USA_EDIT_BUTTON);
 
-        //--Flag di preferenza per usare il placeholder di botoni ggiuntivi sotto la Grid. Normalmente false.
+        //--Flag di preferenza per usare il placeholder di bottoni aggiuntivi sotto la Grid. Normalmente false.
         usaBottomLayout = false;
 
         //--Flag di preferenza per cancellare tutti gli elementi. Normalmente false.

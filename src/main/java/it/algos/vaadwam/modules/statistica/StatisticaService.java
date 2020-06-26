@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -175,9 +177,21 @@ public class StatisticaService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Statistica newEntity(Croce croce, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
-        Statistica entity = null;
+        Statistica entity = Statistica.builderStatistica()
 
-        entity = Statistica.builderStatistica().ordine(ordine != 0 ? ordine : this.getNewOrdine()).milite(milite).last(last).delta(delta).valido(valido).turni(turni).ore(ore).build();
+                .ordine(ordine != 0 ? ordine : this.getNewOrdine())
+
+                .milite(milite).last(last)
+
+                .delta(delta)
+
+                .valido(valido)
+
+                .turni(turni)
+
+                .ore(ore)
+
+                .build();
 
         return (Statistica) creaIdKeySpecifica(entity);
     }// end of method
@@ -313,8 +327,11 @@ public class StatisticaService extends WamService {
         boolean valido;
         //        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
         int media;
-        List<Iscrizione> iscrizioniMilite = new ArrayList<>();
         List<Iscrizione> iscrizioniTurno;
+        StaTurnoIsc staTurnoIsc;
+        List<StaTurnoIsc> iscrizioniMilite = new ArrayList<>();
+        int ordine = 0;
+        String equipaggio = VUOTA;
 
         for (Turno turno : listaTurniCroce) {
             iscrizioniTurno = turno.iscrizioni;
@@ -324,7 +341,10 @@ public class StatisticaService extends WamService {
                     if (iscriz.milite != null) {
                         militeIscritto = iscriz.milite;
                         if (militeIscritto.id.equals(milite.id)) {
-                            iscrizioniMilite.add(iscriz);
+                            ordine++;
+                            equipaggio = getEquipaggio(turno, iscriz);
+                            staTurnoIsc = getStaTurnoIsc(ordine, turno, iscriz, equipaggio);
+                            iscrizioniMilite.add(staTurnoIsc);
                             turniMilite++;
                             oreTotali += iscriz.durataEffettiva;
                             last = turno.giorno;
@@ -347,6 +367,57 @@ public class StatisticaService extends WamService {
             save(statistica);
         }// end of if cycle
 
+    }// end of method
+
+
+    public String getEquipaggio(Turno turno, Iscrizione esclusa) {
+        String equipaggio = VUOTA;
+
+        for (Iscrizione iscriz : turno.iscrizioni) {
+            if (iscriz != null && iscriz.milite != null) {
+                if (iscriz != esclusa) {
+                    equipaggio += iscriz.milite;
+                    equipaggio += VIRGOLA;
+                }
+            }
+        }
+
+        if (text.isValid(equipaggio)) {
+            equipaggio = text.levaCoda(equipaggio, VIRGOLA);
+        }
+
+        return equipaggio;
+    }// end of method
+
+
+    public StaTurnoIsc getStaTurnoIsc(int ordine, Turno turno, Iscrizione iscriz, String equipaggio) {
+        StaTurnoIsc staTurnoIsc = StaTurnoIsc.builderStatTurnoIsc()
+
+                .ordine(ordine)
+
+                .giorno(turno.giorno)
+
+                .servizio(turno.servizio)
+
+                .funzione(iscriz.funzione)
+
+                .inizio(iscriz.inizio)
+
+                .fine(iscriz.fine)
+
+                .durataEffettiva((date.differenza(iscriz.fine, iscriz.inizio)))
+
+                .esisteProblema(iscriz.esisteProblema)
+
+                .titoloExtra(text.isValid(turno.titoloExtra) ? turno.titoloExtra : null)
+
+                .localitaExtra(text.isValid(turno.localitaExtra) ? turno.localitaExtra : null)
+
+                .equipaggio(text.isValid(equipaggio) ? equipaggio : null)
+
+                .build();
+
+        return staTurnoIsc;
     }// end of method
 
 

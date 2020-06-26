@@ -10,6 +10,7 @@ import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -71,14 +72,24 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "StatTurnoIsc")
-@AIList(fields = "")
-@AIForm(fields = "")
-public class StatTurnoIsc extends AEntity {
+//@AIList(fields = {"ordine","giorno","servizio","funzione","inizio","fine","durataEffettiva","esisteProblema","titoloExtra","localitaExtra","equipaggio"})
+@AIList(fields = {"ordine", "giorno", "servizio", "funzione", "inizio", "fine", "durataEffettiva", "esisteProblema", "equipaggio"})
+public class StaTurnoIsc extends AEntity {
 
     /**
      * versione della classe per la serializzazione
      */
     private final static long serialVersionUID = 1L;
+
+    /**
+     * ordine di presentazione (obbligatorio, unico) <br>
+     */
+    @NotNull
+    @Indexed()
+    @Field("ord")
+    @AIField(type = EAFieldType.integer, widthEM = 3)
+    @AIColumn(name = "#", widthEM = 3)
+    public int ordine;
 
     /**
      * giorno di inizio turno (obbligatorio, calcolato da inizio - serve per le query)
@@ -97,7 +108,7 @@ public class StatTurnoIsc extends AEntity {
     @NotNull
     @DBRef
     @Field("serv")
-    @AIField(type = EAFieldType.combo, serviceClazz = ServizioService.class, required = true)
+    @AIField(type = EAFieldType.link, serviceClazz = ServizioService.class, required = true)
     @AIColumn(widthEM = 7)
     public Servizio servizio;
 
@@ -109,7 +120,7 @@ public class StatTurnoIsc extends AEntity {
     @NotNull
     @DBRef
     @Field("funz")
-    @AIField(type = EAFieldType.combo, serviceClazz = FunzioneService.class)
+    @AIField(type = EAFieldType.link, serviceClazz = FunzioneService.class)
     @AIColumn(widthEM = 20)
     public Funzione funzione;
 
@@ -155,17 +166,26 @@ public class StatTurnoIsc extends AEntity {
      * motivazione del turno extra (facoltativo)
      */
     @Field("tit")
-    @AIField(type = EAFieldType.text, widthEM = 24)
-    @AIColumn()
+    @AIField(type = EAFieldType.text)
+    @AIColumn(widthEM = 18)
     public String titoloExtra;
 
     /**
      * nome evidenziato della località per turni extra (facoltativo)
      */
-    @AIField(type = EAFieldType.text, widthEM = 24)
     @Field("loc")
-    @AIColumn()
+    @AIField(type = EAFieldType.text)
+    @AIColumn(widthEM = 18)
     public String localitaExtra;
+
+
+    /**
+     * altri militi nel turno (facoltativo)
+     */
+    @Field("altri")
+    @AIField(type = EAFieldType.text)
+    @AIColumn(widthEM = 40)
+    public String equipaggio;
 
 
     /**
