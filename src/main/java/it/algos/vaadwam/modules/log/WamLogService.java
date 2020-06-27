@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -195,41 +196,59 @@ public class WamLogService extends AService {
     }
 
 
+    /**
+     * Logga un evento lanciato dal milite loggato
+     * <p>
+     * @param   type tipo di evento
+     * @param message messaggio di dettaglio
+     */
     public void log(EAWamLogType type, String message) {
+        log(type, message, getMiliteLoggato(), getWamLogin().getAddressIP());
+    }
+
+
+    /**
+     * Logga un evento.
+     * L'evento viene loggato nei log interno ed esterno.<br>
+     * In quello esterno viene loggato sempre, in quello interno solo se
+     * l'evento è lanciato dal milite loggato e il milite non è un milite fantasma.
+     * <p>
+     * @param   type tipo di evento
+     * @param message messaggio di dettaglio
+     * @param milite il milite loggato (passare null se non è un evento lanciato dal milite loggato)
+     * @param ipAddress l'indirizzo ip di chi ha lanciato l'evento
+     */
+    public void log(EAWamLogType type, String message, Milite milite, String ipAddress) {
 
         Croce croce = getCroce();
-        if (croce != null) {
-            log.debug("croce is: " + croce.getCode());
-        } else {
-            log.debug("croce is null");
+
+        if(milite==null){
+            milite=getMiliteLoggato();
         }
 
-        Milite militeLoggato = getMiliteLoggato();
-        if (militeLoggato != null) {
-            log.debug("militeLoggato is: " + militeLoggato.getUsername());
-        } else {
-            log.debug("militeLoggato is null");
+        if(StringUtils.isEmpty(ipAddress)){
+            ipAddress=getWamLogin().getAddressIP();
         }
 
-        if (militeLoggato != null && !militeLoggato.isFantasma()) {
-            WamLog wamLog = newEntity(croce, type, militeLoggato, message);
+        // log esterno
+        sendLog(croce, milite, ipAddress, type, message);
+
+        // log interno
+        if (milite != null && !milite.isFantasma()) {
+            WamLog wamLog = newEntity(croce, type, milite, message);
             wamLog.id = UUID.randomUUID().toString();
             mongo.update(wamLog, WamLog.class);
         }
 
-        if (croce == null || militeLoggato == null) {
-            log.warn("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
-        }
 
-        if (getWamLogin() != null) {
-            String ipAddr=getWamLogin().getAddressIP();
-            sendLog(croce, militeLoggato, ipAddr, type, message);
+        if (croce == null || milite == null) {
+            log.warn("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
         }
 
     }
 
 
-    public void sendLog(Croce croce, Utente utente, String addressIP, EAWamLogType type, String message) {
+    private void sendLog(Croce croce, Utente utente, String addressIP, EAWamLogType type, String message) {
         String dueSpazi = SPAZIO + SPAZIO;
         String sys = "System";
         String sep = " - ";

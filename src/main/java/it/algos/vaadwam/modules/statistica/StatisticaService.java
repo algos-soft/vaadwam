@@ -10,9 +10,11 @@ import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.log.WamLog;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
+import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,7 +298,7 @@ public class StatisticaService extends WamService {
     //    }// end of method
 
 
-    public boolean elabora(Croce croce, String ipAddr, Utente user) {
+    public boolean elabora(Croce croce) {
         boolean status = false;
         long inizio = System.currentTimeMillis();
         List<Milite> militi;
@@ -316,7 +318,17 @@ public class StatisticaService extends WamService {
 
         long elapsedSec=(System.currentTimeMillis()-inizio)/1000;
         String msg="Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
-        wamLogger.sendLog(croce, user, ipAddr, EAWamLogType.statistiche, msg);
+
+        //wamLogger.sendLog(croce, user, ipAddr, EAWamLogType.statistiche, msg);
+
+        WamLogin wamLogin=getWamLogin();
+        Milite milite=null;
+        String ipAddr=null;
+        if (wamLogin!=null){
+            milite = wamLogin.getMilite();
+            ipAddr=wamLogin.getAddressIP();
+        }
+        wamLogger.log(EAWamLogType.statistiche, msg, milite, ipAddr);
 
         return status;
     }

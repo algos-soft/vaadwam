@@ -317,7 +317,7 @@ public class StatisticaList extends WamViewList {
      */
     public void elabora() {
         if (wamLogin.isAdminOrDev()) {
-            service.elabora(wamLogin.getCroce(), wamLogin.getAddressIP(), wamLogin.getMilite());
+            service.elabora(wamLogin.getCroce());
         }
         updateGrid();
     }
