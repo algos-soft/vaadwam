@@ -1440,28 +1440,41 @@ public class ATextService extends AbstractService {
 
     /**
      * Forza un testo alla lunghezza desiderata ed aggiunge parentesi quadre in testa e coda. <br>
-     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
      *
      * @param stringaIn in ingresso
      *
      * @return stringa con lunghezza prefissata e parentesi quadre aggiunte
      */
     public String fixSizeQuadre(String stringaIn, int size) {
-        String stringaOut = stringaIn;
-        int cicli = 3;
 
-        if (this.isValid(stringaOut)) {
-            stringaOut = this.setNoQuadre(stringaIn);
-            stringaOut = rightPad(stringaOut, size);
-            stringaOut = fixSize(stringaOut, size);
-            if (this.isValid(stringaOut)) {
-                if (!stringaOut.startsWith(QUADRA_INI)) {
-                    stringaOut = QUADRA_INI + stringaOut;
-                }
-                if (!stringaOut.endsWith(QUADRA_END)) {
-                    stringaOut = stringaOut + QUADRA_END;
-                }
-            }
+//        int cicli = 3;
+
+//        if (this.isValid(stringaOut)) {
+//            stringaOut = this.setNoQuadre(stringaIn);
+//            stringaOut = rightPad(stringaOut, size);
+//            stringaOut = fixSize(stringaOut, size);
+//            if (this.isValid(stringaOut)) {
+//                if (!stringaOut.startsWith(QUADRA_INI)) {
+//                    stringaOut = QUADRA_INI + stringaOut;
+//                }
+//                if (!stringaOut.endsWith(QUADRA_END)) {
+//                    stringaOut = stringaOut + QUADRA_END;
+//                }
+//            }
+//        }
+
+        if(StringUtils.isEmpty(stringaIn)){
+            stringaIn="";
+        }
+
+        String stringaOut = this.setNoQuadre(stringaIn);
+        stringaOut = rightPad(stringaOut, size);
+        stringaOut = fixSize(stringaOut, size);
+        if (!stringaOut.startsWith(QUADRA_INI)) {
+            stringaOut = QUADRA_INI + stringaOut;
+        }
+        if (!stringaOut.endsWith(QUADRA_END)) {
+            stringaOut = stringaOut + QUADRA_END;
         }
 
         return stringaOut.trim();

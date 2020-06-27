@@ -317,10 +317,10 @@ public class StatisticaList extends WamViewList {
      */
     public void elabora() {
         if (wamLogin.isAdminOrDev()) {
-            service.elabora(wamLogin.getCroce());
-        }// end of if cycle
+            service.elabora(wamLogin.getCroce(), wamLogin.getAddressIP(), wamLogin.getMilite());
+        }
         updateGrid();
-    }// end of method
+    }
 
 
     /**

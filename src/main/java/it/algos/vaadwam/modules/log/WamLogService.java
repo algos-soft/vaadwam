@@ -4,6 +4,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
+import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.AService;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -221,29 +222,30 @@ public class WamLogService extends AService {
         }
 
         if (getWamLogin() != null) {
-            sendLog(croce, militeLoggato, getWamLogin().getAddressIP(), type, message);
+            String ipAddr=getWamLogin().getAddressIP();
+            sendLog(croce, militeLoggato, ipAddr, type, message);
         }
 
     }
 
 
-    public void sendLog(Croce croce, Milite milite, String addressIP, EAWamLogType type, String message) {
+    public void sendLog(Croce croce, Utente utente, String addressIP, EAWamLogType type, String message) {
         String dueSpazi = SPAZIO + SPAZIO;
-        String tag = "System";
+        String sys = "System";
         String sep = " - ";
         String croceTxt = VUOTA;
         String militeTxt = VUOTA;
         String typeTxt = VUOTA;
 
-        croceTxt = croce != null ? croce.code : tag;
+        croceTxt = croce != null ? croce.code : sys;
         croceTxt = text.fixSizeQuadre(croceTxt, 4);
 
-        militeTxt = milite != null ? milite.username : tag;
+        militeTxt = utente != null ? utente.username : sys;
         militeTxt = text.fixSizeQuadre(militeTxt, 15);
 
         addressIP = text.fixSizeQuadre(addressIP, 15);
 
-        typeTxt = type != null ? type.getTag() : tag;
+        typeTxt = type != null ? type.getTag() : sys;
         typeTxt = text.fixSizeQuadre(typeTxt, 18);
 
         message = croceTxt + dueSpazi + militeTxt + dueSpazi + addressIP + dueSpazi + typeTxt + dueSpazi + message;

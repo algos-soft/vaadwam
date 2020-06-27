@@ -64,9 +64,9 @@ public class TaskStatistica extends ATask {
 
         for (Croce croce : croceService.findAll()) {
             if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
-                statisticaService.elabora(croce);
+                statisticaService.elabora(croce, null, null);
             }
         }
-    }// end of method
+    }
 
-}// end of class
+}

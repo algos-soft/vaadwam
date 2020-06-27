@@ -5,7 +5,9 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
+import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.ADateService;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -294,7 +296,7 @@ public class StatisticaService extends WamService {
     //    }// end of method
 
 
-    public boolean elabora(Croce croce) {
+    public boolean elabora(Croce croce, String ipAddr, Utente user) {
         boolean status = false;
         long inizio = System.currentTimeMillis();
         List<Milite> militi;
@@ -306,15 +308,18 @@ public class StatisticaService extends WamService {
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
                 elaboraSingoloMilite(croce, milite, listaTurniCroce);
-            }// end of for cycle
+            }
             status = true;
-        }// end of if cycle
+        }
 
         setLastElabora(croce, inizio);
-        wamLogger.statistiche(croce, "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + (System.currentTimeMillis() - inizio) + " millisecondi");
+
+        long elapsedSec=(System.currentTimeMillis()-inizio)/1000;
+        String msg="Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
+        wamLogger.sendLog(croce, user, ipAddr, EAWamLogType.statistiche, msg);
 
         return status;
-    }// end of method
+    }
 
 
     public void elaboraSingoloMilite(Croce croce, Milite milite, List<Turno> listaTurniCroce) {
