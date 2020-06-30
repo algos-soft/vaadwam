@@ -356,9 +356,6 @@ public class StatisticaList extends WamViewList {
     protected void exportExcel() {
         Grid<Statistica> grid = new Grid(Statistica.class, false);
         grid.setColumns("milite", "last", "delta", "valido", "turni", "ore", "media", "iscrizioni");
-        if (items.isEmpty()) {
-            items = service.findAllByCroce(wamLogin.getCroce());
-        }
         grid.setItems(items);
 
         //        StreamResource stream=new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid));
