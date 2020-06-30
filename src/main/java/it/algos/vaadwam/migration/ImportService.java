@@ -1480,6 +1480,9 @@ public class ImportService extends AService {
 
         if (turnoNew == null) {
             turnoNew = turnoService.newEntity(croceNew, giornoNew, servizio, inizioNew, fineNew, iscrizioni, titoloExtra, localitaExtra);
+            if (text.isValid(note)) {
+                turnoNew.setNote(note);
+            }
         } else {
             return status;
         }// end of if/else cycle

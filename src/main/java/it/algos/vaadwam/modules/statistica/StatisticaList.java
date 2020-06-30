@@ -289,14 +289,14 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.add(elaboraButton);
         }// end of if cycle
 
-        if (wamLogin.isAdminOrDev()) {
-            Button exportButton = new Button("Excel", new Icon(VaadinIcon.DOWNLOAD_ALT));
-            exportButton.getElement().setAttribute("theme", "error");
-            exportButton.getElement().setAttribute("title", "Foglio di excel");
-            exportButton.addClassName("view-toolbar__button");
-            exportButton.addClickListener(e -> exportExcel());
-            topPlaceholder.add(exportButton);
-        }// end of if cycle
+        //        if (wamLogin.isAdminOrDev()) {
+        //            Button exportButton = new Button("Excel", new Icon(VaadinIcon.DOWNLOAD_ALT));
+        //            exportButton.getElement().setAttribute("theme", "error");
+        //            exportButton.getElement().setAttribute("title", "Foglio di excel");
+        //            exportButton.addClassName("view-toolbar__button");
+        //            exportButton.addClickListener(e -> exportExcel());
+        //            topPlaceholder.add(exportButton);
+        //        }// end of if cycle
 
         //        if (wamLogin.isAdminOrDev()) {
         //            Button exportButton = new Button("CSV", new Icon(VaadinIcon.DOWNLOAD_ALT));
