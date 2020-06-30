@@ -248,7 +248,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 }
             }
         }
-        getModel().setBanner(banner);
+//        getModel().setBanner(banner);
 
 
         // costruisce la grid
