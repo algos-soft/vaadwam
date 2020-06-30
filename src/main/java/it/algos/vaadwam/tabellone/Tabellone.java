@@ -241,12 +241,13 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         banner = VUOTA;
         if (wamLogin != null && wamLogin.isDeveloper()) {
             banner = "developer mode";
-        } else {
-            if (wamLogin != null && wamLogin.getCroce() != null) {
-                if (preferenzaService.isBool(USA_DAEMON_IMPORT)) {
-                    banner = "demo";
-                }
-            }
+            getModel().setBanner(banner);
+            //        } else {
+            //            if (wamLogin != null && wamLogin.getCroce() != null) {
+            //                if (preferenzaService.isBool(USA_DAEMON_IMPORT)) {
+            //                    banner = "demo";
+            //                }
+            //            }
         }
 //        getModel().setBanner(banner);
 
