@@ -249,8 +249,13 @@ public class StatisticaList extends WamViewList {
     @Override
     protected void updateFiltriSpecifici() {
         super.updateFiltriSpecifici();
+        String anno = VUOTA;
 
-        String anno = (String) filtroComboBox.getValue();
+        Object value = filtroComboBox.getValue();
+        if (value instanceof Integer) {
+            anno = String.valueOf(value);
+        }
+
         items = ((StatisticaService) service).findAllByCroceAndAnno(anno);
     }
 
