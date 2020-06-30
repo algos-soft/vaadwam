@@ -549,7 +549,7 @@ public class StatisticaService extends WamService {
         List<String> lista = new ArrayList();
 
         for (int k = 2013; k < date.getAnnoCorrente(); k++) {
-            lista.add(k);
+            lista.add(k + VUOTA);
         }
         return lista;
     }// end of method
