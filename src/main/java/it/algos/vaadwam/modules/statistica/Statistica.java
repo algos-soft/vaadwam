@@ -71,8 +71,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "statistica", company = EACompanyRequired.obbligatoria)
-@AIList(fields = {"milite", "last", "delta", "valido", "turni", "ore", "media"})
-@AIForm(fields = {"ordine", "last", "delta", "valido", "turni", "ore", "media"})
+@AIList(fields = {"anno", "milite", "last", "delta", "valido", "turni", "ore", "media"})
+@AIForm(fields = {"anno", "ordine", "last", "delta", "valido", "turni", "ore", "media"})
 public class Statistica extends WamEntity {
 
 
@@ -94,7 +94,15 @@ public class Statistica extends WamEntity {
     public int ordine;
 
     /**
-     * milite di riferimento (obbligatorio, unico)
+     * anno di riferimento (obbligatorio)
+     */
+    @NotNull
+    @AIField(type = EAFieldType.text, widthEM = 6)
+    @AIColumn(widthEM = 6)
+    public String anno;
+
+    /**
+     * milite di riferimento (obbligatorio)
      * riferimento dinamico CON @DBRef
      */
     @NotNull

@@ -190,6 +190,7 @@ public class StatisticaList extends WamViewList {
         //            super.usaButtonDelete = true;
         //        }// end of if cycle
 
+        super.usaPopupFiltro = true;
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
@@ -210,6 +211,7 @@ public class StatisticaList extends WamViewList {
         fixPreferenze();
 
         alertAdmin.add("Statistiche dei turni effettuati da ogni milite dal 1° gennaio dell'anno alla data odierna.");
+        alertAdmin.add("Gli anni precedenti vanno dal 1° gennaio al 31 dicembre.");
         alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte. Come admin si possono ri-elaborare in ogni momento.");
         alertAdmin.add("Nome del milite, data dell'ultimo turno effettuato, giorni trascorsi dall'ultimo turno, validità della frequenza (sulla base di 2 turni/mese),");
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
@@ -217,6 +219,40 @@ public class StatisticaList extends WamViewList {
         super.creaAlertLayout();
         alertPlacehorder.add(getInfoElabora());
     }// end of method
+
+
+    /**
+     * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
+     * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    protected void creaPopupFiltro() {
+        super.creaPopupFiltro();
+
+        filtroComboBox.setWidth("8em");
+        filtroComboBox.setClearButtonVisible(false);
+        filtroComboBox.setItems(service.getAnni());
+        filtroComboBox.setValue(date.getAnnoCorrente());
+        filtroComboBox.setPreventInvalidInput(true);
+        filtroComboBox.setRequired(true);
+        filtroComboBox.setAllowCustomValue(false);
+        topPlaceholder.add(filtroComboBox);
+    }// end of method
+
+
+    /**
+     * Aggiorna i filtri specifici della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
+     * <p>
+     * Può essere sovrascritto, per costruire i filtri specifici dei combobox, popup, ecc. <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void updateFiltriSpecifici() {
+        super.updateFiltriSpecifici();
+
+        String anno = (String) filtroComboBox.getValue();
+        items = ((StatisticaService) service).findAllByCroceAndAnno(anno);
+    }
 
 
     /**

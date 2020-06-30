@@ -51,7 +51,7 @@ public abstract class AEntity implements Serializable {
      * Ci pensa mongo a riempire il valore
      */
     @AIField(name = "Key", required = true, roleTypeVisibility = EARoleType.developer, dev = EAFieldAccessibility.showOnly)
-    @AIColumn(name = "Key", widthEM = 12)
+    @AIColumn(name = "Key", widthEM = 16)
     public String id;
 
 

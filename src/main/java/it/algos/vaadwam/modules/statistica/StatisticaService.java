@@ -3,14 +3,13 @@ package it.algos.vaadwam.modules.statistica;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.backend.entity.AEntity;
+import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
-import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
-import it.algos.vaadwam.modules.log.WamLog;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
@@ -152,7 +151,7 @@ public class StatisticaService extends WamService {
      * @return la entity appena creata
      */
     public Statistica crea(Milite milite) {
-        return (Statistica) save(newEntity((Croce) null, 0, milite, null, 0, false, 0, 0));
+        return (Statistica) save(newEntity((Croce) null, VUOTA, 0, milite, null, 0, false, 0, 0));
     }// end of method
 
 
@@ -165,7 +164,7 @@ public class StatisticaService extends WamService {
      */
     @Override
     public Statistica newEntity() {
-        return newEntity((Croce) null, 0, null, null, 0, false, 0, 0);
+        return newEntity((Croce) null, VUOTA, 0, null, null, 0, false, 0, 0);
     }// end of method
 
 
@@ -180,12 +179,16 @@ public class StatisticaService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Statistica newEntity(Croce croce, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
+    public Statistica newEntity(Croce croce, String anno, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
         Statistica entity = Statistica.builderStatistica()
 
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine())
 
-                .milite(milite).last(last)
+                .anno(anno)
+
+                .milite(milite)
+
+                .last(last)
 
                 .delta(delta)
 
@@ -198,6 +201,48 @@ public class StatisticaService extends WamService {
                 .build();
 
         return (Statistica) creaIdKeySpecifica(entity);
+    }// end of method
+
+
+    /**
+     * Se è prevista la company obbligatoria, antepone company.code a quanto sopra (se non è vuoto)
+     * Se manca la company obbligatoria, non registra
+     * <p>
+     * Se è prevista la company facoltativa, antepone company.code a quanto sopra (se non è vuoto)
+     * Se manca la company facoltativa, registra con idKey regolata come sopra
+     * <p>
+     * Per codifiche diverse, sovrascrivere il metodo
+     *
+     * @param entityBean da regolare
+     *
+     * @return chiave univoca da usare come idKey nel DB mongo
+     */
+    @Override
+    public String addKeyCompany(AEntity entityBean, String keyCode) {
+        String keyUnica = "";
+        Croce croce = null;
+        String companyCode = "";
+        String annoTxt = VUOTA;
+
+        if ((reflection.isEsiste(entityBean.getClass(), PROPERTY_CROCE))) {
+            croce = (Croce) reflection.getPropertyValue(entityBean, PROPERTY_CROCE);
+            if (croce != null) {
+                companyCode = croce.getCode();
+            }// end of if cycle
+        }// end of if cycle
+
+        if (text.isValid(companyCode)) {
+            annoTxt = ((Statistica) entityBean).anno + VUOTA;
+            keyUnica = companyCode + annoTxt + text.primaMaiuscola(keyCode);
+        } else {
+            if (annotation.getCompanyRequired(entityClass) == EACompanyRequired.obbligatoria) {
+                keyUnica = null;
+            } else {
+                keyUnica = keyCode;
+            }// end of if/else cycle
+        }// end of if/else cycle
+
+        return keyUnica;
     }// end of method
 
 
@@ -276,6 +321,29 @@ public class StatisticaService extends WamService {
 
 
     /**
+     * Returns instances of the company for the year <br>
+     * Lista ordinata <br>
+     *
+     * @param croce di appartenenza (obbligatoria)
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Statistica> findAllByCroceAndAnno(String anno) {
+        Croce croce = null;
+
+        if (getWamLogin() != null) {
+            croce = getWamLogin().getCroce();
+        }
+
+        if (croce == null) {
+            return null;
+        }
+
+        return repository.findAllByCroceAndAnnoOrderByOrdineAsc(croce, anno);
+    }// end of method
+
+
+    /**
      * Returns the number of entities available for the current company
      *
      * @param croce di appartenenza (obbligatoria)
@@ -302,31 +370,32 @@ public class StatisticaService extends WamService {
         boolean status = false;
         long inizio = System.currentTimeMillis();
         List<Milite> militi;
-        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, date.getAnnoCorrente());
+        int anno = date.getAnnoCorrente();
+        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
         deleteAllCroce(croce);
 
         militi = militeService.findAllByCroce(croce);
 
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
-                elaboraSingoloMilite(croce, milite, listaTurniCroce);
+                elaboraSingoloMilite(croce, anno + VUOTA, milite, listaTurniCroce);
             }
             status = true;
         }
 
         setLastElabora(croce, inizio);
 
-        long elapsedSec=(System.currentTimeMillis()-inizio)/1000;
-        String msg="Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
+        long elapsedSec = (System.currentTimeMillis() - inizio) / 1000;
+        String msg = "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
 
         //wamLogger.sendLog(croce, user, ipAddr, EAWamLogType.statistiche, msg);
 
-        WamLogin wamLogin=getWamLogin();
-        Milite milite=null;
-        String ipAddr=null;
-        if (wamLogin!=null){
+        WamLogin wamLogin = getWamLogin();
+        Milite milite = null;
+        String ipAddr = null;
+        if (wamLogin != null) {
             milite = wamLogin.getMilite();
-            ipAddr=wamLogin.getAddressIP();
+            ipAddr = wamLogin.getAddressIP();
         }
         wamLogger.log(EAWamLogType.statistiche, msg, milite, ipAddr);
 
@@ -334,7 +403,7 @@ public class StatisticaService extends WamService {
     }
 
 
-    public void elaboraSingoloMilite(Croce croce, Milite milite, List<Turno> listaTurniCroce) {
+    public void elaboraSingoloMilite(Croce croce, String anno, Milite milite, List<Turno> listaTurniCroce) {
         long inizio = System.currentTimeMillis();
         Milite militeIscritto;
         int turniMilite = 0;
@@ -375,7 +444,7 @@ public class StatisticaService extends WamService {
         valido = checkValidita(turniMilite);
 
         if (turniMilite > 0) {
-            Statistica statistica = newEntity(croce, 0, milite, last, delta, valido, turniMilite, oreTotali);
+            Statistica statistica = newEntity(croce, anno, 0, milite, last, delta, valido, turniMilite, oreTotali);
             media = oreTotali / turniMilite;
             statistica.media = media;
             if (iscrizioniMilite.size() > 0) {
@@ -470,6 +539,19 @@ public class StatisticaService extends WamService {
     protected void setLastElabora(Croce croce, long inizio, String lastImport, String durataLastImport, EATempo eaTempoTypeImport) {
         pref.saveValue(lastImport, LocalDateTime.now(), croce.code);
         pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio), croce.code);
+    }// end of method
+
+
+    /**
+     * Anni di selezione per il popup in Statistiche <br>
+     */
+    protected List<String> getAnni() {
+        List<String> lista = new ArrayList();
+
+        for (int k = 2013; k < date.getAnnoCorrente(); k++) {
+            lista.add(k);
+        }
+        return lista;
     }// end of method
 
 }// end of class

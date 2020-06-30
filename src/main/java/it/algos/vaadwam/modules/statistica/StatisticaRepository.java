@@ -1,8 +1,6 @@
 package it.algos.vaadwam.modules.statistica;
 
-import java.util.List;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -10,6 +8,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
+
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 
 /**
@@ -35,7 +36,9 @@ public interface StatisticaRepository extends MongoRepository<Statistica, String
 
     public Statistica findByMilite(Milite milite);
 
-	public List<Statistica> findAllByCroceOrderByOrdineAsc(Croce croce);
+    public List<Statistica> findAllByCroceOrderByOrdineAsc(Croce croce);
+
+    public List<Statistica> findAllByCroceAndAnnoOrderByOrdineAsc(Croce croce, String anno);
 
     public int countByCroce(Croce croce);
 
