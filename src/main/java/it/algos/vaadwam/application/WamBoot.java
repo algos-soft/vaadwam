@@ -379,16 +379,16 @@ public class WamBoot extends ABoot {
         FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
-        FlowVar.menuClazzList.add(WamLogList.class);
         FlowVar.menuClazzList.add(PreferenzaList.class);
-        FlowVar.menuClazzList.add(CroceList.class);
 
         //--utente
+        FlowVar.menuClazzList.add(MiliteList.class);
         FlowVar.menuClazzList.add(Tabellone.class);
+        FlowVar.menuClazzList.add(StatisticaList.class);
+        FlowVar.menuClazzList.add(WamLogList.class);
         FlowVar.menuClazzList.add(FunzioneList.class);
         FlowVar.menuClazzList.add(ServizioList.class);
-        FlowVar.menuClazzList.add(MiliteList.class);
-        FlowVar.menuClazzList.add(StatisticaList.class);
+        FlowVar.menuClazzList.add(CroceList.class);
     }// end of method
 
 

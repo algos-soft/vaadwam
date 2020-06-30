@@ -11,6 +11,7 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.ui.IAView;
 import it.algos.vaadflow.ui.list.AViewList;
 import it.algos.vaadflow.ui.login.LogoutView;
+import it.algos.vaadwam.tabellone.Tabellone;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -285,6 +286,21 @@ public class AMenuService extends AService {
         menuName = text.isValid(menuName) ? menuName : viewClazz.getSimpleName();
         router = new RouterLink(menuName, viewClazz);
         return router;
+    }// end of method
+
+
+    public Tab creaAlgosTabTabellone() {
+        Tab tab = new Tab();
+        String menuName = "Tabellone";
+        VaadinIcon icon = VaadinIcon.AMBULANCE;
+
+        RouterLink link = new RouterLink(null, Tabellone.class);
+        link.add(icon.create());
+        link.add("     ");
+        link.add(menuName);
+        tab.add(link);
+
+        return tab;
     }// end of method
 
 

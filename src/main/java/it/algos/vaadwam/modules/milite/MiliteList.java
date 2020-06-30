@@ -229,6 +229,7 @@ public class MiliteList extends WamViewList {
 
     public void updateFiltri() {
         super.updateFiltri();
+
         EAFiltroMilite filtro = null;
 
         if (filtroComboBox != null) {

@@ -548,7 +548,7 @@ public class StatisticaService extends WamService {
     protected List<String> getAnni() {
         List<String> lista = new ArrayList();
 
-        for (int k = 2013; k < date.getAnnoCorrente(); k++) {
+        for (int k = 2013; k <= date.getAnnoCorrente(); k++) {
             lista.add(String.valueOf(k));
         }
         return lista;

@@ -10,8 +10,7 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.server.InitialPageSettings;
-import com.vaadin.flow.server.PageConfigurator;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.server.VaadinSession;
 import it.algos.vaadflow.application.FlowVar;
 import it.algos.vaadflow.backend.entity.AEntity;
@@ -20,10 +19,16 @@ import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.ui.MainLayout14;
 import it.algos.vaadflow.ui.topbar.TopbarComponent;
 import it.algos.vaadwam.modules.croce.Croce;
+import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.funzione.FunzioneList;
+import it.algos.vaadwam.modules.log.WamLogList;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteList;
 import it.algos.vaadwam.modules.milite.MiliteProfile;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.servizio.ServizioList;
+import it.algos.vaadwam.modules.statistica.StatisticaList;
 import it.algos.vaadwam.topbar.WamTopbar;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
@@ -89,21 +94,22 @@ public class WamLayout extends MainLayout14 {
 
     private Dialog messageDialog;
 
-//    @Override
-//    public void configurePage(InitialPageSettings settings) {
-//        settings.addInlineFromFile(InitialPageSettings.Position.PREPEND,
-//                "inline.js", InitialPageSettings.WrapMode.JAVASCRIPT);
-//
-//        settings.addMetaTag("og:title", "The Rock");
-//        settings.addMetaTag("og:type", "video.movie");
-//        settings.addMetaTag("og:url",
-//                "http://www.imdb.com/title/tt0117500/");
-//        settings.addMetaTag("og:image",
-//                "http://ia.media-imdb.com/images/rock.jpg");
-//
-//        settings.addLink("shortcut icon", "images/favicon.ico");
-//        settings.addFavIcon("icon", "images/medal.ico", "192x192");
-//    }
+    //    @Override
+    //    public void configurePage(InitialPageSettings settings) {
+    //        settings.addInlineFromFile(InitialPageSettings.Position.PREPEND,
+    //                "inline.js", InitialPageSettings.WrapMode.JAVASCRIPT);
+    //
+    //        settings.addMetaTag("og:title", "The Rock");
+    //        settings.addMetaTag("og:type", "video.movie");
+    //        settings.addMetaTag("og:url",
+    //                "http://www.imdb.com/title/tt0117500/");
+    //        settings.addMetaTag("og:image",
+    //                "http://ia.media-imdb.com/images/rock.jpg");
+    //
+    //        settings.addLink("shortcut icon", "images/favicon.ico");
+    //        settings.addFavIcon("icon", "images/medal.ico", "192x192");
+    //    }
+
 
     /**
      * Recupera i dati della sessione
@@ -160,6 +166,31 @@ public class WamLayout extends MainLayout14 {
         topbar.projectSubMenu.addItem(tab, menuItemClickEvent -> {
             apreDialogo();
         });
+    }
+
+
+    /**
+     * Regola i tabs
+     * Può essere sovrascritto
+     */
+    @Override
+    protected Tabs getTabMenu() {
+        Tabs tabs = new Tabs();
+
+        if (context.isAdmin()) {
+            tabs.add(menuService.creaAlgosTab(MiliteList.class));
+            tabs.add(menuService.creaAlgosTabTabellone());
+            tabs.add(menuService.creaAlgosTab(StatisticaList.class));
+            tabs.add(menuService.creaAlgosTab(WamLogList.class));
+            tabs.add(menuService.creaAlgosTab(FunzioneList.class));
+            tabs.add(menuService.creaAlgosTab(ServizioList.class));
+            tabs.add(menuService.creaAlgosTab(CroceList.class));
+
+            tabs.setOrientation(Tabs.Orientation.VERTICAL);
+            return tabs;
+        } else {
+            return super.getTabMenu();
+        }
     }
 
 
@@ -238,8 +269,8 @@ public class WamLayout extends MainLayout14 {
      * Primo ingresso dopo il click sul bottone <br>
      */
     protected void saveMilite(AEntity entityBean, EAOperation operation) {
-        Milite milite = (Milite)entityBean;
-        if (!milite.isFantasma()){
+        Milite milite = (Milite) entityBean;
+        if (!milite.isFantasma()) {
             militeService.save(entityBean, operation);
         }
 

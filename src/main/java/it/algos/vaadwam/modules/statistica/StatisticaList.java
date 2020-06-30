@@ -16,6 +16,7 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.milite.MiliteService;
@@ -25,6 +26,7 @@ import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.haijian.Exporter;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -115,7 +117,7 @@ import static it.algos.vaadwam.application.WamCost.TASK_STATISTICA;
 @Slf4j
 //@Secured("admin")
 @AIScript(sovrascrivibile = false)
-@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, sortProperty = "ordine", roleTypeVisibility = EARoleType.admin)
+@AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
 public class StatisticaList extends WamViewList {
 
@@ -240,6 +242,25 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
+    public void updateFiltri() {
+        super.updateFiltri();
+
+        Object value;
+        String anno;
+
+        if (filtroComboBox != null) {
+            value = filtroComboBox.getValue();
+            if (value instanceof Integer) {
+                anno = String.valueOf(value);
+            } else {
+                anno = (String) value;
+            }
+            filtri.add(new AFiltro(Criteria.where("anno").is(anno)));
+        }// end of if/else cycle
+
+    }// end of method
+
+
     /**
      * Aggiorna i filtri specifici della Grid. Modificati per: popup, newEntity, deleteEntity, ecc... <br>
      * <p>
@@ -248,15 +269,15 @@ public class StatisticaList extends WamViewList {
      */
     @Override
     protected void updateFiltriSpecifici() {
-        super.updateFiltriSpecifici();
-        String anno = VUOTA;
-
-        Object value = filtroComboBox.getValue();
-        if (value instanceof Integer) {
-            anno = String.valueOf(value);
-        }
-
-        items = ((StatisticaService) service).findAllByCroceAndAnno(anno);
+        //        super.updateFiltriSpecifici();
+        //        String anno = VUOTA;
+        //
+        //        Object value = filtroComboBox.getValue();
+        //        if (value instanceof Integer) {
+        //            anno = String.valueOf(value);
+        //        }
+        //
+        //        items =  service.findAllByCroceAndAnno(anno);
     }
 
 
