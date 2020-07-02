@@ -394,13 +394,18 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         // se acceso ripeti, controlla range settimane ripetizione
         if(valid){
             if(checkboxRipeti.getValue()){
-                int settimane=settimaneRipeti.getValue();
-                if(settimane<MIN_SETTIMANE_RIPETI){
-                    problem = "Il numero minimo di settimane di ripetizione è "+MIN_SETTIMANE_RIPETI;
-                    valid = false;
-                }
-                if(settimane>MAX_SETTIMANE_RIPETI){
-                    problem = "Il numero massimo di settimane di ripetizione è "+MAX_SETTIMANE_RIPETI;
+                if (!settimaneRipeti.isEmpty()){
+                    int settimane=settimaneRipeti.getValue();
+                    if(settimane<MIN_SETTIMANE_RIPETI){
+                        problem = "Il numero minimo di settimane di ripetizione è "+MIN_SETTIMANE_RIPETI;
+                        valid = false;
+                    }
+                    if(settimane>MAX_SETTIMANE_RIPETI){
+                        problem = "Il numero massimo di settimane di ripetizione è "+MAX_SETTIMANE_RIPETI;
+                        valid = false;
+                    }
+                }else{
+                    problem = "Numero di settimane non specificato";
                     valid = false;
                 }
             }
