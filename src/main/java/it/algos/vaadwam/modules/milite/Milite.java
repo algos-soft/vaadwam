@@ -166,6 +166,13 @@ public class Milite extends Person {
     //    @AIColumn(name = "bloccaIscrizione", widthEM = 20)
     public boolean disabIscr;
 
+    /**
+     * esentato dalla frequenza minima obbligatoria
+     */
+    @Field("esentato")
+    @AIField(type = EAFieldType.checkbox, name = "Il milite non è obbligato a rispettare la frequenza minima")
+    public boolean esentato;
+
 
     @Transient
     public String sigla;

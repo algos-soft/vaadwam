@@ -138,6 +138,8 @@ public class WamCost {
 
     public final static String NUMERO_GIORNI_MANCANTI = "numeroGiorniMancanti";
 
+    public final static String DISABILITA_LOGIN = "disabilita login";
+
 
     public final static String TASK_CRO = "taskCroci";
 

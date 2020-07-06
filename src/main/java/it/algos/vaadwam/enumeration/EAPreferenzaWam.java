@@ -24,7 +24,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
     //--scheduled task suddivise per croce
     //    usaDaemonCroci(USA_DAEMON_CROCI, "Crono per download completo di tutte le croci", EAPrefType.bool, false, true),
 
-    usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati da tutte le croci", EAPrefType.bool, EARole.developer, true, true, true),
+    usaDaemonImport(USA_DAEMON_IMPORT, "Crono per importare i dati della croce specifica", EAPrefType.bool, EARole.developer, true, false, true),
 
     usaDaemonElabora(USA_DAEMON_STATISTICHE, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true, true),
 
@@ -72,6 +72,8 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "Il milite può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, false, true),
 
+    disabilitaLogin(DISABILITA_LOGIN, "Disabilitazione automatica del login se nelle statistiche il milite non raggiunge la frequenza di turni minima", EAPrefType.bool, EARole.admin, true, false, true),
+
     numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per convertire, nelle statistiche, un turno in ore", EAPrefType.integer, EARole.admin, true, 7, true),
 
     tipoCancellazione(TIPO_CANCELLAZIONE, "Possibili modalità per un milite di cancellarsi da un turno già segnato", EAPrefType.enumeration, EARole.admin, true, EACancellazione.mai, true),
@@ -79,6 +81,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
     numeroOreTrascorse(NUMERO_ORE_TRASCORSE, "Ore massime di tempo per poter cancellare un'iscrizione dopo averla effettuata", EAPrefType.integer, EARole.admin, true, 2, true),
 
     numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi mancanti all'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
+
 
     ;
 
