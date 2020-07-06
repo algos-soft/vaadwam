@@ -279,7 +279,7 @@ public class TurnoList extends WamViewList {
      * Importa la collezione di turni di questa croce per tutti gli anni <br>
      */
     protected void importStorico(Croce croce) {
-        //        migration.importTurniStorico(croce);
+        migration.importTurniStorico(croce);
         wamLogger.log(EAWamLogType.importOld, "Import storico dei turni di tutti gli anni escluso il 2020");
         UI.getCurrent().getPage().reload();
     }// end of method
