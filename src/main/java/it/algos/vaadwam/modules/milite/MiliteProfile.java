@@ -1,5 +1,6 @@
 package it.algos.vaadwam.modules.milite;
 
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -81,6 +82,24 @@ public class MiliteProfile extends WamViewDialog<Milite> {
     }
 
 
+    /**
+     * Eventuali messaggi di avviso specifici di questo dialogo ed inseriti in 'alertPlacehorder' <br>
+     * <p>
+     * Chiamato da AViewDialog.open() <br>
+     * Normalmente ad uso esclusivo del developer (eventualmente dell'admin) <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * DOPO invocare il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixAlertLayout() {
+        alertUser.add("Questo profilo è stato inizialmente creato da un admin. Nome e cognome compaiono nel tabellone dei turni.");
+        alertUser.add("Se devi modificare il nome od il cognome, rivolgiti ad un admin");
+        alertUser.add("Nickname e password per il login possono essere liberamente modificati");
+        alertUser.add("Telefono e mail sono modificabili");
+
+        super.fixAlertLayout();
+    }// end of method
+
 
     /**
      * Costruisce nell'ordine una lista di nomi di properties <br>
@@ -127,6 +146,20 @@ public class MiliteProfile extends WamViewDialog<Milite> {
             }
         }
     }
+
+
+    /**
+     * Eventuali regolazioni aggiuntive ai fields del binder DOPO aver associato i valori <br>
+     * Sovrascritto nella sottoclasse
+     */
+    protected void fixStandardAlgosFieldsPost() {
+        AbstractField field;
+        field = getField("nome");
+        field.setEnabled(wamLogin.isAdminOrDev());
+
+        field = getField("cognome");
+        field.setEnabled(wamLogin.isAdminOrDev());
+    }// end of method
 
     //    /**
     //     * Eventuali aggiustamenti finali al layout
