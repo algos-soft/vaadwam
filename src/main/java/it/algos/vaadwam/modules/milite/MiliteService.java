@@ -15,6 +15,7 @@ import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
@@ -526,7 +527,14 @@ public class MiliteService extends WamService implements IUtenteService {
 
 
     public Milite findByNomeAndCognome(String nome, String cognome) {
-        return repository.findByNomeAndCognome(nome, cognome);
+        try {
+            return repository.findByNomeAndCognome(nome, cognome);
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "findByNomeAndCognome");
+            wamLogger.log(EAWamLogType.importOld, "Ho trovato diversi militi " + nome + " " + cognome);
+            return null;
+        }
+
     }// end of method
 
 
