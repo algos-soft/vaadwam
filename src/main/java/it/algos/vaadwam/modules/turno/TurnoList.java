@@ -173,7 +173,7 @@ public class TurnoList extends WamViewList {
 
         String tagCroce = wamLogin.getCroce().code;
         if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
-            Button importAllButton = new Button("Import storico", new Icon(VaadinIcon.ARROW_DOWN));
+            Button importAllButton = new Button("Import storico escluso anno 2020", new Icon(VaadinIcon.ARROW_DOWN));
             importAllButton.getElement().setAttribute("theme", "error");
             importAllButton.addClassName("view-toolbar__button");
             importAllButton.addClickListener(e -> importStorico(wamLogin.getCroce()));

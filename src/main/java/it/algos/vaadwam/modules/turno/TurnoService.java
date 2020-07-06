@@ -154,7 +154,6 @@ public class TurnoService extends WamService {
     }// end of method
 
 
-
     /**
      * Creazione in memoria di una nuova entity che NON viene salvata
      * Eventuali regolazioni iniziali delle property
@@ -173,8 +172,6 @@ public class TurnoService extends WamService {
     public Turno newEntity(LocalDate giorno, Servizio servizio) {
         return newEntity(null, giorno, servizio);
     }
-
-
 
 
     /**
@@ -428,6 +425,8 @@ public class TurnoService extends WamService {
         LocalDate inizio = date.primoGennaio(anno);
         LocalDate fine = date.trentunDicembre(anno);
 
+        inizio = inizio.minusDays(1);
+        fine = fine.plusDays(1);
         return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
     }// end of method
 
