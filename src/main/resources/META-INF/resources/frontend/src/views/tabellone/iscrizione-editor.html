@@ -19,15 +19,15 @@
                 justify-content: center;
             }
 
-            .noteTurnoViewer{
+            .noteTurnoViewer {
                 max-width: 17em;
-                margin-top:0.5em;
-                margin-bottom:0.7em;
-                margin-left:auto;
-                margin-right:auto;
-                font-size:70%;
-                color:red;
-                line-height:110%;
+                margin-top: 0.5em;
+                margin-bottom: 0.7em;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 70%;
+                color: red;
+                line-height: 110%;
             }
 
 
@@ -124,15 +124,15 @@
                     <!--end seconda riga -->
 
 
-<!--                    &lt;!&ndash;terza riga&ndash;&gt;-->
-<!--                    <div>-->
-<!--                        <vaadin-text-field-->
-<!--                                disabled=[[readOnly]]-->
-<!--                                style="width:100%;"-->
-<!--                                value="{{note}}">-->
-<!--                        </vaadin-text-field>-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash;end terza riga &ndash;&gt;-->
+                    <!--                    &lt;!&ndash;terza riga&ndash;&gt;-->
+                    <!--                    <div>-->
+                    <!--                        <vaadin-text-field-->
+                    <!--                                disabled=[[readOnly]]-->
+                    <!--                                style="width:100%;"-->
+                    <!--                                value="{{note}}">-->
+                    <!--                        </vaadin-text-field>-->
+                    <!--                    </div>-->
+                    <!--                    &lt;!&ndash;end terza riga &ndash;&gt;-->
 
                     <!--placeholder per il componente view/edit note turno-->
                     <div id="noteIscrizioneEditor" style="display:flex; justify-content:center"></div>
@@ -151,7 +151,9 @@
 
                     <vaadin-checkbox id="checkboxRipeti">Ripeti</vaadin-checkbox>
 
-                    <vaadin-integer-field id="settimaneRipeti" label="quante settimane" has-controls value="1" min="[[minSettimaneRipeti]]" max="[[maxSettimaneRipeti]]"></vaadin-integer-field>
+                    <vaadin-integer-field id="settimaneRipeti" label="quante settimane" has-controls value="1"
+                                          min="[[minSettimaneRipeti]]"
+                                          max="[[maxSettimaneRipeti]]"></vaadin-integer-field>
 
                 </vaadin-custom-field>
 
@@ -193,7 +195,6 @@
         }
 
         customElements.define(IscrizioneEditor.is, IscrizioneEditor);
-
 
 
     </script>

@@ -17,10 +17,12 @@ import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
+import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import static it.algos.vaadflow.application.FlowCost.SPAZIO;
 import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
 import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 //import static it.algos.vaadwam.application.WamCost.TASK_TUR;
+
 
 /**
  * Project vaadwam <br>
@@ -92,6 +95,12 @@ public class TurnoList extends WamViewList {
      */
     @Autowired
     private IscrizioneService iscrizioneService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private WamLogService wamLogger;
 
 
     /**
@@ -192,7 +201,9 @@ public class TurnoList extends WamViewList {
             super.creaPopupFiltro();
             filtroComboBox.setWidth("12em");
             filtroComboBox.setHeightFull();
-
+            filtroComboBox.setPreventInvalidInput(true);
+            filtroComboBox.setAllowCustomValue(false);
+            filtroComboBox.setClearButtonVisible(false);
             filtroComboBox.setItems(EAFiltroTurno.values());
             filtroComboBox.setValue(EAFiltroTurno.corrente);
             filtroComboBox.addValueChangeListener(e -> {
@@ -268,7 +279,8 @@ public class TurnoList extends WamViewList {
      * Importa la collezione di turni di questa croce per tutti gli anni <br>
      */
     protected void importStorico(Croce croce) {
-        migration.importTurniStorico(croce);
+        //        migration.importTurniStorico(croce);
+        wamLogger.log(EAWamLogType.importOld, "Import storico dei turni di tutti gli anni escluso il 2020");
         UI.getCurrent().getPage().reload();
     }// end of method
 
@@ -277,24 +289,24 @@ public class TurnoList extends WamViewList {
         super.updateFiltri();
 
         EAFiltroTurno filtro = null;
-        int anno;
         int annoCorrente = LocalDate.now().getYear();
+        int anno = annoCorrente;
         LocalDate inizio;
         LocalDate fine;
-        Sort sort;
+        Sort sort = new Sort(Sort.Direction.DESC, "giorno");
 
-        if (filtroComboBox != null) {
-            filtro = (EAFiltroTurno) filtroComboBox.getValue();
-            if (filtro != null) {
-                anno = annoCorrente - filtro.delta;
-                inizio = date.primoGennaio(anno);
-                fine = date.trentunDicembre(anno);
-                sort = new Sort(Sort.Direction.DESC, "giorno");
-
-                filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine), sort));
-            }// end of if cycle
+        if (filtroComboBox.getValue() == null) {
+            filtroComboBox.setValue(EAFiltroTurno.corrente);
+            return;
         }// end of if cycle
 
+        filtro = (EAFiltroTurno) filtroComboBox.getValue();
+        if (filtro != null) {
+            anno = annoCorrente - filtro.delta;
+        }// end of if cycle
+        inizio = date.primoGennaio(anno);
+        fine = date.trentunDicembre(anno);
+        filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine), sort));
     }// end of method
 
 
