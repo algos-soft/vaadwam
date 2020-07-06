@@ -388,8 +388,6 @@ public class StatisticaService extends WamService {
         long elapsedSec = (System.currentTimeMillis() - inizio) / 1000;
         String msg = "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
 
-        //wamLogger.sendLog(croce, user, ipAddr, EAWamLogType.statistiche, msg);
-
         WamLogin wamLogin = getWamLogin();
         Milite milite = null;
         String ipAddr = null;
@@ -442,6 +440,12 @@ public class StatisticaService extends WamService {
         }// end of for cycle
 
         valido = checkValidita(turniMilite);
+        if (pref.isBool(DISABILITA_LOGIN, croce.code)) {
+            if (!milite.esentato) {
+                milite.enabled = valido;
+                militeService.save(milite);
+            }
+        }
 
         if (turniMilite > 0) {
             Statistica statistica = newEntity(croce, anno, 0, milite, last, delta, valido, turniMilite, oreTotali);
