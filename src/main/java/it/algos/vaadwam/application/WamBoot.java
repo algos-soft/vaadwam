@@ -12,17 +12,14 @@ import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportService;
-import it.algos.vaadwam.migration.ImportView;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.croce.EACroce;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.modules.iscrizione.IscrizioneList;
 import it.algos.vaadwam.modules.log.WamLogList;
 import it.algos.vaadwam.modules.milite.MiliteList;
 import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.riga.RigaList;
 import it.algos.vaadwam.modules.servizio.ServizioList;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.statistica.StatisticaList;
@@ -372,11 +369,11 @@ public class WamBoot extends ABoot {
      */
     protected void addRouteSpecifiche() {
         //--developer
-        FlowVar.menuClazzList.add(WamDeveloperView.class);
-        FlowVar.menuClazzList.add(ImportView.class);
+        //        FlowVar.menuClazzList.add(WamDeveloperView.class);
+        //        FlowVar.menuClazzList.add(ImportView.class);
         FlowVar.menuClazzList.add(TurnoList.class);
-        FlowVar.menuClazzList.add(IscrizioneList.class);
-        FlowVar.menuClazzList.add(RigaList.class);
+        //        FlowVar.menuClazzList.add(IscrizioneList.class);
+        //        FlowVar.menuClazzList.add(RigaList.class);
 
         //--admin
         FlowVar.menuClazzList.add(PreferenzaList.class);

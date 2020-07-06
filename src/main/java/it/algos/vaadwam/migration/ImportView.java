@@ -6,11 +6,9 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.milite.MiliteService;
@@ -32,7 +30,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_IMP;
  * Annotated with @Theme (facoltativo)
  */
 @UIScope
-@Route(value = TAG_IMP, layout = MainLayout.class)
+//@Route(value = TAG_IMP, layout = MainLayout.class)
 @Qualifier(TAG_IMP)
 @AIView(roleTypeVisibility = EARoleType.developer)
 @Slf4j
