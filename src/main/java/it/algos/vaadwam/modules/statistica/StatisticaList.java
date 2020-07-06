@@ -8,6 +8,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
@@ -420,13 +421,14 @@ public class StatisticaList extends WamViewList {
         grid.setColumns("milite", "last", "delta", "valido", "turni", "ore", "media", "iscrizioni");
         grid.setItems(items);
 
-        //        StreamResource stream=new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid));
-        Anchor esporta = new Anchor(new StreamResource("my-excel.xls", Exporter.exportAsExcel(grid)), "Download As Excel");
-        esporta.getElement().setAttribute("Export", true);
-        esporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        topPlaceholder.add(esporta);
-        int a = 87;
-    }// end of method
+        InputStreamFactory factory= Exporter.exportAsExcel(grid);
+        StreamResource streamRes=new StreamResource("my-excel.xls", factory);
+        Anchor anchorEsporta = new Anchor(streamRes, "Download As Excel");
+        anchorEsporta.getElement().setAttribute("Export", true);
+        anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        topPlaceholder.add(anchorEsporta);
+
+    }
 
 
     protected void exportCSV() {
