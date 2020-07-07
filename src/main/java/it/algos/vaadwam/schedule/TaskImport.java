@@ -87,7 +87,8 @@ public class TaskImport extends ATask {
 
     @Override
     public void execute(TaskExecutionContext context) throws RuntimeException {
-        importService.importAll();
+        //--non più usato
+        //        importService.importAll();
     }// end of method
 
 }// end of class

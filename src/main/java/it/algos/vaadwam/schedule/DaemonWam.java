@@ -30,11 +30,11 @@ public class DaemonWam extends Scheduler {
     protected PreferenzaService pref;
 
 
-    /**
-     * La injection viene fatta da SpringBoot in automatico <br>
-     */
-    @Autowired
-    private TaskImport importa;
+    //    /**
+    //     * La injection viene fatta da SpringBoot in automatico <br>
+    //     */
+    //    @Autowired
+    //    private TaskImport importa;
 
     /**
      * La injection viene fatta da SpringBoot in automatico <br>
@@ -48,7 +48,9 @@ public class DaemonWam extends Scheduler {
         if (!isStarted()) {
             super.start();
 
-            schedule(importa.getSchedule().getPattern(), importa);
+            //--non più usato
+            // schedule(importa.getSchedule().getPattern(), importa);
+
             schedule(statistica.getSchedule().getPattern(), statistica);
 
         }// fine del blocco if

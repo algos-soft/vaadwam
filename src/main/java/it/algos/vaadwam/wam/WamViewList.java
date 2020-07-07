@@ -3,8 +3,6 @@ package it.algos.vaadwam.wam;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
@@ -137,10 +135,7 @@ public abstract class WamViewList extends AGridViewList {
         super.usaBottoneEdit = true;
         super.usaButtonReset = false;
         super.searchType = EASearch.nonUsata;
-
-        if (login.isDeveloper()) {
-            super.usaButtonDelete = true;
-        }// end of if cycle
+        super.usaButtonDelete = false;
 
         if (login.isDeveloper() || login.isAdmin()) {
             super.usaButtonNew = true;
@@ -208,15 +203,15 @@ public abstract class WamViewList extends AGridViewList {
         boolean isUser = !isDeveloper && !isAdmin;
 
         if (alertUser != null && soloVisioneUser) {
-            alertUser.add(USER_VISIONE);
+            //            alertUser.add(USER_VISIONE);
         }// end of if cycle
         if (alertAdmin != null && soloVisioneAdmin) {
-            alertAdmin.add(ADMIN_VISIONE);
-            alertAdmin.add(ADMIN_DELETE);
+            //            alertAdmin.add(ADMIN_VISIONE);
+            //            alertAdmin.add(ADMIN_DELETE);
         }// end of if cycle
         if (alertDev != null) {
-            alertDev.add(DEVELOPER_DELETE);
-            alertDev.add(DEVELOPER_IMPORT);
+            //            alertDev.add(DEVELOPER_DELETE);
+            //            alertDev.add(DEVELOPER_IMPORT);
         }// end of if cycle
         if (alertDevAll != null) {
             alertDevAll.add(DEVELOPER_MOSTRA_ALL);
@@ -253,7 +248,7 @@ public abstract class WamViewList extends AGridViewList {
                     for (String alert : alertDev) {
                         alertPlacehorder.add(text.getLabelDev(alert));
                     }// end of for cycle
-                    alertPlacehorder.add(getInfoImport(((WamService) service).usaDaemon, ((WamService) service).lastImport, ((WamService) service).durataLastImport));
+                    //                    alertPlacehorder.add(getInfoImport(((WamService) service).usaDaemon, ((WamService) service).lastImport, ((WamService) service).durataLastImport));
                 }// end of if cycle
             } else {
                 if (alertDevAll != null) {
@@ -291,13 +286,14 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
-            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
-            importButton.getElement().setAttribute("theme", "error");
-            importButton.addClassName("view-toolbar__button");
-            importButton.addClickListener(e -> importa());
-            topPlaceholder.add(importButton);
-        }// end of if cycle
+        //--Import non più usato/usabile
+        //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
+        //            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+        //            importButton.getElement().setAttribute("theme", "error");
+        //            importButton.addClassName("view-toolbar__button");
+        //            importButton.addClickListener(e -> importa());
+        //            topPlaceholder.add(importButton);
+        //        }// end of if cycle
     }// end of method
 
 

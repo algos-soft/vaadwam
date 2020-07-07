@@ -15,6 +15,7 @@ import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
+import it.algos.vaadflow.ui.fields.AComboBox;
 import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.enumeration.EAWamLogType;
@@ -23,6 +24,8 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.log.WamLogService;
+import it.algos.vaadwam.modules.servizio.Servizio;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +105,14 @@ public class TurnoList extends WamViewList {
     @Autowired
     private WamLogService wamLogger;
 
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private ServizioService servizioService;
+
+    private AComboBox filtroServizi;
+
 
     /**
      * Costruttore @Autowired <br>
@@ -143,6 +154,12 @@ public class TurnoList extends WamViewList {
 
         super.searchType = EASearch.nonUsata;
 
+        if (wamLogin.isDeveloper()) {
+            super.isEntityModificabile = true;
+        } else {
+            super.isEntityModificabile = false;
+        }// end of if/else cycle
+
         if (wamLogin.isDeveloper() || login.isAdmin()) {
             super.usaPopupFiltro = true;
         } else {
@@ -160,9 +177,12 @@ public class TurnoList extends WamViewList {
     protected void creaAlertLayout() {
         fixPreferenze();
 
-        alertUser = null;
-        alertAdmin = null;
-        alertDev.add("Turni visualizzati nel tabellone");
+        alertUser.add("Se sei arrivato qui come milite, vuol dire che c'è stato un errore. Sei pregato di segnalarlo ad Algos®");
+        alertAdmin.add("Se sei arrivato qui come admin, vuol dire che c'è stato un errore. Sei pregato di segnalarlo ad Algos®");
+        alertDev.add("Turni del tabellone visibili solo al developer. Si possono creare e modificare quelli esistenti.");
+        alertDev.add("La cancellazione di un singolo turno è possibile. L'operazione è irreversibile e potenzialmente pericolosa");
+        alertDev.add("L'import dei turni dal vecchio programma è stato completato per tutti gli anni e la funzionalità disabilitata.");
+        alertDev.add("Selezione effettuabile solo per un anno alla volta, vista la quantità dei dati.");
 
         super.creaAlertLayout();
     }// end of method
@@ -180,14 +200,15 @@ public class TurnoList extends WamViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        String tagCroce = wamLogin.getCroce().code;
-        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
-            Button importAllButton = new Button("Import storico escluso anno 2020", new Icon(VaadinIcon.ARROW_DOWN));
-            importAllButton.getElement().setAttribute("theme", "error");
-            importAllButton.addClassName("view-toolbar__button");
-            importAllButton.addClickListener(e -> importStorico(wamLogin.getCroce()));
-            topPlaceholder.add(importAllButton);
-        }// end of if cycle
+        //--Import non più usato/usabile
+        //        String tagCroce = wamLogin.getCroce().code;
+        //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+        //            Button importAllButton = new Button("Import storico escluso anno 2020", new Icon(VaadinIcon.ARROW_DOWN));
+        //            importAllButton.getElement().setAttribute("theme", "error");
+        //            importAllButton.addClassName("view-toolbar__button");
+        //            importAllButton.addClickListener(e -> importStorico(wamLogin.getCroce()));
+        //            topPlaceholder.add(importAllButton);
+        //        }// end of if cycle
     }// end of method
 
 
@@ -211,6 +232,23 @@ public class TurnoList extends WamViewList {
                 updateGrid();
             });
             topPlaceholder.add(filtroComboBox);
+        }// end of if cycle
+
+        String tagCroce = wamLogin.getCroce().code;
+        if (wamLogin != null && wamLogin.isAdminOrDev() && wamLogin.getCroce() != null) {
+            filtroServizi = new AComboBox();
+            filtroServizi.setPlaceholder("Servizi...");
+            filtroServizi.setWidth("10em");
+            filtroServizi.setHeightFull();
+            filtroServizi.setPreventInvalidInput(true);
+            filtroServizi.setAllowCustomValue(false);
+            filtroServizi.setClearButtonVisible(true);
+            filtroServizi.setItems(servizioService.findAll());
+            filtroServizi.addValueChangeListener(e -> {
+                updateFiltri();
+                updateGrid();
+            });
+            topPlaceholder.add(filtroServizi);
         }// end of if cycle
     }// end of method
 
@@ -295,18 +333,27 @@ public class TurnoList extends WamViewList {
         LocalDate fine;
         Sort sort = new Sort(Sort.Direction.DESC, "giorno");
 
-        if (filtroComboBox.getValue() == null) {
+        if (filtroComboBox != null && filtroComboBox.getValue() == null) {
             filtroComboBox.setValue(EAFiltroTurno.corrente);
             return;
         }// end of if cycle
 
-        filtro = (EAFiltroTurno) filtroComboBox.getValue();
+        filtro = filtroComboBox != null ? (EAFiltroTurno) filtroComboBox.getValue() : null;
         if (filtro != null) {
             anno = annoCorrente - filtro.delta;
         }// end of if cycle
         inizio = date.primoGennaio(anno);
         fine = date.trentunDicembre(anno);
         filtri.add(new AFiltro(Criteria.where("giorno").gte(inizio).lte(fine), sort));
+
+        if (filtroServizi != null) {
+            Servizio servizio;
+            if (filtroServizi.getValue() != null) {
+                servizio = (Servizio) filtroServizi.getValue();
+                filtri.add(new AFiltro(Criteria.where("servizio").is(servizio), sort));
+            }
+        }
+
     }// end of method
 
 
@@ -341,7 +388,8 @@ public class TurnoList extends WamViewList {
      */
     @Override
     protected void openDialog(AEntity entityBean) {
-        appContext.getBean(TurnoDialog.class, service, entityClazz).openWam(entityBean, EAOperation.edit, this::save, this::delete);
+        EAOperation eaOperation = wamLogin.isDeveloper() ? EAOperation.edit : EAOperation.showOnly;
+        appContext.getBean(TurnoDialog.class, service, entityClazz).openWam(entityBean, eaOperation, this::save, this::delete);
     }// end of method
 
 }// end of class
