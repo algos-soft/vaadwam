@@ -252,7 +252,7 @@ public abstract class AService extends AbstractService implements IAService {
     public AEntity findById(String id) {
         AEntity entityBean = null;
         Object genericObj = null;
-        Optional optional = repository.findById(id.trim());
+        Optional optional = repository.findById(id);
 
         if (optional.isPresent()) {
             genericObj = optional.get();
