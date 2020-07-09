@@ -689,7 +689,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
                 return editSingle(turno, codFunzione, nuovoTurno);
             } else {  // turno extra
                 if (!isTurnoStorico(turno)) { // corrente
-                    return editMulti(turno, false, nuovoTurno);
+                    return editSingle(turno, codFunzione, nuovoTurno);
                 } else {  // storico
                     if (getIscrizione(turno, codFunzione).getMilite() != null) {    // c'è un iscritto
                         return editSingle(turno, codFunzione, nuovoTurno);
