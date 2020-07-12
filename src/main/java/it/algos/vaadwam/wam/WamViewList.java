@@ -3,6 +3,8 @@ package it.algos.vaadwam.wam;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
@@ -287,13 +289,13 @@ public abstract class WamViewList extends AGridViewList {
         super.creaTopLayout();
 
         //--Import non più usato/usabile
-        //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
-        //            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
-        //            importButton.getElement().setAttribute("theme", "error");
-        //            importButton.addClassName("view-toolbar__button");
-        //            importButton.addClickListener(e -> importa());
-        //            topPlaceholder.add(importButton);
-        //        }// end of if cycle
+        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
+            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+            importButton.getElement().setAttribute("theme", "error");
+            importButton.addClassName("view-toolbar__button");
+            importButton.addClickListener(e -> importa());
+            topPlaceholder.add(importButton);
+        }// end of if cycle
     }// end of method
 
 

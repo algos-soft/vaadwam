@@ -15,6 +15,7 @@ import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
+import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadflow.wrapper.AFiltro;
@@ -32,6 +33,8 @@ import org.vaadin.haijian.Exporter;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
@@ -221,7 +224,7 @@ public class StatisticaList extends WamViewList {
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
         super.creaAlertLayout();
-        alertPlacehorder.add(getInfoElabora());
+        //        alertPlacehorder.add(getInfoElabora());
     }// end of method
 
 
@@ -248,14 +251,14 @@ public class StatisticaList extends WamViewList {
         super.updateFiltri();
 
         Object value;
-        String anno;
+        int anno;
 
         if (filtroComboBox != null) {
             value = filtroComboBox.getValue();
             if (value instanceof Integer) {
-                anno = String.valueOf(value);
+                anno = (int) value;
             } else {
-                anno = (String) value;
+                anno = Integer.parseInt((String) value);
             }
             filtri.add(new AFiltro(Criteria.where("anno").is(anno)));
         }// end of if/else cycle
@@ -271,15 +274,6 @@ public class StatisticaList extends WamViewList {
      */
     @Override
     protected void updateFiltriSpecifici() {
-        //        super.updateFiltriSpecifici();
-        //        String anno = VUOTA;
-        //
-        //        Object value = filtroComboBox.getValue();
-        //        if (value instanceof Integer) {
-        //            anno = String.valueOf(value);
-        //        }
-        //
-        //        items =  service.findAllByCroceAndAnno(anno);
     }
 
 
@@ -353,12 +347,30 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.add(elaboraButton);
         }// end of if cycle
 
+        if (wamLogin.isDeveloper()) {
+            Button elaboraButton = new Button("Elabora anno", new Icon(VaadinIcon.REFRESH));
+            elaboraButton.getElement().setAttribute("theme", "error");
+            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
+            elaboraButton.addClassName("view-toolbar__button");
+            elaboraButton.addClickListener(e -> elaboraAnno());
+            topPlaceholder.add(elaboraButton);
+        }// end of if cycle
+
         if (wamLogin.isAdminOrDev()) {
-            Button exportButton = new Button("Excel", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            Button exportButton = new Button("Export sintesi", new Icon(VaadinIcon.DOWNLOAD_ALT));
             exportButton.getElement().setAttribute("theme", "error");
             exportButton.getElement().setAttribute("title", "Foglio di excel");
             exportButton.addClassName("view-toolbar__button");
-            exportButton.addClickListener(e -> exportExcel());
+            exportButton.addClickListener(e -> exportExcelSintesi());
+            topPlaceholder.add(exportButton);
+        }// end of if cycle
+
+        if (wamLogin.isAdminOrDev()) {
+            Button exportButton = new Button("Export dettaglio", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            exportButton.getElement().setAttribute("theme", "error");
+            exportButton.getElement().setAttribute("title", "Foglio di excel");
+            exportButton.addClassName("view-toolbar__button");
+            exportButton.addClickListener(e -> exportExcelDettaglio());
             topPlaceholder.add(exportButton);
         }// end of if cycle
 
@@ -370,7 +382,6 @@ public class StatisticaList extends WamViewList {
         //            exportButton.addClickListener(e -> exportCSV());
         //            topPlaceholder.add(exportButton);
         //        }// end of if cycle
-
     }// end of method
 
 
@@ -388,15 +399,41 @@ public class StatisticaList extends WamViewList {
 
 
     /**
-     * Crea un Popup di selezione della company <br>eeeeeeee4
-     * Creato solo se developer=true e usaCompany=true <br>
+     * Elabora (nel service) le statistiche <br>
+     * Elabora solo se developer=true, croce valida e anno diverso da 2020 <br>
+     * Se developer=false, non vede questa bottone <br>
      */
-    @Override
-    protected void creaCompanyFiltro() {
-        if (login.isDeveloper()) {
-            super.creaCompanyFiltro();
-        }// end of if cycle
-    }// end of method
+    public void elaboraAnno() {
+        int anno = 0;
+        String annoTxt = VUOTA;
+
+        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+            if (filtroComboBox != null && filtroComboBox.getValue() != null) {
+                Object obj = filtroComboBox.getValue();
+                if (obj instanceof String) {
+                    annoTxt = (String) filtroComboBox.getValue();
+                    anno = Integer.parseInt(annoTxt);
+                }
+                if (obj instanceof Integer) {
+                    anno = (Integer) obj;
+                }
+                ((StatisticaService) service).elabora(wamLogin.getCroce(), anno);
+            }
+        }
+        updateGrid();
+    }
+
+
+    //    /**
+    //     * Crea un Popup di selezione della company <br>
+    //     * Creato solo se developer=true e usaCompany=true <br>
+    //     */
+    //    @Override
+    //    protected void creaCompanyFiltro() {
+    //        if (login.isDeveloper()) {
+    //            super.creaCompanyFiltro();
+    //        }// end of if cycle
+    //    }// end of method
 
 
     /**
@@ -417,14 +454,60 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-    protected void exportExcel() {
+    protected void exportExcelSintesi() {
         Grid<Statistica> grid = new Grid(Statistica.class, false);
-        grid.setColumns("milite", "last", "delta", "valido", "turni", "ore", "media", "iscrizioni");
+        grid.setColumns("milite", "last", "delta", "valido", "turni", "ore", "media");
         grid.setItems(items);
 
-        InputStreamFactory factory= Exporter.exportAsExcel(grid);
-        StreamResource streamRes=new StreamResource("my-excel.xls", factory);
-        Anchor anchorEsporta = new Anchor(streamRes, "Download As Excel");
+        String message = wamLogin.getCroce().code;
+        message += date.get(EATime.iso);
+        InputStreamFactory factory = Exporter.exportAsExcel(grid);
+        StreamResource streamRes = new StreamResource(message + ".xls", factory);
+        Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
+        anchorEsporta.getElement().setAttribute("Export", true);
+        anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        topPlaceholder.add(anchorEsporta);
+
+    }
+
+
+    protected void exportExcelDettaglio() {
+        Grid<StaTurnoIsc> grid = new Grid(StaTurnoIsc.class, false);
+        grid.setColumns("ordine", "milite", "giorno", "servizio", "funzione", "inizio", "fine", "durataEffettiva", "equipaggio");
+        Statistica statistica;
+        List<StaTurnoIsc> listaItems = new ArrayList<>();
+        List<StaTurnoIsc> iscrizioniMilite;
+        StaTurnoIsc singola;
+
+        if (items != null) {
+            for (Object obj : items) {
+                if (obj instanceof Statistica) {
+                    statistica = (Statistica) obj;
+                    iscrizioniMilite = statistica.iscrizioni;
+                    if (iscrizioniMilite != null) {
+                        for (StaTurnoIsc stat : iscrizioniMilite) {
+                            //                            singola = new StaTurnoIsc();
+                            //                            singola.milite = statistica.milite;
+                            //                            singola.giorno = stat.giorno;
+                            //                            singola.servizio = stat.servizio;
+                            //                            singola.funzione = stat.funzione;
+                            //                            singola.inizio = stat.inizio;
+                            //                            singola.fine = stat.fine;
+                            //                            singola.equipaggio = stat.equipaggio;
+                            listaItems.add(stat);
+                        }
+                    }
+                }
+            }
+        }
+
+        grid.setItems(listaItems);
+
+        String message = wamLogin.getCroce().code;
+        message += date.get(EATime.iso);
+        InputStreamFactory factory = Exporter.exportAsExcel(grid);
+        StreamResource streamRes = new StreamResource(message + ".xls", factory);
+        Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
         anchorEsporta.getElement().setAttribute("Export", true);
         anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
         topPlaceholder.add(anchorEsporta);

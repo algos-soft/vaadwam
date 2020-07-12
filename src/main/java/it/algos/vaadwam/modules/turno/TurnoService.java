@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -417,17 +419,15 @@ public class TurnoService extends WamService {
 
 
     /**
-     * Returns all instances of the selected Croce <br>
+     * Returns all instances of the selected year of Croce <br>
      *
-     * @return lista ordinata di tutte le entities della croce
+     * @return lista ordinata discendente di tutte le entities della croce
      */
     public List<Turno> findAllByYear(Croce croce, int anno) {
         LocalDate inizio = date.primoGennaio(anno);
         LocalDate fine = date.trentunDicembre(anno);
 
-        inizio = inizio.minusDays(1);
-        fine = fine.plusDays(1);
-        return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
+        return findAllByPeriod(croce, inizio, fine);
     }// end of method
 
 
@@ -440,7 +440,26 @@ public class TurnoService extends WamService {
         LocalDate inizio = date.primoGennaio(anno);
         LocalDate fine = LocalDate.now();
 
-        return repository.findAllByCroceAndGiornoBetweenOrderByGiornoAsc(croce, inizio, fine);
+        return findAllByPeriod(croce, inizio, fine);
+    }// end of method
+
+
+    /**
+     * Returns all instances of the selected time of Croce <br>
+     *
+     * @return lista ordinata discendente di tutte le entities della croce nel periodo
+     */
+    public List<Turno> findAllByPeriod(Croce croce, LocalDate inizio, LocalDate fine) {
+        List<Turno> lista = null;
+        Query query = new Query();
+        Sort sort = new Sort(Sort.Direction.DESC, "giorno");
+
+        query.addCriteria(Criteria.where("croce").is(croce));
+        query.addCriteria(Criteria.where("giorno").gte(inizio).lte(fine));
+        query.with(sort);
+
+        lista = mongo.mongoOp.find(query, Turno.class);
+        return lista;
     }// end of method
 
 

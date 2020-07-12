@@ -85,11 +85,16 @@ public enum EATime {
      * Esempio: domenica, 5-ottobre-2014 alle 13:45<br>
      */
     completaOrario("completa", "EEEE, d-MMMM-yyy 'alle' HH:mm", "domenica, 5-ottobre-2014 alle 13:45"),
+    /**
+     *
+     */
+    iso("iso", "yyyyMMdd", "20170216"),
     ;
 
     private String tag;
 
     private String pattern;
+
     private String esempio;
 
 

@@ -97,9 +97,9 @@ public class Statistica extends WamEntity {
      * anno di riferimento (obbligatorio)
      */
     @NotNull
-    @AIField(type = EAFieldType.text, widthEM = 6)
+    @AIField(type = EAFieldType.integer, widthEM = 6)
     @AIColumn(widthEM = 6)
-    public String anno;
+    public int anno;
 
     /**
      * milite di riferimento (obbligatorio)

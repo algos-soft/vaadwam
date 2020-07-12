@@ -5,19 +5,21 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.wrapper.AFiltro;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,7 +50,8 @@ import static it.algos.vaadflow.service.AService.FIELD_NAME_ORDINE;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, basta il 'pattern') <br>
  * Annotated with @@Slf4j (facoltativo) per i logs automatici <br>
  */
-@Service
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
 public class AMongoService extends AbstractService {
 

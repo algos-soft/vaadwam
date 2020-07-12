@@ -6,6 +6,8 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
 import it.algos.vaadwam.modules.servizio.ServizioService;
 import lombok.*;
@@ -72,7 +74,6 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
 @EqualsAndHashCode(callSuper = false)
 @AIScript(sovrascrivibile = false)
 @AIEntity(recordName = "StatTurnoIsc")
-//@AIList(fields = {"ordine","giorno","servizio","funzione","inizio","fine","durataEffettiva","esisteProblema","titoloExtra","localitaExtra","equipaggio"})
 @AIList(fields = {"ordine", "giorno", "servizio", "funzione", "inizio", "fine", "durataEffettiva", "esisteProblema", "equipaggio"})
 public class StaTurnoIsc extends AEntity {
 
@@ -90,6 +91,16 @@ public class StaTurnoIsc extends AEntity {
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "#", widthEM = 3)
     public int ordine;
+
+    /**
+     * milite di riferimento (facoltativo alla creazione, dopo obbligatorio)
+     * riferimento dinamico CON @DBRef
+     */
+    @DBRef
+    @Field("mil")
+    @AIField(type = EAFieldType.combo, serviceClazz = MiliteService.class)
+    @AIColumn(widthEM = 20)
+    public Milite milite;
 
     /**
      * giorno di inizio turno (obbligatorio, calcolato da inizio - serve per le query)

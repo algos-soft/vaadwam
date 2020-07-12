@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
@@ -151,7 +154,7 @@ public class StatisticaService extends WamService {
      * @return la entity appena creata
      */
     public Statistica crea(Milite milite) {
-        return (Statistica) save(newEntity((Croce) null, VUOTA, 0, milite, null, 0, false, 0, 0));
+        return (Statistica) save(newEntity((Croce) null, 0, 0, milite, null, 0, false, 0, 0));
     }// end of method
 
 
@@ -164,7 +167,7 @@ public class StatisticaService extends WamService {
      */
     @Override
     public Statistica newEntity() {
-        return newEntity((Croce) null, VUOTA, 0, null, null, 0, false, 0, 0);
+        return newEntity((Croce) null, 0, 0, null, null, 0, false, 0, 0);
     }// end of method
 
 
@@ -179,7 +182,7 @@ public class StatisticaService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Statistica newEntity(Croce croce, String anno, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
+    public Statistica newEntity(Croce croce, int anno, int ordine, Milite milite, LocalDate last, int delta, boolean valido, int turni, int ore) {
         Statistica entity = Statistica.builderStatistica()
 
                 .ordine(ordine != 0 ? ordine : this.getNewOrdine())
@@ -297,49 +300,21 @@ public class StatisticaService extends WamService {
 
 
     /**
-     * Returns instances of the company <br>
-     * Lista ordinata <br>
+     * Returns all instances of the selected time of Croce <br>
      *
-     * @return lista ordinata di tutte le entities
+     * @return lista ordinata discendente di tutte le entities della croce nel periodo
      */
-    public List<Statistica> findAllCroci() {
-        return repository.findAll();
-    }// end of method
+    public List<Statistica> findAllByYear(Croce croce, int anno) {
+        List<Statistica> lista = null;
+        Query query = new Query();
+        Sort sort = new Sort(Sort.Direction.DESC, "giorno");
 
+        query.addCriteria(Criteria.where("croce").is(croce));
+        query.addCriteria(Criteria.where("anno").is(anno));
+        query.with(sort);
 
-    /**
-     * Returns instances of the company <br>
-     * Lista ordinata <br>
-     *
-     * @param croce di appartenenza (obbligatoria)
-     *
-     * @return lista ordinata di tutte le entities
-     */
-    public List<Statistica> findAllByCroce(Croce croce) {
-        return repository.findAllByCroceOrderByOrdineAsc(croce);
-    }// end of method
-
-
-    /**
-     * Returns instances of the company for the year <br>
-     * Lista ordinata <br>
-     *
-     * @param croce di appartenenza (obbligatoria)
-     *
-     * @return lista ordinata di tutte le entities
-     */
-    public List<Statistica> findAllByCroceAndAnno(String anno) {
-        Croce croce = null;
-
-        if (getWamLogin() != null) {
-            croce = getWamLogin().getCroce();
-        }
-
-        if (croce == null) {
-            return null;
-        }
-
-        return repository.findAllByCroceAndAnnoOrderByOrdineAsc(croce, anno);
+        lista = mongo.mongoOp.find(query, Statistica.class);
+        return lista;
     }// end of method
 
 
@@ -355,36 +330,36 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
-    //    public void elabora() {
-    //        for (Croce croce : croceService.findAll()) {
-    //            if (croce != null) {
-    //                if (pref.isBool(USA_DAEMON_STATISTICHE, croce.code)) {
-    //                    elabora(croce);
-    //                }// end of if cycle
-    //            }// end of if cycle
-    //        }// end of for cycle
-    //    }// end of method
-
-
     public boolean elabora(Croce croce) {
+        return elabora(croce, date.getAnnoCorrente());
+    }// end of method
+
+
+    public boolean elabora(Croce croce, int anno) {
         boolean status = false;
         long inizio = System.currentTimeMillis();
         List<Milite> militi;
-        int anno = date.getAnnoCorrente();
-        List<Turno> listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
-        deleteAllCroce(croce);
+        List<Turno> listaTurniCroce;
+        List<Statistica> listaStatistiche;
+
+        if (anno == date.getAnnoCorrente()) {
+            listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
+        } else {
+            listaTurniCroce = turnoService.findAllByYear(croce, anno);
+        }
+
+        listaStatistiche = findAllByYear(croce, anno);
+        mongo.delete(listaStatistiche, Statistica.class);
 
         militi = militeService.findAllByCroce(croce);
-
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
-                elaboraSingoloMilite(croce, anno + VUOTA, milite, listaTurniCroce);
+                elaboraSingoloMilite(croce, anno, milite, listaTurniCroce);
             }
             status = true;
         }
 
         setLastElabora(croce, inizio);
-
         long elapsedSec = (System.currentTimeMillis() - inizio) / 1000;
         String msg = "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
 
@@ -401,7 +376,7 @@ public class StatisticaService extends WamService {
     }
 
 
-    public void elaboraSingoloMilite(Croce croce, String anno, Milite milite, List<Turno> listaTurniCroce) {
+    public void elaboraSingoloMilite(Croce croce, int anno, Milite milite, List<Turno> listaTurniCroce) {
         long inizio = System.currentTimeMillis();
         Milite militeIscritto;
         int turniMilite = 0;
@@ -485,6 +460,8 @@ public class StatisticaService extends WamService {
 
                 .ordine(ordine)
 
+                .milite(iscriz.milite)
+
                 .giorno(turno.giorno)
 
                 .servizio(turno.servizio)
@@ -549,11 +526,11 @@ public class StatisticaService extends WamService {
     /**
      * Anni di selezione per il popup in Statistiche <br>
      */
-    protected List<String> getAnni() {
-        List<String> lista = new ArrayList();
+    protected List<Integer> getAnni() {
+        List<Integer> lista = new ArrayList();
 
         for (int k = 2013; k <= date.getAnnoCorrente(); k++) {
-            lista.add(String.valueOf(k));
+            lista.add(k);
         }
         return lista;
     }// end of method
