@@ -523,16 +523,16 @@ public class StatisticaService extends WamService {
     }// end of method
 
 
-    /**
-     * Anni di selezione per il popup in Statistiche <br>
-     */
-    protected List<Integer> getAnni() {
-        List<Integer> lista = new ArrayList();
-
-        for (int k = 2013; k <= date.getAnnoCorrente(); k++) {
-            lista.add(k);
-        }
-        return lista;
-    }// end of method
+    //    /**
+    //     * Anni di selezione per il popup in Statistiche <br>
+    //     */
+    //    protected List<Integer> getAnni() {
+    //        List<Integer> lista = new ArrayList();
+    //
+    //        for (int k = 2013; k <= date.getAnnoCorrente(); k++) {
+    //            lista.add(k);
+    //        }
+    //        return lista;
+    //    }// end of method
 
 }// end of class

@@ -416,18 +416,17 @@ public class StatisticaList extends WamViewList {
      * Se developer=false, non vede questa bottone <br>
      */
     public void elaboraAnno() {
+        int annoCorrente = LocalDate.now().getYear();
         int anno = 0;
         String annoTxt = VUOTA;
+        EAFiltroAnno filtroAnno;
 
         if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
             if (filtroComboBox != null && filtroComboBox.getValue() != null) {
                 Object obj = filtroComboBox.getValue();
-                if (obj instanceof String) {
-                    annoTxt = (String) filtroComboBox.getValue();
-                    anno = Integer.parseInt(annoTxt);
-                }
-                if (obj instanceof Integer) {
-                    anno = (Integer) obj;
+                if (obj instanceof EAFiltroAnno) {
+                    filtroAnno = (EAFiltroAnno) obj;
+                    anno = annoCorrente - filtroAnno.delta;
                 }
                 ((StatisticaService) service).elabora(wamLogin.getCroce(), anno);
             }
