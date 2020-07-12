@@ -188,6 +188,22 @@ public class AColumnService extends AbstractService {
                     return new Label(testo);
                 }));//end of lambda expressions and anonymous inner class
                 break;
+            case integerNoFormat:
+                colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Field field = reflection.getField(entityClazz, propertyName);
+                    String testo = "";
+                    int value;
+
+                    try { // prova ad eseguire il codice
+                        value = field.getInt(entity);
+                        testo = String.valueOf(value);
+                    } catch (Exception unErrore) { // intercetta l'errore
+                        logger.error(unErrore, this.getClass(), "create - case integer");
+                    }// fine del blocco try-catch
+
+                    return new Label(testo);
+                }));//end of lambda expressions and anonymous inner class
+                break;
             case lungo:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Field field = reflection.getField(entityClazz, propertyName);

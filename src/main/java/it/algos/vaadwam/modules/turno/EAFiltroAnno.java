@@ -9,22 +9,15 @@ import java.time.LocalDate;
  * Date: Thu, 18-Jul-2019
  * Time: 10:08
  */
-public enum EAFiltroTurno {
-    corrente(0),
-    menoUno(1),
-    menoDue(2),
-    menoTre(3),
-    menoQuattro(4),
-    menoCinque(5),
-    menoSei(6),
-    menoSette(7);
+public enum EAFiltroAnno {
+    corrente(0), menoUno(1), menoDue(2), menoTre(3), menoQuattro(4), menoCinque(5), menoSei(6), menoSette(7);
 
     public int delta;
 
     private String popupLabel;
 
 
-    EAFiltroTurno(int delta) {
+    EAFiltroAnno(int delta) {
         this.delta = delta;
         fixLabel();
     }// end of constructor

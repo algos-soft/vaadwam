@@ -225,8 +225,8 @@ public class TurnoList extends WamViewList {
             filtroComboBox.setPreventInvalidInput(true);
             filtroComboBox.setAllowCustomValue(false);
             filtroComboBox.setClearButtonVisible(false);
-            filtroComboBox.setItems(EAFiltroTurno.values());
-            filtroComboBox.setValue(EAFiltroTurno.corrente);
+            filtroComboBox.setItems(EAFiltroAnno.values());
+            filtroComboBox.setValue(EAFiltroAnno.corrente);
             filtroComboBox.addValueChangeListener(e -> {
                 updateFiltri();
                 updateGrid();
@@ -326,7 +326,7 @@ public class TurnoList extends WamViewList {
     public void updateFiltri() {
         super.updateFiltri();
 
-        EAFiltroTurno filtro = null;
+        EAFiltroAnno filtro = null;
         int annoCorrente = LocalDate.now().getYear();
         int anno = annoCorrente;
         LocalDate inizio;
@@ -334,11 +334,11 @@ public class TurnoList extends WamViewList {
         Sort sort = new Sort(Sort.Direction.DESC, "giorno");
 
         if (filtroComboBox != null && filtroComboBox.getValue() == null) {
-            filtroComboBox.setValue(EAFiltroTurno.corrente);
+            filtroComboBox.setValue(EAFiltroAnno.corrente);
             return;
         }// end of if cycle
 
-        filtro = filtroComboBox != null ? (EAFiltroTurno) filtroComboBox.getValue() : null;
+        filtro = filtroComboBox != null ? (EAFiltroAnno) filtroComboBox.getValue() : null;
         if (filtro != null) {
             anno = annoCorrente - filtro.delta;
         }// end of if cycle
@@ -358,13 +358,13 @@ public class TurnoList extends WamViewList {
 
 
     public void updateItems() {
-        EAFiltroTurno filtro = null;
+        EAFiltroAnno filtro = null;
         int annoCorrente = LocalDate.now().getYear();
 
         if (filtroComboBox != null) {
-            filtro = (EAFiltroTurno) filtroComboBox.getValue();
+            filtro = (EAFiltroAnno) filtroComboBox.getValue();
 
-            if (filtro == null || filtro == EAFiltroTurno.corrente) {
+            if (filtro == null || filtro == EAFiltroAnno.corrente) {
                 items = ((TurnoService) service).findAllAnnoCorrente();
             } else {
                 items = ((TurnoService) service).findAllByYear(annoCorrente - filtro.delta);

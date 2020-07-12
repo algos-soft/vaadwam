@@ -22,6 +22,7 @@ import it.algos.vaadflow.wrapper.AFiltro;
 import it.algos.vaadwam.WamLayout;
 import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.turno.EAFiltroAnno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.schedule.ATask;
 import it.algos.vaadwam.wam.WamViewList;
@@ -32,6 +33,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.vaadin.haijian.Exporter;
 import org.vaadin.klaudeta.PaginatedGrid;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -192,15 +194,11 @@ public class StatisticaList extends WamViewList {
         super.fixPreferenze();
         this.service = (StatisticaService) super.service;
 
-        //        if (wamLogin.isAdmin()) {
-        //            super.usaButtonDelete = true;
-        //        }// end of if cycle
-
         super.usaPopupFiltro = true;
         super.usaButtonNew = false;
         super.usaBottoneEdit = true;
         super.isEntityModificabile = false;
-        super.usaButtonDelete = true;
+        super.usaButtonDelete = false;
 
         super.soloVisioneUser = false;
         super.soloVisioneAdmin = false;
@@ -234,34 +232,48 @@ public class StatisticaList extends WamViewList {
      * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void creaPopupFiltro() {
-        super.creaPopupFiltro();
+        if (login.isDeveloper() || login.isAdmin()) {
+            super.creaPopupFiltro();
+            filtroComboBox.setWidth("12em");
+            filtroComboBox.setHeightFull();
+            filtroComboBox.setPreventInvalidInput(true);
+            filtroComboBox.setAllowCustomValue(false);
+            filtroComboBox.setClearButtonVisible(false);
+            filtroComboBox.setItems(EAFiltroAnno.values());
+            filtroComboBox.setValue(EAFiltroAnno.corrente);
+            topPlaceholder.add(filtroComboBox);
 
-        filtroComboBox.setWidth("8em");
-        filtroComboBox.setClearButtonVisible(false);
-        filtroComboBox.setItems(service.getAnni());
-        filtroComboBox.setValue(date.getAnnoCorrente());
-        filtroComboBox.setPreventInvalidInput(true);
-        filtroComboBox.setRequired(true);
-        filtroComboBox.setAllowCustomValue(false);
-        topPlaceholder.add(filtroComboBox);
+        }// end of method
     }// end of method
 
 
     public void updateFiltri() {
         super.updateFiltri();
 
-        Object value;
-        int anno;
+        EAFiltroAnno filtro = null;
+        int annoCorrente = LocalDate.now().getYear();
+        int anno = annoCorrente;
 
-        if (filtroComboBox != null) {
-            value = filtroComboBox.getValue();
-            if (value instanceof Integer) {
-                anno = (int) value;
-            } else {
-                anno = Integer.parseInt((String) value);
-            }
-            filtri.add(new AFiltro(Criteria.where("anno").is(anno)));
-        }// end of if/else cycle
+        if (filtroComboBox != null && filtroComboBox.getValue() == null) {
+            filtroComboBox.setValue(EAFiltroAnno.corrente);
+            return;
+        }// end of if cycle
+
+        filtro = filtroComboBox != null ? (EAFiltroAnno) filtroComboBox.getValue() : null;
+        if (filtro != null) {
+            anno = annoCorrente - filtro.delta;
+        }// end of if cycle
+        filtri.add(new AFiltro(Criteria.where("anno").is(anno)));
+
+        //        if (filtroComboBox != null) {
+        //            value = filtroComboBox.getValue();
+        //            if (value instanceof Integer) {
+        //                anno = (int) value;
+        //            } else {
+        //                anno = Integer.parseInt((String) value);
+        //            }
+        //            filtri.add(new AFiltro(Criteria.where("anno").is(anno)));
+        //        }// end of if/else cycle
 
     }// end of method
 
@@ -356,7 +368,7 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.add(elaboraButton);
         }// end of if cycle
 
-        if (wamLogin.isAdminOrDev()) {
+        if (wamLogin.isDeveloper()) {
             Button exportButton = new Button("Export sintesi", new Icon(VaadinIcon.DOWNLOAD_ALT));
             exportButton.getElement().setAttribute("theme", "error");
             exportButton.getElement().setAttribute("title", "Foglio di excel");
@@ -365,7 +377,7 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.add(exportButton);
         }// end of if cycle
 
-        if (wamLogin.isAdminOrDev()) {
+        if (wamLogin.isDeveloper()) {
             Button exportButton = new Button("Export dettaglio", new Icon(VaadinIcon.DOWNLOAD_ALT));
             exportButton.getElement().setAttribute("theme", "error");
             exportButton.getElement().setAttribute("title", "Foglio di excel");
@@ -422,18 +434,6 @@ public class StatisticaList extends WamViewList {
         }
         updateGrid();
     }
-
-
-    //    /**
-    //     * Crea un Popup di selezione della company <br>
-    //     * Creato solo se developer=true e usaCompany=true <br>
-    //     */
-    //    @Override
-    //    protected void creaCompanyFiltro() {
-    //        if (login.isDeveloper()) {
-    //            super.creaCompanyFiltro();
-    //        }// end of if cycle
-    //    }// end of method
 
 
     /**
