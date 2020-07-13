@@ -350,7 +350,7 @@ public class StatisticaList extends WamViewList {
             topPlaceholder.remove(importButton);
         }// end of if cycleì
 
-        if (wamLogin.isAdminOrDev()) {
+        if (wamLogin.isDeveloper()) {
             Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
             elaboraButton.getElement().setAttribute("theme", "primary");
             elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
