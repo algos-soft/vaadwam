@@ -217,7 +217,7 @@ public class StatisticaList extends WamViewList {
 
         alertAdmin.add("Statistiche dei turni effettuati da ogni milite dal 1° gennaio dell'anno alla data odierna.");
         alertAdmin.add("Gli anni precedenti vanno dal 1° gennaio al 31 dicembre.");
-        alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte. Come admin si possono ri-elaborare in ogni momento.");
+        alertAdmin.add("Solo in visione. Vengono generate in automatico ogni notte.");
         alertAdmin.add("Nome del milite, data dell'ultimo turno effettuato, giorni trascorsi dall'ultimo turno, validità della frequenza (sulla base di 2 turni/mese),");
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
