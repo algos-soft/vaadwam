@@ -452,7 +452,7 @@ public class TurnoService extends WamService {
     public List<Turno> findAllByPeriod(Croce croce, LocalDate inizio, LocalDate fine) {
         List<Turno> lista = null;
         Query query = new Query();
-        Sort sort = new Sort(Sort.Direction.DESC, "giorno");
+        Sort sort = new Sort(Sort.Direction.ASC, "giorno");
 
         query.addCriteria(Criteria.where("croce").is(croce));
         query.addCriteria(Criteria.where("giorno").gte(inizio).lte(fine));
