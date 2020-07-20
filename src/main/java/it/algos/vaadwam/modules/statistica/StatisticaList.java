@@ -38,7 +38,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_STA;
 import static it.algos.vaadwam.application.WamCost.TASK_STATISTICA;
@@ -222,7 +221,9 @@ public class StatisticaList extends WamViewList {
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
         super.creaAlertLayout();
-        //        alertPlacehorder.add(getInfoElabora());
+        if (wamLogin.isDeveloper()) {
+            alertPlacehorder.add(getInfoElabora());
+        }
     }// end of method
 
 
@@ -298,30 +299,18 @@ public class StatisticaList extends WamViewList {
      * Scheduled alle....
      */
     protected Label getInfoElabora() {
-        Label label = null;
-        String testo = "";
-        String tag = "Elaborazione automatica ";
-        boolean elaborazioneAutomatica = pref.isBool(service.usaDaemonElabora);
-        String nota = taskElabora != null ? taskElabora.getSchedule().getNota() : VUOTA;
+        Label label;
+        String message = VUOTA;
+        LocalDateTime lastImport = text.isValid(service.lastElabora) ? pref.getDateTime(service.lastElabora) : null;
         int durata = text.isValid(service.durataLastElabora) ? pref.getInt(service.durataLastElabora) : 0;
 
-        if (wamLogin.isAdminOrDev()) {
-            LocalDateTime lastImport = text.isValid(service.lastElabora) ? pref.getDateTime(service.lastElabora) : START_DATE_TIME;
-            testo = tag;
-
-            if (elaborazioneAutomatica) {
-                testo += nota;
-            } else {
-                testo += "disattivata.";
-            }// end of if/else cycle
-
-            if (lastImport != null) {
-                label = text.getLabelDev(testo + " Ultima elaborazione il " + date.getTime(lastImport) + " in " + date.toTextSecondi(durata));
-            } else {
-                label = text.getLabelDev(tag + nota + " Non ancora effettuata.");
-            }// end of if/else cycle
-
+        if (lastImport != null) {
+            message = "Ultima elaborazione effettuata il " + date.getTime(lastImport);
+            if (wamLogin.isDeveloper()) {
+                message += " in " + date.toTextSecondi(durata);
+            }// end of if cycle
         }// end of if cycle
+        label = text.getLabelDev(message);
 
         return label;
     }// end of method

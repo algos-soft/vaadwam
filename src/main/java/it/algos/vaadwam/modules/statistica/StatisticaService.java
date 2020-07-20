@@ -505,8 +505,8 @@ public class StatisticaService extends WamService {
 
 
     /**
-     * Registra nelle preferenze la data dell'ultimo import effettuato <br>
-     * Registra nelle preferenze la durata dell'ultimo import effettuato <br>
+     * Registra nelle preferenze la data dell'ultima elaborazione effettuata <br>
+     * Registra nelle preferenze la durata dell'ultima elaborazione effettuata <br>
      */
     protected void setLastElabora(Croce croce, long inizio) {
         setLastElabora(croce, inizio, lastElabora, durataLastElabora, eaTempoTypeElabora);
