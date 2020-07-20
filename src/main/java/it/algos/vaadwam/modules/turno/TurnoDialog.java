@@ -186,6 +186,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Invocare PRIMA il metodo della superclasse <br>
      */
     protected void addListeners() {
+        sincroServizio(((Turno) currentItem).servizio);
         servizioField = (AComboBox) getField("servizio");
         servizioField.addValueChangeListener(event -> sincroServizio((Servizio) event.getValue()));//end of lambda expressions
     }// end of method
@@ -223,6 +224,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
 
     private void creaIscrizioni(Servizio servizio) {
         iscrizioniDelTurno = turnoService.getIscrizioni(servizio);
+        iscrizioniDelTurno = ((Turno) currentItem).iscrizioni;
         if (grid != null) {
             grid.setItems(iscrizioniDelTurno);
         }// end of if cycle

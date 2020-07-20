@@ -248,6 +248,42 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
+    /**
+     * Sincronizza i filtri. <br>
+     * Chiamato dal listener di 'clearFilterButton' <br>
+     * <p>
+     * Può essere sovrascritto, per modificare la gestione dei filtri <br>
+     */
+    public void actionSincroCombo() {
+        updateFiltri();
+        updateGrid();
+        //        updateColumns();//Non funziona
+    }// end of method
+
+
+    public void updateColumns() {
+        List<String> gridPropertyNamesList = new ArrayList<>();
+        boolean isAnnoCorrente = true;
+
+        grid.removeAllColumns();
+
+        if (wamLogin.isDeveloper()) {
+            gridPropertyNamesList.add("id");
+        }
+        gridPropertyNamesList.add("anno");
+        gridPropertyNamesList.add("milite");
+        gridPropertyNamesList.add("last");
+        if (isAnnoCorrente) {
+            gridPropertyNamesList.add("delta");
+        }
+        gridPropertyNamesList.add("valido");
+        gridPropertyNamesList.add("turni");
+        gridPropertyNamesList.add("ore");
+        gridPropertyNamesList.add("media");
+        addColumnsGrid(gridPropertyNamesList);
+    }// end of method
+
+
     public void updateFiltri() {
         super.updateFiltri();
 

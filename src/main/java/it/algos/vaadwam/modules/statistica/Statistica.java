@@ -125,6 +125,7 @@ public class Statistica extends WamEntity {
 
     /**
      * giorni trascorsi dall'ultimo turno (obbligatorio) <br>
+     * ha senso solo per l'anno corrente <br>
      */
     @NotNull
     @Indexed()

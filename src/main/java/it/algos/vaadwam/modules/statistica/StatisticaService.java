@@ -361,11 +361,13 @@ public class StatisticaService extends WamService {
         List<Milite> militi;
         List<Turno> listaTurniCroce;
         List<Statistica> listaStatistiche;
+        boolean isAnnoCorrente = true;
 
         if (anno == date.getAnnoCorrente()) {
             listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
         } else {
             listaTurniCroce = turnoService.findAllByYear(croce, anno);
+            isAnnoCorrente = false;
         }
 
         listaStatistiche = findAllByYear(croce, anno);
@@ -374,7 +376,7 @@ public class StatisticaService extends WamService {
         militi = militeService.findAllByCroce(croce);
         if (array.isValid(militi)) {
             for (Milite milite : militi) {
-                elaboraSingoloMilite(croce, anno, milite, listaTurniCroce);
+                elaboraSingoloMilite(croce, anno, milite, listaTurniCroce, isAnnoCorrente);
             }
             status = true;
         }
@@ -396,7 +398,7 @@ public class StatisticaService extends WamService {
     }
 
 
-    public void elaboraSingoloMilite(Croce croce, int anno, Milite milite, List<Turno> listaTurniCroce) {
+    public void elaboraSingoloMilite(Croce croce, int anno, Milite milite, List<Turno> listaTurniCroce, boolean isAnnoCorrente) {
         long inizio = System.currentTimeMillis();
         Milite militeIscritto;
         int turniMilite = 0;
@@ -438,7 +440,9 @@ public class StatisticaService extends WamService {
                                 }
                             }
                             last = turno.giorno;
-                            delta = date.differenza(LocalDate.now(), last);
+                            if (isAnnoCorrente) {
+                                delta = date.differenza(LocalDate.now(), last);
+                            }
                         }// end of if cycle
                     }
                 }
