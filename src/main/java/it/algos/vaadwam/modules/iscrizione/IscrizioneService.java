@@ -290,13 +290,40 @@ public class IscrizioneService extends WamService {
 
 
     public int durataOre(Iscrizione iscr) {
+        //        int durata = 0;
+        //
+        //        if (iscr != null && iscr.inizio != null && iscr.fine != null) {
+        //            durata = date.differenza(iscr.fine, iscr.inizio);
+        //        }// end of if cycle
+        //
+        //        return durata;
+
         int durata = 0;
+        int fine = 24;
 
-        if (iscr != null && iscr.inizio != null && iscr.fine != null) {
-            durata = date.differenza(iscr.fine, iscr.inizio);
-        }// end of if cycle
+        if (iscr != null) {
+            if (iscr.inizio == null || iscr.fine == null) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
 
-        return durata;
+        if (iscr.inizio == LocalTime.MIDNIGHT) {
+            return iscr.fine.getHour();
+        }
+
+        if (iscr.fine == LocalTime.MIDNIGHT) {
+            return fine - iscr.inizio.getHour();
+        }
+
+        if (date.differenza(iscr.fine, iscr.inizio) > 0) {
+            return date.differenza(iscr.fine, iscr.inizio);
+        } else {
+            logger.warn("Fine prima dell'inizio", this.getClass(), "durataOre");
+
+            return 0;
+        }
     }// end of method
 
 

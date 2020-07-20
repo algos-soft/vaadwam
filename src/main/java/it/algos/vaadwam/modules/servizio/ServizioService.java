@@ -145,7 +145,7 @@ public class ServizioService extends WamService {
      * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param extra     nella stessa giornata (facoltativo, default false)
+     * @param extra          nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
@@ -170,13 +170,13 @@ public class ServizioService extends WamService {
      * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
      * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
      * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param extra     nella stessa giornata (facoltativo, default false)
+     * @param extra          nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative)  {
+    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
         Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).extra(extra).obbligatorie(obbligatorie).facoltative(facoltative).build();
 
         return (Servizio) super.addCroce(entity, croce);
@@ -304,7 +304,6 @@ public class ServizioService extends WamService {
     }// end of method
 
 
-
     /**
      * Returns instances <br>
      * Lista ordinata <br>
@@ -347,6 +346,7 @@ public class ServizioService extends WamService {
         return items;
     }
 
+
     /**
      * Tutti i servizi standard che sono visibili
      * Lista ordinata per servizio
@@ -361,6 +361,7 @@ public class ServizioService extends WamService {
         }
         return items;
     }
+
 
     /**
      * Tutti i servizi standard che sono invisibili
@@ -377,6 +378,7 @@ public class ServizioService extends WamService {
         return items;
     }
 
+
     /**
      * Tutti i servizi extra visibili
      * Lista ordinata per servizio
@@ -392,6 +394,7 @@ public class ServizioService extends WamService {
         return items;
     }
 
+
     /**
      * Tutti i servizi non-standard visibili
      * Lista ordinata per servizio
@@ -406,10 +409,6 @@ public class ServizioService extends WamService {
         }
         return items;
     }
-
-
-
-
 
 
     /**
@@ -468,10 +467,7 @@ public class ServizioService extends WamService {
      * Durata del servizio in ore <br>
      */
     public int getDurata(Servizio entityBean) {
-        LocalTime inizio = entityBean.getInizio();
-        LocalTime fine = entityBean.getFine();
-
-        return date.differenza(fine, inizio);
+        return getDurataInt(entityBean);
     }// end of method
 
 
@@ -551,18 +547,18 @@ public class ServizioService extends WamService {
         LocalTime inizio = entityBean.inizio != null ? entityBean.inizio : LocalTime.MIDNIGHT;
         LocalTime fine = entityBean.fine != null ? entityBean.fine : LocalTime.MIDNIGHT;
 
-//        if (inizio != null && fine != null && inizio != LocalTime.MIDNIGHT && fine != LocalTime.MIDNIGHT) {
-//            orario = inizio + " - " + fine;
-//        } else {
-//            orario = tagVuoto;
-//        }
+        //        if (inizio != null && fine != null && inizio != LocalTime.MIDNIGHT && fine != LocalTime.MIDNIGHT) {
+        //            orario = inizio + " - " + fine;
+        //        } else {
+        //            orario = tagVuoto;
+        //        }
 
         // il codice commentato sopra non funzionava con turni che
         // iniziano o finiscono alle ore 00:00 (cosa legittima)
         if (inizio != null) {
-            orario = ""+inizio;
-            if (fine!=null){
-                orario += " - "+fine;
+            orario = "" + inizio;
+            if (fine != null) {
+                orario += " - " + fine;
             }
         }
 
@@ -639,12 +635,34 @@ public class ServizioService extends WamService {
      */
     public int getDurataInt(AEntity entityBean) {
         int durata = 0;
+        Servizio servizio;
+        int fine = 24;
 
-        if (entityBean != null && ((Servizio) entityBean).inizio != null && ((Servizio) entityBean).fine != null) {
-            durata = date.differenza(((Servizio) entityBean).fine, ((Servizio) entityBean).inizio);
-        }// end of if cycle
+        if (entityBean != null && entityBean instanceof Servizio) {
+            servizio = (Servizio) entityBean;
+            if (servizio.inizio == null || servizio.fine == null) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
 
-        return durata;
+        if (servizio.inizio == LocalTime.MIDNIGHT) {
+            return servizio.fine.getHour();
+        }
+
+        if (servizio.fine == LocalTime.MIDNIGHT) {
+            return fine - servizio.inizio.getHour();
+        }
+
+        if (date.differenza(servizio.fine, servizio.inizio) > 0) {
+            return date.differenza(servizio.fine, servizio.inizio);
+        } else {
+            logger.warn("Fine prima dell'inizio", this.getClass(), "getDurataInt");
+
+            return 0;
+        }
+
     }// end of method
 
 

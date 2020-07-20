@@ -6,11 +6,14 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
+import it.algos.vaadflow.enumeration.EATime;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
+import it.algos.vaadwam.modules.servizio.ServizioService;
 import it.algos.vaadwam.modules.turno.Turno;
 import it.algos.vaadwam.modules.turno.TurnoService;
 import it.algos.vaadwam.wam.WamLogin;
@@ -87,6 +90,23 @@ public class StatisticaService extends WamService {
     public String durataLastElabora;
 
     public EATempo eaTempoTypeElabora;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ServizioService servizioService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public IscrizioneService iscrizioneService;
+
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -384,6 +404,7 @@ public class StatisticaService extends WamService {
         LocalDate last = null;
         int delta = 0;
         boolean valido;
+        int durata = 0;
         //        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
         int media;
         List<Iscrizione> iscrizioniTurno;
@@ -405,7 +426,17 @@ public class StatisticaService extends WamService {
                             staTurnoIsc = getStaTurnoIsc(ordine, turno, iscriz, equipaggio);
                             iscrizioniMilite.add(staTurnoIsc);
                             turniMilite++;
-                            oreTotali += iscriz.durataEffettiva;
+                            durata = staTurnoIsc.durataEffettiva;
+
+                            if (durata == 0) {
+                                logger.warn("Durata nulla per il turno di " + turno.servizio.code + " del " + date.get(turno.giorno, EATime.standard.getPattern()), this.getClass(), "elaboraSingoloMilite");
+                            } else {
+                                if (durata < 0) {
+                                    logger.error("Durata turno negativa", this.getClass(), "elaboraSingoloMilite");
+                                } else {
+                                    oreTotali += durata;
+                                }
+                            }
                             last = turno.giorno;
                             delta = date.differenza(LocalDate.now(), last);
                         }// end of if cycle
@@ -472,7 +503,7 @@ public class StatisticaService extends WamService {
 
                 .fine(iscriz.fine)
 
-                .durataEffettiva((date.differenza(iscriz.fine, iscriz.inizio)))
+                .durataEffettiva(iscrizioneService.durataOre(iscriz))
 
                 .esisteProblema(iscriz.esisteProblema)
 
