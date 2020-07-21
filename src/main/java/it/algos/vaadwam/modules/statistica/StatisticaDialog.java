@@ -86,10 +86,15 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
      */
     protected void fixTitleLayout() {
         String title = "Turni del milite " + currentItem.milite.getCognome() + " " + currentItem.milite.getNome();
-
+        int anno = currentItem.getAnno();
         titlePlaceholder.removeAll();
         titlePlaceholder.add(new H2(title));
-        titlePlaceholder.add("Periodo 1° gen 2020 - " + date.get());
+
+        if (currentItem.getAnno() == date.getAnnoCorrente()) {
+            titlePlaceholder.add("Periodo 1° gen " + date.getAnnoCorrente() + " - " + date.get());
+        } else {
+            titlePlaceholder.add("Periodo 1° gen " + currentItem.getAnno() + " - 31 dic " + currentItem.getAnno());
+        }
     }// end of method
 
 
