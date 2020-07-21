@@ -3,7 +3,6 @@ package it.algos.vaadwam.tabellone;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.enumeration.EALogType;
 import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadflow.service.AService;
@@ -467,7 +466,7 @@ public class TabelloneService extends AService {
      * Passato più di un certo numero di ore dalla data di iscrizione
      */
     public boolean passatoPiuDiOre(Iscrizione iscrizione, int ore) {
-        LocalDateTime dataOraCreazione = iscrizione.getCreazione();
+        LocalDateTime dataOraCreazione = iscrizione.getLastModifica();
         if (dataOraCreazione != null) {
             if (LocalDateTime.now().minusHours(ore).isAfter(dataOraCreazione)) {
                 return true;

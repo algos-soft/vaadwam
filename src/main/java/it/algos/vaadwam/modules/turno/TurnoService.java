@@ -194,7 +194,23 @@ public class TurnoService extends WamService {
      */
     public Turno newEntity(Croce croce, LocalDate giorno, Servizio servizio, LocalTime inizio, LocalTime fine, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
 
-        Turno entity = Turno.builderTurno().giorno(giorno != null ? giorno : LocalDate.now()).servizio(servizio).inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT).fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT).iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio)).titoloExtra(titoloExtra.equals("") ? null : titoloExtra).localitaExtra(localitaExtra.equals("") ? null : localitaExtra).build();
+        Turno entity = Turno.builderTurno()
+
+                .giorno(giorno != null ? giorno : LocalDate.now())
+
+                .servizio(servizio)
+
+                .inizio(inizio != null ? inizio : servizio != null ? servizio.inizio : LocalTime.MIDNIGHT)
+
+                .fine(fine != null ? fine : servizio != null ? servizio.fine : LocalTime.MIDNIGHT)
+
+                .iscrizioni(iscrizioni != null ? iscrizioni : addIscrizioni(servizio))
+
+                .titoloExtra(titoloExtra.equals("") ? null : titoloExtra)
+
+                .localitaExtra(localitaExtra.equals("") ? null : localitaExtra)
+
+                .build();
 
         AEntity aEntity = addCroce(entity, croce);
 
@@ -581,22 +597,23 @@ public class TurnoService extends WamService {
 
     /**
      * Aggiunge le iscrizioni vuote ad un nuovo turno <br>
-     * Con la funzione e senza milite
+     * Con la funzione e senza milite <br>
+     * Non mettiamo ne gli orari di inizio/fine ne la durata <br> (gac)
      */
     public List<Iscrizione> addIscrizioni(Servizio servizio) {
         List<Iscrizione> items = null;
         List<Funzione> funzioni = null;
-        int durata = 0;
+        //        int durata = 0;
 
         if (servizio != null) {
             items = new ArrayList<>();
             funzioni = servizioService.getFunzioniAll(servizio);
-            durata = servizioService.getDurata(servizio);
+            //            durata = servizioService.getDurata(servizio);
         }// end of if cycle
 
         if (funzioni != null) {
             for (Funzione funz : funzioni) {
-                items.add(Iscrizione.builderIscrizione().funzione(funz).durataEffettiva(durata).build());
+                items.add(Iscrizione.builderIscrizione().funzione(funz).build());
             }// end of for cycle
         }// end of if cycle
 

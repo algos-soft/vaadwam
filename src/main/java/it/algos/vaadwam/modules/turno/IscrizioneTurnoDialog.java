@@ -27,7 +27,7 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_ISC_TUR;
 
 /**
- * Project vaadwam
+ * Project vaadWam
  * Created by Algos
  * User: gac
  * Date: dom, 15-mar-2020

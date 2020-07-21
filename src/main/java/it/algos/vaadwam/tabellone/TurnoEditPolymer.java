@@ -19,6 +19,7 @@ import it.algos.vaadflow.service.AArrayService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.components.NoteEditor;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -37,6 +38,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +82,9 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
 
     @Autowired
     private ServizioService servizioService;
+
+    @Autowired
+    private IscrizioneService iscrizioneService;
 
     @Autowired
     private MiliteService militeService;
@@ -371,6 +376,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
         if (idMilite != null) {
             Milite milite = militeService.findById(idMilite);
             iscrizione.setMilite(milite);
+            iscrizione.setLastModifica(LocalDateTime.now());
         } else {
             iscrizione.setMilite(null);
         }
@@ -378,6 +384,9 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
         // sync timestamps
         iscrizione.setInizio(compIscrizione.getOraInizio());
         iscrizione.setFine(compIscrizione.getOraFine());
+
+        // sync durata
+        iscrizioneService.setDurataMinuti(iscrizione);
 
         // sync note
         iscrizione.setNote(compIscrizione.getNote());

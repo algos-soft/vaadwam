@@ -201,7 +201,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
             localitaExtraField.setEnabled(true);
         }// end of if/else cycle
 
-        regolaKey(servizio);
+//        regolaKey(servizio);
         regolaOrario(servizio);
         creaIscrizioni(servizio);
     }// end of method

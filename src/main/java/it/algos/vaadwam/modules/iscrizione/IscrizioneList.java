@@ -1,6 +1,5 @@
 package it.algos.vaadwam.modules.iscrizione;
 
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -10,20 +9,13 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.dialog.IADialog;
-import it.algos.vaadflow.ui.MainLayout;
-import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.WamLayout;
-import it.algos.vaadwam.modules.funzione.Funzione;
-import it.algos.vaadwam.modules.funzione.FunzioneDialog;
-import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamViewList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.vaadin.klaudeta.PaginatedGrid;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.ArrayList;
 
@@ -55,6 +47,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_ISC;
 @Route(value = TAG_ISC, layout = WamLayout.class)
 @Qualifier(TAG_ISC)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "iscrizioni", menuIcon = VaadinIcon.LIST_OL,  roleTypeVisibility = EARoleType.developer)
 public class IscrizioneList extends WamViewList {

@@ -44,7 +44,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_COM;
 @Route(value = TAG_COM, layout = MainLayout14.class)
 @Qualifier(TAG_COM)
 @Slf4j
-@Secured("admin")
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "companies", menuIcon = VaadinIcon.FACTORY, searchProperty = "code", roleTypeVisibility = EARoleType.admin)
 public class CompanyList extends AGridViewList {

@@ -49,7 +49,7 @@ import static it.algos.vaadflow.application.FlowCost.TAG_GIO;
 @Route(value = TAG_GIO, layout = MainLayout14.class)
 @Qualifier(TAG_GIO)
 @Slf4j
-@Secured("developer")
+@Secured("user")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = true, menuName = "giorni", menuIcon = VaadinIcon.CALENDAR, searchProperty = "mese", roleTypeVisibility = EARoleType.developer)
 public class GiornoList extends AGridViewList {

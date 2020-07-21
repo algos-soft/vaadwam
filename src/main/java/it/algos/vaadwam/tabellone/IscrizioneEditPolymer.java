@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -52,6 +53,10 @@ import static it.algos.vaadwam.application.WamCost.MOSTRA_ORARIO_SERVIZIO;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
 public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> {
+
+    private static final int MIN_SETTIMANE_RIPETI = 1;
+
+    private static final int MAX_SETTIMANE_RIPETI = 12;
 
     @Autowired
     protected AVaadinService vaadinService;
@@ -108,9 +113,6 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     private Milite milite;
 
-    private static final int MIN_SETTIMANE_RIPETI=1;
-    private static final int MAX_SETTIMANE_RIPETI=12;
-
 
     /**
      * @param tabellone  il tabellone di riferimento per effettuare le callbacks
@@ -157,6 +159,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         noteIscrEditor.setClassName("noteTurnoViewer");
         noteIscrEditor.setNote(getModel().getNote());
         noteIscrEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+
             @Override
             public void onNoteChanged(String newText, String oldText) {
                 getModel().setNote(newText);
@@ -177,29 +180,30 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
      * <p>
      * Area presente solo se è nuova iscrizione
      */
-    private void initRipetizioni(){
+    private void initRipetizioni() {
 
-        if(iscrizione.getMilite()==null){
+        if (iscrizione.getMilite() == null) {
 
-            areaRipetizioni.getElement().getStyle().set("display","block");
+            areaRipetizioni.getElement().getStyle().set("display", "block");
 
             // gestione visibilità checkbox Ripeti e num settimane
             checkboxRipeti.setValue(false);
-            settimaneRipeti.getElement().getStyle().set("visibility","hidden");
+            settimaneRipeti.getElement().getStyle().set("visibility", "hidden");
             settimaneRipeti.setValue(1);
             checkboxRipeti.addValueChangeListener(new HasValue.ValueChangeListener<AbstractField.ComponentValueChangeEvent<Checkbox, Boolean>>() {
+
                 @Override
                 public void valueChanged(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
-                    if(event.getValue()){
-                        settimaneRipeti.getElement().getStyle().set("visibility","visible");
-                    }else{
-                        settimaneRipeti.getElement().getStyle().set("visibility","hidden");
+                    if (event.getValue()) {
+                        settimaneRipeti.getElement().getStyle().set("visibility", "visible");
+                    } else {
+                        settimaneRipeti.getElement().getStyle().set("visibility", "hidden");
                     }
                 }
             });
 
-        }else{
-            areaRipetizioni.getElement().getStyle().set("display","none");
+        } else {
+            areaRipetizioni.getElement().getStyle().set("display", "none");
         }
 
     }
@@ -285,9 +289,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // NO! va in conflitto col return nelle note
-//        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
-//            bConferma.addClickShortcut(Key.ENTER);
-//        }
+        //        if (pref.isBool(USA_BUTTON_SHORTCUT)) {
+        //            bConferma.addClickShortcut(Key.ENTER);
+        //        }
 
         bConferma.addClickListener(e -> {
             validateInputAndProceed();
@@ -309,18 +313,13 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
                 bElimina.getStyle().set("color", "white");
                 bElimina.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
                     if (himself()) { // controllo di sicurezza per non affidarsi solo all'invisibilità del pulsante nella GUI
-                        Turno oldTurno= SerializationUtils.clone(turno);
+                        Turno oldTurno = SerializationUtils.clone(turno);
                         resetIscrizione();
                         tabellone.confermaDialogoTurno(dialogo, turno, oldTurno, isNuovoTurno);
                     }
                 });
 
-                ConfirmDialog.createWarning()
-                        .withCaption("Conferma cancellazione")
-                        .withMessage("Sei sicuro di voler eliminare l'iscrizione?")
-                        .withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE))
-                        .withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH))
-                        .open();
+                ConfirmDialog.createWarning().withCaption("Conferma cancellazione").withMessage("Sei sicuro di voler eliminare l'iscrizione?").withAbortButton(ButtonOption.caption("Annulla"), ButtonOption.icon(VaadinIcon.CLOSE)).withButton(bElimina, ButtonOption.caption("Elimina"), ButtonOption.focus(), ButtonOption.icon(VaadinIcon.TRASH)).open();
 
 
             });
@@ -384,7 +383,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // no una sola ora valorizzata e una nulla
-        if(valid){
+        if (valid) {
             if ((oraInizio != null && oraFine == null) || (oraInizio == null && oraFine != null)) {
                 problem = "Ora inizio e ora fine devono avere entrambe un valore";
                 valid = false;
@@ -392,19 +391,19 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // se acceso ripeti, controlla range settimane ripetizione
-        if(valid){
-            if(checkboxRipeti.getValue()){
-                if (!settimaneRipeti.isEmpty()){
-                    int settimane=settimaneRipeti.getValue();
-                    if(settimane<MIN_SETTIMANE_RIPETI){
-                        problem = "Il numero minimo di settimane di ripetizione è "+MIN_SETTIMANE_RIPETI;
+        if (valid) {
+            if (checkboxRipeti.getValue()) {
+                if (!settimaneRipeti.isEmpty()) {
+                    int settimane = settimaneRipeti.getValue();
+                    if (settimane < MIN_SETTIMANE_RIPETI) {
+                        problem = "Il numero minimo di settimane di ripetizione è " + MIN_SETTIMANE_RIPETI;
                         valid = false;
                     }
-                    if(settimane>MAX_SETTIMANE_RIPETI){
-                        problem = "Il numero massimo di settimane di ripetizione è "+MAX_SETTIMANE_RIPETI;
+                    if (settimane > MAX_SETTIMANE_RIPETI) {
+                        problem = "Il numero massimo di settimane di ripetizione è " + MAX_SETTIMANE_RIPETI;
                         valid = false;
                     }
-                }else{
+                } else {
                     problem = "Numero di settimane non specificato";
                     valid = false;
                 }
@@ -431,24 +430,20 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
         // se si tratta di nuova iscrizione ed esistono già
         // altre iscrizioni del milite nello stesso giorno, chiede conferma per proseguire
-        if(iscrizione.getMilite()==null){
+        if (iscrizione.getMilite() == null) {
             LocalDate giorno = turno.getGiorno();
             List<Iscrizione> iscrizioni = iscrizioneService.getByMiliteAndGiorno(wamLogin.getMilite(), giorno);
 
-            if(iscrizioni.size()>0){
+            if (iscrizioni.size() > 0) {
 
-                Button bConferma=new Button();
+                Button bConferma = new Button();
                 bConferma.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> syncAndConferma());
 
-                ConfirmDialog dialog = ConfirmDialog.createWarning()
-                        .withCaption("Attenzione! Sei già iscritto ad altri turni nello stesso giorno")
-                        .withMessage("Procedo ugualmente?")
-                        .withButton(new Button(),ButtonOption.caption("Annulla"), ButtonOption.closeOnClick(true))
-                        .withButton(bConferma, ButtonOption.caption("Procedi"), ButtonOption.closeOnClick(true));
+                ConfirmDialog dialog = ConfirmDialog.createWarning().withCaption("Attenzione! Sei già iscritto ad altri turni nello stesso giorno").withMessage("Procedo ugualmente?").withButton(new Button(), ButtonOption.caption("Annulla"), ButtonOption.closeOnClick(true)).withButton(bConferma, ButtonOption.caption("Procedi"), ButtonOption.closeOnClick(true));
 
                 dialog.open();
 
-            }else{
+            } else {
                 syncAndConferma();
             }
         } else {
@@ -458,16 +453,17 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
 
     }
 
+
     /**
      * Sincronizza il turno con i dati della iscrizione e invia conferma al tabellone
      */
-    private void syncAndConferma(){
+    private void syncAndConferma() {
         syncIscrizione();
         // nota: non si può registrare solo l'iscrizione perché in Mongo è interna al Turno
-        boolean ripeti= checkboxRipeti.getValue();
-        int settimane=0;
-        if (ripeti){
-            settimane=settimaneRipeti.getValue();
+        boolean ripeti = checkboxRipeti.getValue();
+        int settimane = 0;
+        if (ripeti) {
+            settimane = settimaneRipeti.getValue();
         }
         tabellone.confermaDialogoIscrizione(dialogo, turno, iscrizione, ripeti, settimane, isNuovoTurno);
     }
@@ -490,6 +486,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private void syncIscrizione() {
 
         iscrizione.setMilite(milite);
+        iscrizione.setLastModifica(LocalDateTime.now());
 
         String sOra;
         LocalTime time;

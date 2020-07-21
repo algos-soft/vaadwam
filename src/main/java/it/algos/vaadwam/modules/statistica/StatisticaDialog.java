@@ -89,7 +89,7 @@ public class StatisticaDialog extends AViewDialog<Statistica> {
 
         titlePlaceholder.removeAll();
         titlePlaceholder.add(new H2(title));
-        titlePlaceholder.add("Periodo 1° gen 2020 - 25 giu 2020");
+        titlePlaceholder.add("Periodo 1° gen 2020 - " + date.get());
     }// end of method
 
 

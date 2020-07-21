@@ -402,6 +402,7 @@ public class StatisticaService extends WamService {
         long inizio = System.currentTimeMillis();
         Milite militeIscritto;
         int turniMilite = 0;
+        int minutiTotali = 0;
         int oreTotali = 0;
         LocalDate last = null;
         int delta = 0;
@@ -436,7 +437,7 @@ public class StatisticaService extends WamService {
                                 if (durata < 0) {
                                     logger.error("Durata turno negativa", this.getClass(), "elaboraSingoloMilite");
                                 } else {
-                                    oreTotali += durata;
+                                    minutiTotali += durata;
                                 }
                             }
                             last = turno.giorno;
@@ -458,6 +459,11 @@ public class StatisticaService extends WamService {
         }
 
         if (turniMilite > 0) {
+            try {
+                oreTotali = minutiTotali / 60;
+            } catch (Exception unErrore) {
+                logger.error(unErrore, this.getClass(), "elaboraSingoloMilite");
+            }
             Statistica statistica = newEntity(croce, anno, 0, milite, last, delta, valido, turniMilite, oreTotali);
             media = oreTotali / turniMilite;
             statistica.media = media;
@@ -507,7 +513,7 @@ public class StatisticaService extends WamService {
 
                 .fine(iscriz.fine)
 
-                .durataEffettiva(iscrizioneService.durataOre(iscriz))
+                .durataEffettiva(iscrizioneService.durataMinuti(iscriz))
 
                 .esisteProblema(iscriz.esisteProblema)
 

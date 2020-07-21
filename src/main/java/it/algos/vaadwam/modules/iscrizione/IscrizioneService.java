@@ -116,13 +116,7 @@ public class IscrizioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Iscrizione newEntity(Funzione funzione, Milite milite, int durata, boolean esisteProblema) {
-        Iscrizione entity = Iscrizione.builderIscrizione()
-                .funzione(funzione)
-                .milite(milite)
-                .lastModifica(LocalDateTime.now())
-                .durataEffettiva(durata)
-                .esisteProblema(esisteProblema)
-                .build();
+        Iscrizione entity = Iscrizione.builderIscrizione().funzione(funzione).milite(milite).lastModifica(LocalDateTime.now()).durataEffettiva(durata).esisteProblema(esisteProblema).build();
 
         return entity;
     }// end of method
@@ -140,11 +134,7 @@ public class IscrizioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Iscrizione newEntity(Servizio servizio, Funzione funzione) {
-        Iscrizione entity = Iscrizione.builderIscrizione()
-                .funzione(funzione)
-                .inizio(servizio.inizio)
-                .fine(servizio.fine)
-                .build();
+        Iscrizione entity = Iscrizione.builderIscrizione().funzione(funzione).inizio(servizio.inizio).fine(servizio.fine).build();
 
         return entity;
     }// end of method
@@ -222,9 +212,9 @@ public class IscrizioneService extends WamService {
     public boolean isValida(Iscrizione iscrizione, Servizio servizio) {
         boolean valida = true;
 
-        if(servizio.getObbligatorie().contains(iscrizione.getFunzione())){
-            if(iscrizione.getMilite()==null){
-                valida=false;
+        if (servizio.getObbligatorie().contains(iscrizione.getFunzione())) {
+            if (iscrizione.getMilite() == null) {
+                valida = false;
             }
         }
 
@@ -290,15 +280,6 @@ public class IscrizioneService extends WamService {
 
 
     public int durataOre(Iscrizione iscr) {
-        //        int durata = 0;
-        //
-        //        if (iscr != null && iscr.inizio != null && iscr.fine != null) {
-        //            durata = date.differenza(iscr.fine, iscr.inizio);
-        //        }// end of if cycle
-        //
-        //        return durata;
-
-        int durata = 0;
         int fine = 24;
 
         if (iscr != null) {
@@ -334,6 +315,48 @@ public class IscrizioneService extends WamService {
     }// end of method
 
 
+    public int durataMinuti(Iscrizione iscr) {
+        int mezzanotte = 24 * 60;
+        int inizio = 0;
+        int fine = 0;
+
+        if (iscr != null) {
+            if (iscr.inizio == null || iscr.fine == null) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+
+        inizio = iscr.inizio.getHour() * 60;
+        inizio += iscr.inizio.getMinute();
+
+        fine = iscr.fine.getHour() * 60;
+        fine += iscr.fine.getMinute();
+
+        if (iscr.inizio == LocalTime.MIDNIGHT) {
+            return fine;
+        }
+
+        if (iscr.fine == LocalTime.MIDNIGHT) {
+            return mezzanotte - inizio;
+        }
+
+        if (fine > inizio) {
+            return fine - inizio;
+        } else {
+            return mezzanotte + fine - inizio;
+        }
+    }// end of method
+
+
+    public void setDurataMinuti(Iscrizione iscrizione) {
+        if (iscrizione != null) {
+            iscrizione.durataEffettiva = durataMinuti(iscrizione);
+        }// end of if cycle
+    }// end of method
+
+
     public void setDurataSave(Iscrizione iscrizione) {
         if (iscrizione != null) {
             setDurata(iscrizione);
@@ -348,11 +371,11 @@ public class IscrizioneService extends WamService {
     public List<Iscrizione> getByMiliteAndGiorno(Milite milite, LocalDate giorno) {
         List<Iscrizione> iscrizioni = new ArrayList<>();
         List<Turno> turni = turnoService.findByDate(giorno);
-        for(Turno turno : turni){
+        for (Turno turno : turni) {
             List<Iscrizione> turnoIscrizioni = turno.getIscrizioni();
-            if(turnoIscrizioni!=null){
-                for(Iscrizione iscrizione : turnoIscrizioni){
-                    if(iscrizione.getMilite()!=null && iscrizione.getMilite().equals(milite)){
+            if (turnoIscrizioni != null) {
+                for (Iscrizione iscrizione : turnoIscrizioni) {
+                    if (iscrizione.getMilite() != null && iscrizione.getMilite().equals(milite)) {
                         iscrizioni.add(iscrizione);
                     }
                 }

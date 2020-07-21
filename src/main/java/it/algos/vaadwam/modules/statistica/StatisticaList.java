@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.haijian.Exporter;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -120,7 +121,7 @@ import static it.algos.vaadwam.application.WamCost.TASK_STATISTICA;
 @Route(value = TAG_STA, layout = WamLayout.class)
 @Qualifier(TAG_STA)
 @Slf4j
-//@Secured("admin")
+@Secured("admin")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "statistiche", menuIcon = VaadinIcon.RECORDS, sortProperty = "ordine", roleTypeVisibility = EARoleType.user)
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
@@ -257,13 +258,14 @@ public class StatisticaList extends WamViewList {
     public void actionSincroCombo() {
         updateFiltri();
         updateGrid();
-        //        updateColumns();//Non funziona
+        //                updateColumns();//Non funziona
+        //        grid.getColumnByKey("delta").setVisible(false);
     }// end of method
 
 
     public void updateColumns() {
         List<String> gridPropertyNamesList = new ArrayList<>();
-        boolean isAnnoCorrente = true;
+        boolean isAnnoCorrente = false;
 
         grid.removeAllColumns();
 
@@ -273,13 +275,14 @@ public class StatisticaList extends WamViewList {
         gridPropertyNamesList.add("anno");
         gridPropertyNamesList.add("milite");
         gridPropertyNamesList.add("last");
-        if (isAnnoCorrente) {
-            gridPropertyNamesList.add("delta");
-        }
+        gridPropertyNamesList.add("delta");
         gridPropertyNamesList.add("valido");
         gridPropertyNamesList.add("turni");
         gridPropertyNamesList.add("ore");
         gridPropertyNamesList.add("media");
+
+        grid.getColumnByKey("delta").setVisible(isAnnoCorrente);
+
         addColumnsGrid(gridPropertyNamesList);
     }// end of method
 

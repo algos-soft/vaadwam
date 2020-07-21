@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.time.LocalDate;
@@ -69,6 +70,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 @Route(value = TAG_TUR, layout = WamLayout.class)
 @Qualifier(TAG_TUR)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = false)
 @AIView(vaadflow = false, menuName = "turni", menuIcon = VaadinIcon.SITEMAP, roleTypeVisibility = EARoleType.developer)
 public class TurnoList extends WamViewList {

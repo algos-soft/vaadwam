@@ -6,16 +6,14 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.annotation.AIView;
 import it.algos.vaadflow.modules.role.EARoleType;
-import it.algos.vaadflow.presenter.IAPresenter;
 import it.algos.vaadflow.service.IAService;
-import it.algos.vaadflow.ui.MainLayout14;
-import it.algos.vaadflow.ui.dialog.IADialog;
-import it.algos.vaadflow.ui.MainLayout;
 import it.algos.vaadflow.ui.list.AGridViewList;
 import it.algos.vaadwam.WamLayout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
+
 import static it.algos.vaadwam.application.WamCost.TAG_RIG;
 
 /**
@@ -45,6 +43,7 @@ import static it.algos.vaadwam.application.WamCost.TAG_RIG;
 @Qualifier(TAG_RIG)
 @AIView(roleTypeVisibility = EARoleType.developer)
 @Slf4j
+@Secured("developer")
 @AIScript(sovrascrivibile = true)
 public class RigaList extends AGridViewList {
 
