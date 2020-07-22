@@ -516,6 +516,9 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             iscrizione.setFine(null);
         }
 
+        // sync durata
+        iscrizioneService.setDurataMinuti(iscrizione);
+
         iscrizione.setNote(getModel().getNote());
     }
 
