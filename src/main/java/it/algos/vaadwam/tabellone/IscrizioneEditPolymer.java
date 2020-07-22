@@ -486,7 +486,6 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
     private void syncIscrizione() {
 
         iscrizione.setMilite(milite);
-        iscrizione.setLastModifica(LocalDateTime.now());
 
         String sOra;
         LocalTime time;
@@ -517,6 +516,7 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
         }
 
         // sync durata
+        iscrizione.setLastModifica(LocalDateTime.now());
         iscrizioneService.setDurataMinuti(iscrizione);
 
         iscrizione.setNote(getModel().getNote());

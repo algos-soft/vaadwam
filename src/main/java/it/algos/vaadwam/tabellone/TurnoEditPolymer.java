@@ -376,7 +376,6 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
         if (idMilite != null) {
             Milite milite = militeService.findById(idMilite);
             iscrizione.setMilite(milite);
-            iscrizione.setLastModifica(LocalDateTime.now());
         } else {
             iscrizione.setMilite(null);
         }
@@ -386,6 +385,7 @@ public class TurnoEditPolymer extends PolymerTemplate<TurnoEditModel> {
         iscrizione.setFine(compIscrizione.getOraFine());
 
         // sync durata
+        iscrizione.setLastModifica(LocalDateTime.now());
         iscrizioneService.setDurataMinuti(iscrizione);
 
         // sync note
