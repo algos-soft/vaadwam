@@ -202,6 +202,14 @@ public class TurnoList extends WamViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
+        if (wamLogin.isDeveloper()) {
+            Button fixDurata = new Button("Fix durata", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            fixDurata.getElement().setAttribute("theme", "error");
+            fixDurata.addClassName("view-toolbar__button");
+            fixDurata.addClickListener(e -> fixDurata());
+            topPlaceholder.add(fixDurata);
+        }// end of if cycle
+
         //--Import non più usato/usabile
         //        String tagCroce = wamLogin.getCroce().code;
         //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
@@ -322,6 +330,15 @@ public class TurnoList extends WamViewList {
         migration.importTurniStorico(croce);
         wamLogger.log(EAWamLogType.importOld, "Import storico dei turni di tutti gli anni escluso il 2020");
         UI.getCurrent().getPage().reload();
+    }// end of method
+
+
+    /**
+     * Patch per regolare la durata effettiva di TUTTI i turni<br>
+     * Può essere lanciato anche più volte, senza problemi <br>
+     */
+    protected void fixDurata() {
+        ((TurnoService) service).fixDurata();
     }// end of method
 
 

@@ -324,28 +324,6 @@ public class TurnoService extends WamService {
     }// end of method
 
 
-    //    /**
-    //     * Importazione di dati <br>
-    //     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
-    //     *
-    //     * @param croce di riferimento
-    //     *
-    //     * @return true se sono stati importati correttamente
-    //     */
-    //    @Override
-    //    public ImportResult importa(Croce croce) {
-    //        boolean status;
-    //        super.importa();
-    //        status = migration.importTurni((Croce) croce);
-    //
-    ////        if (status) {
-    //        pref.saveValue(LAST_IMPORT_TURNI, LocalDateTime.now());
-    ////        }// end of if cycle
-    //
-    //        return null;
-    //    }// end of method
-
-
     /**
      * Returns the number of entities available for the company
      *
@@ -371,6 +349,37 @@ public class TurnoService extends WamService {
      */
     public int countByCroce(Croce croce) {
         return repository.countAllByCroceOrderByGiornoAsc(croce);
+    }// end of method
+
+
+    /**
+     * Returns instances of the company <br>
+     * Lista ordinata <br>
+     *
+     * @param croce di appartenenza (obbligatoria)
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Turno> findAllByCroce(Croce croce) {
+        return repository.findAllByCroceOrderByGiornoAsc(croce);
+    }// end of method
+
+
+    /**
+     * Returns instances <br>
+     * Lista ordinata <br>
+     *
+     * @return lista ordinata di tutte le entities
+     */
+    public List<Turno> findAll() {
+        List<Turno> items = null;
+        Croce croce = getCroce();
+
+        if (croce != null) {
+            items = findAllByCroce(croce);
+        }// end of if cycle
+
+        return items;
     }// end of method
 
 
@@ -759,6 +768,56 @@ public class TurnoService extends WamService {
         }// end of if cycle
 
         return durata;
+    }// end of method
+
+
+    /**
+     * Patch per regolare la durata effettiva di TUTTI i turni <br>
+     * Può essere lanciato anche più volte, senza problemi <br>
+     */
+    public void fixDurata() {
+        String message;
+        Croce croce = getCroce();
+        int totali = countByCroce(croce);
+        int fatti = 0;
+        long inizio = System.currentTimeMillis();
+        List<Turno> lista;
+
+        message = croce.code.toUpperCase() + " - Da elaborare " + text.format(totali) + " turni totali per tutti gli anni";
+        log.info(message);
+
+        for (EAFiltroAnno filtroAnno : EAFiltroAnno.values()) {
+            lista = findAllByYear(croce, filtroAnno.get());
+            for (Turno turno : lista) {
+                fixDurataSingoloTurno(turno);
+                fatti++;
+            }
+            message = "Elaborati " + text.format(fatti) + "/" + text.format(totali) + " turni dell'anno " + filtroAnno.get() + " in " + date.deltaText(inizio);
+            log.info(message);
+        }
+
+    }// end of method
+
+
+    /**
+     * Patch per regolare la durata effettiva di TUTTI i turni <br>
+     * Può essere lanciato anche più volte, senza problemi <br>
+     */
+    public void fixDurataSingoloTurno(Turno turno) {
+        List<Iscrizione> lista = turno.iscrizioni;
+
+        if (lista != null) {
+            for (Iscrizione iscr : lista) {
+                if (iscr.milite != null) {
+                    if (iscr.inizio == null || iscr.fine == null) {
+                        logger.warn("Mancano gli orari", this.getClass(), "fixDurataSingoloTurno");
+                        return;
+                    }
+                    iscrizioneService.setDurataMinuti(iscr);
+                }
+            }
+            save(turno);
+        }
     }// end of method
 
 }// end of class

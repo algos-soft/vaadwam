@@ -338,6 +338,7 @@ public class TurnoDialog extends WamViewDialog<Turno> {
      * Primo ingresso dopo il click sul bottone <br>
      */
     protected void save(Iscrizione entityBean, EAOperation operation) {
+        iscrizioneService.setDurataMinuti(entityBean);
         updateItems();
     }// end of method
 

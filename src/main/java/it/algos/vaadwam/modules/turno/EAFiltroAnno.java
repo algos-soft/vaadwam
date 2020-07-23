@@ -10,7 +10,21 @@ import java.time.LocalDate;
  * Time: 10:08
  */
 public enum EAFiltroAnno {
-    corrente(0), menoUno(1), menoDue(2), menoTre(3), menoQuattro(4), menoCinque(5), menoSei(6), menoSette(7);
+    corrente(0),
+
+    menoUno(1),
+
+    menoDue(2),
+
+    menoTre(3),
+
+    menoQuattro(4),
+
+    menoCinque(5),
+
+    menoSei(6),
+
+    menoSette(7);
 
     public int delta;
 
@@ -29,6 +43,11 @@ public enum EAFiltroAnno {
         } else {
             popupLabel = "" + (LocalDate.now().getYear() - delta);
         }// end of if/else cycle
+    }// end of method
+
+
+    public int get() {
+        return LocalDate.now().getYear() - delta;
     }// end of method
 
 

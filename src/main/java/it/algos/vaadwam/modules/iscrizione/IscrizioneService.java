@@ -134,7 +134,15 @@ public class IscrizioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Iscrizione newEntity(Servizio servizio, Funzione funzione) {
-        Iscrizione entity = Iscrizione.builderIscrizione().funzione(funzione).inizio(servizio.inizio).fine(servizio.fine).build();
+        Iscrizione entity = Iscrizione.builderIscrizione()
+
+                .funzione(funzione)
+
+                .inizio(servizio.inizio)
+
+                .fine(servizio.fine)
+
+                .build();
 
         return entity;
     }// end of method
