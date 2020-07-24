@@ -97,6 +97,7 @@ public class Statistica extends WamEntity {
      * anno di riferimento (obbligatorio)
      */
     @NotNull
+    @Indexed()
     @AIField(type = EAFieldType.integerNoFormat, widthEM = 6)
     @AIColumn(widthEM = 6)
     public int anno;
@@ -117,6 +118,7 @@ public class Statistica extends WamEntity {
      * ultimo turno (obbligatorio)
      */
     @NotNull
+    @Indexed()
     @Field("last")
     @AIField(type = EAFieldType.monthdate)
     @AIColumn(widthEM = 6)
@@ -177,6 +179,7 @@ public class Statistica extends WamEntity {
      * riferimento statico SENZA @DBRef (embedded)
      */
     @NotNull
+    @Indexed()
     @Field("isc")
     @AIField(type = EAFieldType.noone, widthEM = 20, name = "Iscrizioni per questo milite")
     public List<StaTurnoIsc> iscrizioni;
