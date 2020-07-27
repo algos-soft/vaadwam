@@ -358,7 +358,7 @@ public class StatisticaService extends WamService {
     public boolean elabora(Croce croce, int anno) {
         boolean status = false;
         long inizio = System.currentTimeMillis();
-        List<Milite> militi;
+        List<Milite> militi = null;
         List<Turno> listaTurniCroce;
         List<Statistica> listaStatistiche;
         boolean isAnnoCorrente = true;
@@ -383,7 +383,7 @@ public class StatisticaService extends WamService {
 
         setLastElabora(croce, inizio);
         long elapsedSec = (System.currentTimeMillis() - inizio) / 1000;
-        String msg = "Elaborati i dati di " + militeService.countByCroce(croce) + " militi in " + elapsedSec + "s";
+        String msg = "Elaborati i dati di " + militeService.countByCroce(croce) + " militi della croce " + croce.code + " in " + elapsedSec + "s";
 
         WamLogin wamLogin = getWamLogin();
         Milite milite = null;

@@ -177,7 +177,7 @@ public class WamLayout extends MainLayout14 {
     protected Tabs getTabMenu() {
         Tabs tabs = new Tabs();
 
-        if (context.isAdmin()) {
+        if (context != null && context.isAdmin()) {
             tabs.add(menuService.creaAlgosTab(MiliteList.class));
             tabs.add(menuService.creaAlgosTabTabellone());
             tabs.add(menuService.creaAlgosTab(StatisticaList.class));

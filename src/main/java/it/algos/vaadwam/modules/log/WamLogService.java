@@ -199,7 +199,8 @@ public class WamLogService extends AService {
     /**
      * Logga un evento lanciato dal milite loggato
      * <p>
-     * @param   type tipo di evento
+     *
+     * @param type    tipo di evento
      * @param message messaggio di dettaglio
      */
     public void log(EAWamLogType type, String message) {
@@ -213,21 +214,24 @@ public class WamLogService extends AService {
      * In quello esterno viene loggato sempre, in quello interno solo se
      * l'evento è lanciato dal milite loggato e il milite non è un milite fantasma.
      * <p>
-     * @param   type tipo di evento
-     * @param message messaggio di dettaglio
-     * @param milite il milite loggato (passare null se non è un evento lanciato dal milite loggato)
+     *
+     * @param type      tipo di evento
+     * @param message   messaggio di dettaglio
+     * @param milite    il milite loggato (passare null se non è un evento lanciato dal milite loggato)
      * @param ipAddress l'indirizzo ip di chi ha lanciato l'evento
      */
     public void log(EAWamLogType type, String message, Milite milite, String ipAddress) {
 
         Croce croce = getCroce();
 
-        if(milite==null){
-            milite=getMiliteLoggato();
+        if (milite == null) {
+            milite = getMiliteLoggato();
         }
 
-        if(StringUtils.isEmpty(ipAddress)){
-            ipAddress=getWamLogin().getAddressIP();
+        if (StringUtils.isEmpty(ipAddress)) {
+            if (getWamLogin() != null) {
+                ipAddress = getWamLogin().getAddressIP();
+            }
         }
 
         // log esterno
@@ -240,10 +244,9 @@ public class WamLogService extends AService {
             mongo.update(wamLog, WamLog.class);
         }
 
-
-        if (croce == null || milite == null) {
-            log.warn("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
-        }
+        //        if (croce == null || milite == null) {
+        //            log.warn("Chiamato il metodo WamLogService.log() con croce o milite nullo", Thread.currentThread().getStackTrace());
+        //        }
 
     }
 
