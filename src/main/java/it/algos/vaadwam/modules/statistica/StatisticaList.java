@@ -494,6 +494,7 @@ public class StatisticaList extends WamViewList {
         anchorEsporta.getElement().setAttribute("Export", true);
         Button button = new Button(new Icon(VaadinIcon.DOWNLOAD_ALT));
         button.getElement().setAttribute("style", "color: red");
+        anchorEsporta.add(button);
         exportPlaceholder.removeAll();
         exportPlaceholder.add(anchorEsporta);
 
