@@ -33,6 +33,7 @@ import static it.algos.vaadwam.application.WamCost.USA_DAEMON_STATISTICHE;
 @Slf4j
 public class TaskStatistica extends ATask {
 
+
     /**
      * Service (@Scope = 'singleton') iniettato da Spring <br>
      * Unico per tutta l'applicazione. Usato come libreria.

@@ -8,7 +8,6 @@ import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -87,7 +86,7 @@ public class Statistica extends WamEntity {
      * il più importante per primo <br>
      */
     @NotNull
-    @Indexed()
+//    @Indexed()
     @Field("ord")
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "#", widthEM = 3)
@@ -97,7 +96,7 @@ public class Statistica extends WamEntity {
      * anno di riferimento (obbligatorio)
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @AIField(type = EAFieldType.integerNoFormat, widthEM = 6)
     @AIColumn(widthEM = 6)
     public int anno;
@@ -118,7 +117,7 @@ public class Statistica extends WamEntity {
      * ultimo turno (obbligatorio)
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("last")
     @AIField(type = EAFieldType.monthdate)
     @AIColumn(widthEM = 6)
@@ -130,7 +129,7 @@ public class Statistica extends WamEntity {
      * ha senso solo per l'anno corrente <br>
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("dif")
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "Giorni", widthEM = 5)
@@ -148,7 +147,7 @@ public class Statistica extends WamEntity {
      * turni totali effettuati nell'anno (obbligatorio) <br>
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("tur")
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "Turni", widthEM = 5)
@@ -158,7 +157,7 @@ public class Statistica extends WamEntity {
      * ore totali effettuate nell'anno (obbligatorio) <br>
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("ore")
     @AIField(type = EAFieldType.integer, widthEM = 3)
     @AIColumn(name = "Ore", widthEM = 5)
@@ -168,7 +167,7 @@ public class Statistica extends WamEntity {
      * ore medie per turno <br>
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("media")
     @AIField(type = EAFieldType.onedecimal, widthEM = 3)
     @AIColumn(name = "Media", widthEM = 5)
@@ -179,7 +178,7 @@ public class Statistica extends WamEntity {
      * riferimento statico SENZA @DBRef (embedded)
      */
     @NotNull
-    @Indexed()
+    //    @Indexed()
     @Field("isc")
     @AIField(type = EAFieldType.noone, widthEM = 20, name = "Iscrizioni per questo milite")
     public List<StaTurnoIsc> iscrizioni;

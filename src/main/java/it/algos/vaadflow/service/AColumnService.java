@@ -141,6 +141,7 @@ public class AColumnService extends AbstractService {
         String widthHeaderIcon = annotation.getHeaderIconSizePX(entityClazz, propertyName);
         String colorHeaderIcon = annotation.getHeaderIconColor(entityClazz, propertyName);
         String methodName = annotation.getMethodNameColumn(entityClazz, propertyName);
+        Field field = reflection.getField(entityClazz, propertyName);
 
         if (type == null) {
             try { // prova ad eseguire il codice
@@ -158,7 +159,6 @@ public class AColumnService extends AbstractService {
             case password:
             case textarea:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
 
                     try { // prova ad eseguire il codice
@@ -174,7 +174,6 @@ public class AColumnService extends AbstractService {
                 break;
             case integer:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
                     int value;
 
@@ -190,7 +189,6 @@ public class AColumnService extends AbstractService {
                 break;
             case integerNoFormat:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
                     int value;
 
@@ -206,7 +204,6 @@ public class AColumnService extends AbstractService {
                 break;
             case lungo:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
                     long value;
 
@@ -222,7 +219,6 @@ public class AColumnService extends AbstractService {
                 break;
             case onedecimal:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
                     int value;
 
@@ -238,7 +234,6 @@ public class AColumnService extends AbstractService {
                 break;
             case checkbox:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     boolean status = false;
                     Icon icon;
 
@@ -262,7 +257,6 @@ public class AColumnService extends AbstractService {
                 break;
             case checkboxreverse:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     boolean status = false;
                     Icon icon;
 
@@ -286,7 +280,6 @@ public class AColumnService extends AbstractService {
                 break;
             case booleano:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     boolean status = false;
 
                     try { // prova ad eseguire il codice
@@ -300,7 +293,6 @@ public class AColumnService extends AbstractService {
                 break;
             case yesno:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     Label label = new Label();
                     String testo = "";
                     boolean status = false;
@@ -326,7 +318,6 @@ public class AColumnService extends AbstractService {
                 break;
             case yesnobold:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     Label label = new Label();
                     String testo = "";
                     boolean status = false;
@@ -382,7 +373,6 @@ public class AColumnService extends AbstractService {
                 //                }));//end of lambda expressions and anonymous inner class
 
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
                     Set valueSet;
 
@@ -419,7 +409,6 @@ public class AColumnService extends AbstractService {
                 //                    return combo;
                 //                }));
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     String testo = "";
 
                     try { // prova ad eseguire il codice
@@ -433,7 +422,6 @@ public class AColumnService extends AbstractService {
                 break;
             case monthdate:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     LocalDate data;
                     String testo = "";
 
@@ -449,7 +437,6 @@ public class AColumnService extends AbstractService {
                 break;
             case weekdate:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     LocalDate data;
                     String testo = "";
 
@@ -465,7 +452,6 @@ public class AColumnService extends AbstractService {
                 break;
             case localdate:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     LocalDate data;
                     String testo = "";
 
@@ -481,7 +467,6 @@ public class AColumnService extends AbstractService {
                 break;
             case localdatetime:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     Object obj;
                     LocalDateTime timeStamp;
                     String testo = "";
@@ -502,7 +487,6 @@ public class AColumnService extends AbstractService {
                 break;
             case localtime:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = reflection.getField(entityClazz, propertyName);
                     Object obj;
                     LocalTime timeStamp;
                     String testo = "";
@@ -526,7 +510,6 @@ public class AColumnService extends AbstractService {
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Icon icon = null;
                     VaadinIcon vaadinIcon;
-                    Field field = reflection.getField(entityClazz, propertyName);
 
                     try { // prova ad eseguire il codice
                         vaadinIcon = (VaadinIcon) field.get(entity);
@@ -555,7 +538,6 @@ public class AColumnService extends AbstractService {
             case link:
                 colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
                     Object obj = null;
-                    Field field = reflection.getField(entityClazz, propertyName);
 
                     try { // prova ad eseguire il codice
                         obj = field.get(entity);
@@ -570,7 +552,6 @@ public class AColumnService extends AbstractService {
                     EAPrefType typePref = (EAPrefType) reflection.getPropertyValue(entity, "type");
                     byte[] bytes = null;
                     Object value = null;
-                    Field field = reflection.getField(entityClazz, propertyName);
                     Label label = null;
                     String message = "";
 
