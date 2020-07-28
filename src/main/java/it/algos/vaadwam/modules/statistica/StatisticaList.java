@@ -493,7 +493,7 @@ public class StatisticaList extends WamViewList {
         InputStreamFactory factory = Exporter.exportAsExcel(grid);
         StreamResource streamRes = new StreamResource(message + ".xls", factory);
 
-        Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
+        Anchor anchorEsporta = new Anchor(streamRes, "Sintesi");
         anchorEsporta.getElement().setAttribute("Export", true);
         anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
         exportPlaceholder.removeAll();
@@ -538,7 +538,7 @@ public class StatisticaList extends WamViewList {
         message += date.get(EATime.iso);
         InputStreamFactory factory = Exporter.exportAsExcel(grid);
         StreamResource streamRes = new StreamResource(message + ".xls", factory);
-        Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
+        Anchor anchorEsporta = new Anchor(streamRes, "Dettaglio");
         anchorEsporta.getElement().setAttribute("Export", true);
         anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
         exportPlaceholder.removeAll();

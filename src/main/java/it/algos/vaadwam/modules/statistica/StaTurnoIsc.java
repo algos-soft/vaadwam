@@ -159,7 +159,7 @@ public class StaTurnoIsc extends AEntity {
      */
     @Field("dur")
     @AIField(type = EAFieldType.integer, name = "Durata")
-    @AIColumn(headerIcon = VaadinIcon.CALENDAR)
+    @AIColumn(name = "Min.")
     public int durataEffettiva;
 
 
