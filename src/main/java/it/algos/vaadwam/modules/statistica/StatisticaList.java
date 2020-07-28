@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
@@ -153,6 +154,7 @@ public class StatisticaList extends WamViewList {
 
     private StatisticaService service;
 
+    private HorizontalLayout exportPlaceholder;
 
     /**
      * Costruttore @Autowired <br>
@@ -229,6 +231,74 @@ public class StatisticaList extends WamViewList {
 
 
     /**
+     * Placeholder SOPRA la Grid <br>
+     * Contenuto eventuale, presente di default <br>
+     * - con o senza un bottone per cancellare tutta la collezione
+     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
+     * - con o senza gruppo di ricerca:
+     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
+     * -    bottone per aprire un DialogSearch con diverse property selezionabili
+     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
+     * - con eventuale Popup di selezione, filtro e ordinamento
+     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
+     * - con eventuali altri bottoni specifici <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaTopLayout() {
+        super.creaTopLayout();
+
+        if (topPlaceholder != null && importButton != null) {
+            topPlaceholder.remove(importButton);
+        }// end of if cycleì
+
+        if (wamLogin.isDeveloper()) {
+            Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
+            elaboraButton.getElement().setAttribute("theme", "primary");
+            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
+            elaboraButton.addClassName("view-toolbar__button");
+            elaboraButton.addClickListener(e -> elabora());
+            topPlaceholder.add(elaboraButton);
+        }// end of if cycle
+
+        if (wamLogin.isDeveloper()) {
+            Button elaboraButton = new Button("Elabora anno", new Icon(VaadinIcon.REFRESH));
+            elaboraButton.getElement().setAttribute("theme", "error");
+            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
+            elaboraButton.addClassName("view-toolbar__button");
+            elaboraButton.addClickListener(e -> elaboraAnno());
+            topPlaceholder.add(elaboraButton);
+        }// end of if cycle
+
+
+        if (wamLogin.isAdminOrDev()) {
+            Button exportButton = new Button("Export sintesi", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            exportButton.getElement().setAttribute("theme", "error");
+            exportButton.getElement().setAttribute("title", "Foglio di excel");
+            exportButton.addClassName("view-toolbar__button");
+            exportButton.addClickListener(e -> exportExcelSintesi());
+            topPlaceholder.add(exportButton);
+        }// end of if cycle
+
+        if (wamLogin.isAdminOrDev()) {
+            Button exportButton = new Button("Export dettaglio", new Icon(VaadinIcon.DOWNLOAD_ALT));
+            exportButton.getElement().setAttribute("theme", "error");
+            exportButton.getElement().setAttribute("title", "Foglio di excel");
+            exportButton.addClassName("view-toolbar__button");
+            exportButton.addClickListener(e -> exportExcelDettaglio());
+            topPlaceholder.add(exportButton);
+        }// end of if cycle
+
+        if (wamLogin.isAdminOrDev()) {
+            exportPlaceholder = new HorizontalLayout();
+            topPlaceholder.add(exportPlaceholder);
+        }// end of if cycle
+
+    }// end of method
+
+
+    /**
      * Crea un (eventuale) Popup di selezione, filtro e ordinamento <br>
      * DEVE essere sovrascritto, per regolare il contenuto (items) <br>
      * Invocare PRIMA il metodo della superclasse <br>
@@ -244,7 +314,6 @@ public class StatisticaList extends WamViewList {
             filtroComboBox.setItems(EAFiltroAnno.values());
             filtroComboBox.setValue(EAFiltroAnno.corrente);
             topPlaceholder.add(filtroComboBox);
-
         }// end of method
     }// end of method
 
@@ -355,74 +424,7 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-    /**
-     * Placeholder SOPRA la Grid <br>
-     * Contenuto eventuale, presente di default <br>
-     * - con o senza un bottone per cancellare tutta la collezione
-     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
-     * - con o senza gruppo di ricerca:
-     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
-     * -    bottone per aprire un DialogSearch con diverse property selezionabili
-     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
-     * - con eventuale Popup di selezione, filtro e ordinamento
-     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
-     * - con eventuali altri bottoni specifici <br>
-     * Può essere sovrascritto, per aggiungere informazioni <br>
-     * Invocare PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void creaTopLayout() {
-        super.creaTopLayout();
 
-        if (topPlaceholder != null && importButton != null) {
-            topPlaceholder.remove(importButton);
-        }// end of if cycleì
-
-        if (wamLogin.isDeveloper()) {
-            Button elaboraButton = new Button("Elabora", new Icon(VaadinIcon.REFRESH));
-            elaboraButton.getElement().setAttribute("theme", "primary");
-            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
-            elaboraButton.addClassName("view-toolbar__button");
-            elaboraButton.addClickListener(e -> elabora());
-            topPlaceholder.add(elaboraButton);
-        }// end of if cycle
-
-        if (wamLogin.isDeveloper()) {
-            Button elaboraButton = new Button("Elabora anno", new Icon(VaadinIcon.REFRESH));
-            elaboraButton.getElement().setAttribute("theme", "error");
-            elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
-            elaboraButton.addClassName("view-toolbar__button");
-            elaboraButton.addClickListener(e -> elaboraAnno());
-            topPlaceholder.add(elaboraButton);
-        }// end of if cycle
-
-        if (wamLogin.isDeveloper()) {
-            Button exportButton = new Button("Export sintesi", new Icon(VaadinIcon.DOWNLOAD_ALT));
-            exportButton.getElement().setAttribute("theme", "error");
-            exportButton.getElement().setAttribute("title", "Foglio di excel");
-            exportButton.addClassName("view-toolbar__button");
-            exportButton.addClickListener(e -> exportExcelSintesi());
-            topPlaceholder.add(exportButton);
-        }// end of if cycle
-
-        if (wamLogin.isDeveloper()) {
-            Button exportButton = new Button("Export dettaglio", new Icon(VaadinIcon.DOWNLOAD_ALT));
-            exportButton.getElement().setAttribute("theme", "error");
-            exportButton.getElement().setAttribute("title", "Foglio di excel");
-            exportButton.addClassName("view-toolbar__button");
-            exportButton.addClickListener(e -> exportExcelDettaglio());
-            topPlaceholder.add(exportButton);
-        }// end of if cycle
-
-        //        if (wamLogin.isAdminOrDev()) {
-        //            Button exportButton = new Button("CSV", new Icon(VaadinIcon.DOWNLOAD_ALT));
-        //            exportButton.getElement().setAttribute("theme", "error");
-        //            exportButton.getElement().setAttribute("title", "Foglio di excel");
-        //            exportButton.addClassName("view-toolbar__button");
-        //            exportButton.addClickListener(e -> exportCSV());
-        //            topPlaceholder.add(exportButton);
-        //        }// end of if cycle
-    }// end of method
 
 
     /**
@@ -490,10 +492,12 @@ public class StatisticaList extends WamViewList {
         message += date.get(EATime.iso);
         InputStreamFactory factory = Exporter.exportAsExcel(grid);
         StreamResource streamRes = new StreamResource(message + ".xls", factory);
+
         Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
         anchorEsporta.getElement().setAttribute("Export", true);
         anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        topPlaceholder.add(anchorEsporta);
+        exportPlaceholder.removeAll();
+        exportPlaceholder.add(anchorEsporta);
 
     }
 
@@ -537,7 +541,8 @@ public class StatisticaList extends WamViewList {
         Anchor anchorEsporta = new Anchor(streamRes, "Esporta");
         anchorEsporta.getElement().setAttribute("Export", true);
         anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        topPlaceholder.add(anchorEsporta);
+        exportPlaceholder.removeAll();
+        exportPlaceholder.add(anchorEsporta);
 
     }
 
