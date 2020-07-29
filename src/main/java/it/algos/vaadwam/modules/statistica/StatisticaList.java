@@ -225,7 +225,7 @@ public class StatisticaList extends WamViewList {
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
         super.creaAlertLayout();
-        if (wamLogin.isDeveloper()) {
+        if (wamLogin.isAdminOrDev()) {
             alertPlacehorder.add(getInfoElabora());
         }
     }// end of method
@@ -265,7 +265,6 @@ public class StatisticaList extends WamViewList {
 
         if (wamLogin.isDeveloper()) {
             Button elaboraButton = new Button("Elabora anno", new Icon(VaadinIcon.REFRESH));
-            //            elaboraButton.getElement().setAttribute("theme", "error");
             elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
             elaboraButton.addClassName("view-toolbar__button");
             elaboraButton.addClickListener(e -> elaboraAnno());
