@@ -180,7 +180,7 @@ public class MainLayout14 extends AppLayout {
 
 
     /**
-     * Se l'applicazione è multiCompany e multiUtente, li visualizzo <br>
+     * Se l' applicazione è multiCompany e multiUtente, li visualizzo <br>
      * Altrimenti il nome del programma <br>
      */
     protected TopbarComponent createTopBar() {

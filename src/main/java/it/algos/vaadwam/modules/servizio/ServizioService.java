@@ -791,14 +791,21 @@ public class ServizioService extends WamService {
 
     public boolean usaExtra() {
         boolean usaExtra = false;
-        List<Servizio> listaServizi = findAll();
+        List<Servizio> listaServizi = null;
+        try {
+            listaServizi = findAll();
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "nomeDelMetodo");
+        }
 
-        for (Servizio servizio : listaServizi) {
-            if (!servizio.orarioDefinito) {
-                usaExtra = true;
-                break;
-            }// end of if cycle
-        }// end of for cycle
+        if (listaServizi != null) {
+            for (Servizio servizio : listaServizi) {
+                if (!servizio.orarioDefinito) {
+                    usaExtra = true;
+                    break;
+                }// end of if cycle
+            }// end of for cycle
+        }
 
         return usaExtra;
     }// end of method

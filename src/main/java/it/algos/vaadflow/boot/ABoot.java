@@ -19,7 +19,6 @@ import org.springframework.context.event.EventListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.List;
-import java.util.Locale;
 
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 
@@ -108,6 +107,7 @@ public abstract class ABoot implements ServletContextListener {
         this.iniziaVersioni();
         this.regolaInfo();
         this.regolaRiferimenti();
+
         this.iniziaDataPreliminari();
         this.creaPreferenze();
         this.fixPreferenze();

@@ -23,7 +23,7 @@ public abstract class ACEntity extends AEntity {
 
 
     /**
-     * Riferimento alla company2 (per le sottoclassi che usano questa classe)
+     * Riferimento alla company (per le sottoclassi che usano questa classe)
      * - Nullo se il flag AlgosApp.USE_MULTI_COMPANY=false
      * - Facoltativo od obbligatorio a seconda della sottoclasse, se il flag AlgosApp.USE_MULTI_COMPANY=true
      * riferimento dinamico CON @DBRef

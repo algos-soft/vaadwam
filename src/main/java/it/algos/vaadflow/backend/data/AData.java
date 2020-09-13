@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Scope;
  * Date: lun, 19-mar-2018
  * Time: 21:10
  * <p>
- * Superclasse astratta per la costruzione inziale delle Collections <br>
+ * Superclasse astratta per la costruzione iniziale delle Collections <br>
  * Viene invocata PRIMA della chiamata del browser, tramite un metodo @PostConstruct della sottoclasse <br>
  * Non si possono quindi usare i service specifici dei package che sono @VaadinSessionScope <br>
  * Viceversa le repository specifiche dei package sono delle interfacce e pertanto vengono 'create' al volo <br>
