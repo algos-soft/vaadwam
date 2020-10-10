@@ -315,7 +315,11 @@ public class ServizioService extends WamService {
         Croce croce = getCroce();
 
         if (croce != null) {
-            items = findAllByCroce(croce);
+            try {
+                items = findAllByCroce(croce);
+            } catch (Exception unErrore) {
+                logger.error(unErrore, this.getClass(), "findAll");
+            }
         } else {
             if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
@@ -354,11 +358,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllStandardVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isOrarioDefinito() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isOrarioDefinito() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -370,11 +378,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllStandardInvisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isOrarioDefinito() && !serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isOrarioDefinito() && !serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -386,11 +398,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllExtraVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isExtra() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isExtra() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -402,11 +418,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllNonStandardVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (!serv.isOrarioDefinito() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (!serv.isOrarioDefinito() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -431,7 +451,12 @@ public class ServizioService extends WamService {
      * @return lista ordinata di tutte le entities
      */
     public List<Servizio> findAllByCroce(Croce croce) {
-        return repository.findAllByCroceOrderByOrdineAsc(croce);
+        try {
+            return repository.findAllByCroceOrderByOrdineAsc(croce);
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "findAllByCroce");
+            return null;
+        }
     }// end of method
 
 
