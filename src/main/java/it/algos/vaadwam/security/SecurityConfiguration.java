@@ -85,6 +85,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configure(auth);
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        auth.inMemoryAuthentication().withUser("user").password(passwordEncoder().encode("user")).roles("USER").and().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN");
     }// end of method
 
     /**
@@ -156,8 +157,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // (production mode) static resources
                 "/frontend-es5/**", "/frontend-es6/**");
-
-
     }
 
 }
