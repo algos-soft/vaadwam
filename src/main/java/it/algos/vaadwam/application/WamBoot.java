@@ -10,6 +10,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaList;
 import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.data.WamData;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.CroceList;
@@ -353,7 +354,7 @@ public class WamBoot extends ABoot {
 
         //--patch di accesso come developer
         utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getCRPT(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
+        utenteService.creaIfNotExist(croceService.getDEMO(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
 
         //--patch di accesso come admin per TUTTE le croci
         for (String sigla : EACroce.getValues()) {

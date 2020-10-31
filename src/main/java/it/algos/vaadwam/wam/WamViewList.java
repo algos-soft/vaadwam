@@ -3,8 +3,6 @@ package it.algos.vaadwam.wam;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
@@ -25,6 +23,7 @@ import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.application.WamCost.TASK_IMPORT;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam
@@ -141,6 +140,11 @@ public abstract class WamViewList extends AGridViewList {
 
         if (login.isDeveloper() || login.isAdmin()) {
             super.usaButtonNew = true;
+            if (login.isDeveloper() && wamLogin.getCroce().code.equals(DEMO)) {
+                super.usaButtonReset = true;
+            } else {
+                super.usaButtonReset = false;
+            }
         } else {
             super.usaButtonNew = false;
         }// end of if/else cycle
@@ -166,7 +170,7 @@ public abstract class WamViewList extends AGridViewList {
 
 
     /**
-     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse <br>
+     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sottoclasse <br>
      * <p>
      * Chiamato da AViewList.initView() DOPO fixPreferenze() e sviluppato nella sottoclasse APrefViewList <br>
      * Non può essere sovrascritto <br>
@@ -289,13 +293,13 @@ public abstract class WamViewList extends AGridViewList {
         super.creaTopLayout();
 
         //--Import non più usato/usabile
-        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
-            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
-            importButton.getElement().setAttribute("theme", "error");
-            importButton.addClassName("view-toolbar__button");
-            importButton.addClickListener(e -> importa());
-            topPlaceholder.add(importButton);
-        }// end of if cycle
+        //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
+        //            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+        //            importButton.getElement().setAttribute("theme", "error");
+        //            importButton.addClassName("view-toolbar__button");
+        //            importButton.addClickListener(e -> importa());
+        //            topPlaceholder.add(importButton);
+        //        }// end of if cycle
     }// end of method
 
 

@@ -5,6 +5,7 @@ import it.algos.vaadflow.annotation.*;
 import it.algos.vaadflow.enumeration.EACompanyRequired;
 import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.wam.WamEntity;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
@@ -183,7 +184,7 @@ public class Servizio extends WamEntity {
      */
     @DBRef
     @Field("obb")
-    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni obbligatorie")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, widthEM = 20, name = "Funzioni obbligatorie")
     @AIColumn(name = "Funz. obbligatorie", widthEM = 20)
     public Set<Funzione> obbligatorie;
 
@@ -195,7 +196,7 @@ public class Servizio extends WamEntity {
      */
     @DBRef
     @Field("fac")
-    @AIField(type = EAFieldType.multicombo, serviceClazz = ServizioService.class, widthEM = 20, name = "Funzioni facoltative")
+    @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, widthEM = 20, name = "Funzioni facoltative")
     @AIColumn(name = "Funz. facoltative", widthEM = 20)
     public Set<Funzione> facoltative;
 

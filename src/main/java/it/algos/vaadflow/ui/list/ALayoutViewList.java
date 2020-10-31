@@ -84,6 +84,8 @@ public abstract class ALayoutViewList extends APrefViewList {
         this.setSpacing(false);
         this.setPadding(true);
 
+        this.fixBanner();
+
         this.alertPlacehorder = new VerticalLayout();
         this.topPlaceholder = new HorizontalLayout();
         this.secondTopPlaceholder = new HorizontalLayout();
@@ -102,6 +104,18 @@ public abstract class ALayoutViewList extends APrefViewList {
         gridPlaceholder.setMargin(false);
         gridPlaceholder.setSpacing(false);
         gridPlaceholder.setPadding(false);
+    }// end of method
+
+
+    /**
+     * Banner di avviso <br>
+     */
+    protected void fixBanner() {
+        HorizontalLayout layout = avviso.fixBanner(context);
+
+        if (layout != null) {
+            this.add(layout);
+        }
     }// end of method
 
 

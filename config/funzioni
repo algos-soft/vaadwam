@@ -1,0 +1,8 @@
+id,ordine,code,icona,sigla,descrizione,obbligatorio,croce
+demoAut-mas,1,aut-msa,AMBULANCE,Aut MSA,Autista automedica,false,demo
+demoPri-mas,2,pri-msa,DOCTOR,1° soc,Primo soccorritore automedica,false,demo
+demoSec-mas,3,sec-msa,USER,2° soc,Secondo soccorritore automedica,false,demo
+demoAut-amb,4,aut-amb,AMBULANCE,Aut Amb,Autista ambulanza,false,demo
+demoPri-amb,5,pri-amb,DOCTOR,1° soc,Primo soccorritore ambulanza,false,demo
+demoSec-amb,6,sec-amb,USER,2° soc,Secondo soccorritore ambulanza,false,demo
+demoTer-amb,7,ter-amb,USER,3° soc,Terzo soccorritore ambulanza,false,demo

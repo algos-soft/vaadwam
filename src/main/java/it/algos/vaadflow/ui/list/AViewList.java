@@ -204,7 +204,7 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
         //--Preferenze specifiche di questa view
         this.fixPreferenze();
 
-        //--Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse
+        //--Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sottoclasse
         this.postPreferenze();
 
         //--Costruisce gli oggetti base (placeholder) di questa view

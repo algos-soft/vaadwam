@@ -1,8 +1,7 @@
-package it.algos.vaadwam.application;
+package it.algos.vaadwam.data;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.backend.data.AData;
-import it.algos.vaadflow.modules.logtype.LogtypeService;
 import it.algos.vaadwam.modules.croce.CroceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class WamData extends AData {
      * Inizializzazione dei dati di alcune collections standard sul DB mongo <br>
      */
     public void loadAllData() {
-//        croceService.loadData();
+        croceService.loadData();
     }// end of method
 
 

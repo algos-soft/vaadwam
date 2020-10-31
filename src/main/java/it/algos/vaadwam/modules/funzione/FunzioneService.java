@@ -16,8 +16,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.io.File;
 import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -155,7 +157,7 @@ public class FunzioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti)  {
+    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti) {
         Funzione entity = Funzione.builderFunzione().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).sigla(text.isValid(sigla) ? sigla : null).descrizione(text.isValid(descrizione) ? descrizione : null).icona(icona).dipendenti(dipendenti).build();
 
         return (Funzione) super.addCroce(entity, croce);
@@ -482,6 +484,50 @@ public class FunzioneService extends WamService {
         }// end of if cycle
 
         return listaIdsFunzioni;
+    }// end of method
+
+
+    /**
+     * Creazione di alcuni dati demo iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * La collezione viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamemte <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     *
+     * @return numero di elementi creato
+     */
+    @Override
+    public int reset() {
+        int numRec = super.reset();
+        File regioniCSV = new File("config" + File.separator + "funzioni");
+        String path = regioniCSV.getAbsolutePath();
+        List<LinkedHashMap<String, String>> mappaCSV;
+        String croceTxt = VUOTA;
+        Croce croce = null;
+        String code = VUOTA;
+        String sigla = VUOTA;
+        String descrizione = VUOTA;
+        String iconaTxt = VUOTA;
+        VaadinIcon icona = null;
+
+        mappaCSV = fileService.leggeMappaCSV(path);
+        for (LinkedHashMap<String, String> riga : mappaCSV) {
+            croceTxt = riga.get("croce");
+            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
+            code = riga.get("code");
+            sigla = riga.get("sigla");
+            descrizione = riga.get("descrizione");
+            iconaTxt = riga.get("icona");
+            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
+
+            try {
+                creaIfNotExist(croce, code, sigla, descrizione, icona);
+            } catch (Exception unErrore) {
+                log.error(unErrore.getMessage());
+            }
+        }
+
+        return numRec;
     }// end of method
 
 }// end of class

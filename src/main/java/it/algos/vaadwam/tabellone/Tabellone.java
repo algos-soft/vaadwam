@@ -34,6 +34,7 @@ import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.broadcast.BroadcastMsg;
 import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
+import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
@@ -237,12 +238,31 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // app footer
         divAppFooter.add(appFooter);
 
+        // definitivo
+        banner = VUOTA;
+        if (wamLogin != null && wamLogin.isDeveloper()) {
+            banner = "developer mode";
+        } else {
+            if (wamLogin != null && wamLogin.getCroce() != null && wamLogin.getCroce().code.equals(CroceService.DEMO)) {
+                banner = "demo";
+            }
+        }
+        getModel().setBanner(banner);
+
+
         // provvisorio finché dura la transizione
         banner = VUOTA;
         if (wamLogin != null && wamLogin.isDeveloper()) {
             banner = "developer mode";
-            getModel().setBanner(banner);
+        } else {
+            if (wamLogin != null && wamLogin.getCroce() != null) {
+                if (preferenzaService.isBool(USA_DAEMON_IMPORT)) {
+                    banner = "demo";
+                }
+            }
         }
+        getModel().setBanner(banner);
+
 
         // costruisce la grid
         buildAllGrid();
@@ -603,17 +623,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
         // se l'utente ha le iscrizioni disabilitate, e il turno è nullo o l'iscrizione è vuota, avvisa ed esce
-        if (wamLogin.getMilite().isDisabIscr()){
+        if (wamLogin.getMilite().isDisabIscr()) {
 
             Notification n = new Notification("Non sei abilitato ad effettuare iscrizioni, chiedi ad un admin", 3000, Notification.Position.MIDDLE);
 
-            if(turno==null){    // turno non esistente
+            if (turno == null) {    // turno non esistente
                 n.open();
                 return;
-            }else{  // nessun iscritto
+            } else {  // nessun iscritto
                 Funzione funzione = funzioneService.findByKeyUnica(codFunzione);
                 Iscrizione iscrizione = iscrizioneService.getByTurnoAndFunzione(turno, funzione);
-                if (iscrizione==null || iscrizione.getMilite()==null){
+                if (iscrizione == null || iscrizione.getMilite() == null) {
                     n.open();
                     return;
                 }

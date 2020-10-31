@@ -14,10 +14,7 @@ import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadflow.service.AMailService;
-import it.algos.vaadflow.service.AMongoService;
-import it.algos.vaadflow.service.AService;
-import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadflow.service.*;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
@@ -134,6 +131,12 @@ public abstract class WamService extends AService {
      */
     @Autowired
     protected AVaadinService vaadinService;
+
+    /**
+     * Inietta da Spring come 'singleton'
+     */
+    @Autowired
+    protected AFileService fileService;
 
     //    /**
     //     * Istanza unica di una classe di servizio: <br>

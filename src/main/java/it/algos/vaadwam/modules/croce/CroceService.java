@@ -1,6 +1,5 @@
 package it.algos.vaadwam.modules.croce;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
@@ -57,6 +56,8 @@ public class CroceService extends WamService {
     public final static String PAP = "pap";
 
     public final static String GAPS = "gaps";
+
+    public final static String DEMO = "demo";
 
 
     /**
@@ -154,15 +155,7 @@ public class CroceService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Croce newEntity(
-            EAOrganizzazione organizzazione,
-            Person presidente,
-            String code,
-            String descrizione,
-            Person contatto,
-            String telefono,
-            String mail,
-            Address indirizzo) {
+    public Croce newEntity(EAOrganizzazione organizzazione, Person presidente, String code, String descrizione, Person contatto, String telefono, String mail, Address indirizzo) {
         Croce entity;
         Company entityDellaSuperClasseCompany = null;
 
@@ -272,6 +265,7 @@ public class CroceService extends WamService {
         return lista;
     }// end of method
 
+
     /**
      * Returns all entities of the type <br>
      *
@@ -279,8 +273,9 @@ public class CroceService extends WamService {
      */
     @Override
     public List<Croce> findAllAll() {
-        return  repository.findAllByOrderByCodeAsc();
+        return repository.findAllByOrderByCodeAsc();
     }// end of method
+
 
     /**
      * Returns the number of entities available for the current company
@@ -338,6 +333,14 @@ public class CroceService extends WamService {
      */
     public Croce getGAPS() {
         return findByKeyUnica(GAPS);
+    }// end of method
+
+
+    /**
+     * Recupera dal db mongo la croce (se esiste)
+     */
+    public Croce getDEMO() {
+        return findByKeyUnica(DEMO);
     }// end of method
 
 }// end of class

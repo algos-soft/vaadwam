@@ -100,7 +100,7 @@ public class Funzione extends WamEntity {
     @Indexed()
     @Size(min = 2, max = 20)
     @Field("code")
-    @AIField(type = EAFieldType.text, required = true, widthEM = 9, name = "Codice interno non modificabile")
+    @AIField(type = EAFieldType.text, required = true, widthEM = 9, name = "Codice interno, non modificabile")
     @AIColumn(name = "Codice")
     public String code;
 
@@ -121,7 +121,7 @@ public class Funzione extends WamEntity {
     @Indexed()
     @Size(min = 2, max = 20)
     @Field("sigla")
-    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 9, name = "Sigla breve per il tabellone")
+    @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 9, name = "Sigla breve per il tabellone, modificabile")
     @AIColumn(widthEM = 8, name = "Sigla")
     public String sigla;
 

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.SLASH;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 
 /**
  * Project springvaadin
@@ -1394,14 +1394,73 @@ public class AFileService extends AbstractService {
 //     *
 //     * @param srcPath         nome completo della directory sorgente
 //     * @param destPath        nome completo della directory destinazione
-//     * @param dirFileToBeKeep dir interna del file da mantenere - deve essere uguale in srcPath e in destPath
-//     *
-//     * @return testo di errore, vuoto se la directory è stata copiata ed il il file mantenuto originale
-//     */
-//    public String copyDirectoryLessFile(String srcPath, String destPath, String dirFileToBeKeep) {
-//        String status = VUOTA;
-//
-//        return status;
-//    }// end of method
+    //     * @param dirFileToBeKeep dir interna del file da mantenere - deve essere uguale in srcPath e in destPath
+    //     *
+    //     * @return testo di errore, vuoto se la directory è stata copiata ed il il file mantenuto originale
+    //     */
+    //    public String copyDirectoryLessFile(String srcPath, String destPath, String dirFileToBeKeep) {
+    //        String status = VUOTA;
+    //
+    //        return status;
+    //    }// end of method
+
+
+    /**
+     * Legge un file CSV <br>
+     * Prima lista (prima riga): titoli
+     * Liste successive (righe successive): valori
+     *
+     * @param pathFileToBeRead nome completo del file
+     *
+     * @return lista di mappe di valori
+     */
+    public List<LinkedHashMap<String, String>> leggeMappaCSV(String pathFileToBeRead) {
+        return leggeMappaCSV(pathFileToBeRead, VIRGOLA, A_CAPO);
+    }
+
+
+    /**
+     * Legge un file CSV <br>
+     * Prima lista (prima riga): titoli
+     * Liste successive (righe successive): valori
+     *
+     * @param pathFileToBeRead nome completo del file
+     * @param sepColonna       normalmente una virgola
+     * @param sepRiga          normalmente un \n
+     *
+     * @return lista di mappe di valori
+     */
+    public List<LinkedHashMap<String, String>> leggeMappaCSV(String pathFileToBeRead, String sepColonna, String sepRiga) {
+        List<LinkedHashMap<String, String>> lista = new ArrayList<>();
+        LinkedHashMap<String, String> mappa = null;
+        String[] righe;
+        String[] titoli;
+        String[] colonne;
+
+        String testo = leggeFile(pathFileToBeRead);
+
+        if (text.isValid(testo)) {
+            righe = testo.split(sepRiga);
+            titoli = righe[0].split(sepColonna);
+
+            if (righe != null && righe.length > 0) {
+                for (int k = 1; k < righe.length; k++) {
+                    mappa = null;
+                    colonne = righe[k].split(sepColonna);
+                    if (colonne != null && colonne.length > 0) {
+                        mappa = new LinkedHashMap<>();
+                        for (int j = 0; j < colonne.length; j++) {
+                            mappa.put(titoli[j], colonne[j]);
+                        }
+                    }
+                    if (mappa != null) {
+                        lista.add(mappa);
+                    }
+                }
+            }
+        }
+
+        return lista;
+    }
 
 }// end of class
