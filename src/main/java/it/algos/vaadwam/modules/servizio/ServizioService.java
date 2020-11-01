@@ -870,6 +870,8 @@ public class ServizioService extends WamService {
      * La collezione viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamemte <br>
      * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * <p>
+     * code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
      *
      * @return numero di elementi creato
      */
@@ -880,9 +882,8 @@ public class ServizioService extends WamService {
         File serviziCSV = new File("config" + File.separator + "servizi");
         String path = serviziCSV.getAbsolutePath();
         List<LinkedHashMap<String, String>> mappaCSV;
-        String croceTxt = VUOTA;
-        Croce croce = null;
-        int ordine;
+        Croce croce = croceService.getDEMO();
+        int ordine = 0;
         String code = VUOTA;
         String descrizione = VUOTA;
         boolean orarioDefinito;
@@ -898,9 +899,7 @@ public class ServizioService extends WamService {
 
         mappaCSV = fileService.leggeMappaCSV(path);
         for (LinkedHashMap<String, String> riga : mappaCSV) {
-            croceTxt = riga.get("croce");
-            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
-            ordine = Integer.parseInt(riga.get("ordine"));
+            ordine++;
             code = riga.get("code");
             descrizione = riga.get("descrizione");
             orarioDefinito = riga.get("orarioDefinito").equals("true");
@@ -931,14 +930,6 @@ public class ServizioService extends WamService {
                 facoltative = getFunzioni(facoltativeTxt);
             }
             colore = riga.get("colore");
-
-            //            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
-            //            dipendentiTxt = riga.get("dipendenti");
-            //            dipendentiTxt = text.isValid(dipendentiTxt) ? dipendentiTxt.replaceAll("/", VIRGOLA) : null;
-            //            set = getDipendenti(dipendentiTxt);
-            //            if (set != null) {
-            //                mappa.put(code, set);
-            //            }
 
             try {
                 creaIfNotExist(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, true, false, obbligatorie, facoltative, colore);

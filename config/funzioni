@@ -1,8 +1,8 @@
-id,ordine,code,icona,sigla,descrizione,dipendenti
-demoAut-msa,1,aut-msa,AMBULANCE,Aut MSA,Autista automedica,aut-amb
-demoPri-msa,2,pri-msa,DOCTOR,1° soc,Primo soccorritore automedica,sec-msa
-demoSec-msa,3,sec-msa,USER,2° soc,Secondo soccorritore automedica
-demoAut-amb,4,aut-amb,TRUCK,Aut Amb,Autista ambulanza
-demoPri-amb,5,pri-amb,DOCTOR,1° soc,Primo soccorritore ambulanza,sec-amb/ter-amb
-demoSec-amb,6,sec-amb,USER,2° soc,Secondo soccorritore ambulanza,ter-amb
-demoTer-amb,7,ter-amb,USER,3° soc,Terzo soccorritore ambulanza
+code,sigla,descrizione,icona,dipendenti
+aut-msa,Aut MSA,Autista automedica,AMBULANCE,aut-amb
+pri-msa,1° soc,Primo soccorritore automedica,DOCTOR,sec-msa
+sec-msa,2° soc,Secondo soccorritore automedica,USER
+aut-amb,Aut Amb,Autista ambulanza,TRUCK
+pri-amb,1° soc,Primo soccorritore ambulanza,DOCTOR,sec-amb/ter-amb
+sec-amb,2° soc,Secondo soccorritore ambulanza,USER,ter-amb
+ter-amb,3° soc,Terzo soccorritore ambulanza,USER

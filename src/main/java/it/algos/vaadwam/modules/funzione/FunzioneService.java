@@ -506,6 +506,8 @@ public class FunzioneService extends WamService {
      * La collezione viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamemte <br>
      * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * <p>
+     * code,sigla,descrizione,icona,dipendenti
      *
      * @return numero di elementi creato
      */
@@ -516,8 +518,7 @@ public class FunzioneService extends WamService {
         File funzioniCSV = new File("config" + File.separator + "funzioni");
         String path = funzioniCSV.getAbsolutePath();
         List<LinkedHashMap<String, String>> mappaCSV;
-        String croceTxt = VUOTA;
-        Croce croce = null;
+        Croce croce = croceService.getDEMO();
         String code = VUOTA;
         String sigla = VUOTA;
         String descrizione = VUOTA;
@@ -529,8 +530,6 @@ public class FunzioneService extends WamService {
 
         mappaCSV = fileService.leggeMappaCSV(path);
         for (LinkedHashMap<String, String> riga : mappaCSV) {
-            croceTxt = riga.get("croce");
-            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
             code = riga.get("code");
             sigla = riga.get("sigla");
             descrizione = riga.get("descrizione");

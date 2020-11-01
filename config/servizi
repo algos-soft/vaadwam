@@ -1,7 +1,7 @@
-id,ordine,code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
-demoMsa-mat,1,msa-mat,Automedica mattina,true,6:00,12:00,true,false,aut-msa/pri-msa,sec-msa,Green
-demoMsa-pom,2,msa-pom,Automedica pomeriggio,true,12:00,18:00,true,false,aut-msa/pri-msa,sec-msa,Green
-demoMsa-not,3,msa-not,Automedica notte,true,18:00,6:00,true,false,aut-msa/pri-msa,sec-msa,Green
-demoAmb-mat,4,amb-mat,Ambulanza mattina,true,5:00,12:00,true,false,aut-amb/pri-amb,sec-amb,Blue
-demoAmb-pom,5,amb-pom,Ambulanza pomeriggio,true,12:00,19:00,true,false,aut-amb/pri-amb,sec-amb,Blue
-demoAmb-not,6,amb-not,Ambulanza notte,true,19:00,5:00,true,false,aut-amb/pri-amb,sec-amb,Blue
+code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
+msa-mat,Automedica mattina,true,6:00,12:00,true,false,aut-msa/pri-msa,sec-msa,Green
+msa-pom,Automedica pomeriggio,true,12:00,18:00,true,false,aut-msa/pri-msa,sec-msa,Green
+msa-not,Automedica notte,true,18:00,6:00,true,false,aut-msa/pri-msa,sec-msa,Green
+amb-mat,Ambulanza mattina,true,5:00,12:00,true,false,aut-amb/pri-amb,sec-amb,Blue
+amb-pom,Ambulanza pomeriggio,true,12:00,19:00,true,false,aut-amb/pri-amb,sec-amb,Blue
+amb-not,Ambulanza notte,true,19:00,5:00,true,false,aut-amb/pri-amb,sec-amb,Blue
