@@ -10,7 +10,16 @@ import it.algos.vaadflow.modules.address.EAAddress;
  * Time: 15:51
  */
 public enum EAPerson {
-    gac("Guido", "Ceresa", "338 945127", "info@algos.it", EAAddress.algos), uno("Mario", "Rossi", "06.785556", "assurbanipal@gmail.com.it", EAAddress.uno), due("Aldo", "Guzzini", "338 678932", "gates@win.com", EAAddress.due), tre("Lucia", "Portella", "345 786631", "alfa@libero.it", EAAddress.tre);
+    alex("Alessandro", "Valbonesi", "345 281233", "info@algos.it", EAAddress.algos),
+
+    gac("Guido", "Ceresa", "338 945127", "info@algos.it", EAAddress.algos),
+
+
+    uno("Mario", "Rossi", "06.785556", "assurbanipal@gmail.com.it", EAAddress.uno),
+
+    due("Aldo", "Guzzini", "338 678932", "gates@win.com", EAAddress.due),
+
+    tre("Lucia", "Portella", "345 786631", "alfa@libero.it", EAAddress.tre);
 
 
     private String nome;

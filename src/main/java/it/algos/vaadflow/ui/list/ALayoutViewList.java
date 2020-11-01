@@ -213,7 +213,6 @@ public abstract class ALayoutViewList extends APrefViewList {
         if (usaButtonNew) {
             buttonTitle = text.primaMaiuscola(pref.getStr(FlowCost.FLAG_TEXT_NEW));
             buttonNew = new Button(buttonTitle, new Icon("lumo", "plus"));
-            //            buttonNew.getElement().setAttribute("theme", "primary");
             buttonNew.getElement().setAttribute("title", "Crea una nuova entity");
             buttonNew.addClassName("view-toolbar__button");
             if (pref.isBool(USA_BUTTON_SHORTCUT)) {

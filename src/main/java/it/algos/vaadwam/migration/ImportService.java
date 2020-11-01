@@ -767,7 +767,7 @@ public class ImportService extends AService {
             indNew = fixIndirizzo(croceOld.getIndirizzo());
             note = croceOld.getNote();
 
-            croceService.creaIfNotExist(orgNew, presNew, codeCroceNew, descrizione, contNew, telefono, email, indNew);
+            croceService.creaIfNotExist(orgNew, presNew, codeCroceNew, descrizione, contNew, telefono, email, indNew, note);
             croceNew = croceService.findByKeyUnica(codeCroceNew);
             if (croceNew != null && text.isValid(note)) {
                 croceNew.note = note.equals("") ? null : note;

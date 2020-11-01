@@ -1,10 +1,25 @@
 package it.algos.vaadflow.backend.data;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaadflow.modules.address.AddressService;
+import it.algos.vaadflow.modules.anno.AnnoService;
+import it.algos.vaadflow.modules.company.CompanyService;
+import it.algos.vaadflow.modules.giorno.GiornoService;
+import it.algos.vaadflow.modules.log.LogService;
+import it.algos.vaadflow.modules.logtype.LogtypeService;
+import it.algos.vaadflow.modules.mese.MeseService;
+import it.algos.vaadflow.modules.person.PersonService;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
+import it.algos.vaadflow.modules.provincia.ProvinciaService;
+import it.algos.vaadflow.modules.regione.RegioneService;
+import it.algos.vaadflow.modules.role.RoleService;
+import it.algos.vaadflow.modules.secolo.SecoloService;
+import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadflow.service.AAnnotationService;
 import it.algos.vaadflow.service.AbstractService;
 import it.algos.vaadflow.service.IAService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -43,6 +58,95 @@ public abstract class AData extends AbstractService {
     protected AAnnotationService annotation = AAnnotationService.getInstance();
 
     /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected RoleService roleService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected UtenteService utenteService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected LogtypeService logtypeService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected LogService logger;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected AddressService addressService;
+
+    /**
+     * Istanza @VaadinSessionScope inietta da BeanFactory <br>
+     */
+    @Autowired
+    protected PersonService personService;
+
+    /**
+     * Istanza @VaadinSessionScope inietta da BeanFactory <br>
+     */
+    @Autowired
+    protected CompanyService companyService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected MeseService meseService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected SecoloService secoloService;
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected AnnoService annoService;
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected GiornoService giornoService;
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected PreferenzaService preferenzaService;
+
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected RegioneService regioneService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    protected ProvinciaService provinciaService;
+
+
+    /**
      * Nome della collezione su mongoDB <br>
      * Viene regolato dalla sottoclasse nel costruttore <br>
      */
@@ -52,12 +156,13 @@ public abstract class AData extends AbstractService {
     public AData() {
     }// end of Spring constructor
 
+
     /**
      * Costruttore @Autowired (nella sottoclasse concreta) <br>
      * La sottoclasse usa un @Qualifier(), per avere la sottoclasse specifica <br>
      * La sottoclasse usa una costante statica, per essere sicuri di scrivere sempre uguali i riferimenti <br>
      */
-//    public AData(MongoOperations mongo, MongoRepository repository, IAService service) {
+    //    public AData(MongoOperations mongo, MongoRepository repository, IAService service) {
     public AData(Class entityClazz, IAService service) {
         this.collectionName = annotation.getCollectionName(entityClazz);
         this.service = service;

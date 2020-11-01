@@ -3,6 +3,8 @@ package it.algos.vaadwam.wam;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EASearch;
 import it.algos.vaadflow.service.IAService;
@@ -18,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.application.WamCost.TASK_IMPORT;
@@ -292,14 +293,20 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        //--Import non più usato/usabile
-        //        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
-        //            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
-        //            importButton.getElement().setAttribute("theme", "error");
-        //            importButton.addClassName("view-toolbar__button");
-        //            importButton.addClickListener(e -> importa());
-        //            topPlaceholder.add(importButton);
-        //        }// end of if cycle
+        //--Import non più usato come task notturna
+        //--Import utilizzabile SOLO sul computer di casa come test
+        //--Import utilizzabile SOLO in modalità debug (così me ne accorgo)
+        if (wamLogin != null) {
+            if (wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+                if (usaImportButton && pref.isBool(USA_DEBUG)) {
+                    importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+                    importButton.getElement().setAttribute("theme", "error");
+                    importButton.addClassName("view-toolbar__button");
+                    importButton.addClickListener(e -> importa());
+                    topPlaceholder.add(importButton);
+                }// end of if cycle
+            }// end of if cycle
+        }// end of if cycle
     }// end of method
 
 

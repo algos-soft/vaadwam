@@ -7,7 +7,6 @@ import it.algos.vaadflow.backend.login.ALogin;
 import it.algos.vaadflow.boot.ABoot;
 import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaList;
-import it.algos.vaadflow.modules.role.EARole;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
 import it.algos.vaadwam.data.WamData;
@@ -15,7 +14,6 @@ import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.CroceList;
 import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.croce.EACroce;
 import it.algos.vaadwam.modules.funzione.FunzioneList;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.log.WamLogList;
@@ -181,7 +179,7 @@ public class WamBoot extends ABoot {
     protected void iniziaDataPreliminari() {
         //--importazioni dal vecchio webambulanze
         if (croceService.isVuoto()) {
-            migration.importOnlyCroci();
+//            migration.importOnlyCroci();
             //            migration.importAll();
         }// end of if cycle
     }// end of method
@@ -350,16 +348,17 @@ public class WamBoot extends ABoot {
      * Inizializzazione dei dati di alcune collections specifiche sul DB Mongo
      */
     protected void iniziaDataProgettoSpecifico() {
-        utenteService.deleteAll();
-
-        //--patch di accesso come developer
-        utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
-        utenteService.creaIfNotExist(croceService.getDEMO(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
-
-        //--patch di accesso come admin per TUTTE le croci
-        for (String sigla : EACroce.getValues()) {
-            utenteService.creaIfNotExist(croceService.findByKeyUnica(sigla), "admin-" + sigla, "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
-        }
+        wamData.fixAllData();
+        //        utenteService.deleteAll();
+        //
+        //        //--patch di accesso come developer
+        //        utenteService.creaIfNotExist(croceService.getGAPS(), "gac", "fulvia", roleService.getRoles(EARole.developer), "gac@algos.it");
+        //        utenteService.creaIfNotExist(croceService.getDEMO(), "alex", "axel01", roleService.getRoles(EARole.developer), "alex@algos.it");
+        //
+        //        //--patch di accesso come admin per TUTTE le croci
+        //        for (String sigla : EACroce.getValues()) {
+        //            utenteService.creaIfNotExist(croceService.findByKeyUnica(sigla), "admin-" + sigla, "fulvia", roleService.getRoles(EARole.admin), "gac@algos.it");
+        //        }
     }// end of method
 
 

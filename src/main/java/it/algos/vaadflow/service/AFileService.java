@@ -1129,7 +1129,7 @@ public class AFileService extends AbstractService {
         String currentLine;
 
         //-- non va, perché se arriva it/algos/Alfa.java becca anche il .java
-//        nameFileToBeRead=  nameFileToBeRead.replaceAll("\\.","/");
+        //        nameFileToBeRead=  nameFileToBeRead.replaceAll("\\.","/");
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathFileToBeRead))) {
             while ((currentLine = br.readLine()) != null) {
@@ -1383,17 +1383,17 @@ public class AFileService extends AbstractService {
     }// end of method
 
 
-//    /**
-//     * Copia tutta una directory ESCLUSO il file indicato <br>
-//     * <p>
-//     * Esegue solo se il il file esiste nel srcPath <br>
-//     * Esegue solo se il il file esiste nel destPath <br>
-//     * Esegue solo se la dir interna del file è la stessa in srcPath e destPath <br>
-//     * Viene ignorato il file sorgente srcPath + dirFileToBeKeep <br>
-//     * Viene mantenuto il file esistente destPath + dirFileToBeKeep <br>
-//     *
-//     * @param srcPath         nome completo della directory sorgente
-//     * @param destPath        nome completo della directory destinazione
+    //    /**
+    //     * Copia tutta una directory ESCLUSO il file indicato <br>
+    //     * <p>
+    //     * Esegue solo se il il file esiste nel srcPath <br>
+    //     * Esegue solo se il il file esiste nel destPath <br>
+    //     * Esegue solo se la dir interna del file è la stessa in srcPath e destPath <br>
+    //     * Viene ignorato il file sorgente srcPath + dirFileToBeKeep <br>
+    //     * Viene mantenuto il file esistente destPath + dirFileToBeKeep <br>
+    //     *
+    //     * @param srcPath         nome completo della directory sorgente
+    //     * @param destPath        nome completo della directory destinazione
     //     * @param dirFileToBeKeep dir interna del file da mantenere - deve essere uguale in srcPath e in destPath
     //     *
     //     * @return testo di errore, vuoto se la directory è stata copiata ed il il file mantenuto originale
@@ -1438,7 +1438,6 @@ public class AFileService extends AbstractService {
         String[] colonne;
 
         String testo = leggeFile(pathFileToBeRead);
-
         if (text.isValid(testo)) {
             righe = testo.split(sepRiga);
             titoli = righe[0].split(sepColonna);
@@ -1450,7 +1449,9 @@ public class AFileService extends AbstractService {
                     if (colonne != null && colonne.length > 0) {
                         mappa = new LinkedHashMap<>();
                         for (int j = 0; j < colonne.length; j++) {
-                            mappa.put(titoli[j], colonne[j]);
+                            if (j < colonne.length) {
+                                mappa.put(titoli[j], colonne[j]);
+                            }
                         }
                     }
                     if (mappa != null) {

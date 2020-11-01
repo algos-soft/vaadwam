@@ -8,7 +8,9 @@ import it.algos.vaadflow.backend.entity.AEntity;
 import it.algos.vaadflow.enumeration.EAOperation;
 import it.algos.vaadflow.enumeration.EATempo;
 import it.algos.vaadflow.modules.address.Address;
+import it.algos.vaadflow.modules.address.EAAddress;
 import it.algos.vaadflow.modules.company.Company;
+import it.algos.vaadflow.modules.person.EAPerson;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadwam.wam.WamLogin;
 import it.algos.vaadwam.wam.WamService;
@@ -112,14 +114,15 @@ public class CroceService extends WamService {
      * @param telefono       della company (facoltativo)
      * @param mail           della company (facoltativo)
      * @param indirizzo      della company (facoltativo)
+     * @param note           della company (facoltativo)
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(EAOrganizzazione organizzazione, Person presidente, String code, String descrizione, Person contatto, String telefono, String mail, Address indirizzo) {
+    public boolean creaIfNotExist(EAOrganizzazione organizzazione, Person presidente, String code, String descrizione, Person contatto, String telefono, String mail, Address indirizzo, String note) {
         boolean creata = false;
 
         if (isMancaByKeyUnica(code)) {
-            AEntity entity = save(newEntity(organizzazione, presidente, code, descrizione, contatto, telefono, mail, indirizzo));
+            AEntity entity = save(newEntity(organizzazione, presidente, code, descrizione, contatto, telefono, mail, indirizzo, note));
             creata = entity != null;
         }// end of if cycle
 
@@ -135,7 +138,7 @@ public class CroceService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Croce newEntity() {
-        return newEntity((EAOrganizzazione) null, (Person) null, "", "", (Person) null, "", "", (Address) null);
+        return newEntity((EAOrganizzazione) null, (Person) null, "", "", (Person) null, "", "", (Address) null, VUOTA);
     }// end of method
 
 
@@ -152,10 +155,11 @@ public class CroceService extends WamService {
      * @param telefono       della company (facoltativo)
      * @param mail           della company (facoltativo)
      * @param indirizzo      della company (facoltativo)
+     * @param note           della company (facoltativo)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Croce newEntity(EAOrganizzazione organizzazione, Person presidente, String code, String descrizione, Person contatto, String telefono, String mail, Address indirizzo) {
+    public Croce newEntity(EAOrganizzazione organizzazione, Person presidente, String code, String descrizione, Person contatto, String telefono, String mail, Address indirizzo, String note) {
         Croce entity;
         Company entityDellaSuperClasseCompany = null;
 
@@ -175,6 +179,8 @@ public class CroceService extends WamService {
         //--regola le property di questa classe
         entity.setOrganizzazione(organizzazione != null ? organizzazione : EAOrganizzazione.anpas);
         entity.setPresidente(presidente);
+
+        entity.note = note;
 
         return entity;
     }// end of method
@@ -302,6 +308,49 @@ public class CroceService extends WamService {
         migration.importOnlyCroci();
         setLastImport(getCroce(), inizio);
     }// end of method
+
+
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutta la Collection <br>
+     *
+     * @return numero di elementi creati
+     */
+    @Override
+    public int reset() {
+        this.fixCroceDemo();
+        return 0;
+    }// end of method
+
+
+    /**
+     * Ricrea ad ogni startup la croce demo e SOLO quella <br>
+     */
+    public void fixCroceDemo() {
+        boolean creata;
+        Person presidente;
+        Person contatto;
+        Address indirizzo;
+
+        if (croceService.isEsisteByKeyUnica(DEMO)) {
+            if (!croceService.delete(DEMO)) {
+                logger.warn("Non sono riuscito a cancellare la croce Demo");
+                return;
+            }
+        }
+
+        presidente = (Person) personService.save(personService.newEntity(EAPerson.alex));
+        contatto = (Person) personService.save(personService.newEntity(EAPerson.gac));
+        indirizzo = (Address) addressService.save(addressService.newEntity(EAAddress.algos));
+        creata = croceService.creaIfNotExist(EAOrganizzazione.anpas, presidente, DEMO, "Croce di prova", contatto, "345 678499", "info@algos.it", indirizzo, "Croce con dati demo. Si possono liberamente modificare. Vengono ricreati ogni notte.");
+
+        if (!creata) {
+            logger.warn("Non sono riuscito a creare la croce Demo");
+            return;
+        }
+    }
 
 
     /**

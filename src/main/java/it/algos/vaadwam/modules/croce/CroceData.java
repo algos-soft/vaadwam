@@ -1,11 +1,8 @@
 package it.algos.vaadwam.modules.croce;
 
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressService;
-import it.algos.vaadflow.modules.address.EAAddress;
-import it.algos.vaadflow.modules.person.EAPerson;
 import it.algos.vaadflow.modules.person.Person;
 import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.service.AFileService;
@@ -19,11 +16,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
@@ -115,26 +108,26 @@ public class CroceData {
      */
     @PostConstruct
     protected void postConstruct() {
-        checkDemo();
+        //        checkDemo();
     }
 
 
-    /**
-     * Controlla che esista la croce demo <br>
-     * Se manca, la crea <br>
-     */
-    public void checkDemo() {
-        Person person;
-        Address indirizzo;
-
-        this.creaFunzioni();
-
-        if (service.getDEMO() == null) {
-            person = (Person) personService.save(personService.newEntity(EAPerson.gac));
-            indirizzo = (Address) addressService.save(addressService.newEntity(EAAddress.algos));
-            service.creaIfNotExist(EAOrganizzazione.anpas, person, DEMO, "Associazione di prova", person, "345 678", VUOTA, indirizzo);
-        }
-    }// end of method
+    //    /**
+    //     * Controlla che esista la croce demo <br>
+    //     * Se manca, la crea <br>
+    //     */
+    //    public void checkDemo() {
+    //        Person person;
+    //        Address indirizzo;
+    //
+    //        this.creaFunzioni();
+    //
+    //        if (service.getDEMO() == null) {
+    //            person = (Person) personService.save(personService.newEntity(EAPerson.gac));
+    //            indirizzo = (Address) addressService.save(addressService.newEntity(EAAddress.algos));
+    //            service.creaIfNotExist(EAOrganizzazione.anpas, person, DEMO, "Associazione di prova", person, "345 678", VUOTA, indirizzo);
+    //        }
+    //    }// end of method
 
     //    /**
     //     * Creazione di una collezione
@@ -197,33 +190,33 @@ public class CroceData {
     }// end of method
 
 
-    public void creaFunzioni() {
-        File regioniCSV = new File("config" + File.separator + "funzioni");
-        String path = regioniCSV.getAbsolutePath();
-        List<LinkedHashMap<String, String>> mappaCSV;
-        String croceTxt = VUOTA;
-        Croce croce = null;
-        String code = VUOTA;
-        String sigla = VUOTA;
-        String descrizione = VUOTA;
-        String iconaTxt = VUOTA;
-        VaadinIcon icona = null;
-
-        mappaCSV = fileService.leggeMappaCSV(path);
-        for (LinkedHashMap<String, String> riga : mappaCSV) {
-            croceTxt = riga.get("croce");
-            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
-            code = riga.get("code");
-            sigla = riga.get("sigla");
-            descrizione = riga.get("descrizione");
-            iconaTxt = riga.get("icona");
-            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
-        }
-
-        try {
-            funzioneService.creaIfNotExist(croce, code, sigla, descrizione, icona);
-        } catch (Exception unErrore) {
-        }
-    }// end of method
+    //    public void creaFunzioni() {
+    //        File regioniCSV = new File("config" + File.separator + "funzioni");
+    //        String path = regioniCSV.getAbsolutePath();
+    //        List<LinkedHashMap<String, String>> mappaCSV;
+    //        String croceTxt = VUOTA;
+    //        Croce croce = null;
+    //        String code = VUOTA;
+    //        String sigla = VUOTA;
+    //        String descrizione = VUOTA;
+    //        String iconaTxt = VUOTA;
+    //        VaadinIcon icona = null;
+    //
+    //        mappaCSV = fileService.leggeMappaCSV(path);
+    //        for (LinkedHashMap<String, String> riga : mappaCSV) {
+    //            croceTxt = riga.get("croce");
+    //            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
+    //            code = riga.get("code");
+    //            sigla = riga.get("sigla");
+    //            descrizione = riga.get("descrizione");
+    //            iconaTxt = riga.get("icona");
+    //            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
+    //        }
+    //
+    //        try {
+    //            funzioneService.creaIfNotExist(croce, code, sigla, descrizione, icona);
+    //        } catch (Exception unErrore) {
+    //        }
+    //    }// end of method
 
 }// end of class

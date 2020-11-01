@@ -698,9 +698,9 @@ public abstract class AViewList extends APropertyViewList implements IAView, Bef
      * Opens the confirmation dialog before reset all items. <br>
      * <p>
      * The dialog will display the given title and message(s), then call <br>
-     * Può essere sovrascrtitto dalla classe specifica se servono avvisi diversi <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
      */
-    protected final void openConfirmReset() {
+    protected void openConfirmReset() {
         appContext.getBean(AResetDialog.class).open(this::reset);
     }// end of method
 
