@@ -44,6 +44,8 @@ public enum EAWamLogType {
     importOld("import"),
 
     statistiche("statistiche"),
+
+    reset("reset collection"),
     ;
 
 

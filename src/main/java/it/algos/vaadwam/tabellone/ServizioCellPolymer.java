@@ -123,7 +123,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
         List<String> listaIconeFacoltative = null;
 
         if (servizio != null) {
-            if (servizio.obbligatorie.size() > 0) {
+            if (servizio.obbligatorie != null && servizio.obbligatorie.size() > 0) {
                 listaIconeObbligatorie = new ArrayList<>();
                 for (Funzione funzione : servizioService.getObbligatorie(servizio)) {
                     if (funzione.icona != null) {
@@ -132,7 +132,7 @@ public class ServizioCellPolymer extends PolymerTemplate<ServizioCellModel> {
                 }// end of for cycle
             }// end of if cycle
 
-            if (servizio.facoltative.size() > 0) {
+            if (servizio.facoltative != null && servizio.facoltative.size() > 0) {
                 listaIconeFacoltative = new ArrayList<>();
                 for (Funzione funzione : servizioService.getFacoltative(servizio)) {
                     if (funzione.icona != null) {

@@ -986,7 +986,7 @@ public class ImportService extends AService {
         }// end of if cycle
 
         try { // prova ad eseguire il codice
-            return servizioService.creaIfNotExist(croceNew, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioniObbligatorie, funzioniFacoltative);
+            return servizioService.creaIfNotExist(croceNew, ordine, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioniObbligatorie, funzioniFacoltative, VUOTA);
         } catch (Exception unErrore) { // intercetta l'errore
             log.error(unErrore.toString());
             return false;

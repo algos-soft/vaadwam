@@ -83,6 +83,11 @@ public class Servizio extends WamEntity {
      */
     private final static long serialVersionUID = 1L;
 
+    @Transient
+    private final static int larTime = 5;
+
+    @Transient
+    private final static int larFunz = 18;
 
     /**
      * ordine di presentazione (obbligatorio, unico) <br>
@@ -103,7 +108,7 @@ public class Servizio extends WamEntity {
     @Size(min = 3)
     @Field("cod")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 12)
-    @AIColumn(widthEM = 10)
+    @AIColumn(widthEM = 8)
     public String code;
 
     /**
@@ -131,7 +136,7 @@ public class Servizio extends WamEntity {
      */
     @Field("ini")
     @AIField(type = EAFieldType.localtime, name = "Inizio servizio  (previsto)")
-    @AIColumn(headerIcon = VaadinIcon.FORWARD, headerIconColor = "green")
+    @AIColumn(headerIcon = VaadinIcon.FORWARD, headerIconColor = "green", widthEM = larTime)
     public LocalTime inizio;
 
     /**
@@ -139,7 +144,7 @@ public class Servizio extends WamEntity {
      */
     @Field("end")
     @AIField(type = EAFieldType.localtime, name = "Fine servizio (prevista)")
-    @AIColumn(headerIcon = VaadinIcon.BACKWARDS, headerIconColor = "red")
+    @AIColumn(headerIcon = VaadinIcon.BACKWARDS, headerIconColor = "red", widthEM = larTime)
     public LocalTime fine;
 
 
@@ -185,7 +190,7 @@ public class Servizio extends WamEntity {
     @DBRef
     @Field("obb")
     @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, widthEM = 20, name = "Funzioni obbligatorie")
-    @AIColumn(name = "Funz. obbligatorie", widthEM = 20)
+    @AIColumn(name = "Funz. obbligatorie", widthEM = larFunz)
     public Set<Funzione> obbligatorie;
 
     /**
@@ -197,7 +202,7 @@ public class Servizio extends WamEntity {
     @DBRef
     @Field("fac")
     @AIField(type = EAFieldType.multicombo, serviceClazz = FunzioneService.class, widthEM = 20, name = "Funzioni facoltative")
-    @AIColumn(name = "Funz. facoltative", widthEM = 20)
+    @AIColumn(name = "Funz. facoltative", widthEM = larFunz)
     public Set<Funzione> facoltative;
 
     /**

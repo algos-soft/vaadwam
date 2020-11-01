@@ -200,11 +200,24 @@ public class WamLogService extends AService {
      * Logga un evento lanciato dal milite loggato
      * <p>
      *
+     * @param message messaggio di dettaglio
+     */
+    public void reset(String message) {
+        log(EAWamLogType.reset, message);
+    }
+
+
+    /**
+     * Logga un evento lanciato dal milite loggato
+     * <p>
+     *
      * @param type    tipo di evento
      * @param message messaggio di dettaglio
      */
     public void log(EAWamLogType type, String message) {
-        log(type, message, getMiliteLoggato(), getWamLogin().getAddressIP());
+        WamLogin wamLogin = getWamLogin();
+        String ipAddress = wamLogin != null ? wamLogin.getAddressIP() : VUOTA;
+        log(type, message, getMiliteLoggato(), ipAddress);
     }
 
 

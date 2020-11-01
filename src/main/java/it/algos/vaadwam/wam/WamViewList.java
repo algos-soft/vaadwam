@@ -310,6 +310,17 @@ public abstract class WamViewList extends AGridViewList {
     }// end of method
 
 
+    /**
+     * Opens the confirmation dialog before reset all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void openConfirmReset() {
+        reset();
+    }// end of method
+
+
     protected void delete() {
         ((WamService) service).deleteAllCroce();
         UI.getCurrent().getPage().reload();

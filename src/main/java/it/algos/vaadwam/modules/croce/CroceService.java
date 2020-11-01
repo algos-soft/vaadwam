@@ -350,6 +350,8 @@ public class CroceService extends WamService {
             logger.warn("Non sono riuscito a creare la croce Demo");
             return;
         }
+
+        loggerAdmin.reset("Croce demo");
     }
 
 

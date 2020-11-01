@@ -150,8 +150,6 @@ public class FunzioneService extends WamService {
      * All properties <br>
      *
      * @param croce       di appartenenza (obbligatoria, se manca viene recuperata dal login)
-     * @param ordine      di presentazione nelle liste (obbligatorio, unico nella croce,
-     *                    con controllo automatico se è zero,  modificabile da developer ed admin)
      * @param code        di codifica interna specifica per ogni croce (obbligatorio, unico nella croce)
      * @param sigla       di codifica visibile (obbligatoria, non unica)
      * @param descrizione completa (obbligatoria, non unica)
@@ -515,8 +513,8 @@ public class FunzioneService extends WamService {
     public int reset() {
         int numRec = super.reset();
 
-        File regioniCSV = new File("config" + File.separator + "funzioni");
-        String path = regioniCSV.getAbsolutePath();
+        File funzioniCSV = new File("config" + File.separator + "funzioni");
+        String path = funzioniCSV.getAbsolutePath();
         List<LinkedHashMap<String, String>> mappaCSV;
         String croceTxt = VUOTA;
         Croce croce = null;
@@ -526,10 +524,8 @@ public class FunzioneService extends WamService {
         String iconaTxt = VUOTA;
         VaadinIcon icona = null;
         String dipendentiTxt;
-        Set<Funzione> dipendenti;
         Map<String, Set<String>> mappa = new HashMap();
         Set<String> set;
-        Funzione funz;
 
         mappaCSV = fileService.leggeMappaCSV(path);
         for (LinkedHashMap<String, String> riga : mappaCSV) {
@@ -556,6 +552,7 @@ public class FunzioneService extends WamService {
 
         putDipendenti(mappa);
 
+        loggerAdmin.reset("Funzioni della croce demo");
         return numRec;
     }// end of method
 

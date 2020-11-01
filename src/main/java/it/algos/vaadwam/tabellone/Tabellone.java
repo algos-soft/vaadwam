@@ -250,20 +250,6 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         getModel().setBanner(banner);
 
 
-        // provvisorio finché dura la transizione
-        banner = VUOTA;
-        if (wamLogin != null && wamLogin.isDeveloper()) {
-            banner = "developer mode";
-        } else {
-            if (wamLogin != null && wamLogin.getCroce() != null) {
-                if (preferenzaService.isBool(USA_DAEMON_IMPORT)) {
-                    banner = "demo";
-                }
-            }
-        }
-        getModel().setBanner(banner);
-
-
         // costruisce la grid
         buildAllGrid();
 
