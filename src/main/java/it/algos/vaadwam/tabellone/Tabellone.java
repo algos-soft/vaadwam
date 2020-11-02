@@ -73,7 +73,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 @Route(value = "", layout = WamLayout.class)
 @Tag("tabellone-polymer")
-@HtmlImport("frontend://src/views/tabellone/tabellone-polymer.html")
+//@HtmlImport("frontend://src/views/tabellone/tabellone-polymer.html")
+@HtmlImport("src/views/tabellone/tabellone-polymer.html")
+//@JsModule("src/views/tabellone/tabellone-polymer.html")
 @Slf4j
 @AIView(vaadflow = false, menuName = "tabellone")
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
