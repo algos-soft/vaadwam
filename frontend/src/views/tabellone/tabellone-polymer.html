@@ -1,0 +1,104 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="tabellone-polymer">
+
+
+    <template>
+
+        <style>
+        </style>
+
+        <!--gruppo di checkbox di test in sviluppo-->
+        <vaadin-checkbox-group theme="horizontal" style="display:none">
+            <vaadin-checkbox id="modoUtente">User</vaadin-checkbox>
+            <vaadin-checkbox id="modoCentralinista">Centralino</vaadin-checkbox>
+            <vaadin-checkbox id="modoAdmin">Admin</vaadin-checkbox>
+        </vaadin-checkbox-group>
+
+
+        <!--banner-->
+        <template is="dom-if" if=[[banner]]>
+            <div style="width:100%;font-size:200%;display:flex;color:white;background-color:red;font-weight:bold;justify-content: center;align-items: center;white-space: nowrap;">
+                [[banner]]
+            </div>
+        </template>
+
+
+        <div id="divtabellone" style="display:flex">
+            <vaadin-grid id="tabellonegrid"></vaadin-grid>
+        </div>
+
+        <!--layer legenda-->
+        <div id="legendaLayer" style="
+                position:fixed; top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                display:flex;
+                flex-direction:column;
+                padding:0.5em;
+                border-radius:0.6em;
+                color:white; background:black; opacity:0.8;
+                z-index:2; visibility:hidden">
+
+            <dom-repeat items="[[coloriLegenda]]">
+                <template>
+                    <div style="display:flex; flex-direction:column">
+                        <div style="display:flex; flex-direction:row; align-items:center; margin-right:1em">
+                            <div class="iconContainer"
+                                 style="width:1em;height:1em;background-color:[[item.colore]];border-radius:50%;margin-right:0.2em"></div>
+                            <label style="font-size:85%">[[item.nome]]</label>
+                        </div>
+                        <div style="font-size:65%; margin-left:1.4em">[[item.descrizione]]</div>
+                    </div>
+                </template>
+            </dom-repeat>
+        </div>
+
+        <!--area footers-->
+        <div style="display:flex; flex-direction:column">
+
+            <!--footer tabellone-->
+            <div id="footer"
+                 style="display:inline-flex; flex-direction:row; padding-left:1em; padding-top:0.5em; padding-bottom:0.5em; align-items:center">
+
+                <vaadin-button id="bColori" style="align-items:center" title="Mostra la legenda colori">
+                    <iron-icon src="frontend/images/rainbow.png"></iron-icon>
+                </vaadin-button>
+
+                <vaadin-button id="bAddServizio" style="margin-left:1em"
+                               title="Aggiunge un nuovo servizio al tabellone">
+                    <iron-icon icon="vaadin:plus-circle"></iron-icon>
+                </vaadin-button>
+
+                <vaadin-button id="bGenTurni" style="margin-left:1em" ;display="false"
+                               title="Genera automaticamente una serie di turni">
+                    <iron-icon icon="vaadin:cog"></iron-icon>
+                </vaadin-button>
+
+
+            </div>
+
+            <!--footer applicazione (riempito da java)-->
+            <div id="divAppFooter" style="padding-left:0.5em; padding-bottom:0.5em">
+            </div>
+
+        </div>
+
+
+        <!--dialogo edit turno (nascosto)-->
+        <vaadin-dialog id="turnodialog" aria-label="polymer templates"></vaadin-dialog>
+
+    </template>
+
+
+    <script>
+        class TabellonePolymerClass extends Polymer.Element {
+            static get is() {
+                return 'tabellone-polymer'
+            }
+        }
+
+        customElements.define(TabellonePolymerClass.is, TabellonePolymerClass);
+    </script>
+
+</dom-module>
+

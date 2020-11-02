@@ -1,0 +1,22 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="simple-polymer">
+
+
+    <template>
+        <div>Hello Simple Polymer!</div>
+    </template>
+
+    <script>
+        class SimplePolymer extends Polymer.Element {
+            static get is() {
+                return 'simple-polymer'
+            }
+        }
+
+        customElements.define(SimplePolymer.is, SimplePolymer);
+
+    </script>
+
+</dom-module>
+

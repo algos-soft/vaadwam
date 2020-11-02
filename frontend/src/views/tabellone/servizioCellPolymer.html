@@ -1,0 +1,151 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+
+
+<dom-module id="cell-servizio">
+    <template>
+        <style>
+            #container {
+                height: 100%;
+                display: flex;
+                flex-direction: row;
+                border-top-style: solid;
+                border-top-width: 0.1em;
+                border-top-left-radius: 0.5em;
+                border-color: rgb(101, 101, 104);
+                /*background-color: yellow;*/
+            }
+
+            #left {
+                width: 70%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #right {
+                width: 30%;
+                /*font-size: small;*/
+                /*font-size: 80%;*/
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            #servizioorario {
+                font-weight: bold;
+                font-size: 80%;
+                /*background-color: blue;*/
+                color: white;
+                text-align: center;
+                border-top-left-radius: 2mm;
+                border-bottom-left-radius: 0.5em;
+            }
+
+            #servizioservizio {
+                /*font-weight: bold;*/
+                font-size: 80%;
+                white-space: normal;
+                /*margin-left: 0.5em;*/
+            }
+
+            /* questo oggetto deve avere esattamente la stessa altezza di una cella */
+            .ruolo {
+                display: flex;
+                height: 8mm;
+                margin-top: 1mm;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .iconContainer {
+                height: 6mm;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .icon {
+                height: 4mm;
+                fill: white
+            }
+
+
+            #button {
+                white-space: normal;
+                border-bottom: 0.05em solid;
+            }
+
+            #nuovo {
+                display: flex;
+                justify-content: center;
+                height: 8mm;
+                width: 8mm;
+                color: orangered;
+                background-color: gainsboro;
+            }
+
+        </style>
+
+        <div id="container">
+
+            <div id="left">
+                <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
+                <div id="servizioorario" style="background-color:{{colore}};">{{orario}}</div>
+                <div id="servizioservizio">{{servizio.code}}</div>
+                <template is="dom-if" if={{lastInType}}>
+                    <div style="flex-grow:1"></div>
+                    <vaadin-button id="nuovo">
+                        <iron-icon icon="lumo:plus"></iron-icon>
+                        <span></span>
+                    </vaadin-button>
+                </template>
+            </div>
+
+            <div style="width:0.5em"></div>
+
+            <div id="right">
+
+                <!--spazio di compensazione verticale per header dei turni senza orario previsto:
+                deve essere uguale all'altezza dell'header del turno in TurnoCellPolymer-->
+                <template is="dom-if" if="[[!servizio.orarioDefinito]]">
+                    <div style="height:2.8em"/>
+                </template>
+
+                <!--funzioni obbligatorie-->
+                <template is="dom-repeat" items="[[iconeObbligatorie]]">
+                    <div class="ruolo">
+                        <div class="iconContainer" style="background-color: #c80000ff;">
+                            <iron-icon icon="vaadin:{{item}}" class="icon"></iron-icon>
+                        </div>
+                    </div>
+                </template>
+
+                <!--funzioni facoltative-->
+                <template is="dom-repeat" items="[[iconeFacoltative]]">
+                    <div class="ruolo">
+                        <div class="iconContainer" style="background-color: #8ea604ff;">
+                            <iron-icon icon="vaadin:{{item}}" class="icon"></iron-icon>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        class ServizioCellPolymer extends Polymer.Element {
+            static get is() {
+                return 'cell-servizio'
+            }
+        }
+
+        customElements.define(ServizioCellPolymer.is, ServizioCellPolymer);
+
+
+    </script>
+
+</dom-module>
+

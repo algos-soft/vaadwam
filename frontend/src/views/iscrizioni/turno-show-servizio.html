@@ -1,0 +1,40 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="turno-show-servizio">
+
+    <!--Doppia graffa è 'One way binding' mentre doppia quadra è 'Two way binding'-->
+    <template>
+        <div style="font-size: 120%; display: flex; flex-direction:row; align-items: center">[[data]]</div>
+        <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center; font-weight: bold">
+            [[servizio]]
+        </div>
+
+        <template is="dom-if" if={{usaOrario}}>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">[[orario]]</div>
+        </template>
+        <template is="dom-if" if={{notUsaOrario}}>
+            <div style="font-size: 120%; display: flex; flex-direction:column; align-items: center">
+                <div style="display: flex; flex-direction:row; align-items: center;">
+                    <vaadin-time-picker id="inizioExtra" on-value-changed="handleClickInizioExtra"
+                                        value="[[inizioExtra]]"
+                                        style="width: 7em">[[inizioExtra]]
+                    </vaadin-time-picker>
+                    <vaadin-text-field id="spazioVuoto" style="width: 2em;" disabled></vaadin-text-field>
+                    <vaadin-time-picker id="fineExtra" on-value-changed="handleClickFineExtra" value="[[fineExtra]]"
+                                        style="width: 7em"></vaadin-time-picker>
+                </div>
+            </div>
+        </template>
+
+    </template>
+
+    <script>
+        class NomeClasseIrrilevanteServizio extends Polymer.Element {
+            static get is() {
+                return 'turno-show-servizio'
+            }// end of static script method
+        }// end of script class
+        customElements.define(NomeClasseIrrilevanteServizio.is, NomeClasseIrrilevanteServizio);
+    </script>
+
+</dom-module>

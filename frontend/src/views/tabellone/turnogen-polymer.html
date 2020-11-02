@@ -1,0 +1,152 @@
+<link href="../../../bower_components/vaadin-button/vaadin-button.html" rel="import">
+<link href="../../../bower_components/vaadin-icons/vaadin-icons.html" rel="import">
+<link href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html" rel="import">
+<link href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html" rel="import">
+<link href="../../../bower_components/vaadin-radio-button/vaadin-radio-group.html" rel="import">
+<link href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html" rel="import">
+<link href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html" rel="import">
+<link href="../../../bower_components/vaadin-progress-bar/vaadin-progress-bar.html" rel="import">
+
+<dom-module id="turno-gen" theme-for="vaadin-grid">
+
+
+    <template>
+
+        <style>
+            :root {
+                --serv-column-width: 7em;
+                --day-column-width: 2.6em;
+            }
+
+            .wServizio {
+                width: var(--serv-column-width);
+                min-width: var(--serv-column-width);
+            }
+
+            .wDay {
+                width: var(--day-column-width);
+                min-width: var(--day-column-width);
+                text-align: center;
+            }
+
+
+            .icona {
+                color: #1676F3;
+                width: 1.1em;
+            }
+
+            .datepicker {
+                width: 8.5em;
+            }
+
+
+        </style>
+
+
+        <!--single column centered in page-->
+        <div id="container" style="display: flex; flex-direction:column; ">
+
+            <!--header-->
+            <div style="display: flex; flex-direction:column; border-bottom:0.02em solid; padding-bottom: 1em; margin-bottom:0.7em">
+                <label style="font-size:1.5em; font-weight:bold; line-height:0.8em;">[[title]]</label>
+                <label style="font-size:0.8em;margin-top:0.4em">[[subtitle]]</label>
+            </div>
+            <!--end header-->
+
+            <!--area date e operazione-->
+            <div style="display: flex; flex-direction:row; align-items:center">
+
+                <vaadin-date-picker id="picker1" class="datepicker" placeholder="dal"
+                                    style="margin-right:1em"></vaadin-date-picker>
+
+                <vaadin-date-picker id="picker2" class="datepicker" placeholder="al"
+                                    style="margin-right:1em"></vaadin-date-picker>
+
+                <div id="radiodiv"></div>
+
+            </div>
+            <!--end area date e operazione-->
+
+
+            <!--Riga dei nomi giorno-->
+            <div style="display: inline-flex; flex-direction:row; margin-top:0.5em">
+                <div class="wServizio"></div>
+                <template is="dom-repeat" items="[[titoliGiorno]]">
+                    <label class="wDay" style="font-weight: bold">[[item]]</label>
+                </template>
+            </div>
+            <!--end Riga dei nomi giorno-->
+
+
+            <!--Griglia dei servizi-->
+            <template is="dom-repeat" items="[[righe]]">
+                <div style="display:inline-flex; flex-direction:row; width:min-content; margin-top:0.2em">
+
+                    <label class="wServizio" style="white-space: nowrap">[[item.nomeServizio]]</label>
+
+                    <div style="display:inline-flex; flex-direction:row;">
+                        <template is="dom-repeat" items="[[item.flags]]">
+                            <!-- two-way-binding (@AllowClientUpdates also needed in the model!)-->
+                            <vaadin-checkbox class="wDay" checked="{{item.on}}" on-click="clickFlag"></vaadin-checkbox>
+                        </template>
+
+                        <iron-icon icon="vaadin:check-circle" class="icona" style="margin-left:0.2em;"
+                                   on-click="clickRow"></iron-icon>
+
+                    </div>
+
+                </div>
+            </template>
+            <!--end Griglia dei servizi-->
+
+
+            <!--Riga icone sotto-->
+            <div style="display: inline-flex; flex-direction:row; margin-top:0.25em">
+                <div class="wServizio"></div>
+                <template is="dom-repeat" items="[[titoliGiorno]]">
+                    <div class="wDay" style="display:flex; flex-direction:column; align-items:center">
+
+                        <iron-icon icon="vaadin:check-circle" class="icona" on-click="clickCol"></iron-icon>
+
+                    </div>
+                </template>
+            </div>
+            <!--end Riga icone sotto-->
+
+            <vaadin-progress-bar id="progressBar" style="margin-top:1.3em" value="0.3"></vaadin-progress-bar>
+
+            <!--area bottoni-->
+            <div style="display: flex; flex-direction: column; margin-top: 1em;">
+
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">
+                    <vaadin-button id="bChiudi" style="flex-grow:1" theme="secondary">
+                        <label>Chiudi</label>
+                    </vaadin-button>
+
+                    <vaadin-button id="bEsegui" style="flex-grow:1; margin-left:0.4em" theme="primary">
+                        <label>Esegui</label>
+                    </vaadin-button>
+                </div>
+
+            </div>
+            <!--end area bottoni-->
+
+
+        </div>
+        <!--end single column-->
+
+    </template>
+
+
+    <script>
+        class TurnoGen extends Polymer.Element {
+            static get is() {
+                return 'turno-gen'
+            }
+        }
+
+        customElements.define(TurnoGen.is, TurnoGen);
+    </script>
+
+
+</dom-module>

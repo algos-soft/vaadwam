@@ -74,10 +74,10 @@
             <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
 
-        <!--                <repository>-->
-        <!--                    <id>com.google.guava</id>-->
-        <!--                    <url>http://mvnrepository.com/artifact/com.google.guava/guava</url>-->
-        <!--                </repository>-->
+        <!--                        <repository>-->
+        <!--                            <id>com.google.guava</id>-->
+        <!--                            <url>http://mvnrepository.com/artifact/com.google.guava/guava</url>-->
+        <!--                        </repository>-->
 
     </repositories>
 
