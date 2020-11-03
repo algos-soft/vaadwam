@@ -15,6 +15,7 @@ import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
+import it.algos.vaadwam.data.WamData;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -133,6 +134,9 @@ public class MiliteService extends WamService implements IUtenteService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    public WamData wamData;
 
 
     /**
@@ -1331,6 +1335,7 @@ public class MiliteService extends WamService implements IUtenteService {
         }
 
         loggerAdmin.reset("Militi della croce demo");
+        wamData.fixMilitiDemo();
         return numRec;
     }// end of method
 

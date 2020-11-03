@@ -10,6 +10,7 @@ import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.croce.EACroce;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,14 @@ public class WamData extends AData {
 
     @Autowired
     private RoleService roleService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WamLogService loggerAdmin;
 
 
     /**
@@ -157,6 +166,7 @@ public class WamData extends AData {
         milite.managerTabellone = true;
         militeService.save(milite);
 
+        loggerAdmin.reset("Admin e user per la croce demo");
     }// end of method
 
 }// end of class
