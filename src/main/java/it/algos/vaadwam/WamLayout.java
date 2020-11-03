@@ -248,7 +248,7 @@ public class WamLayout extends MainLayout14 {
 
     /**
      * Occorre sincronizzare i dati <br>
-     * L'entityBean di milite contenuta nel wamLogin è quella caricata al login del programma <br>
+     * La entityBean di milite contenuta nel wamLogin è quella caricata al login del programma <br>
      * Nel frattempo le property del milite potrebbero essere state cambiate nel form MiliteDialog <br>
      * Ricarico quindi dal database la versione aggiornata dei dati <br>
      */

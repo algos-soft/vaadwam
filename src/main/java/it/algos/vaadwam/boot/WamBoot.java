@@ -1,4 +1,4 @@
-package it.algos.vaadwam.application;
+package it.algos.vaadwam.boot;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaadflow.annotation.AIScript;
@@ -9,6 +9,7 @@ import it.algos.vaadflow.modules.company.Company;
 import it.algos.vaadflow.modules.preferenza.PreferenzaList;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.UtenteService;
+import it.algos.vaadwam.application.WamVers;
 import it.algos.vaadwam.data.WamData;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
 import it.algos.vaadwam.migration.ImportService;
@@ -62,13 +63,13 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 1.34;
+    private final static double PROJECT_VERSION = 1.35;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 11, 1);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2020, 11, 3);
 
 
     /**
-     * Inietta da Spring come 'singleton'
+     * Iniettata da Spring come 'singleton'
      */
     @Autowired
     public ImportService migration;

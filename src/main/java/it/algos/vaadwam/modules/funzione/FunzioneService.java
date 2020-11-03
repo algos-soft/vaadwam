@@ -98,19 +98,17 @@ public class FunzioneService extends WamService {
      * @param sigla       di codifica visibile (obbligatoria, non unica)
      * @param descrizione completa (obbligatoria, non unica)
      * @param icona       icona di tipo VaadinIcons (facoltativa)
-     * @param dipendenti  funzioni dipendenti che vengono automaticamente abilitate quando il militi è abilitato per questa funzione
      *
-     * @return true se la entity è stata creata
+     * @return la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
-        boolean creata = false;
+    public Funzione creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
+        Funzione entity = null;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, sigla, descrizione, icona, (Set<Funzione>) null));
-            creata = entity != null;
+            entity = save(newEntity(croce, code, sigla, descrizione, icona, (Set<Funzione>) null));
         }// end of if cycle
 
-        return creata;
+        return entity;
     }// end of method
 
 
@@ -218,6 +216,19 @@ public class FunzioneService extends WamService {
 
         return entity;
     }// end of method
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Funzione save(AEntity entityBean) {
+        return (Funzione) super.save(entityBean);
+    }
 
 
     /**

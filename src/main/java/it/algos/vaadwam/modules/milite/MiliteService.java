@@ -181,8 +181,7 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String userName, String passwordInChiaro, Set<Role> ruoli) {
-
+    public Milite creaIfNotExist(Croce croce, String nome, String cognome, String userName, String passwordInChiaro, Set<Role> ruoli) {
         return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (Set<Funzione>) null);
     }// end of method
 
@@ -209,15 +208,14 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String telefono, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni) {
-        boolean creata = false;
+    public Milite creaIfNotExist(Croce croce, String nome, String cognome, String telefono, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni) {
+        Milite milite = null;
 
         if (isMancaByKeyUnica(userName)) {
-            AEntity entity = save(newEntity(croce, 0, nome, cognome, telefono, (Address) null, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni, true));
-            creata = entity != null;
+            milite = save(newEntity(croce, 0, nome, cognome, telefono, (Address) null, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni, true));
         }// end of if cycle
 
-        return creata;
+        return milite;
     }// end of method
 
 
@@ -431,6 +429,19 @@ public class MiliteService extends WamService implements IUtenteService {
         }
 
         return entity;
+    }
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Milite save(AEntity entityBean) {
+        return (Milite) super.save(entityBean);
     }
 
 
@@ -1311,9 +1322,6 @@ public class MiliteService extends WamService implements IUtenteService {
             funzioniTxt = riga.get("funzioni");
             funzioniTxt = text.isValid(funzioniTxt) ? funzioniTxt.replaceAll("/", VIRGOLA) : null;
             funzioni = text.isValid(funzioniTxt) ? getFunzioni(funzioniTxt) : null;
-            //            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
-            //            dipendentiTxt = riga.get("dipendenti");
-            //            dipendentiTxt = text.isValid(dipendentiTxt) ? dipendentiTxt.replaceAll("/", VIRGOLA) : null;
 
             try {
                 creaIfNotExist(croce, nome, cognome, telefono, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni);

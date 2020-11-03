@@ -113,15 +113,14 @@ public class ServizioService extends WamService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative, String colore) {
-        boolean creata = false;
+    public Servizio creaIfNotExist(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative, String colore) {
+        Servizio servizio = null;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative, colore));
-            creata = entity != null;
+            servizio = save(newEntity(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative, colore));
         }// end of if cycle
 
-        return creata;
+        return servizio;
     }// end of method
 
 
@@ -251,6 +250,19 @@ public class ServizioService extends WamService {
 
         return entity;
     }// end of method
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Servizio save(AEntity entityBean) {
+        return (Servizio) super.save(entityBean);
+    }
 
 
     /**
@@ -886,11 +898,16 @@ public class ServizioService extends WamService {
         int ordine = 0;
         String code = VUOTA;
         String descrizione = VUOTA;
-        boolean orarioDefinito;
+        String orarioDefinitoTxt;
+        boolean orarioDefinito = false;
         String inizioTxt;
         LocalTime inizio = null;
         String fineTxt;
         LocalTime fine = null;
+        String visibileTxt;
+        boolean visibile = false;
+        String extraTxt;
+        boolean extra = false;
         String obbligatorieTxt;
         Set<Funzione> obbligatorie = null;
         String facoltativeTxt;
@@ -902,7 +919,8 @@ public class ServizioService extends WamService {
             ordine++;
             code = riga.get("code");
             descrizione = riga.get("descrizione");
-            orarioDefinito = riga.get("orarioDefinito").equals("true");
+            orarioDefinitoTxt = riga.get("orarioDefinito");
+            orarioDefinito = (orarioDefinitoTxt.equals("si") || orarioDefinitoTxt.equals("true"));
             inizioTxt = riga.get("inizio");
             if (text.isValid(inizioTxt)) {
                 try {
@@ -919,6 +937,10 @@ public class ServizioService extends WamService {
                     logger.error(unErrore, this.getClass(), "reset");
                 }
             }
+            visibileTxt = riga.get("visibile");
+            visibile = (visibileTxt.equals("si") || visibileTxt.equals("true"));
+            extraTxt = riga.get("extra");
+            extra = (extraTxt.equals("si") || extraTxt.equals("true"));
             obbligatorieTxt = riga.get("obbligatorie");
             obbligatorieTxt = text.isValid(obbligatorieTxt) ? obbligatorieTxt.replaceAll("/", VIRGOLA) : null;
             if (text.isValid(obbligatorieTxt)) {
@@ -932,7 +954,7 @@ public class ServizioService extends WamService {
             colore = riga.get("colore");
 
             try {
-                creaIfNotExist(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, true, false, obbligatorie, facoltative, colore);
+                creaIfNotExist(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative, colore);
             } catch (Exception unErrore) {
                 log.error(unErrore.getMessage());
             }

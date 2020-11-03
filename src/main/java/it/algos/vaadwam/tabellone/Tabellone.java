@@ -34,7 +34,6 @@ import it.algos.vaadwam.application.WamCost;
 import it.algos.vaadwam.broadcast.BroadcastMsg;
 import it.algos.vaadwam.broadcast.Broadcaster;
 import it.algos.vaadwam.enumeration.EAPreferenzaWam;
-import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
@@ -63,6 +62,7 @@ import java.util.Map;
 
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
@@ -73,8 +73,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 @Route(value = "", layout = WamLayout.class)
 @Tag("tabellone-polymer")
-//@HtmlImport("frontend://src/views/tabellone/tabellone-polymer.html")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
+//@HtmlImport("frontend://src/views/tabellone/tabellone-polymer.html")
 //@JsModule("src/views/tabellone/tabellone-polymer.html")
 @Slf4j
 @AIView(vaadflow = false, menuName = "tabellone")
@@ -245,7 +245,7 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         if (wamLogin != null && wamLogin.isDeveloper()) {
             banner = "developer mode";
         } else {
-            if (wamLogin != null && wamLogin.getCroce() != null && wamLogin.getCroce().code.equals(CroceService.DEMO)) {
+            if (wamLogin != null && wamLogin.getCroce() != null && wamLogin.getCroce().code.equals(DEMO)) {
                 banner = "demo";
             }
         }
@@ -655,7 +655,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             } else {
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
-                Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                if (wamLogin.getCroce().code.equals(DEMO)) {
+                    Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Come Ospite puoi solo iscriverti ai turni già esistenti. Se vuoi creare un nuovo turno, esci e rientra come Admin.", 8000, Notification.Position.MIDDLE);
+                } else {
+                    Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                }
                 return;
             }
 

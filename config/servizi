@@ -1,7 +1,9 @@
 code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
-msa-mat,Automedica mattina,true,6:00,12:00,true,false,aut-msa/pri-msa,sec-msa,Green
-msa-pom,Automedica pomeriggio,true,12:00,18:00,true,false,aut-msa/pri-msa,sec-msa,Green
-msa-not,Automedica notte,true,18:00,6:00,true,false,aut-msa/pri-msa,sec-msa,Green
-amb-mat,Ambulanza mattina,true,5:00,12:00,true,false,aut-amb/pri-amb,sec-amb,Blue
-amb-pom,Ambulanza pomeriggio,true,12:00,19:00,true,false,aut-amb/pri-amb,sec-amb,Blue
-amb-not,Ambulanza notte,true,19:00,5:00,true,false,aut-amb/pri-amb,sec-amb,Blue
+msa-mat,Automedica mattina,si,6:00,12:00,true,false,aut-msa/pri-msa,sec-msa,Green
+msa-pom,Automedica pomeriggio,si,12:00,18:00,si,no,aut-msa/pri-msa,sec-msa,Green
+msa-not,Automedica notte,si,18:00,6:00,si,no,aut-msa/pri-msa,sec-msa,Green
+amb-mat,Ambulanza mattina,si,5:00,12:00,si,no,aut-amb/pri-amb,sec-amb,Blue
+amb-pom,Ambulanza pomeriggio,si,12:00,19:00,si,no,aut-amb/pri-amb,sec-amb,Blue
+amb-not,Ambulanza notte,si,19:00,5:00,si,no,aut-amb/pri-amb,sec-amb,Blue
+extra,Dimissioni,no,,,si,si,aut-amb/pri-amb,sec-amb,Red
+cent,Centralino,si,8:00,12:00,si,no,vol,,Yellow

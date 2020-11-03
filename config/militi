@@ -1,6 +1,6 @@
 nome,cognome,telefono,userName,passwordInChiaro,ruoli,mail,admin,dipendente,infermiere,funzioni
-Mario,Bertini,345 789122,mariobertini,mario123,xyz,mario2bertini@libero.it,false,false,false,aut-msa/pri-msa/sec-msa
-Roberta,Lucchetta,235 463470,robertalucchetta,roberta123,xyz,roberta3lucchetta@win.com,false,false,false,pri-msa/sec-msa
-Adrea,Scamargio,287 568733,andreascamargio,andrea123,xyz,andreascamargiomail@gmail.com,false,false,false,pri-msa
-Paolo,Riccardi,06 345635,paoloriccardi,apolo123,xyz,,false,false,false,pri-msa/sec-msa
-Francesca,Poletti,081 678754,francescapoletti,francesca123,xyz,francescathebest@libero.it,false,false,false,sec-msa
+Mario,Bertini,999 789122,mariobertini,mario123,xyz,mario2bertini@libero.it,false,false,false,aut-msa/pri-msa/sec-msa/aut-amb/pri-amb/sec-amb/vol
+Roberta,Lucchetta,111 463470,robertalucchetta,roberta123,xyz,roberta3lucchetta@win.com,false,false,false,pri-msa/sec-msa/pri-amb/sec-amb/vol
+Adrea,Scamargio,444 568733,andreascamargio,andrea123,xyz,andreascamargiomail@gmail.com,false,false,false,aut-msa/pri-msa/sec-msa/aut-amb/pri-amb/sec-amb/vol
+Paolo,Riccardi,00 345635,paoloriccardi,apolo123,xyz,,false,false,false,pri-msa/sec-msa/pri-amb/sec-amb/vol
+Francesca,Poletti,333 678754,francescapoletti,francesca123,xyz,francescathebest@libero.it,false,false,false,sec-msa

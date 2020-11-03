@@ -849,12 +849,14 @@ public class ImportService extends AService {
         VaadinIcon icona = selezionaIcona(descrizione);
 
         try { // prova ad eseguire il codice
-            return funzioneService.creaIfNotExist(croceNew, code, sigla, descrizione, icona);
+            funzioneService.creaIfNotExist(croceNew, code, sigla, descrizione, icona);
             // end of if cycle
         } catch (Exception unErrore) { // intercetta l'errore
             log.error(unErrore.toString());
             return false;
         }// fine del blocco try-catch
+
+        return true;
     }// end of method
 
 
@@ -986,13 +988,13 @@ public class ImportService extends AService {
         }// end of if cycle
 
         try { // prova ad eseguire il codice
-            return servizioService.creaIfNotExist(croceNew, ordine, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioniObbligatorie, funzioniFacoltative, VUOTA);
+            servizioService.creaIfNotExist(croceNew, ordine, code, descrizione, orario, inizio, fine, visibile, multiplo, funzioniObbligatorie, funzioniFacoltative, VUOTA);
         } catch (Exception unErrore) { // intercetta l'errore
             log.error(unErrore.toString());
             return false;
         }// fine del blocco try-catch
 
-
+        return true;
     }// end of method
 
 
@@ -1236,7 +1238,7 @@ public class ImportService extends AService {
         Set<Funzione> funzioni = getFunzioniNew(croceNew, militeOld);
         String message;
 
-        militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni);
+        militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni) != null;
 
         if (utenteOld == null) {
             importMilite(EALogLivello.warn, croceNew.getCode() + " - Manca utente per il milite " + militeOld.getNome() + " " + militeOld.getCognome());
@@ -1248,7 +1250,7 @@ public class ImportService extends AService {
 
         if (!militeSaved) {
             nickname2 = nickname + "/2";
-            militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname2, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni);
+            militeSaved = militeService.creaIfNotExist(croceNew, nome, cognome, telefono, nickname2, pass, ruoliNew, mail, enabled, admin, dipendente, infermiere, funzioni) != null;
 
             if (militeSaved) {
                 message = "Al milite " + militeOld.getNome() + " " + militeOld.getCognome() + " è stato cambiato nickName perché ne esisteva già un altro";
