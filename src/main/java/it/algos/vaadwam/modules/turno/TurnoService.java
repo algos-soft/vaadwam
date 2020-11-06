@@ -13,6 +13,7 @@ import it.algos.vaadflow.service.ARandomService;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.funzione.Funzione;
+import it.algos.vaadwam.modules.funzione.FunzioneService;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
 import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
 import it.algos.vaadwam.modules.milite.Milite;
@@ -30,13 +31,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.KEY_CONTEXT;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
+import static it.algos.vaadflow.service.ATextService.UGUALE;
 import static it.algos.vaadwam.application.WamCost.*;
 
 /**
@@ -67,6 +70,14 @@ public class TurnoService extends WamService {
      */
     private final static long serialVersionUID = 1L;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+
+    public FunzioneService funzioneService;
 
     @Autowired
     protected ADateService date;
@@ -79,7 +90,6 @@ public class TurnoService extends WamService {
      */
     @Autowired
     protected IscrizioneService iscrizioneService;
-
 
     /**
      * Istanza unica di una classe di servizio: <br>
@@ -141,6 +151,38 @@ public class TurnoService extends WamService {
         super.lastImport = LAST_IMPORT_TURNI;
         super.durataLastImport = DURATA_IMPORT_TURNI;
         super.eaTempoTypeImport = EATempo.secondi;
+    }// end of method
+
+
+    /**
+     * Crea una entity solo se non esisteva <br>
+     *
+     * @param croce      di appartenenza (obbligatoria, se manca viene recuperata dal login)
+     * @param giorno     di inizio turno (obbligatorio, calcolato da inizio - serve per le query)
+     * @param servizio   di riferimento (obbligatorio)
+     * @param iscrizioni dei volontari a questo turno (obbligatorio per un turno valido)
+     *
+     * @return la entity è stata creata
+     */
+    public Turno creaIfNotExist(Croce croce, LocalDate giorno, Servizio servizio, List<Iscrizione> iscrizioni) {
+        return creaIfNotExist(croce, giorno, servizio, iscrizioni, VUOTA, VUOTA);
+    }// end of method
+
+
+    /**
+     * Crea una entity solo se non esisteva <br>
+     *
+     * @param croce         di appartenenza (obbligatoria, se manca viene recuperata dal login)
+     * @param giorno        di inizio turno (obbligatorio, calcolato da inizio - serve per le query)
+     * @param servizio      di riferimento (obbligatorio)
+     * @param iscrizioni    dei volontari a questo turno (obbligatorio per un turno valido)
+     * @param titoloExtra   motivazione del turno extra (facoltativo)
+     * @param localitaExtra nome evidenziato della località per turni extra (facoltativo)
+     *
+     * @return la entity è stata creata
+     */
+    public Turno creaIfNotExist(Croce croce, LocalDate giorno, Servizio servizio, List<Iscrizione> iscrizioni, String titoloExtra, String localitaExtra) {
+        return save(newEntity(croce, giorno, servizio, servizio.getInizio(), servizio.getFine(), iscrizioni, titoloExtra, localitaExtra));
     }// end of method
 
 
@@ -242,6 +284,19 @@ public class TurnoService extends WamService {
 
         return entity;
     }// end of method
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Turno save(AEntity entityBean) {
+        return (Turno) super.save(entityBean);
+    }
 
 
     /**
@@ -818,6 +873,96 @@ public class TurnoService extends WamService {
             }
             save(turno);
         }
+    }// end of method
+
+
+    /**
+     * Creazione di alcuni dati demo iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * La collezione (filtrata sulla croce) viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
+     * <p>
+     * servizio,iscrizioni,titoloExtra,localitaExtra
+     *
+     * @return numero di elementi creato
+     */
+    @Override
+    public int reset() {
+        int numRec = super.reset();
+
+        File funzioniCSV = new File("config" + File.separator + "turni");
+        String path = funzioniCSV.getAbsolutePath();
+        List<LinkedHashMap<String, String>> mappaCSV;
+        Croce croce = croceService.getDEMO();
+        String giornoTxt;
+        LocalDate giorno = null;
+        String servizioTxt;
+        Servizio servizio;
+        String funzioniMilitiTxt;
+        List<Iscrizione> iscrizioni = null;
+        String titoloExtra = VUOTA;
+        String localitaExtra = VUOTA;
+        Turno turno;
+
+        mappaCSV = fileService.leggeMappaCSV(path);
+        for (LinkedHashMap<String, String> riga : mappaCSV) {
+            giornoTxt = riga.get("giorno");
+            giorno = date.getGiornoDelta(giornoTxt);
+            servizioTxt = riga.get("servizio");
+            servizio = servizioService.findByKeyUnica(servizioTxt);
+            funzioniMilitiTxt = riga.get("iscritti");
+            iscrizioni = fixIscrizioni(servizio, funzioniMilitiTxt);
+
+            try {
+                if (servizio.code.equals("extra")) {
+                    creaIfNotExist(croce, giorno, servizio, iscrizioni, titoloExtra, localitaExtra);
+                } else {
+                    creaIfNotExist(croce, giorno, servizio, iscrizioni);
+                }
+            } catch (Exception unErrore) {
+                log.error(unErrore.getMessage());
+            }
+        }
+
+
+        loggerAdmin.reset("Turni della croce demo");
+        return numRec;
+    }// end of method
+
+
+    public List<Iscrizione> fixIscrizioni(Servizio servizio, String funzioniMilitiTxt) {
+        List<Iscrizione> iscrizioni = getIscrizioni(servizio);
+        Funzione funzione;
+        Milite milite;
+        String[] parti;
+        String[] subParti;
+        String funzioneTxt;
+        String militeTxt;
+
+        if (text.isEmpty(funzioniMilitiTxt)) {
+            return null;
+        }
+
+        parti = funzioniMilitiTxt.split(SLASH);
+        if (parti != null && parti.length > 0) {
+            for (String funzioneMilite : parti) {
+                subParti = funzioneMilite.split(UGUALE);
+                if (subParti != null && subParti.length == 2) {
+                    funzioneTxt = subParti[0];
+                    militeTxt = subParti[1];
+                    funzione = funzioneService.findById("demo" + text.primaMaiuscola(funzioneTxt));
+                    for (Iscrizione iscrizione : iscrizioni) {
+                        if (iscrizione.getFunzione().code.equals(funzione.code)) {
+                            milite = militeService.findByKeyUnica(militeTxt);
+                            iscrizione.milite = milite;
+                        }
+                    }
+                }
+            }
+        }
+
+        return iscrizioni;
     }// end of method
 
 }// end of class

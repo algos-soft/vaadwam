@@ -879,8 +879,8 @@ public class ServizioService extends WamService {
     /**
      * Creazione di alcuni dati demo iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
-     * La collezione viene svuotata <br>
-     * I dati possono essere presi da una Enumeration o creati direttamemte <br>
+     * La collezione (filtrata sulla croce) viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
      * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
      * <p>
      * code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
