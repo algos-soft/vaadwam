@@ -6,7 +6,6 @@ import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
 import it.algos.vaadwam.modules.statistica.StatisticaService;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -30,7 +29,6 @@ import static it.algos.vaadwam.application.WamCost.USA_DAEMON_STATISTICHE;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Qualifier(TASK_STATISTICA)
-@Slf4j
 public class TaskStatistica extends ATask {
 
 

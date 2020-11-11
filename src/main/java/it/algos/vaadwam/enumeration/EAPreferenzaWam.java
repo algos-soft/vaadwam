@@ -28,6 +28,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     usaDaemonElabora(USA_DAEMON_STATISTICHE, "Crono per elaborare le statistiche della croce specifica", EAPrefType.bool, true, true),
 
+    usaDaemonDemo(USA_DAEMON_DEMO, "Crono per ricostruire la croce demo leggendo i files csv", EAPrefType.bool, EARole.developer, false, false, false),
 
     //--cronologia degli import
     lastImportCroci(LAST_IMPORT_CROCI, "Data ultimo import di tutte le croci", EAPrefType.localdatetime, null),

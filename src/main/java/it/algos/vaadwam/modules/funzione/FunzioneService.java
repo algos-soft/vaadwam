@@ -512,24 +512,43 @@ public class FunzioneService extends WamService {
 
 
     /**
-     * Creazione di alcuni dati demo iniziali <br>
+     * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
      * La collezione (filtrata sulla croce) viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamente <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
-     * <p>
-     * code,sigla,descrizione,icona,dipendenti
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutte le entities della croce <br>
      *
-     * @return numero di elementi creato
+     * @return numero di elementi creati
      */
     @Override
     public int reset() {
         int numRec = super.reset();
+        this.resetDemo();
+        return numRec;
+    }
+
+
+    /**
+     * Separo il reset della demo <br>
+     * <p>
+     * Un reset di Funzione non ha senso per le croci operative ma solo per la croce demo <br>
+     * Le croci operative non hanno il bottone 'Reset' neanche per il developer e dunque non possono invocare il metodo reset <br>
+     * Nel metodo reset si arriva quindi solo da dentro la croce demo;
+     * si può quindi usare il metodo DeleteAll della superclasse di reset senza rischi;
+     * poi si chiama questo metodo resetDemo() per la creazione dei dati <br>
+     * Arrivando invece dalla TaskDemo, siamo in un thread separato e la croce non esiste <br>
+     * Bypassiamo quindi reset() e chiamiamo direttamente resetDemo() in cui operiamo una
+     * cancellazione selettiva della sola croce demo prima di costruire i dati <br>
+     * <p>
+     * Property ricavate dal CSV: code,sigla,descrizione,icona,dipendenti <br>
+     */
+    public void resetDemo() {
+        Croce croce = croceService.getDEMO();
+        super.deleteByProperty(entityClass, "croce", croce);
 
         File funzioniCSV = new File("config" + File.separator + "funzioni");
         String path = funzioniCSV.getAbsolutePath();
         List<LinkedHashMap<String, String>> mappaCSV;
-        Croce croce = croceService.getDEMO();
         String code = VUOTA;
         String sigla = VUOTA;
         String descrizione = VUOTA;
@@ -563,7 +582,6 @@ public class FunzioneService extends WamService {
         putDipendenti(mappa);
 
         loggerAdmin.reset("Funzioni della croce demo");
-        return numRec;
     }// end of method
 
 

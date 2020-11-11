@@ -98,6 +98,8 @@ public class WamCost {
 
     public final static String USA_DAEMON_STATISTICHE = "usaDaemonStatistiche";
 
+    public final static String USA_DAEMON_DEMO = "usaDaemonDemo";
+
 
     //    public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
     //
@@ -148,6 +150,8 @@ public class WamCost {
     public final static String TASK_STATISTICA = "taskStatistica";
 
     public final static String TASK_IMPORT = "taskImport";
+
+    public final static String TASK_DEMO = "taskDemo";
 
     //    public final static String TASK_SER = "taskServizi";
     //

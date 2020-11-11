@@ -877,24 +877,43 @@ public class TurnoService extends WamService {
 
 
     /**
-     * Creazione di alcuni dati demo iniziali <br>
+     * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
      * La collezione (filtrata sulla croce) viene svuotata <br>
      * I dati possono essere presi da una Enumeration o creati direttamente <br>
-     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse
-     * <p>
-     * servizio,iscrizioni,titoloExtra,localitaExtra
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutte le entities della croce <br>
      *
-     * @return numero di elementi creato
+     * @return numero di elementi creati
      */
     @Override
     public int reset() {
         int numRec = super.reset();
+        this.resetDemo();
+        return numRec;
+    }
+
+
+    /**
+     * Separo il reset della demo <br>
+     * <p>
+     * Un reset di Funzione non ha senso per le croci operative ma solo per la croce demo <br>
+     * Le croci operative non hanno il bottone 'Reset' neanche per il developer e dunque non possono invocare il metodo reset <br>
+     * Nel metodo reset si arriva quindi solo da dentro la croce demo;
+     * si può quindi usare il metodo DeleteAll della superclasse di reset senza rischi;
+     * poi si chiama questo metodo resetDemo() per la creazione dei dati <br>
+     * Arrivando invece dalla TaskDemo, siamo in un thread separato e la croce non esiste <br>
+     * Bypassiamo quindi reset() e chiamiamo direttamente resetDemo() in cui operiamo una
+     * cancellazione selettiva della sola croce demo prima di costruire i dati <br>
+     * <p>
+     * Property ricavate dal CSV: servizio,iscrizioni,titoloExtra,localitaExtra <br>
+     */
+    public void resetDemo() {
+        Croce croce = croceService.getDEMO();
+        super.deleteByProperty(entityClass, "croce", croce);
 
         File funzioniCSV = new File("config" + File.separator + "turni");
         String path = funzioniCSV.getAbsolutePath();
         List<LinkedHashMap<String, String>> mappaCSV;
-        Croce croce = croceService.getDEMO();
         String giornoTxt;
         LocalDate giorno = null;
         String servizioTxt;
@@ -910,28 +929,29 @@ public class TurnoService extends WamService {
             giornoTxt = riga.get("giorno");
             giorno = date.getGiornoDelta(giornoTxt);
             servizioTxt = riga.get("servizio");
-            servizio = servizioService.findByKeyUnica(servizioTxt);
+            servizio = servizioService.findByKeyUnica(croce, servizioTxt);
             funzioniMilitiTxt = riga.get("iscritti");
-            iscrizioni = fixIscrizioni(servizio, funzioniMilitiTxt);
-
-            try {
-                if (servizio.code.equals("extra")) {
-                    creaIfNotExist(croce, giorno, servizio, iscrizioni, titoloExtra, localitaExtra);
-                } else {
-                    creaIfNotExist(croce, giorno, servizio, iscrizioni);
+            if (servizio != null) {
+                iscrizioni = fixIscrizioni(croce, servizio, funzioniMilitiTxt);
+            }
+            if (iscrizioni != null) {
+                try {
+                    if (servizio.code.equals("extra")) {
+                        creaIfNotExist(croce, giorno, servizio, iscrizioni, titoloExtra, localitaExtra);
+                    } else {
+                        creaIfNotExist(croce, giorno, servizio, iscrizioni);
+                    }
+                } catch (Exception unErrore) {
+                    log.error(unErrore.getMessage());
                 }
-            } catch (Exception unErrore) {
-                log.error(unErrore.getMessage());
             }
         }
 
-
         loggerAdmin.reset("Turni della croce demo");
-        return numRec;
     }// end of method
 
 
-    public List<Iscrizione> fixIscrizioni(Servizio servizio, String funzioniMilitiTxt) {
+    public List<Iscrizione> fixIscrizioni(Croce croce, Servizio servizio, String funzioniMilitiTxt) {
         List<Iscrizione> iscrizioni = getIscrizioni(servizio);
         Funzione funzione;
         Milite milite;
@@ -941,7 +961,7 @@ public class TurnoService extends WamService {
         String militeTxt;
 
         if (text.isEmpty(funzioniMilitiTxt)) {
-            return null;
+            return iscrizioni;
         }
 
         parti = funzioniMilitiTxt.split(SLASH);
@@ -951,7 +971,7 @@ public class TurnoService extends WamService {
                 if (subParti != null && subParti.length == 2) {
                     funzioneTxt = subParti[0];
                     militeTxt = subParti[1];
-                    funzione = funzioneService.findById("demo" + text.primaMaiuscola(funzioneTxt));
+                    funzione = funzioneService.findByKeyUnica(croce, funzioneTxt);
                     for (Iscrizione iscrizione : iscrizioni) {
                         if (iscrizione.getFunzione().code.equals(funzione.code)) {
                             milite = militeService.findByKeyUnica(militeTxt);

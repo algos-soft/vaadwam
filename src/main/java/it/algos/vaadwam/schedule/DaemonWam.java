@@ -42,6 +42,12 @@ public class DaemonWam extends Scheduler {
     @Autowired
     private TaskStatistica statistica;
 
+    /**
+     * La injection viene fatta da SpringBoot in automatico <br>
+     */
+    @Autowired
+    private TaskDemo demo;
+
 
     @PostConstruct
     public void startBio() throws IllegalStateException {
@@ -52,6 +58,7 @@ public class DaemonWam extends Scheduler {
             // schedule(importa.getSchedule().getPattern(), importa);
 
             schedule(statistica.getSchedule().getPattern(), statistica);
+            schedule(demo.getSchedule().getPattern(), demo);
 
         }// fine del blocco if
     }// end of method

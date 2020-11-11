@@ -9,6 +9,9 @@ import it.algos.vaadflow.service.AFileService;
 import it.algos.vaadflow.service.ATextService;
 import it.algos.vaadflow.service.IAService;
 import it.algos.vaadwam.modules.funzione.FunzioneService;
+import it.algos.vaadwam.modules.milite.MiliteService;
+import it.algos.vaadwam.modules.servizio.ServizioService;
+import it.algos.vaadwam.modules.turno.TurnoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -72,6 +75,24 @@ public class CroceData {
      * Inietta da Spring come 'singleton'
      */
     @Autowired
+    public ServizioService servizioService;
+
+    /**
+     * Inietta da Spring come 'singleton'
+     */
+    @Autowired
+    public MiliteService militeService;
+
+    /**
+     * Inietta da Spring come 'singleton'
+     */
+    @Autowired
+    public TurnoService turnoService;
+
+    /**
+     * Inietta da Spring come 'singleton'
+     */
+    @Autowired
     public ATextService text;
 
 
@@ -112,64 +133,10 @@ public class CroceData {
     }
 
 
-    //    /**
-    //     * Controlla che esista la croce demo <br>
-    //     * Se manca, la crea <br>
-    //     */
-    //    public void checkDemo() {
-    //        Person person;
-    //        Address indirizzo;
-    //
-    //        this.creaFunzioni();
-    //
-    //        if (service.getDEMO() == null) {
-    //            person = (Person) personService.save(personService.newEntity(EAPerson.gac));
-    //            indirizzo = (Address) addressService.save(addressService.newEntity(EAAddress.algos));
-    //            service.creaIfNotExist(EAOrganizzazione.anpas, person, DEMO, "Associazione di prova", person, "345 678", VUOTA, indirizzo);
-    //        }
-    //    }// end of method
-
-    //    /**
-    //     * Creazione di una collezione
-    //     */
-    //    public void findOrCrea() {
-    //        int numRec = 0;
-    //
-    //        creaCroci();
-    //        numRec = service.count();
-    //        log.warn("Algos - Creazione dati iniziali: " + numRec + " croci");
-    //    }// end of method
-
-
-    //    /**
-    //     * Creazione delle croci
-    //     * Solo se non esistono
-    //     */
-    //    public void creaCroci() {
-    ////        service.crea(EAOrganizzazione.anpas, getPer(1), ALGOS, "Algos s.r.l.", getPer(2), "335 475612", "", getInd(1));
-    ////        service.crea(EAOrganizzazione.cri, getPer(3), DEMO, "Company di prova", getPer(4), "45 9981333", "", getInd(2));
-    ////        service.crea(EAOrganizzazione.csv, getPer(5), TEST, "Altra company", getPer(6), "241 1274355", "", getInd(3));
-    //    }// end of method
-
-
     /**
      * Creazione delle persone
      */
     public Person getPer(int pos) {
-        //        switch (pos) {
-        //            case 1:
-        //                return personService.newEntity( "Mario",  "Rossi");
-        //            case 2:
-        //                return personService.newEntity( "Giovanna",  "Tessitori");
-        //            case 3:
-        //                return personService.newEntity( "Andrea",  "Romagnoli");
-        //            case 4:
-        //                return personService.newEntity( "Marco",  "Beretta");
-        //            case 5:
-        //                return personService.newEntity( "Silvana",  "Piccolomini");
-        //            case 6:
-        //                return personService.newEntity( "Flavia",  "Brigante");
-        //        } // end of switch statement
         return null;
     }// end of method
 
@@ -190,33 +157,15 @@ public class CroceData {
     }// end of method
 
 
-    //    public void creaFunzioni() {
-    //        File regioniCSV = new File("config" + File.separator + "funzioni");
-    //        String path = regioniCSV.getAbsolutePath();
-    //        List<LinkedHashMap<String, String>> mappaCSV;
-    //        String croceTxt = VUOTA;
-    //        Croce croce = null;
-    //        String code = VUOTA;
-    //        String sigla = VUOTA;
-    //        String descrizione = VUOTA;
-    //        String iconaTxt = VUOTA;
-    //        VaadinIcon icona = null;
-    //
-    //        mappaCSV = fileService.leggeMappaCSV(path);
-    //        for (LinkedHashMap<String, String> riga : mappaCSV) {
-    //            croceTxt = riga.get("croce");
-    //            croce = text.isValid(croceTxt) ? croceService.findByKeyUnica(croceTxt) : null;
-    //            code = riga.get("code");
-    //            sigla = riga.get("sigla");
-    //            descrizione = riga.get("descrizione");
-    //            iconaTxt = riga.get("icona");
-    //            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
-    //        }
-    //
-    //        try {
-    //            funzioneService.creaIfNotExist(croce, code, sigla, descrizione, icona);
-    //        } catch (Exception unErrore) {
-    //        }
-    //    }// end of method
+    /**
+     * Ricostruisce i dati della croce demo: funzioni, servizi, militi, turni <br>
+     */
+    public void elabora() {
+        croceService.fixCroceDemo();
+        funzioneService.resetDemo();
+        servizioService.resetDemo();
+        militeService.resetDemo();
+        turnoService.resetDemo();
+    }
 
 }// end of class
