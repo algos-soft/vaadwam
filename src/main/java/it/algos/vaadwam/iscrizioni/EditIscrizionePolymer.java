@@ -305,6 +305,8 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         String nickName = "";
 
         if (iscrizioneEntity.getMilite() != null) {
+            String sigla = militeService.getSigla(iscrizioneEntity.getMilite());
+
             nickName = iscrizioneEntity.getMilite().getSigla();
         }// end of if/else cycle
 

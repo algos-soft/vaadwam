@@ -188,6 +188,10 @@ public class WamCost {
 
     public final static String CREAZIONE_NUOVO_TURNO_DA_UTENTE = "creazioneNuovoTurnoDaUtente";
 
+    public final static String COGNOME_PRIMA_DEL_NOME = "cognomePrimaDelNome";
+
+    public final static String NUMERO_CARATTERI_VISIBILI = "caratteriVisibili";
+
     //--mappa @Route
     public final static String KEY_MAP_GIORNO = "giorno";
 

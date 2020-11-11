@@ -33,6 +33,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.*;
@@ -100,12 +101,14 @@ public class MiliteService extends WamService implements IUtenteService {
     @Autowired
     public WamLogService wamLogger;
 
+    @Autowired
+    public WamData wamData;
+
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     protected PersonService personService;
-
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -134,9 +137,6 @@ public class MiliteService extends WamService implements IUtenteService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    @Autowired
-    public WamData wamData;
 
 
     /**
@@ -1384,5 +1384,52 @@ public class MiliteService extends WamService implements IUtenteService {
 
         return funzioni;
     }// end of method
+
+
+    /**
+     * Sigla breve del milite per presentazione sul tabellone e altro
+     */
+    public String getSigla(Milite milite) {
+        String sigla = VUOTA;
+        Croce croce = milite.getCroce();
+        int lettere = 1;
+
+        if (milite == null) {
+            return VUOTA;
+        }
+
+        if (croce != null) {
+            lettere = pref.getInt(NUMERO_CARATTERI_VISIBILI, croce.code);
+        }
+
+        if (!StringUtils.isEmpty(milite.cognome)) {
+            sigla = milite.cognome;
+        }
+
+        if (!StringUtils.isEmpty(milite.nome)) {
+            if (!StringUtils.isEmpty(sigla)) {
+                sigla += SPAZIO;
+            }
+            switch (lettere) {
+                case -1: //--nome intero senza troncatura
+                    sigla += milite.nome;
+                    break;
+                case 0: //--nome non viene visualizzato
+                    sigla = sigla.trim();
+                    break;
+                case 1: //--nome troncato come indicato
+                case 2:
+                case 3:
+                case 4:
+                    sigla += milite.nome.substring(0, lettere) + ".";
+                    break;
+                default:
+                    sigla += milite.nome.substring(0, 1) + ".";
+                    break;
+            }
+        }
+
+        return sigla;
+    }
 
 }// end of class

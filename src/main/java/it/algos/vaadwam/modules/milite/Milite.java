@@ -25,6 +25,9 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+import static it.algos.vaadflow.application.FlowCost.SPAZIO;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+
 /**
  * Project vaadwam <br>
  * Created by Algos <br>
@@ -189,19 +192,41 @@ public class Milite extends Person {
     /**
      * Sigla breve del milite per presentazione sul tabellone e altro
      */
+    @Deprecated
     public String getSigla() {
-        String sigla = "";
+        String sigla = VUOTA;
         int lettere = 1;
 
+        if (croce != null) {
+            // TODO: 11-11-20 da gestire come preferenza
+            lettere = croce.getLetterNome();
+        }
+
         if (!StringUtils.isEmpty(cognome)) {
-            sigla += cognome;
+            sigla = cognome;
         }
 
         if (!StringUtils.isEmpty(nome)) {
             if (!StringUtils.isEmpty(sigla)) {
-                sigla += " ";
+                sigla += SPAZIO;
             }
-            sigla += nome.substring(0, lettere) + ".";
+            switch (lettere) {
+                case -1: //--nome intero senza troncatura
+                    sigla += nome;
+                    break;
+                case 0: //--nome non viene visualizzato
+                    sigla = sigla.trim();
+                    break;
+                case 1: //--nome troncato come indicato
+                case 2:
+                case 3:
+                case 4:
+                    sigla += nome.substring(0, lettere) + ".";
+                    break;
+                default:
+                    sigla += nome.substring(0, 1) + ".";
+                    break;
+            }
         }
 
         return sigla;
