@@ -191,6 +191,7 @@ public class Milite extends Person {
      */
     public String getSigla() {
         String sigla = "";
+        int lettere = 1;
 
         if (!StringUtils.isEmpty(cognome)) {
             sigla += cognome;
@@ -200,7 +201,7 @@ public class Milite extends Person {
             if (!StringUtils.isEmpty(sigla)) {
                 sigla += " ";
             }
-            sigla += nome.substring(0, 1) + ".";
+            sigla += nome.substring(0, lettere) + ".";
         }
 
         return sigla;
