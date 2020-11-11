@@ -70,8 +70,6 @@ public class CompIscrizione extends Div {
         this.add(buildSecondaRiga());
 
         enableTimeNote(combo.getValue() != null);
-
-
     }
 
 

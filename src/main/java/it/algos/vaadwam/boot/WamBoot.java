@@ -63,7 +63,7 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 1.39;
+    private final static double PROJECT_VERSION = 1.40;
 
     private final static LocalDate VERSION_DATE = LocalDate.of(2020, 11, 11);
 

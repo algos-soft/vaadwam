@@ -195,12 +195,7 @@ public class Milite extends Person {
     @Deprecated
     public String getSigla() {
         String sigla = VUOTA;
-        int lettere = 1;
 
-        if (croce != null) {
-            // TODO: 11-11-20 da gestire come preferenza
-            lettere = croce.getLetterNome();
-        }
 
         if (!StringUtils.isEmpty(cognome)) {
             sigla = cognome;
@@ -210,23 +205,8 @@ public class Milite extends Person {
             if (!StringUtils.isEmpty(sigla)) {
                 sigla += SPAZIO;
             }
-            switch (lettere) {
-                case -1: //--nome intero senza troncatura
-                    sigla += nome;
-                    break;
-                case 0: //--nome non viene visualizzato
-                    sigla = sigla.trim();
-                    break;
-                case 1: //--nome troncato come indicato
-                case 2:
-                case 3:
-                case 4:
-                    sigla += nome.substring(0, lettere) + ".";
-                    break;
-                default:
-                    sigla += nome.substring(0, 1) + ".";
-                    break;
-            }
+
+            sigla += nome.substring(0, 1) + ".";
         }
 
         return sigla;

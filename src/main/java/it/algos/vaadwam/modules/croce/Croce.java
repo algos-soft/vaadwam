@@ -116,9 +116,4 @@ public class Croce extends Company {
     }
 
 
-    // TODO: 11-11-20 da gestire come preferenza
-    public int getLetterNome() {
-        return 0;
-    }
-
 }// end of entity class
