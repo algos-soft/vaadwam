@@ -16,9 +16,9 @@ public class MiliteComboBean {
     private String siglaMilite;
 
 
-    public MiliteComboBean(Milite milite) {
+    public MiliteComboBean(Milite milite, String siglaMilite) {
         idMilite = milite.getId();
-        siglaMilite = milite.getSigla();
+        this.siglaMilite = siglaMilite;
     }
 
 

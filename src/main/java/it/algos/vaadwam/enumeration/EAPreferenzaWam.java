@@ -82,7 +82,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     numeroGiorniMancanti(NUMERO_GIORNI_MANCANTI, "Giorni massimi mancanti all'esecuzione del turno per potersi cancellare", EAPrefType.integer, EARole.admin, true, 2, true),
 
-    caratteriVisibili(NUMERO_CARATTERI_VISIBILI, "Numero di caratteri del nome del milite nel tabellone (-1 senza troncatura)", EAPrefType.integer, EARole.admin, true, true, true),
+    caratteriVisibili(NUMERO_CARATTERI_VISIBILI, "Numero di caratteri del nome del milite nel tabellone (0=solo cognome; -1=nome intero)", EAPrefType.integer, EARole.admin, true, true, true),
 
     ;
 

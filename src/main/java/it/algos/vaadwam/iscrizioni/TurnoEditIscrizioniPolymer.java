@@ -327,7 +327,7 @@ public abstract class TurnoEditIscrizioniPolymer extends PolymerTemplate<Templat
             return;
         }// end of if cycle
 
-        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed amdin esclusi)
+        //--Se siamo nello storico, disabilita tutte le iscrizioni (developer ed admin esclusi)
         if (tabelloneService.isStorico(turno)) {
             if (array.isValid(listaEditIscrizioni)) {
                 for (EditIscrizionePolymer editIscrizione : listaEditIscrizioni) {

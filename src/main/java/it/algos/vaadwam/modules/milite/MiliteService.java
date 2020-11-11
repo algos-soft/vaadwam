@@ -1391,13 +1391,14 @@ public class MiliteService extends WamService implements IUtenteService {
      */
     public String getSigla(Milite milite) {
         String sigla = VUOTA;
-        Croce croce = milite.getCroce();
+        Croce croce = null;
         int lettere = 1;
 
         if (milite == null) {
             return VUOTA;
         }
 
+        croce = milite.getCroce();
         if (croce != null) {
             lettere = pref.getInt(NUMERO_CARATTERI_VISIBILI, croce.code);
         }

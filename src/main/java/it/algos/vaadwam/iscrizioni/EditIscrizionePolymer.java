@@ -315,7 +315,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
 
 
     /**
-     * Listener dei bottoni funzione e milite per selezionare o cancellareil milite <br>
+     * Listener dei bottoni funzione e milite per selezionare o cancellare il milite <br>
      */
     private void fixListener() {
         if (iscrizioneEntity.getMilite() == null) {
