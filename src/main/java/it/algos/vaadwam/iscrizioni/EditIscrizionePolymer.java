@@ -305,6 +305,8 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
         String nickName = "";
 
         if (iscrizioneEntity.getMilite() != null) {
+            String sigla = militeService.getSigla(iscrizioneEntity.getMilite());
+
             nickName = iscrizioneEntity.getMilite().getSigla();
         }// end of if/else cycle
 
@@ -313,7 +315,7 @@ public class EditIscrizionePolymer extends PolymerTemplate<TemplateModel> {
 
 
     /**
-     * Listener dei bottoni funzione e milite per selezionare o cancellareil milite <br>
+     * Listener dei bottoni funzione e milite per selezionare o cancellare il milite <br>
      */
     private void fixListener() {
         if (iscrizioneEntity.getMilite() == null) {

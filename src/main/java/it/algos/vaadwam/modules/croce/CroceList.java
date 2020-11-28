@@ -89,8 +89,8 @@ public class CroceList extends WamViewList {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.usaButtonDelete = true;
-        super.usaButtonReset = false;
+        super.usaButtonDelete = false;
+        super.usaButtonReset = true;
         super.isEntityUsaDatiDemo = false;
 
         if (wamLogin.isDeveloper()) {
@@ -118,11 +118,23 @@ public class CroceList extends WamViewList {
         alertAdmin.add(NOMI);
 
         alertDev.add("Lista visibile solo perché sei collegato come developer. Gli admin vedono SOLO la loro Croce. Gli utenti normali non vedono nulla.");
-        alertDev.add("Si possono importare le Croci dal vecchio programma.");
+        alertDev.add("La lista delle croci prevede un bottone 'Import' da usare SOLO sul computer di casa ed in modalità debug (per sicurezza).");
+        alertDev.add("Nella fase di import la singola croce operativa viene creata SOLO se mancante. Per modificarla, occorre prima cancellarla.");
+        alertDev.add("La lista delle croci prevede un bottone 'Reset' per ricreare la sola croce Demo (che viene comunque ricreata ad ogni riavvio).");
 
         super.creaAlertLayout();
     }// end of method
 
+
+    /**
+     * Opens the confirmation dialog before reset all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void openConfirmReset() {
+        reset();
+    }// end of method
 
     //    /**
     //     * Placeholder (eventuale, presente di default) SOPRA la Grid

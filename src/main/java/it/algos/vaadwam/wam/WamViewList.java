@@ -20,11 +20,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.algos.vaadflow.application.FlowCost.START_DATE_TIME;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadflow.application.FlowVar.usaCompany;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 import static it.algos.vaadwam.application.WamCost.TASK_IMPORT;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam
@@ -141,6 +141,11 @@ public abstract class WamViewList extends AGridViewList {
 
         if (login.isDeveloper() || login.isAdmin()) {
             super.usaButtonNew = true;
+            if (login.isDeveloper() && wamLogin.getCroce().code.equals(DEMO)) {
+                super.usaButtonReset = true;
+            } else {
+                super.usaButtonReset = false;
+            }
         } else {
             super.usaButtonNew = false;
         }// end of if/else cycle
@@ -166,7 +171,7 @@ public abstract class WamViewList extends AGridViewList {
 
 
     /**
-     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sotoclasse <br>
+     * Eventuali regolazioni sulle preferenze DOPO avere invocato il metodo fixPreferenze() della sottoclasse <br>
      * <p>
      * Chiamato da AViewList.initView() DOPO fixPreferenze() e sviluppato nella sottoclasse APrefViewList <br>
      * Non può essere sovrascritto <br>
@@ -288,14 +293,31 @@ public abstract class WamViewList extends AGridViewList {
     protected void creaTopLayout() {
         super.creaTopLayout();
 
-        //--Import non più usato/usabile
-        if (wamLogin != null && wamLogin.isDeveloper() && wamLogin.getCroce() != null && usaImportButton) {
-            importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
-            importButton.getElement().setAttribute("theme", "error");
-            importButton.addClassName("view-toolbar__button");
-            importButton.addClickListener(e -> importa());
-            topPlaceholder.add(importButton);
+        //--Import non più usato come task notturna
+        //--Import utilizzabile SOLO sul computer di casa come test
+        //--Import utilizzabile SOLO in modalità debug (così me ne accorgo)
+        if (wamLogin != null) {
+            if (wamLogin.isDeveloper() && wamLogin.getCroce() != null) {
+                if (usaImportButton && pref.isBool(USA_DEBUG)) {
+                    importButton = new Button("Import", new Icon(VaadinIcon.ARROW_DOWN));
+                    importButton.getElement().setAttribute("theme", "error");
+                    importButton.addClassName("view-toolbar__button");
+                    importButton.addClickListener(e -> importa());
+                    topPlaceholder.add(importButton);
+                }// end of if cycle
+            }// end of if cycle
         }// end of if cycle
+    }// end of method
+
+
+    /**
+     * Opens the confirmation dialog before reset all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected void openConfirmReset() {
+        reset();
     }// end of method
 
 

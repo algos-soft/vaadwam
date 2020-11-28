@@ -16,13 +16,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.io.File;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam <br>
@@ -97,6 +98,8 @@ public class ServizioService extends WamService {
      * Crea una entity solo se non esisteva <br>
      *
      * @param croce          di appartenenza (obbligatoria, se manca viene recuperata dal login)
+     * @param ordine         di presentazione nelle liste (obbligatorio, unico nella croce,
+     *                       con controllo automatico se è zero,  modificabile da developer ed admin)
      * @param code           codice di riferimento (obbligatorio)
      * @param descrizione    (facoltativa, non unica)
      * @param orarioDefinito (obbligatorio, avis, centralino ed extra non ce l'hanno)
@@ -106,18 +109,18 @@ public class ServizioService extends WamService {
      * @param extra          nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
+     * @param colore         di raggruppamento per il tabellone (parametro facoltativa)
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
-        boolean creata = false;
+    public Servizio creaIfNotExist(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative, String colore) {
+        Servizio servizio = null;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative));
-            creata = entity != null;
+            servizio = save(newEntity(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative, colore));
         }// end of if cycle
 
-        return creata;
+        return servizio;
     }// end of method
 
 
@@ -129,31 +132,32 @@ public class ServizioService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Servizio newEntity() {
-        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null, (Set<Funzione>) null);
+        return newEntity((Croce) null, 0, "", "", true, (LocalTime) null, (LocalTime) null, true, false, (Set<Funzione>) null, (Set<Funzione>) null, VUOTA);
     }// end of method
 
 
-    /**
-     * Creazione in memoria di una nuova entity che NON viene salvata
-     * Eventuali regolazioni iniziali delle property
-     * Properties obbligatorie
-     *
-     * @param croce          di appartenenza (obbligatoria, se manca viene recuperata dal login)
-     * @param code           codice di riferimento (obbligatorio)
-     * @param descrizione    (facoltativa, non unica)
-     * @param orarioDefinito (obbligatorio, avis, centralino ed extra non ce l'hanno)
-     * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
-     * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
-     * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
-     * @param extra          nella stessa giornata (facoltativo, default false)
-     * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
-     * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
-     *
-     * @return la nuova entity appena creata (non salvata)
-     */
-    public Servizio newEntity(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
-        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative);
-    }// end of method
+    //    /**
+    //     * Creazione in memoria di una nuova entity che NON viene salvata
+    //     * Eventuali regolazioni iniziali delle property
+    //     * Properties obbligatorie
+    //     *
+    //     * @param croce          di appartenenza (obbligatoria, se manca viene recuperata dal login)
+    //     * @param code           codice di riferimento (obbligatorio)
+    //     * @param descrizione    (facoltativa, non unica)
+    //     * @param orarioDefinito (obbligatorio, avis, centralino ed extra non ce l'hanno)
+    //     * @param inizio         orario previsto (ore e minuti) di inizio turno (obbligatorio, se orarioDefinito è true)
+    //     * @param fine           orario previsto (ore e minuti) di fine turno (obbligatorio, se orarioDefinito è true)
+    //     * @param visibile       nel tabellone (facoltativo, default true) può essere disabilitato per servizi deprecati
+    //     * @param extra          nella stessa giornata (facoltativo, default false)
+    //     * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
+    //     * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
+    //     * @param colore          di raggruppamento per il tabellone (parametro facoltativa)
+    //     *
+    //     * @return la nuova entity appena creata (non salvata)
+    //     */
+    //    public Servizio newEntity(Croce croce, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative,String colore) {
+    //        return newEntity(croce, 0, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative,colore);
+    //    }// end of method
 
 
     /**
@@ -173,11 +177,34 @@ public class ServizioService extends WamService {
      * @param extra          nella stessa giornata (facoltativo, default false)
      * @param obbligatorie   funzioni obbligatorie del servizio (parametro obbligatorio)
      * @param facoltative    funzioni facoltative del servizio (parametro obbligatorio)
+     * @param colore         di raggruppamento per il tabellone (parametro facoltativa)
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative) {
-        Servizio entity = Servizio.builderServizio().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).descrizione(text.isValid(descrizione) ? descrizione : null).orarioDefinito(orarioDefinito).inizio(inizio).fine(fine).visibile(visibile).extra(extra).obbligatorie(obbligatorie).facoltative(facoltative).build();
+    public Servizio newEntity(Croce croce, int ordine, String code, String descrizione, boolean orarioDefinito, LocalTime inizio, LocalTime fine, boolean visibile, boolean extra, Set<Funzione> obbligatorie, Set<Funzione> facoltative, String colore) {
+        Servizio entity = Servizio.builderServizio()
+
+                .ordine(ordine != 0 ? ordine : this.getNewOrdine(croce))
+
+                .code(text.isValid(code) ? code : null)
+
+                .descrizione(text.isValid(descrizione) ? descrizione : null)
+
+                .orarioDefinito(orarioDefinito)
+
+                .inizio(inizio).fine(fine)
+
+                .visibile(visibile)
+
+                .extra(extra)
+
+                .obbligatorie(obbligatorie)
+
+                .facoltative(facoltative)
+
+                .colore(colore)
+
+                .build();
 
         return (Servizio) super.addCroce(entity, croce);
     }// end of method
@@ -223,6 +250,19 @@ public class ServizioService extends WamService {
 
         return entity;
     }// end of method
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Servizio save(AEntity entityBean) {
+        return (Servizio) super.save(entityBean);
+    }
 
 
     /**
@@ -315,7 +355,11 @@ public class ServizioService extends WamService {
         Croce croce = getCroce();
 
         if (croce != null) {
-            items = findAllByCroce(croce);
+            try {
+                items = findAllByCroce(croce);
+            } catch (Exception unErrore) {
+                logger.error(unErrore, this.getClass(), "findAll");
+            }
         } else {
             if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
@@ -354,11 +398,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllStandardVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isOrarioDefinito() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isOrarioDefinito() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -370,11 +418,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllStandardInvisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isOrarioDefinito() && !serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isOrarioDefinito() && !serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -386,11 +438,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllExtraVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (serv.isExtra() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (serv.isExtra() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -402,11 +458,15 @@ public class ServizioService extends WamService {
     public List<Servizio> findAllNonStandardVisibili() {
         List<Servizio> items = new ArrayList<>();
         List<Servizio> tuttiServizi = findAll();
-        for (Servizio serv : tuttiServizi) {
-            if (!serv.isOrarioDefinito() && serv.isVisibile()) {
-                items.add(serv);
+
+        if (tuttiServizi != null) {
+            for (Servizio serv : tuttiServizi) {
+                if (!serv.isOrarioDefinito() && serv.isVisibile()) {
+                    items.add(serv);
+                }
             }
         }
+
         return items;
     }
 
@@ -431,7 +491,12 @@ public class ServizioService extends WamService {
      * @return lista ordinata di tutte le entities
      */
     public List<Servizio> findAllByCroce(Croce croce) {
-        return repository.findAllByCroceOrderByOrdineAsc(croce);
+        try {
+            return repository.findAllByCroceOrderByOrdineAsc(croce);
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "findAllByCroce");
+            return null;
+        }
     }// end of method
 
 
@@ -791,17 +856,156 @@ public class ServizioService extends WamService {
 
     public boolean usaExtra() {
         boolean usaExtra = false;
-        List<Servizio> listaServizi = findAll();
+        List<Servizio> listaServizi = null;
+        try {
+            listaServizi = findAll();
+        } catch (Exception unErrore) {
+            logger.error(unErrore, this.getClass(), "nomeDelMetodo");
+        }
 
-        for (Servizio servizio : listaServizi) {
-            if (!servizio.orarioDefinito) {
-                usaExtra = true;
-                break;
-            }// end of if cycle
-        }// end of for cycle
+        if (listaServizi != null) {
+            for (Servizio servizio : listaServizi) {
+                if (!servizio.orarioDefinito) {
+                    usaExtra = true;
+                    break;
+                }// end of if cycle
+            }// end of for cycle
+        }
 
         return usaExtra;
     }// end of method
 
+
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * La collezione (filtrata sulla croce) viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutte le entities della croce <br>
+     *
+     * @return numero di elementi creati
+     */
+    @Override
+    public int reset() {
+        int numRec = super.reset();
+        this.resetDemo();
+        return numRec;
+    }
+
+
+    /**
+     * Separo il reset della demo <br>
+     * <p>
+     * Un reset di Servizio non ha senso per le croci operative ma solo per la croce demo <br>
+     * Le croci operative non hanno il bottone 'Reset' neanche per il developer e dunque non possono invocare il metodo reset <br>
+     * Nel metodo reset si arriva quindi solo da dentro la croce demo;
+     * si può quindi usare il metodo DeleteAll della superclasse di reset senza rischi;
+     * poi si chiama questo metodo resetDemo() per la creazione dei dati <br>
+     * Arrivando invece dalla TaskDemo, siamo in un thread separato e la croce non esiste <br>
+     * Bypassiamo quindi reset() e chiamiamo direttamente resetDemo() in cui operiamo una
+     * cancellazione selettiva della sola croce demo prima di costruire i dati <br>
+     * <p>
+     * Property ricavate dal CSV: code,descrizione,orarioDefinito,inizio,fine,visibile,extra,obbligatorie,facoltative,colore
+     */
+    public void resetDemo() {
+        Croce croce = croceService.getDEMO();
+        super.deleteByProperty(entityClass, "croce", croce);
+
+        File serviziCSV = new File("config" + File.separator + "servizi");
+        String path = serviziCSV.getAbsolutePath();
+        List<LinkedHashMap<String, String>> mappaCSV;
+        int ordine = 0;
+        String code = VUOTA;
+        String descrizione = VUOTA;
+        String orarioDefinitoTxt;
+        boolean orarioDefinito = false;
+        String inizioTxt;
+        LocalTime inizio = null;
+        String fineTxt;
+        LocalTime fine = null;
+        String visibileTxt;
+        boolean visibile = false;
+        String extraTxt;
+        boolean extra = false;
+        String obbligatorieTxt;
+        Set<Funzione> obbligatorie = null;
+        String facoltativeTxt;
+        Set<Funzione> facoltative = null;
+        String colore;
+
+        mappaCSV = fileService.leggeMappaCSV(path);
+        for (LinkedHashMap<String, String> riga : mappaCSV) {
+            ordine++;
+            code = riga.get("code");
+            descrizione = riga.get("descrizione");
+            orarioDefinitoTxt = riga.get("orarioDefinito");
+            orarioDefinito = (orarioDefinitoTxt.equals("si") || orarioDefinitoTxt.equals("true"));
+            inizioTxt = riga.get("inizio");
+            if (text.isValid(inizioTxt)) {
+                try {
+                    inizio = date.getLocalTimeHHMM(inizioTxt);
+                } catch (Exception unErrore) {
+                    logger.error(unErrore, this.getClass(), "reset");
+                }
+            }
+            fineTxt = riga.get("fine");
+            if (text.isValid(fineTxt)) {
+                try {
+                    fine = date.getLocalTimeHHMM(fineTxt);
+                } catch (Exception unErrore) {
+                    logger.error(unErrore, this.getClass(), "reset");
+                }
+            }
+            visibileTxt = riga.get("visibile");
+            visibile = (visibileTxt.equals("si") || visibileTxt.equals("true"));
+            extraTxt = riga.get("extra");
+            extra = (extraTxt.equals("si") || extraTxt.equals("true"));
+            obbligatorieTxt = riga.get("obbligatorie");
+            obbligatorieTxt = text.isValid(obbligatorieTxt) ? obbligatorieTxt.replaceAll("/", VIRGOLA) : null;
+            if (text.isValid(obbligatorieTxt)) {
+                obbligatorie = getFunzioni(obbligatorieTxt);
+            }
+            facoltativeTxt = riga.get("facoltative");
+            facoltativeTxt = text.isValid(facoltativeTxt) ? facoltativeTxt.replaceAll("/", VIRGOLA) : null;
+            if (text.isValid(facoltativeTxt)) {
+                facoltative = getFunzioni(facoltativeTxt);
+            }
+            colore = riga.get("colore");
+
+            try {
+                creaIfNotExist(croce, ordine, code, descrizione, orarioDefinito, inizio, fine, visibile, extra, obbligatorie, facoltative, colore);
+            } catch (Exception unErrore) {
+                log.error(unErrore.getMessage());
+            }
+        }
+
+        loggerAdmin.reset("Servizi della croce demo");
+    }// end of method
+
+
+    public Set<Funzione> getFunzioni(String funzioniTxt) {
+        Set<Funzione> funzioni = null;
+        Funzione funz;
+        String[] parti;
+
+        if (text.isEmpty(funzioniTxt)) {
+            return null;
+        }
+
+        parti = funzioniTxt.split(VIRGOLA);
+        if (parti != null && parti.length > 0) {
+            funzioni = new HashSet<>();
+            for (String code : parti) {
+                funz = funzioneService.findById(DEMO + text.primaMaiuscola(code));
+                if (funz != null) {
+                    funzioni.add(funz);
+                } else {
+                    log.error("Non ho trovato la funzione: " + code);
+                }
+            }
+        }
+
+        return funzioni;
+    }// end of method
 
 }// end of class

@@ -16,9 +16,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.io.File;
 import java.util.*;
 
+import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam <br>
@@ -95,17 +99,16 @@ public class FunzioneService extends WamService {
      * @param descrizione completa (obbligatoria, non unica)
      * @param icona       icona di tipo VaadinIcons (facoltativa)
      *
-     * @return true se la entity è stata creata
+     * @return la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
-        boolean creata = false;
+    public Funzione creaIfNotExist(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
+        Funzione entity = null;
 
         if (isMancaByKeyUnica(croce, code)) {
-            AEntity entity = save(newEntity(croce, code, sigla, descrizione, icona));
-            creata = entity != null;
+            entity = save(newEntity(croce, code, sigla, descrizione, icona, (Set<Funzione>) null));
         }// end of if cycle
 
-        return creata;
+        return entity;
     }// end of method
 
 
@@ -117,26 +120,26 @@ public class FunzioneService extends WamService {
      * @return la nuova entity appena creata (non salvata)
      */
     public Funzione newEntity() {
-        return newEntity((Croce) null, 0, "", "", "", (VaadinIcon) null, (Set<Funzione>) null);
+        return newEntity((Croce) null, "", "", "", (VaadinIcon) null, (Set<Funzione>) null);
     }// end of method
 
 
-    /**
-     * Creazione in memoria di una nuova entity che NON viene salvata
-     * Eventuali regolazioni iniziali delle property
-     * Properties obbligatorie
-     *
-     * @param croce       di appartenenza (obbligatoria, se manca viene recuperata dal login)
-     * @param code        di codifica interna specifica per ogni croce (obbligatorio, unico nella croce)
-     * @param sigla       di codifica visibile (obbligatoria, non unica)
-     * @param descrizione completa (obbligatoria, non unica)
-     * @param icona       icona di tipo VaadinIcons (facoltativa)
-     *
-     * @return la nuova entity appena creata (non salvata)
-     */
-    public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
-        return newEntity(croce, 0, code, sigla, descrizione, icona, (Set<Funzione>) null);
-    }// end of method
+    //    /**
+    //     * Creazione in memoria di una nuova entity che NON viene salvata
+    //     * Eventuali regolazioni iniziali delle property
+    //     * Properties obbligatorie
+    //     *
+    //     * @param croce       di appartenenza (obbligatoria, se manca viene recuperata dal login)
+    //     * @param code        di codifica interna specifica per ogni croce (obbligatorio, unico nella croce)
+    //     * @param sigla       di codifica visibile (obbligatoria, non unica)
+    //     * @param descrizione completa (obbligatoria, non unica)
+    //     * @param icona       icona di tipo VaadinIcons (facoltativa)
+    //     *
+    //     * @return la nuova entity appena creata (non salvata)
+    //     */
+    //    public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona) throws Exception {
+    //        return newEntity(croce, 0, code, sigla, descrizione, icona, (Set<Funzione>) null);
+    //    }// end of method
 
 
     /**
@@ -145,8 +148,6 @@ public class FunzioneService extends WamService {
      * All properties <br>
      *
      * @param croce       di appartenenza (obbligatoria, se manca viene recuperata dal login)
-     * @param ordine      di presentazione nelle liste (obbligatorio, unico nella croce,
-     *                    con controllo automatico se è zero,  modificabile da developer ed admin)
      * @param code        di codifica interna specifica per ogni croce (obbligatorio, unico nella croce)
      * @param sigla       di codifica visibile (obbligatoria, non unica)
      * @param descrizione completa (obbligatoria, non unica)
@@ -155,8 +156,20 @@ public class FunzioneService extends WamService {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Funzione newEntity(Croce croce, int ordine, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti)  {
-        Funzione entity = Funzione.builderFunzione().ordine(ordine != 0 ? ordine : this.getNewOrdine(croce)).code(text.isValid(code) ? code : null).sigla(text.isValid(sigla) ? sigla : null).descrizione(text.isValid(descrizione) ? descrizione : null).icona(icona).dipendenti(dipendenti).build();
+    public Funzione newEntity(Croce croce, String code, String sigla, String descrizione, VaadinIcon icona, Set<Funzione> dipendenti) {
+        Funzione entity = Funzione.builderFunzione()
+
+                .ordine(this.getNewOrdine(croce))
+
+                .code(text.isValid(code) ? code : null)
+
+                .sigla(text.isValid(sigla) ? sigla : null)
+
+                .descrizione(text.isValid(descrizione) ? descrizione : null)
+
+                .icona(icona)
+
+                .dipendenti(dipendenti).build();
 
         return (Funzione) super.addCroce(entity, croce);
 
@@ -203,6 +216,19 @@ public class FunzioneService extends WamService {
 
         return entity;
     }// end of method
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Funzione save(AEntity entityBean) {
+        return (Funzione) super.save(entityBean);
+    }
 
 
     /**
@@ -283,7 +309,7 @@ public class FunzioneService extends WamService {
         if (context.getLogin() != null && context.getLogin().isDeveloper()) {
             lista = array.getList("id,ordine,code,icona,sigla,descrizione,dipendenti");
         } else {
-            lista = array.getList("sigla,descrizione,dipendenti");
+            lista = array.getList("icona,sigla,descrizione,dipendenti");
         }
 
         return lista;
@@ -482,6 +508,129 @@ public class FunzioneService extends WamService {
         }// end of if cycle
 
         return listaIdsFunzioni;
+    }// end of method
+
+
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * La collezione (filtrata sulla croce) viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutte le entities della croce <br>
+     *
+     * @return numero di elementi creati
+     */
+    @Override
+    public int reset() {
+        int numRec = super.reset();
+        this.resetDemo();
+        return numRec;
+    }
+
+
+    /**
+     * Separo il reset della demo <br>
+     * <p>
+     * Un reset di Funzione non ha senso per le croci operative ma solo per la croce demo <br>
+     * Le croci operative non hanno il bottone 'Reset' neanche per il developer e dunque non possono invocare il metodo reset <br>
+     * Nel metodo reset si arriva quindi solo da dentro la croce demo;
+     * si può quindi usare il metodo DeleteAll della superclasse di reset senza rischi;
+     * poi si chiama questo metodo resetDemo() per la creazione dei dati <br>
+     * Arrivando invece dalla TaskDemo, siamo in un thread separato e la croce non esiste <br>
+     * Bypassiamo quindi reset() e chiamiamo direttamente resetDemo() in cui operiamo una
+     * cancellazione selettiva della sola croce demo prima di costruire i dati <br>
+     * <p>
+     * Property ricavate dal CSV: code,sigla,descrizione,icona,dipendenti <br>
+     */
+    public void resetDemo() {
+        Croce croce = croceService.getDEMO();
+        super.deleteByProperty(entityClass, "croce", croce);
+
+        File funzioniCSV = new File("config" + File.separator + "funzioni");
+        String path = funzioniCSV.getAbsolutePath();
+        List<LinkedHashMap<String, String>> mappaCSV;
+        String code = VUOTA;
+        String sigla = VUOTA;
+        String descrizione = VUOTA;
+        String iconaTxt = VUOTA;
+        VaadinIcon icona = null;
+        String dipendentiTxt;
+        Map<String, Set<String>> mappa = new HashMap();
+        Set<String> set;
+
+        mappaCSV = fileService.leggeMappaCSV(path);
+        for (LinkedHashMap<String, String> riga : mappaCSV) {
+            code = riga.get("code");
+            sigla = riga.get("sigla");
+            descrizione = riga.get("descrizione");
+            iconaTxt = riga.get("icona");
+            icona = text.isValid(iconaTxt) ? VaadinIcon.valueOf(iconaTxt) : null;
+            dipendentiTxt = riga.get("dipendenti");
+            dipendentiTxt = text.isValid(dipendentiTxt) ? dipendentiTxt.replaceAll("/", VIRGOLA) : null;
+            set = getDipendenti(dipendentiTxt);
+            if (set != null) {
+                mappa.put(code, set);
+            }
+
+            try {
+                creaIfNotExist(croce, code, sigla, descrizione, icona);
+            } catch (Exception unErrore) {
+                log.error(unErrore.getMessage());
+            }
+        }
+
+        putDipendenti(mappa);
+
+        loggerAdmin.reset("Funzioni della croce demo");
+    }// end of method
+
+
+    public Set<String> getDipendenti(String dipendentiTxt) {
+        Set<String> dipendenti = null;
+        Funzione funz;
+        String[] parti;
+
+        if (text.isEmpty(dipendentiTxt)) {
+            return null;
+        }
+
+        parti = dipendentiTxt.split(VIRGOLA);
+        if (parti != null && parti.length > 0) {
+            dipendenti = new HashSet<>();
+            for (String code : parti) {
+                dipendenti.add(code);
+            }
+        }
+
+        return dipendenti;
+    }// end of method
+
+
+    public void putDipendenti(Map<String, Set<String>> mappa) {
+        Set<String> set = null;
+        Funzione funzMadre;
+        Funzione funzFiglia;
+        Set<Funzione> dipendenti = null;
+
+        for (String key : mappa.keySet()) {
+            funzMadre = findById(DEMO + text.primaMaiuscola(key));
+            if (funzMadre != null) {
+                set = mappa.get(key);
+                if (set != null && set.size() > 0) {
+                    dipendenti = new HashSet<>();
+                    for (String code : set) {
+                        funzFiglia = findById(DEMO + text.primaMaiuscola(code));
+                        if (funzFiglia != null) {
+                            dipendenti.add(funzFiglia);
+                        } else {
+                            log.error("Non ho (ri)trovato la funzione: " + code);
+                        }
+                    }
+                    funzMadre.dipendenti = dipendenti;
+                    save(funzMadre);
+                }
+            }
+        }// end of for cycle
     }// end of method
 
 }// end of class

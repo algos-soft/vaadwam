@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+
+<dom-module id="dialog-content">
+
+    <template>
+        <div id="container" style="display: flex; flex-direction: column">
+
+            <div><strong>This is the dialog header.</strong></div>
+
+            <div style="overflow: auto">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sem nisl, condimentum blandit lectus sed,
+                vehicula consectetur turpis. Aliquam ornare ante et metus auctor consequat. Duis fermentum lacinia
+                scelerisque. Curabitur dui tellus, vestibulum vel elit sit amet, maximus dapibus diam. Nunc id feugiat
+                sem, ut lobortis leo. Donec laoreet dui ligula, id dignissim ante gravida quis. Proin id mauris quis
+                purus placerat lobortis. Donec ex lectus, cursus id elit sit amet, fringilla rhoncus libero. Vestibulum
+                ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam pharetra quam id
+                sodales accumsan. Aliquam ultrices enim nisi, vel fringilla purus convallis eu. Donec ornare tristique
+                enim vitae venenatis. Nulla velit est, semper fermentum pellentesque in, tincidunt non nibh.<br>
+                Suspendisse vel efficitur tortor. Sed eget cursus odio. Praesent a nibh diam. Cras sed imperdiet erat.
+                Aliquam dapibus rutrum risus in convallis. Etiam tincidunt, est porttitor venenatis elementum, tellus
+                velit posuere massa, id accumsan ex ante vel arcu. Quisque tincidunt cursus augue, id tempus sapien
+                aliquet at. Sed eu eros ex. Nulla aliquam, leo id condimentum tincidunt, velit enim consectetur erat,
+                sit amet mollis enim velit vitae erat. Vestibulum condimentum odio nec luctus fermentum. Vestibulum ac
+                efficitur purus, id ornare nunc.<br>
+                Donec dictum nunc augue, vitae facilisis ligula dignissim non. Praesent eleifend dignissim ligula vitae
+                laoreet. Pellentesque placerat, tortor vitae suscipit cursus, nibh leo efficitur sem, vitae vulputate
+                velit felis ut purus. Etiam ipsum turpis, ornare eget mattis porta, porttitor hendrerit nisi. Aenean
+                aliquam mi at ultricies pulvinar. Integer felis ligula, placerat eu magna quis, sodales tincidunt
+                ligula. Quisque ullamcorper lacus quis dictum aliquam. Fusce lacus ipsum, finibus eu rhoncus at, aliquam
+                non nibh. Fusce libero tortor, scelerisque et sapien vitae, ornare ullamcorper dui. Donec vel ante nunc.
+                Maecenas non accumsan tellus, quis bibendum lorem. Vivamus vulputate nisl elit, tincidunt sodales velit
+                laoreet sit amet. In in sollicitudin sem, quis aliquet lacus.<br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sem nisl, condimentum blandit lectus sed,
+                vehicula consectetur turpis. Aliquam ornare ante et metus auctor consequat. Duis fermentum lacinia
+                scelerisque. Curabitur dui tellus, vestibulum vel elit sit amet, maximus dapibus diam. Nunc id feugiat
+                sem, ut lobortis leo. Donec laoreet dui ligula, id dignissim ante gravida quis. Proin id mauris quis
+                purus placerat lobortis. Donec ex lectus, cursus id elit sit amet, fringilla rhoncus libero. Vestibulum
+                ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam pharetra quam id
+                sodales accumsan. Aliquam ultrices enim nisi, vel fringilla purus convallis eu. Donec ornare tristique
+                enim vitae venenatis. Nulla velit est, semper fermentum pellentesque in, tincidunt non nibh.
+            </div>
+
+            <div style="display: flex; flex-direction: row; justify-content:center; margin-top:1em">
+                <vaadin-button style="width: 8em; margin-right:1em">Cancel</vaadin-button>
+                <vaadin-button style="width: 8em">Confirm</vaadin-button>
+            </div>
+
+        </div>
+    </template>
+
+    <script>
+        class DialogContent extends Polymer.Element {
+            static get is() {
+                return 'dialog-content'
+            }
+        }
+
+        customElements.define(DialogContent.is, DialogContent);
+
+        // called from the Java class (server) to register a reference
+        // to the server itself in order to enable JavaScript
+        // to call methods on the server.
+        function registerServer(serverElement) {
+            server = serverElement.$server;
+            server.pageReady(window.innerWidth, window.innerHeight);
+        }
+
+    </script>
+
+</dom-module>
+

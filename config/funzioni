@@ -1,0 +1,9 @@
+code,sigla,descrizione,icona,dipendenti
+aut-msa,Aut MSA,Autista automedica,AMBULANCE,aut-amb
+pri-msa,1° soc,Primo soccorritore automedica,DOCTOR,sec-msa
+sec-msa,2° soc,Secondo soccorritore automedica,USER
+aut-amb,Aut Amb,Autista ambulanza,TRUCK
+pri-amb,1° soc,Primo soccorritore ambulanza,DOCTOR,sec-amb/ter-amb
+sec-amb,2° soc,Secondo soccorritore ambulanza,USER,ter-amb
+ter-amb,3° soc,Terzo soccorritore ambulanza,USER
+vol,vol,Socio volontario,USER

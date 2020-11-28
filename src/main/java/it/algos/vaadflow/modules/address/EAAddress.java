@@ -9,12 +9,7 @@ package it.algos.vaadflow.modules.address;
  * Indirizzi di prova <br>
  */
 public enum EAAddress {
-    uno("via delle Rose, 17", "Mantova", "32010"),
-    due("via Ruffini, 4 ", "Milano", "20103"),
-    tre("corso Garibaldi, 58", "Palazzolo sull'Oglio", "25914"),
-    quattro("piazza Murat, 1", "Bari", "99121"),
-    cinque("largo Appennini, 6", "Avellino", "45100"),
-    sei("via del Pratello, 2", "Bologna", "31232");
+    algos("via Soderini, 51", "Milano", "20146"), uno("via delle Rose, 17", "Mantova", "32010"), due("via Ruffini, 4 ", "Milano", "20103"), tre("corso Garibaldi, 58", "Palazzolo sull'Oglio", "25914"), quattro("piazza Murat, 1", "Bari", "99121"), cinque("largo Appennini, 6", "Avellino", "45100"), sei("via del Pratello, 2", "Bologna", "31232");
 
 
     private String indirizzo;

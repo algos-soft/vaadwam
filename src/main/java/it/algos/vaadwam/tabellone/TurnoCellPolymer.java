@@ -10,6 +10,7 @@ import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.service.ADateService;
 import it.algos.vaadwam.modules.funzione.Funzione;
 import it.algos.vaadwam.modules.iscrizione.Iscrizione;
+import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.riga.Riga;
 import it.algos.vaadwam.modules.riga.RigaService;
 import it.algos.vaadwam.modules.servizio.Servizio;
@@ -53,6 +54,9 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
 
     @Autowired
     private ADateService dateService;
+
+    @Autowired
+    private MiliteService militeService;
 
     private Riga riga;
 
@@ -167,7 +171,8 @@ public class TurnoCellPolymer extends PolymerTemplate<TurnoCellModel> {
                         String icona = "vaadin:" + funzServ.icona.name().toLowerCase();
                         if (iscr.milite != null) {
                             boolean mod = haModificheManuali(iscr);
-                            righeCella.add(new RigaCella(coloreCella, icona, iscr.milite.getSigla(), iscr.funzione.code, mod));
+                            String sigla = militeService.getSigla(iscr.milite);
+                            righeCella.add(new RigaCella(coloreCella, icona, sigla, iscr.funzione.code, mod));
                         } else {
                             righeCella.add(new RigaCella(coloreCella, icona, "", iscr.funzione.code));
                         }

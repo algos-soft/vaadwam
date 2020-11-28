@@ -174,6 +174,15 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
     protected PreferenzaService pref;
 
     /**
+     * Istanza unica di una classe (@Scope = 'singleton') di servizio: <br>
+     * Iniettata automaticamente dal Framework @Autowired (SpringBoot/Vaadin) <br>
+     * Disponibile dopo il metodo beforeEnter() invocato da @Route al termine dell'init() di questa classe <br>
+     * Disponibile dopo un metodo @PostConstruct invocato da Spring al termine dell'init() di questa classe <br>
+     */
+    @Autowired
+    protected AAvvisoService avviso;
+
+    /**
      * Flag di preferenza per usare il bottone Save. Normalmente true.
      */
     protected boolean usaSaveButton;
@@ -316,6 +325,8 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
         if (pref.isBool(USA_TITOLO_FORM)) {
             this.add(creaTitleLayout());
         }// end of if cycle
+
+        this.fixBanner();
 
         //--Costruisce gli oggetti base (placeholder) di questa view
         this.fixLayout();
@@ -593,6 +604,18 @@ public abstract class AViewDialog<T extends Serializable> extends Dialog impleme
 
         titlePlaceholder.removeAll();
         titlePlaceholder.add(new H2(operation.getNameInTitle() + " " + title.toLowerCase()));
+    }// end of method
+
+
+    /**
+     * Banner di avviso <br>
+     */
+    protected void fixBanner() {
+        HorizontalLayout layout = avviso.fixBanner(context);
+
+        if (layout != null) {
+            this.add(layout);
+        }
     }// end of method
 
 

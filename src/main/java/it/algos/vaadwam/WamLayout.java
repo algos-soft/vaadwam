@@ -39,6 +39,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.List;
 
 import static it.algos.vaadwam.application.WamCost.TAG_MIL;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam
@@ -178,12 +179,14 @@ public class WamLayout extends MainLayout14 {
         Tabs tabs = new Tabs();
 
         if (context != null && context.isAdmin()) {
-            tabs.add(menuService.creaAlgosTab(MiliteList.class));
             tabs.add(menuService.creaAlgosTabTabellone());
-            tabs.add(menuService.creaAlgosTab(StatisticaList.class));
-            tabs.add(menuService.creaAlgosTab(WamLogList.class));
-            tabs.add(menuService.creaAlgosTab(FunzioneList.class));
+            tabs.add(menuService.creaAlgosTab(MiliteList.class));
+            if (!((WamLogin) context.getLogin()).getCroce().code.equals(DEMO)) {
+                tabs.add(menuService.creaAlgosTab(StatisticaList.class));
+                tabs.add(menuService.creaAlgosTab(WamLogList.class));
+            }
             tabs.add(menuService.creaAlgosTab(ServizioList.class));
+            tabs.add(menuService.creaAlgosTab(FunzioneList.class));
             tabs.add(menuService.creaAlgosTab(CroceList.class));
 
             tabs.setOrientation(Tabs.Orientation.VERTICAL);
@@ -248,7 +251,7 @@ public class WamLayout extends MainLayout14 {
 
     /**
      * Occorre sincronizzare i dati <br>
-     * L'entityBean di milite contenuta nel wamLogin è quella caricata al login del programma <br>
+     * La entityBean di milite contenuta nel wamLogin è quella caricata al login del programma <br>
      * Nel frattempo le property del milite potrebbero essere state cambiate nel form MiliteDialog <br>
      * Ricarico quindi dal database la versione aggiornata dei dati <br>
      */

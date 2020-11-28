@@ -14,13 +14,11 @@ import it.algos.vaadflow.modules.person.PersonService;
 import it.algos.vaadflow.modules.role.EARoleType;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadflow.service.AMailService;
-import it.algos.vaadflow.service.AMongoService;
-import it.algos.vaadflow.service.AService;
-import it.algos.vaadflow.service.AVaadinService;
+import it.algos.vaadflow.service.*;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
 import it.algos.vaadwam.modules.croce.CroceService;
+import it.algos.vaadwam.modules.log.WamLogService;
 import it.algos.vaadwam.modules.milite.Milite;
 import it.algos.vaadwam.modules.milite.MiliteService;
 import it.algos.vaadwam.modules.turno.Turno;
@@ -134,6 +132,20 @@ public abstract class WamService extends AService {
      */
     @Autowired
     protected AVaadinService vaadinService;
+
+    /**
+     * Inietta da Spring come 'singleton'
+     */
+    @Autowired
+    protected AFileService fileService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WamLogService loggerAdmin;
 
     //    /**
     //     * Istanza unica di una classe di servizio: <br>

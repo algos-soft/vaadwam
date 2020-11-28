@@ -25,6 +25,9 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+import static it.algos.vaadflow.application.FlowCost.SPAZIO;
+import static it.algos.vaadflow.application.FlowCost.VUOTA;
+
 /**
  * Project vaadwam <br>
  * Created by Algos <br>
@@ -189,17 +192,20 @@ public class Milite extends Person {
     /**
      * Sigla breve del milite per presentazione sul tabellone e altro
      */
+    @Deprecated
     public String getSigla() {
-        String sigla = "";
+        String sigla = VUOTA;
+
 
         if (!StringUtils.isEmpty(cognome)) {
-            sigla += cognome;
+            sigla = cognome;
         }
 
         if (!StringUtils.isEmpty(nome)) {
             if (!StringUtils.isEmpty(sigla)) {
-                sigla += " ";
+                sigla += SPAZIO;
             }
+
             sigla += nome.substring(0, 1) + ".";
         }
 

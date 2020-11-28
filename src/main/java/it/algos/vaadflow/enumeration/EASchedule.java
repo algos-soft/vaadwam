@@ -75,7 +75,7 @@ public enum EASchedule {
      */
     oraQuintoMinuto("5 * * * *", "ogni ora, al minuto 5"),
     /**
-     * Descrizione: ogni ora, al minuto 5
+     * Descrizione: ogni ora, al minuto 30
      */
     oraTrentesimoMinuto("30 * * * *", "ogni ora, al minuto 30."),
     /**
@@ -85,19 +85,19 @@ public enum EASchedule {
     /**
      * Descrizione: ogni minuto
      */
-    minutoUno("1/3 * * * *", "ogni minuto."),
+    minutoUno("1/3 * * * *", "ogni primo minuto di tre."),
     /**
      * Descrizione: ogni minuto
      */
-    minutoDue("2/3 * * * *", "ogni minuto."),
+    minutoDue("2/3 * * * *", "ogni secondo minuto di tre."),
     /**
      * Descrizione: ogni minuto
      */
-    minutoTre("3/3 * * * *", "ogni minuto."),
+    minutoTre("3/3 * * * *", "ogni terzo minuto di tre."),
     /**
-     * Descrizione: ogni settimana nella notte tra domenica e lunedi
+     * Descrizione: ogni settimana nella notte tra domenica e lunedì
      */
-    settimanaLunedi("0 0 * * 1", "ogni settimana nella notte tra domenica e lunedi."),
+    settimanaLunedi("0 0 * * 1", "ogni settimana nella notte tra domenica e lunedì."),
     /**
      * Descrizione: il primo ed il 15 di ogni mese alle ore 4 di notte
      */
@@ -111,35 +111,35 @@ public enum EASchedule {
      */
     oreQuattroEscluso("0 4 2-14,16-31 * *", "ogni giorno alle ore 4 di notte, escluso l'1 ed il 15."),
     /**
-     * Descrizione: ogni giorno alle ore 4 di notte
+     * Descrizione: ogni giorno alle ore 4:05 di notte
      */
     oreQuattro("5 4 * * *", "ogni giorno alle ore 4:05 di notte."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni giorno alle ore 6:05 del mattino
      */
     oreSei("5 6 * * *", "ogni giorno alle ore 6:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni martedì alle ore 8:05 del mattino
      */
     oreOttoMartedi("5 8 * * 2", "ogni martedì alle ore 8:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni mercoledì alle ore 8:05 del mattino
      */
     oreOttoMercoledi("5 8 * * 3", "ogni mercoledì alle ore 8:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni giovedì alle ore 8:05 del mattino
      */
     oreOttoGiovedi("5 8 * * 4", "ogni giovedì alle ore 8:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni venerdì alle ore 8:05 del mattino
      */
     oreOttoVenerdi("5 8 * * 5", "ogni venerdì alle ore 8:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni sabato alle ore 8:05 del mattino
      */
     oreOttoSabato("5 8 * * 6", "ogni sabato alle ore 8:05 del mattino."),
     /**
-     * Descrizione: ogni giorno alle ore 8 del mattino
+     * Descrizione: ogni domenica alle ore 8:05 del mattino
      */
     oreOttoDomenica("5 8 * * 7", "ogni domenica alle ore 8:05 del mattino."),
     /**

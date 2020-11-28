@@ -105,6 +105,8 @@ public class ServizioList extends WamViewList {
         alertAdmin.add("Un servizio può avere un orario predefinito ed uguale ogni giorno oppure da stabilirsi di volta in volta.");
         alertAdmin.add("Un servizio non più utilizzato può venire disabilitato per non visualizzarlo nel tabellone.");
         alertAdmin.add("Ogni servizio prevede un colore per un raggruppamento logico nel tabellone.");
+        alertDev.add("Le liste dei servizi delle croci operative prevedono un bottone 'Import' da usare SOLO sul computer di casa ed in modalità debug (per sicurezza).");
+        alertDev.add("La lista dei servizi della croce 'demo' prevede un bottone 'Reset' per ricreare le funzioni al volo.");
 
         super.creaAlertLayout();
     }// end of method

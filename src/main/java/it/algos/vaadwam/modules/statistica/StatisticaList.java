@@ -156,6 +156,7 @@ public class StatisticaList extends WamViewList {
 
     private HorizontalLayout exportPlaceholder;
 
+
     /**
      * Costruttore @Autowired <br>
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
@@ -224,7 +225,7 @@ public class StatisticaList extends WamViewList {
         alertAdmin.add("numero totale dei turni effettuati dall'inizio dell'anno, ore totali effettuate dall'inizio dell'anno, media (arrotondata) di ore per turno");
 
         super.creaAlertLayout();
-        if (wamLogin.isDeveloper()) {
+        if (wamLogin.isAdminOrDev()) {
             alertPlacehorder.add(getInfoElabora());
         }
     }// end of method
@@ -264,7 +265,6 @@ public class StatisticaList extends WamViewList {
 
         if (wamLogin.isDeveloper()) {
             Button elaboraButton = new Button("Elabora anno", new Icon(VaadinIcon.REFRESH));
-            elaboraButton.getElement().setAttribute("theme", "error");
             elaboraButton.getElement().setAttribute("title", "Elaborazione immediata");
             elaboraButton.addClassName("view-toolbar__button");
             elaboraButton.addClickListener(e -> elaboraAnno());
@@ -274,7 +274,6 @@ public class StatisticaList extends WamViewList {
 
         if (wamLogin.isAdminOrDev()) {
             Button exportButton = new Button("Export sintesi", new Icon(VaadinIcon.DOWNLOAD_ALT));
-            exportButton.getElement().setAttribute("theme", "error");
             exportButton.getElement().setAttribute("title", "Foglio di excel");
             exportButton.addClassName("view-toolbar__button");
             exportButton.addClickListener(e -> exportExcelSintesi());
@@ -283,7 +282,6 @@ public class StatisticaList extends WamViewList {
 
         if (wamLogin.isAdminOrDev()) {
             Button exportButton = new Button("Export dettaglio", new Icon(VaadinIcon.DOWNLOAD_ALT));
-            exportButton.getElement().setAttribute("theme", "error");
             exportButton.getElement().setAttribute("title", "Foglio di excel");
             exportButton.addClassName("view-toolbar__button");
             exportButton.addClickListener(e -> exportExcelDettaglio());
@@ -332,28 +330,28 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-    public void updateColumns() {
-        List<String> gridPropertyNamesList = new ArrayList<>();
-        boolean isAnnoCorrente = false;
-
-        grid.removeAllColumns();
-
-        if (wamLogin.isDeveloper()) {
-            gridPropertyNamesList.add("id");
-        }
-        gridPropertyNamesList.add("anno");
-        gridPropertyNamesList.add("milite");
-        gridPropertyNamesList.add("last");
-        gridPropertyNamesList.add("delta");
-        gridPropertyNamesList.add("valido");
-        gridPropertyNamesList.add("turni");
-        gridPropertyNamesList.add("ore");
-        gridPropertyNamesList.add("media");
-
-        grid.getColumnByKey("delta").setVisible(isAnnoCorrente);
-
-        addColumnsGrid(gridPropertyNamesList);
-    }// end of method
+    //    public void updateColumns() {
+    //        List<String> gridPropertyNamesList = new ArrayList<>();
+    //        boolean isAnnoCorrente = false;
+    //
+    //        grid.removeAllColumns();
+    //
+    //        if (wamLogin.isDeveloper()) {
+    //            gridPropertyNamesList.add("id");
+    //        }
+    //        gridPropertyNamesList.add("anno");
+    //        gridPropertyNamesList.add("milite");
+    //        gridPropertyNamesList.add("last");
+    //        gridPropertyNamesList.add("delta");
+    //        gridPropertyNamesList.add("valido");
+    //        gridPropertyNamesList.add("turni");
+    //        gridPropertyNamesList.add("ore");
+    //        gridPropertyNamesList.add("media");
+    //
+    //        grid.getColumnByKey("delta").setVisible(isAnnoCorrente);
+    //
+    //        addColumnsGrid(gridPropertyNamesList);
+    //    }// end of method
 
 
     public void updateFiltri() {
@@ -424,9 +422,6 @@ public class StatisticaList extends WamViewList {
     }// end of method
 
 
-
-
-
     /**
      * Elabora (nel service) le statistiche <br>
      * Se developer=true or admin=true, elabora SOLO la propria croce <br>
@@ -494,8 +489,11 @@ public class StatisticaList extends WamViewList {
         StreamResource streamRes = new StreamResource(message + ".xls", factory);
 
         Anchor anchorEsporta = new Anchor(streamRes, "Sintesi");
+        anchorEsporta.getElement().setAttribute("style", "color: red");
         anchorEsporta.getElement().setAttribute("Export", true);
-        anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        Button button = new Button(new Icon(VaadinIcon.DOWNLOAD_ALT));
+        button.getElement().setAttribute("style", "color: red");
+        anchorEsporta.add(button);
         exportPlaceholder.removeAll();
         exportPlaceholder.add(anchorEsporta);
 
@@ -539,8 +537,11 @@ public class StatisticaList extends WamViewList {
         InputStreamFactory factory = Exporter.exportAsExcel(grid);
         StreamResource streamRes = new StreamResource(message + ".xls", factory);
         Anchor anchorEsporta = new Anchor(streamRes, "Dettaglio");
+        anchorEsporta.getElement().setAttribute("style", "color: red");
         anchorEsporta.getElement().setAttribute("Export", true);
-        anchorEsporta.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        Button button = new Button(new Icon(VaadinIcon.DOWNLOAD_ALT));
+        button.getElement().setAttribute("style", "color: red");
+        anchorEsporta.add(button);
         exportPlaceholder.removeAll();
         exportPlaceholder.add(anchorEsporta);
 

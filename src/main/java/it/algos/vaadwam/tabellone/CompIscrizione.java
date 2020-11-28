@@ -1,6 +1,8 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
@@ -60,6 +62,7 @@ public class CompIscrizione extends Div {
         this.turnoEditPolymer = turnoEditPolymer;
     }
 
+
     @PostConstruct
     private void init() {
         this.setClassName("iscrizione");
@@ -67,9 +70,8 @@ public class CompIscrizione extends Div {
         this.add(buildSecondaRiga());
 
         enableTimeNote(combo.getValue() != null);
-
-
     }
+
 
     private Div buildPrimaRiga() {
         Div div = new Div();
@@ -112,7 +114,8 @@ public class CompIscrizione extends Div {
 
         // se esiste un milite in ingresso lo preseleziona nel combo
         if (getMiliteOriginale() != null) {
-            MiliteComboBean comboMilite = new MiliteComboBean(getMiliteOriginale());
+            String sigla = militeService.getSigla(getMiliteOriginale());
+            MiliteComboBean comboMilite = new MiliteComboBean(getMiliteOriginale(), sigla);
             if (militiCombo.contains(comboMilite)) {
                 combo.setValue(comboMilite);
             }
@@ -163,12 +166,9 @@ public class CompIscrizione extends Div {
         return combo;
     }
 
+
     private void mostraAvvisoGiaPresente(String nome) {
-        ConfirmDialog
-                .createError()
-                .withMessage(nome + " è già iscritto a questo turno")
-                .withAbortButton(ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE))
-                .open();
+        ConfirmDialog.createError().withMessage(nome + " è già iscritto a questo turno").withAbortButton(ButtonOption.caption("Chiudi"), ButtonOption.icon(VaadinIcon.CLOSE)).open();
     }
 
 
@@ -182,6 +182,7 @@ public class CompIscrizione extends Div {
         return pickerInizio;
     }
 
+
     private Component buildCompNote() {
 
         noteEditor = new NoteEditor();
@@ -189,6 +190,7 @@ public class CompIscrizione extends Div {
         noteEditor.setClassName("noteIscrizioneEditor");
 
         noteEditor.addNoteChangedListener(new NoteEditor.NoteChangedListener() {
+
             @Override
             public void onNoteChanged(String newText, String oldText) {
                 iscrizione.setNote(newText);
@@ -198,6 +200,7 @@ public class CompIscrizione extends Div {
         return noteEditor;
 
     }
+
 
     private TimePicker buildPickerFine() {
         pickerFine = new TimePicker();
@@ -215,7 +218,7 @@ public class CompIscrizione extends Div {
         List<Milite> militi = militeService.findAllByFunzione(getFunzione());
 
         for (Milite milite : militi) {
-            MiliteComboBean mc = new MiliteComboBean(milite);
+            MiliteComboBean mc = new MiliteComboBean(milite, militeService.getSigla(milite));
             militiCombo.add(mc);
         }
         return militiCombo;
@@ -231,6 +234,7 @@ public class CompIscrizione extends Div {
         return iscrizione.getMilite();
     }
 
+
     String getIdMiliteSelezionato() {
         String idMilite = null;
         MiliteComboBean mc = combo.getValue();
@@ -240,18 +244,32 @@ public class CompIscrizione extends Div {
         return idMilite;
     }
 
+
     LocalTime getOraInizio() {
         return pickerInizio.getValue();
     }
+
+
+    public void setOraInizio(LocalTime value) {
+        pickerInizio.setValue(value);
+    }
+
 
     LocalTime getOraFine() {
         return pickerFine.getValue();
     }
 
+
+    public void setOraFine(LocalTime value) {
+        pickerFine.setValue(value);
+    }
+
+
     String getNote() {
         return noteEditor.getNote();
         //return textField.getValue();
     }
+
 
     /**
      * Resetta orari e note
@@ -263,6 +281,7 @@ public class CompIscrizione extends Div {
         //textField.setValue("");
     }
 
+
     private void enableTimeNote(boolean b) {
         pickerInizio.setEnabled(b);
         pickerFine.setEnabled(b);
@@ -273,15 +292,6 @@ public class CompIscrizione extends Div {
 
     private Turno getTurno() {
         return turnoEditPolymer.getTurno();
-    }
-
-
-    public void setOraInizio(LocalTime value) {
-        pickerInizio.setValue(value);
-    }
-
-    public void setOraFine(LocalTime value) {
-        pickerFine.setValue(value);
     }
 
 

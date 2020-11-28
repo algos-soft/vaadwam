@@ -11,7 +11,8 @@ import java.util.List;
  * Time: 08:11
  */
 public enum EACroce {
-    crf, crpt, pap, gaps;
+    crf, crpt, pap, gaps, demo;
+
 
     public static List<String> getValues() {
         List<String> lista = new ArrayList<>();

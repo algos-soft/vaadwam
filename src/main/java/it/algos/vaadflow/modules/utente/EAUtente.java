@@ -11,10 +11,16 @@ import it.algos.vaadflow.modules.role.EARole;
  * Time: 15:39
  */
 public enum EAUtente {
-    uno(EACompany.algos, "gac", "fulvia", EARole.developer, "gac@algos.it"),
-    due(EACompany.algos, "alex", "axel01", EARole.developer, "alex@algos.it"),
-    tre(EACompany.demo, "admin", "admin", EARole.admin, "info@algos.it"),
+    gac(EACompany.algos, "gac", "fulvia", EARole.developer, "gac@algos.it"),
+
+    alex(EACompany.algos, "alex", "axel01", EARole.developer, "alex@algos.it"),
+
+    admin(EACompany.demo, "admin", "admin", EARole.admin, "info@algos.it"),
+
+    demo(EACompany.demo, "demo", "demo", EARole.user, "info@algos.it"),
+
     quattro((EACompany) null, "anonymous", "anonymous", EARole.user, ""),
+
     cinque(EACompany.test, "Addabbo Andrea", "addabbo123", EARole.user, "");
 
     public String username;

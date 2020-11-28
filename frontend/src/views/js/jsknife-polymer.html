@@ -1,0 +1,105 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="jsknife-polymer">
+
+    <style>
+        .div1 {
+            display: flex;
+            flex-direction: row;
+            margin: 1em;
+        }
+    </style>
+
+    <template>
+        <div id="container" style="display: flex; flex-direction: column; padding: 1em; display: inline-block">
+
+            <div><strong>JS Swiss Knife</strong></div>
+
+            <hr>
+
+            <div>I bottoni invocano funzioni JS precaricate nella pagina (senza passare dal server)<br> che manipolano
+                un elemento del DOM
+            </div>
+            <div id="buttondivjs" class="div1">
+                <button id="bwide_js" onclick="wider()">Più largo JS</button>
+                <button id="bnarrow_js" onclick="narrower()">Più stretto JS</button>
+                <button id="btall_js" onclick="taller()">Più alto JS</button>
+                <button id="bshort_js" onclick="shorter()">Più basso JS</button>
+            </div>
+
+            <hr>
+
+            <div>I bottoni sono intercettati da un listener sul server il quale invoca le stesse funzioni JS</div>
+            <div id="buttondivjava" class="div1">
+                <vaadin-button id="bwide_java">Più largo Java</vaadin-button>
+                <vaadin-button id="bnarrow_java">Più stretto Java</vaadin-button>
+                <vaadin-button id="btall_java">Più alto Java</vaadin-button>
+                <vaadin-button id="bshort_java">Più basso Java</vaadin-button>
+            </div>
+
+            <hr>
+
+            <div id="scrollablediv"
+                 style="width: 22em; height: 6em; background-color: yellow; overflow: scroll; border: 1px solid; margin: 1em">
+                <paper-input id="inputId" value="{{userInput}}"
+                             style="width:16em; background-color:white; padding: 4px"></paper-input>
+                <button id="helloButton" on-click="sayHello">Saluta!</button>
+                <div id="greeting">[[greeting]]</div>
+            </div>
+
+            <div>
+                <div id="scrollbtnviv" class="div1">
+                    <button id="bscrollUp" onclick="scrollUp()">Scroll up</button>
+                    <button id="bscrollDn" onclick="scrollDn()">Scroll down</button>
+                    <button id="bscrollLt" onclick="scrollLt()">Scroll left</button>
+                    <button id="bscrollRt" onclick="scrollRt()">Scroll right</button>
+                </div>
+                <div>JS listener on component scroll events</div>
+                <div id="scrollposdiv"></div>
+            </div>
+
+
+            <hr>
+
+            <div>Java invoca una funzione JS che accetta un parametro e ottiene un risultato</div>
+            <div class="div1">
+                <vaadin-button id="bcall_func_ret">Java, call JS now!</vaadin-button>
+                <vaadin-button id="bcall_func_ret_err">Java, call JS now! (JS error)</vaadin-button>
+            </div>
+
+            <hr>
+
+            <div>JS invoca direttamente un metodo Java (senza listener) passando dei parametri e ottiene un risultato
+            </div>
+            <div class="div1">
+                <button id="bjs_call_java" onclick="javaSum()">JS, call Java now!</button>
+            </div>
+
+        </div>
+
+
+    </template>
+
+
+    <script>
+        class JsKnifePolymer extends Polymer.Element {
+            static get is() {
+                return 'jsknife-polymer'
+            }
+
+            afterServerUpdate() {
+                console.log("The new 'greeting' value is: " + this.greeting);
+                server.afterServerUpdate();
+            }
+
+        }
+
+
+        customElements.define(JsKnifePolymer.is, JsKnifePolymer);
+
+    </script>
+
+</dom-module>
+

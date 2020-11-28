@@ -15,6 +15,7 @@ import it.algos.vaadflow.modules.role.Role;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.IUtenteService;
 import it.algos.vaadflow.modules.utente.Utente;
+import it.algos.vaadwam.data.WamData;
 import it.algos.vaadwam.enumeration.EAWamLogType;
 import it.algos.vaadwam.migration.ImportService;
 import it.algos.vaadwam.modules.croce.Croce;
@@ -32,16 +33,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
-import static it.algos.vaadflow.application.FlowCost.A_CAPO;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import static it.algos.vaadflow.application.FlowCost.*;
 import static it.algos.vaadflow.application.FlowVar.usaSecurity;
 import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 
 /**
  * Project vaadwam <br>
@@ -101,12 +101,14 @@ public class MiliteService extends WamService implements IUtenteService {
     @Autowired
     public WamLogService wamLogger;
 
+    @Autowired
+    public WamData wamData;
+
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
      */
     @Autowired
     protected PersonService personService;
-
 
     /**
      * Istanza (@Scope = 'singleton') inietta da Spring <br>
@@ -183,8 +185,7 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String userName, String passwordInChiaro, Set<Role> ruoli) {
-
+    public Milite creaIfNotExist(Croce croce, String nome, String cognome, String userName, String passwordInChiaro, Set<Role> ruoli) {
         return creaIfNotExist(croce, nome, cognome, "", userName, passwordInChiaro, ruoli, "", false, false, false, false, (Set<Funzione>) null);
     }// end of method
 
@@ -211,15 +212,14 @@ public class MiliteService extends WamService implements IUtenteService {
      *
      * @return true se la entity è stata creata
      */
-    public boolean creaIfNotExist(Croce croce, String nome, String cognome, String telefono, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni) {
-        boolean creata = false;
+    public Milite creaIfNotExist(Croce croce, String nome, String cognome, String telefono, String userName, String passwordInChiaro, Set<Role> ruoli, String mail, boolean enabled, boolean admin, boolean dipendente, boolean infermiere, Set<Funzione> funzioni) {
+        Milite milite = null;
 
         if (isMancaByKeyUnica(userName)) {
-            AEntity entity = save(newEntity(croce, 0, nome, cognome, telefono, (Address) null, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni, true));
-            creata = entity != null;
+            milite = save(newEntity(croce, 0, nome, cognome, telefono, (Address) null, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni, true));
         }// end of if cycle
 
-        return creata;
+        return milite;
     }// end of method
 
 
@@ -433,6 +433,19 @@ public class MiliteService extends WamService implements IUtenteService {
         }
 
         return entity;
+    }
+
+
+    /**
+     * Saves a given entity.
+     *
+     * @param entityBean da salvare
+     *
+     * @return the saved entity
+     */
+    @Override
+    public Milite save(AEntity entityBean) {
+        return (Milite) super.save(entityBean);
     }
 
 
@@ -1263,5 +1276,179 @@ public class MiliteService extends WamService implements IUtenteService {
 
         return message.trim();
     }// end of method
+
+
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista (solo per il developer) <br>
+     * La collezione (filtrata sulla croce) viene svuotata <br>
+     * I dati possono essere presi da una Enumeration o creati direttamente <br>
+     * Deve essere sovrascritto - Invocare PRIMA il metodo della superclasse che cancella tutte le entities della croce <br>
+     *
+     * @return numero di elementi creati
+     */
+    @Override
+    public int reset() {
+        int numRec = super.reset();
+        this.resetDemo();
+        return numRec;
+    }
+
+
+    /**
+     * Separo il reset della demo <br>
+     * <p>
+     * Un reset di Funzione non ha senso per le croci operative ma solo per la croce demo <br>
+     * Le croci operative non hanno il bottone 'Reset' neanche per il developer e dunque non possono invocare il metodo reset <br>
+     * Nel metodo reset si arriva quindi solo da dentro la croce demo;
+     * si può quindi usare il metodo DeleteAll della superclasse di reset senza rischi;
+     * poi si chiama questo metodo resetDemo() per la creazione dei dati <br>
+     * Arrivando invece dalla TaskDemo, siamo in un thread separato e la croce non esiste <br>
+     * Bypassiamo quindi reset() e chiamiamo direttamente resetDemo() in cui operiamo una
+     * cancellazione selettiva della sola croce demo prima di costruire i dati <br>
+     * <p>
+     * Property ricavate dal CSV: nome,cognome,telefono,indirizzo,userName,passwordInChiaro,ruoli,mail,admin,dipendente,infermiere,funzioni <br>
+     */
+    public void resetDemo() {
+        Croce croce = croceService.getDEMO();
+        super.deleteByProperty(entityClass, "croce", croce);
+
+        File militiCSV = new File("config" + File.separator + "militi");
+        String path = militiCSV.getAbsolutePath();
+        List<LinkedHashMap<String, String>> mappaCSV;
+        String nome = VUOTA;
+        String cognome = VUOTA;
+        String telefono = VUOTA;
+        String userName = VUOTA;
+        String passwordInChiaro = VUOTA;
+        String ruoliTxt = VUOTA;
+        Set<Role> ruoli = null;
+        String mail = VUOTA;
+        boolean enabled = true;
+        boolean admin = false;
+        boolean dipendente = false;
+        boolean infermiere = false;
+        String funzioniTxt = VUOTA;
+        Set<Funzione> funzioni = null;
+
+        mappaCSV = fileService.leggeMappaCSV(path);
+        for (LinkedHashMap<String, String> riga : mappaCSV) {
+            nome = riga.get("nome");
+            cognome = riga.get("cognome");
+            telefono = riga.get("telefono");
+            userName = riga.get("userName");
+            passwordInChiaro = riga.get("passwordInChiaro");
+            ruoliTxt = riga.get("ruoli");
+            ruoliTxt = text.isValid(ruoliTxt) ? ruoliTxt.replaceAll("/", VIRGOLA) : null;
+            ruoli = text.isValid(ruoliTxt) ? getRuoli(ruoliTxt) : null;
+            mail = riga.get("mail");
+            funzioniTxt = riga.get("funzioni");
+            funzioniTxt = text.isValid(funzioniTxt) ? funzioniTxt.replaceAll("/", VIRGOLA) : null;
+            funzioni = text.isValid(funzioniTxt) ? getFunzioni(funzioniTxt) : null;
+
+            try {
+                creaIfNotExist(croce, nome, cognome, telefono, userName, passwordInChiaro, ruoli, mail, enabled, admin, dipendente, infermiere, funzioni);
+            } catch (Exception unErrore) {
+                log.error(unErrore.getMessage());
+            }
+        }
+
+        loggerAdmin.reset("Militi della croce demo");
+        wamData.fixMilitiDemo();
+    }// end of method
+
+
+    public Set<Role> getRuoli(String funzioniTxt) {
+        Set<Role> ruoli = null;
+        Role ruolo;
+        String[] parti;
+
+        if (text.isEmpty(funzioniTxt)) {
+            return null;
+        }
+
+        parti = funzioniTxt.split(VIRGOLA);
+        if (parti != null && parti.length > 0) {
+            ruoli = new HashSet<>();
+            for (String code : parti) {
+            }
+        }
+
+        return ruoli;
+    }// end of method
+
+
+    public Set<Funzione> getFunzioni(String funzioniTxt) {
+        Set<Funzione> funzioni = null;
+        Funzione funz;
+        String[] parti;
+
+        if (text.isEmpty(funzioniTxt)) {
+            return null;
+        }
+
+        parti = funzioniTxt.split(VIRGOLA);
+        if (parti != null && parti.length > 0) {
+            funzioni = new HashSet<>();
+            for (String code : parti) {
+                funz = funzioneService.findById(DEMO + text.primaMaiuscola(code));
+                if (funz != null) {
+                    funzioni.add(funz);
+                } else {
+                    log.error("Non ho trovato la funzione: " + code);
+                }
+            }
+        }
+
+        return funzioni;
+    }// end of method
+
+
+    /**
+     * Sigla breve del milite per presentazione sul tabellone e altro
+     */
+    public String getSigla(Milite milite) {
+        String sigla = VUOTA;
+        Croce croce = null;
+        int lettere = 1;
+
+        if (milite == null) {
+            return VUOTA;
+        }
+
+        croce = milite.getCroce();
+        if (croce != null) {
+            lettere = pref.getInt(NUMERO_CARATTERI_VISIBILI, croce.code);
+        }
+
+        if (!StringUtils.isEmpty(milite.cognome)) {
+            sigla = milite.cognome;
+        }
+
+        if (!StringUtils.isEmpty(milite.nome)) {
+            if (!StringUtils.isEmpty(sigla)) {
+                sigla += SPAZIO;
+            }
+            switch (lettere) {
+                case -1: //--nome intero senza troncatura
+                    sigla += milite.nome;
+                    break;
+                case 0: //--nome non viene visualizzato
+                    sigla = sigla.trim();
+                    break;
+                case 1: //--nome troncato come indicato
+                case 2:
+                case 3:
+                case 4:
+                    sigla += milite.nome.substring(0, lettere) + ".";
+                    break;
+                default:
+                    sigla += milite.nome.substring(0, 1) + ".";
+                    break;
+            }
+        }
+
+        return sigla;
+    }
 
 }// end of class

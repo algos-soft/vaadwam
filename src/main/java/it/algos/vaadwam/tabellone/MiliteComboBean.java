@@ -15,26 +15,33 @@ public class MiliteComboBean {
 
     private String siglaMilite;
 
-    public MiliteComboBean(Milite milite) {
-        idMilite=milite.getId();
-        siglaMilite=milite.getSigla();
+
+    public MiliteComboBean(Milite milite, String siglaMilite) {
+        idMilite = milite.getId();
+        this.siglaMilite = siglaMilite;
     }
+
 
     @Override
     public String toString() {
         return siglaMilite;
     }
 
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         MiliteComboBean that = (MiliteComboBean) o;
         return Objects.equals(idMilite, that.idMilite);
     }
+
 
     @Override
     public int hashCode() {
         return Objects.hash(idMilite);
     }
+
 }

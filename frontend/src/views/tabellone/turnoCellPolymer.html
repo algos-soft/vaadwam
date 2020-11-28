@@ -1,0 +1,91 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<dom-module id="turno-cell">
+    <template>
+        <style>
+
+            #container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                /*border-style: solid;*/
+                /*border-width: 0.1em;*/
+                /*border-radius: 0.5em;*/
+                /*border-color: rgb(101, 101, 104);*/
+            }
+
+            /* questo oggetto deve avere esattamente la stessa altezza di un ruolo nel servizio */
+            .button {
+                width: 100%;
+                height: 8mm;
+                margin-top: 1mm;
+                text-align: left;
+                font-size: 3.5mm;
+                font-weight: bold;
+                border-width: 0mm;
+                border-radius: 2mm;
+            }
+
+
+            .buttondiv {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .headerdiv {
+                display: flex;
+                flex-direction: row;
+                font-size: 80%;
+            }
+
+        </style>
+
+        <div id="container" style="display: flex; flex-direction: column">
+
+            <!--header del turno: deve avere la stessa altazza dello spazio
+            di compensazione in ServizioCellPolymer-->
+            <template is="dom-if" if="[[usaHeaders]]">
+                <div style="display: flex; flex-direction: column-reverse; height:2.8em">
+                    <div class="headerdiv"
+                         style="max-height:2.2em; white-space:pre-wrap; word-break:break-all;line-height:1.1em; overflow: hidden">
+                        [[header2]]
+                    </div>
+                    <div class="headerdiv" style="font-weight:bold; justify-content:center">[[header1]]</div>
+                </div>
+            </template>
+
+            <!--celle interne al turno-->
+            <template is="dom-repeat" items="[[righecella]]">
+                <button class="button" style="background-color:{{item.coloreCella}}" on-click="handleClick">
+                    <div class="buttondiv">
+                        <iron-icon icon=[[item.nomeIcona]] style="height:4mm; fill:[[item.coloreIcona]]"></iron-icon>
+                        <label style="color:[[item.coloreTesto]]">[[item.nomeMilite]]</label>
+                        <iron-icon icon=[[item.nomeIconaAvviso]]
+                                   style="height:3.5mm; margin-left:auto; fill:[[item.coloreIconaAvviso]]"></iron-icon>
+                    </div>
+                </button>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+        class TurnoCellPolymer extends Polymer.Element {
+            static get is() {
+                return 'turno-cell'
+            }// end of static script method
+            // Eventuale JavaScript event handler, run immediately
+            handleClick() {
+                // window.alert('Button was clicked');
+            }// end of script method
+        }// end of script class
+        customElements.define(TurnoCellPolymer.is, TurnoCellPolymer);
+    </script>
+
+</dom-module>
+

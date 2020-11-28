@@ -6,7 +6,10 @@ import it.algos.vaadflow.enumeration.EAFieldType;
 import it.algos.vaadflow.modules.address.Address;
 import it.algos.vaadflow.modules.address.AddressDialog;
 import it.algos.vaadflow.modules.utente.Utente;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -89,7 +92,7 @@ public class Person extends Utente {
     @NotNull
     @Indexed()
 //    @Indexed(direction = IndexDirection.DESCENDING)
-    @Size(min = 4, max = 40)
+    @Size(min = 3, max = 40)
     @Field("nome")
     @AIField(type = EAFieldType.text, required = true, focus = true, widthEM = 20)
     @AIColumn(name = "nome", widthEM = 8)
@@ -101,7 +104,7 @@ public class Person extends Utente {
     @NotNull
     @Indexed()
 //    @Indexed(direction = IndexDirection.DESCENDING)
-    @Size(min = 4, max = 40)
+    @Size(min = 3, max = 40)
     @Field("cognome")
     @AIField(type = EAFieldType.text, firstCapital = true, widthEM = 20)
     @AIColumn(name = "cognome", widthEM = 9)

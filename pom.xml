@@ -26,7 +26,6 @@
         <!-- Dependencies -->
         <!-- Va tenuta aggiornata la versione di VAADIN 14.1.3 -->
         <vaadin.version>14.1.3</vaadin.version>
-<!--        <vaadin.version>14.1.27</vaadin.version>-->
 
         <!-- Va tenuta aggiornata la versione di spring-boot -->
         <spring-boot.version>2.1.7.RELEASE</spring-boot.version>
@@ -75,10 +74,10 @@
             <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
 
-        <repository>
-            <id>com.google.guava</id>
-            <url>http://mvnrepository.com/artifact/com.google.guava/guava</url>
-        </repository>
+        <!--                        <repository>-->
+        <!--                            <id>com.google.guava</id>-->
+        <!--                            <url>http://mvnrepository.com/artifact/com.google.guava/guava</url>-->
+        <!--                        </repository>-->
 
     </repositories>
 

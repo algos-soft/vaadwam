@@ -1,0 +1,30 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-button/src/vaadin-button.html">
+
+<dom-module id="buttons-bar">
+    <template>
+        <!--area dei bottoni-->
+        <!--questi vengono costruiti completamente nel wrapper ButtonsBar.java-->
+        <!--e collegati tramite @Id("annulla") e @Id("conferma")-->
+        <!--le regolazioni ed i listener degli eventi rimangono esclusivamente sul server-->
+        <!--qui rimane solamente la parte grafica (senza logica)-->
+        <div style="display: flex; flex-direction:row; align-items: center;  justify-content: center; margin-top:1em">
+            <vaadin-button id="annulla" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised secondary"></vaadin-button>
+            <vaadin-button id="conferma" style="width:140px; margin-left:1em; margin-right:1em"
+                           theme="raised primary"></vaadin-button>
+        </div>
+
+    </template>
+
+    <script>
+        class NomeClasseIrrilevanteBottoni extends Polymer.Element {
+            static get is() {
+                return 'buttons-bar'
+            }// end of static script method
+        }// end of script class
+
+        customElements.define(NomeClasseIrrilevanteBottoni.is, NomeClasseIrrilevanteBottoni);
+    </script>
+
+</dom-module>

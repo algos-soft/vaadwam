@@ -62,6 +62,7 @@ import java.util.Map;
 
 import static it.algos.vaadflow.application.FlowCost.VUOTA;
 import static it.algos.vaadwam.application.WamCost.*;
+import static it.algos.vaadwam.modules.croce.CroceService.DEMO;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
@@ -73,6 +74,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Route(value = "", layout = WamLayout.class)
 @Tag("tabellone-polymer")
 @HtmlImport("src/views/tabellone/tabellone-polymer.html")
+//@HtmlImport("frontend://src/views/tabellone/tabellone-polymer.html")
+//@JsModule("src/views/tabellone/tabellone-polymer.html")
 @Slf4j
 @AIView(vaadflow = false, menuName = "tabellone")
 @PageTitle(WamCost.BROWSER_TAB_TITLE)
@@ -237,12 +240,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
         // app footer
         divAppFooter.add(appFooter);
 
-        // provvisorio finché dura la transizione
+        // definitivo
         banner = VUOTA;
         if (wamLogin != null && wamLogin.isDeveloper()) {
             banner = "developer mode";
-            getModel().setBanner(banner);
+        } else {
+            if (wamLogin != null && wamLogin.getCroce() != null && wamLogin.getCroce().code.equals(DEMO)) {
+                banner = "demo";
+            }
         }
+        getModel().setBanner(banner);
+
 
         // costruisce la grid
         buildAllGrid();
@@ -603,17 +611,17 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
 
 
         // se l'utente ha le iscrizioni disabilitate, e il turno è nullo o l'iscrizione è vuota, avvisa ed esce
-        if (wamLogin.getMilite().isDisabIscr()){
+        if (wamLogin.getMilite().isDisabIscr()) {
 
             Notification n = new Notification("Non sei abilitato ad effettuare iscrizioni, chiedi ad un admin", 3000, Notification.Position.MIDDLE);
 
-            if(turno==null){    // turno non esistente
+            if (turno == null) {    // turno non esistente
                 n.open();
                 return;
-            }else{  // nessun iscritto
+            } else {  // nessun iscritto
                 Funzione funzione = funzioneService.findByKeyUnica(codFunzione);
                 Iscrizione iscrizione = iscrizioneService.getByTurnoAndFunzione(turno, funzione);
-                if (iscrizione==null || iscrizione.getMilite()==null){
+                if (iscrizione == null || iscrizione.getMilite() == null) {
                     n.open();
                     return;
                 }
@@ -647,7 +655,11 @@ public class Tabellone extends PolymerTemplate<TabelloneModel> implements ITabel
             } else {
                 String desc = servizio.descrizione;
                 String giornoTxt = dateService.get(giorno, EATime.weekShortMese);
-                Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                if (wamLogin.getCroce().code.equals(DEMO)) {
+                    Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Come Ospite puoi solo iscriverti ai turni già esistenti. Se vuoi creare un nuovo turno, esci e rientra come Admin.", 8000, Notification.Position.MIDDLE);
+                } else {
+                    Notification.show("Per " + giornoTxt + " non è (ancora) previsto un turno di " + desc + ". Per crearlo, devi chiedere ad un admin", 5000, Notification.Position.MIDDLE);
+                }
                 return;
             }
 

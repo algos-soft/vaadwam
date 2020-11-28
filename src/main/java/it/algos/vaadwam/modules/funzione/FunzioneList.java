@@ -110,9 +110,13 @@ public class FunzioneList extends WamViewList {
         alertUser.add("Funzioni di servizio specifiche dell'associazione. Attribuibili singolarmente ad ogni milite");
         alertAdmin.add("Quando un milite viene abilitato per una funzione, gli vengono abilitate anche le funzioni dipendenti.");
         alertAdmin.add("Successivamente le funzioni dipendenti possono essere singolarmente disabilitate.");
+        alertDev.add("Le liste delle funzioni delle croci operative prevedono un bottone 'Import' da usare SOLO sul computer di casa ed in modalità debug (per sicurezza).");
+        alertDev.add("La lista delle funzioni della croce 'demo' prevede un bottone 'Reset' per ricreare le funzioni al volo.");
 
         super.creaAlertLayout();
     }// end of method
+
+
 
 
     /**
