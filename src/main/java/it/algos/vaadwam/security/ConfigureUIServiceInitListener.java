@@ -49,18 +49,19 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
      * @param event before navigation event with event details
      */
     private void beforeEnter(BeforeEnterEvent event) {
+
         if (!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
             if (SecurityUtils.isUserLoggedIn()) {
                 if (pref.isBool(EAPreferenzaWam.redirectTabellone.getCode())) {
                     event.rerouteTo(Tabellone.class);
                 } else {
                     event.rerouteTo(WamLoginView.class);
-                }// end of if/else cycle
+                }
             } else {
                 event.rerouteTo(WamLoginView.class);
-            }// end of if/else cycle
-        }// end of if cycle
-    }// end of method
+            }
+        }
+    }
 
 
-}// end of class
+}
