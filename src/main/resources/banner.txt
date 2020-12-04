@@ -6,7 +6,8 @@ ${AnsiColor.RED}
 |     WebAmbulanze  (c)Algos
 |
 SpringBoot ver: ${spring-boot.formatted-version}
-Vaadin ver: ${AnsiColor.GREEN}14.4.1${AnsiColor.RED}
+JAVA ver: ${java.version}
+Vaadin ver: ${AnsiColor.GREEN}14.1.3${AnsiColor.RED}
 VaadFlow FrameWork  (c)Algos
 WAM ver: ${AnsiColor.GREEN}${algos.wam.version}${AnsiColor.RED} del ${AnsiColor.GREEN}${algos.wam.version.date}${AnsiColor.RED}
 ${AnsiColor.DEFAULT}
