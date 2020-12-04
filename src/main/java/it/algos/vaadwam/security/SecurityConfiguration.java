@@ -31,6 +31,8 @@ import javax.annotation.PostConstruct;
  * <li>Restrict access to the application, allowing only logged in users,</li>
  * <li>Set up the login form,</li>
  * <li>Configures the {@link UserDetailsServiceImpl}.</li>
+ *
+ * @see https://vaadin.com/learn/tutorials/securing-your-app-with-spring-security/setting-up-spring-security
  */
 @EnableWebSecurity
 @Configuration
@@ -62,7 +64,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @PostConstruct
     protected void inizia() {
         ((AUserDetailsService) userDetailsService).passwordEncoder = passwordEncoder();
-    }// end of method
+    }
+
 
     /**
      * The password encoder to use when encrypting passwords.
@@ -86,17 +89,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         super.configure(auth);
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         auth.inMemoryAuthentication().withUser("user").password(passwordEncoder().encode("user")).roles("USER").and().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN");
-    }// end of method
+    }
 
     /**
      * Require login to access internal pages and configure login form.
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests().antMatchers( "/favicon.ico").permitAll();
+
 
         // Not using Spring CSRF here to be able to use plain HTML for the login page
         http
+
                 .csrf().disable()
 
                 // Register our CustomRequestCache, that saves unauthorized access attempts, so
@@ -109,20 +113,37 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Allow all flow internal requests.
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
+//                intercept a particular url
+//                .requestMatchers(new RequestMatcher() {
+//                    @Override
+//                    public boolean matches(HttpServletRequest httpServletRequest) {
+//                        //String query=httpServletRequest.getQueryString();
+//                        String uri = httpServletRequest.getRequestURI();
+//                        if(!StringUtils.isEmpty(uri)){
+//                            if(uri.equalsIgnoreCase("demo")){
+//                                return false;
+//                            }
+//                        }
+//                        return false;
+//                    }
+//                }).permitAll()
+
                 // Allow all requests by logged in users.
                 .anyRequest().hasAnyAuthority(roleService.getAllRoles())
 
                 // Configure the login page.
-                .and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
+                .and().formLogin().loginPage(LOGIN_URL).permitAll()
+                .loginProcessingUrl(LOGIN_PROCESSING_URL)
                 .failureUrl(LOGIN_FAILURE_URL)
 
-                // Register the success handler that redirects users to the page they last tried
-                // to access
+                // Register the success handler that redirects users
+                // to the page they last tried to access
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
 
                 // Configure logout
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
-    }// end of method
+
+    }
 
     /**
      * Allows access to static resources, bypassing Spring security.

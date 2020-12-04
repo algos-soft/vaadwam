@@ -1,5 +1,6 @@
 package it.algos.vaadwam.login;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -52,6 +53,7 @@ public class WamLoginView extends VerticalLayout implements BeforeEnterObserver 
 		login.setOpened(true);
 
 	}
+
 
 
 	@Override

@@ -515,7 +515,8 @@ public class IscrizioneEditPolymer extends PolymerTemplate<IscrizioneEditModel> 
             iscrizione.setFine(null);
         }
 
-        // sync durata
+        // sync durata github
+        
         iscrizione.setLastModifica(LocalDateTime.now());
         iscrizioneService.setDurataMinuti(iscrizione);
 

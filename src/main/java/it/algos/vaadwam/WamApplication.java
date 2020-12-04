@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
@@ -40,7 +41,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * The @SpringBootApplication annotation is equivalent to using @Configuration, @EnableAutoConfiguration and @ComponentScan with their default attributes:
  * Annotated with @AIScript (facoltativo) per controllare la ri-creazione di questo file nello script di algos <br>
  */
-@SpringBootApplication(scanBasePackages = {"it.algos"})
+@SpringBootApplication(scanBasePackages = {"it.algos"}, exclude = ErrorMvcAutoConfiguration.class)
 @EnableVaadin({"it.algos"})
 @EntityScan({"it.algos"})
 @EnableMongoRepositories({"it.algos"})
