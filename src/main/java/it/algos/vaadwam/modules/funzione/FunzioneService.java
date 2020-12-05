@@ -123,7 +123,6 @@ public class FunzioneService extends WamService {
         return newEntity((Croce) null, "", "", "", (VaadinIcon) null, (Set<Funzione>) null);
     }// end of method
 
-
     //    /**
     //     * Creazione in memoria di una nuova entity che NON viene salvata
     //     * Eventuali regolazioni iniziali delle property
@@ -196,7 +195,8 @@ public class FunzioneService extends WamService {
         if (text.isEmpty(entity.code)) {
             if (text.isValid(entity.sigla)) {
                 entity.code = entity.sigla;
-            } else {
+            }
+            else {
                 entity = null;
             }
         }// end of if cycle
@@ -308,7 +308,8 @@ public class FunzioneService extends WamService {
 
         if (context.getLogin() != null && context.getLogin().isDeveloper()) {
             lista = array.getList("id,ordine,code,icona,sigla,descrizione,dipendenti");
-        } else {
+        }
+        else {
             lista = array.getList("icona,sigla,descrizione,dipendenti");
         }
 
@@ -333,7 +334,8 @@ public class FunzioneService extends WamService {
 
         if (context.getLogin() != null && context.getLogin().isDeveloper()) {
             lista = array.getList("id,ordine,code,icona,sigla,descrizione,dipendenti");
-        } else {
+        }
+        else {
             lista = array.getList("sigla,descrizione,dipendenti");
         }
 
@@ -370,7 +372,8 @@ public class FunzioneService extends WamService {
 
         if (croce != null) {
             items = findAllByCroce(croce);
-        } else {
+        }
+        else {
             if (getWamLogin() != null && getWamLogin().isDeveloper()) {
                 items = findAllCroci();
             }// end of if cycle
@@ -622,7 +625,8 @@ public class FunzioneService extends WamService {
                         funzFiglia = findById(DEMO + text.primaMaiuscola(code));
                         if (funzFiglia != null) {
                             dipendenti.add(funzFiglia);
-                        } else {
+                        }
+                        else {
                             log.error("Non ho (ri)trovato la funzione: " + code);
                         }
                     }

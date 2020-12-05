@@ -1,5 +1,7 @@
 package it.algos.vaadwam.modules.croce;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
+import static it.algos.vaadflow.application.FlowCost.USA_DEBUG;
 import static it.algos.vaadwam.application.WamCost.TAG_CRO;
 
 /**
@@ -63,6 +66,13 @@ public class CroceList extends WamViewList {
 
     public static String NOMI = "Puoi modificare le descrizioni ed i nomi delle persone. Non il code.";
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public CroceData croceData;
 
     /**
      * Costruttore @Autowired <br>
@@ -95,7 +105,8 @@ public class CroceList extends WamViewList {
 
         if (wamLogin.isDeveloper()) {
             super.usaButtonNew = true;
-        } else {
+        }
+        else {
             super.usaButtonNew = false;
         }// end of if/else cycle
 
@@ -125,6 +136,40 @@ public class CroceList extends WamViewList {
         super.creaAlertLayout();
     }// end of method
 
+    /**
+     * Placeholder SOPRA la Grid <br>
+     * Contenuto eventuale, presente di default <br>
+     * - con o senza un bottone per cancellare tutta la collezione
+     * - con o senza un bottone di reset per ripristinare (se previsto in automatico) la collezione
+     * - con o senza gruppo di ricerca:
+     * -    campo EditSearch predisposto su un unica property, oppure (in alternativa)
+     * -    bottone per aprire un DialogSearch con diverse property selezionabili
+     * -    bottone per annullare la ricerca e riselezionare tutta la collezione
+     * - con eventuale Popup di selezione, filtro e ordinamento
+     * - con o senza bottone New, con testo regolato da preferenza o da parametro <br>
+     * - con eventuali altri bottoni specifici <br>
+     * Può essere sovrascritto, per aggiungere informazioni <br>
+     * Invocare PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void creaTopLayout() {
+        super.creaTopLayout();
+
+        //--Elaborazione utilizzabile SOLO dal developer
+        //--Elaborazione utilizzabile SOLO in modalità debug (così me ne accorgo)
+        //--Elaborazione utilizzabile SOLO per la croce DEMO
+        if (wamLogin != null && wamLogin.isDeveloper()) {
+            if (usaImportButton && pref.isBool(USA_DEBUG)) {
+                if (wamLogin.getCroce() != null && wamLogin.getCroce().code.equals(CroceService.DEMO)) {
+                    Button elaboraButton = new Button("CSV demo", new Icon(VaadinIcon.REFRESH));
+                    elaboraButton.getElement().setAttribute("theme", "error");
+                    elaboraButton.addClassName("view-toolbar__button");
+                    elaboraButton.addClickListener(e -> elabora());
+                    topPlaceholder.add(elaboraButton);
+                }// end of if cycle
+            }// end of if cycle
+        }// end of if cycle
+    }
 
     /**
      * Opens the confirmation dialog before reset all items. <br>
@@ -176,7 +221,6 @@ public class CroceList extends WamViewList {
     //        //        }// end of if cycle
     //    }// end of method
 
-
     //    protected Button createEditButton(AEntity entityBean) {
     //        final EAOperation operation;
     //
@@ -197,15 +241,20 @@ public class CroceList extends WamViewList {
     public void updateItems() {
         if (wamLogin.isDeveloper()) {
             super.updateGrid();
-        } else {
+        }
+        else {
             if (login.isAdmin()) {
                 items = Arrays.asList(wamLogin.getCroce());
-            } else {
+            }
+            else {
                 items = null;
             }// end of if/else cycle
         }// end of if/else cycle
     }// end of method
 
+    public void elabora() {
+        croceData.elabora();
+    }// end of method
 
     /**
      * Creazione ed apertura del dialogo per una nuova entity oppure per una esistente <br>

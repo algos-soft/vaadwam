@@ -6,4 +6,4 @@ amb-mat,Ambulanza mattina,si,5:00,12:00,si,no,aut-amb/pri-amb,sec-amb,Blue
 amb-pom,Ambulanza pomeriggio,si,12:00,19:00,si,no,aut-amb/pri-amb,sec-amb,Blue
 amb-not,Ambulanza notte,si,19:00,5:00,si,no,aut-amb/pri-amb,sec-amb,Blue
 extra,Dimissioni,no,,,si,si,aut-amb/pri-amb,sec-amb,Red
-cent,Centralino,si,8:00,12:00,si,no,vol,,Yellow
+cent,Centralino,si,8:00,12:00,si,no,cen,,Yellow
