@@ -203,7 +203,39 @@ public class NuoviTurniService extends AService {
         }
     }
 
+    //--creazione dei turni vuoti per la croce Fidenza
+    //--li crea SOLO se non esistono già
+    //--logica
+    //--    automedica  mattina -> tutti i giorni
+    //--    automedica  pomeriggio -> tutti i giorni
+    //--    automedica  notte -> tutti i giorni
+    //--    ambulanza  mattina -> solo sabato e domenica
+    //--    ambulanza  pomeriggio -> solo sabato e domenica
+    //--    ambulanza  notte -> tutti i giorni
+    //--    extra -> mai
     private void nuoviTurniAnnualiFidenza(Croce croce, List<LocalDate> feriali, List<LocalDate> festivi) {
+        Servizio msaMat = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AUTOMEDICA_MATTINO);
+        Servizio msaPom = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AUTOMEDICA_POMERIGGIO);
+        Servizio msaNotte = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AUTOMEDICA_NOTTE);
+        Servizio ambMat = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AMBULANZA_MATTINO);
+        Servizio ambPom = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AMBULANZA_POMERIGGIO);
+        Servizio ambNotte = servizioService.findByKeyUnica(croce, CRF_SERVIZIO_AMBULANZA_NOTTE);
+
+        for (LocalDate giorno : feriali) {
+            turnoService.creaIfNotExist(croce, giorno, msaMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, msaPom, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, msaNotte, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambNotte, (List<Iscrizione>) null);
+        }
+
+        for (LocalDate giorno : festivi) {
+            turnoService.creaIfNotExist(croce, giorno, msaMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, msaPom, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, msaNotte, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambNotte, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambPom, (List<Iscrizione>) null);
+        }
     }
 
     private void nuoviTurniAnnualiGaps(Croce croce, List<LocalDate> feriali, List<LocalDate> festivi) {

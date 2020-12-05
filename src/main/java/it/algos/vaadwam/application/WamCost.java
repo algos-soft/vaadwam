@@ -264,4 +264,19 @@ public class WamCost {
 
     public static String CRPT_SERVIZIO_CENTRALINO_POMERIGGIO = "cen-pom";
 
+    //--sigle dei tipi di turno in croce rossa fidenza
+    public static String CRF_SERVIZIO_AUTOMEDICA_MATTINO = "msa-mat";
+
+    public static String CRF_SERVIZIO_AUTOMEDICA_POMERIGGIO = "msa-pom";
+
+    public static String CRF_SERVIZIO_AUTOMEDICA_NOTTE = "msa-notte";
+
+    public static String CRF_SERVIZIO_AMBULANZA_MATTINO = "amb-mat";
+
+    public static String CRF_SERVIZIO_AMBULANZA_POMERIGGIO = "amb-pom";
+
+    public static String CRF_SERVIZIO_AMBULANZA_NOTTE = "amb-notte";
+
+    public static String CRF_SERVIZIO_EXTRA = "extra";
+
 }// end of static class
