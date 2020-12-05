@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.algos.vaadwam.application.WamCost.*;
+
 /**
  * Project vaadwam
  * Created by Algos
@@ -126,22 +128,21 @@ public class NuoviTurniService extends AService {
     //--    ambulanza  pomeriggio 13-19 -> sabato e domenica più festivi dell'anno
     //--    ambulanza  sera 19-24 -> sabato e domenica più festivi dell'anno
     private void nuoviTurniAnnualiPianoro(Croce croce, List<LocalDate> feriali, List<LocalDate> festivi) {
-
-        Servizio msaNotte = servizioService.findByKeyUnica(croce, "msa-notte");
-        Servizio msaMat = servizioService.findByKeyUnica(croce, "msa-mat");
-        Servizio msaPom = servizioService.findByKeyUnica(croce, "msa-pom");
-        Servizio msaPomsera = servizioService.findByKeyUnica(croce, "msa-pomsera");
-        Servizio msaSera = servizioService.findByKeyUnica(croce, "msa-sera");
-        Servizio msa2Notte = servizioService.findByKeyUnica(croce, "msa2-notte");
-        Servizio msa2Mat = servizioService.findByKeyUnica(croce, "msa2-mat");
-        Servizio msa2Pom = servizioService.findByKeyUnica(croce, "msa2-pom");
-        Servizio msa2Sera = servizioService.findByKeyUnica(croce, "msa2-sera");
+        Servizio msaNotte = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_LUNVEN_NOTTE);
+        Servizio msaMat = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_LUNVEN_MATTINA);
+        Servizio msaPom = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_LUNVEN_POMERIGGIO);
+        Servizio msaPomSera = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_LUNVEN_POMERIGGIOSERA);
+        Servizio msaSera = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_LUNVEN_SERA);
+        Servizio msa2Notte = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_SABDOM_NOTTE);
+        Servizio msa2Mat = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_SABDOM_MATTINA);
+        Servizio msa2Pom = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_SABDOM_POMERIGGIO);
+        Servizio msa2Sera = servizioService.findByKeyUnica(croce, PAP_SERVIZIO_SABDOM_SERA);
 
         for (LocalDate giorno : feriali) {
             turnoService.creaIfNotExist(croce, giorno, msaNotte, (List<Iscrizione>) null);
             turnoService.creaIfNotExist(croce, giorno, msaMat, (List<Iscrizione>) null);
             turnoService.creaIfNotExist(croce, giorno, msaPom, (List<Iscrizione>) null);
-            turnoService.creaIfNotExist(croce, giorno, msaPomsera, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, msaPomSera, (List<Iscrizione>) null);
             turnoService.creaIfNotExist(croce, giorno, msaSera, (List<Iscrizione>) null);
         }
 
@@ -154,12 +155,52 @@ public class NuoviTurniService extends AService {
     }
 
 
-    private boolean isFestivo(List<LocalDate> festivi, LocalDate giorno) {
-
-        return false;
-    }
-
+    //--creazione dei turni vuoti per la croce PonteTaro
+    //--li crea SOLO se non esistono già
+    //--logica
+    //--    ambulanza  mattina -> tutti i giorni
+    //--    ambulanza  pomeriggio -> tutti i giorni
+    //--    ambulanza  notte -> tutti i giorni
+    //--    dialisi uno andata -> mai
+    //--    dialisi uno ritorno -> mai
+    //--    dialisi due andata -> mai
+    //--    dialisi due ritorno -> mai
+    //--    ordinario singolo -> mai
+    //--    ordinario doppio -> mai
+    //--    extra -> mai
+    //--    servizi -> mai
+    //--    centralino mattino -> tutti i giorni
+    //--    centralino pomeriggio -> tutti i giorni
     private void nuoviTurniAnnualiPonteTaro(Croce croce, List<LocalDate> feriali, List<LocalDate> festivi) {
+        Servizio ambMat = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_AMBULANZA_MATTINO);
+        Servizio ambPom = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_AMBULANZA_POMERIGGIO);
+        Servizio ambNotte = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_AMBULANZA_NOTTE);
+        Servizio diaUnoAnd = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_DIALISI_UNO_ANDATA);
+        Servizio diaUnoRit = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_DIALISI_UNO_RITORNO);
+        Servizio diaDueAnd = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_DIALISI_DUE_ANDATA);
+        Servizio diaDueRit = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_DIALISI_DUE_RITORNO);
+        Servizio ordSin = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_ORDINARIO_SINGOLO);
+        Servizio ordDop = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_ORDINARIO_DOPPIO);
+        Servizio extra = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_EXTRA);
+        Servizio servizi = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_SERVIZI);
+        Servizio cenMat = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_CENTRALINO_MATTINO);
+        Servizio cenPom = servizioService.findByKeyUnica(croce, CRPT_SERVIZIO_CENTRALINO_POMERIGGIO);
+
+        for (LocalDate giorno : feriali) {
+            turnoService.creaIfNotExist(croce, giorno, ambMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambPom, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambNotte, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, cenMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, cenPom, (List<Iscrizione>) null);
+        }
+
+        for (LocalDate giorno : festivi) {
+            turnoService.creaIfNotExist(croce, giorno, ambMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambPom, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, ambNotte, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, cenMat, (List<Iscrizione>) null);
+            turnoService.creaIfNotExist(croce, giorno, cenPom, (List<Iscrizione>) null);
+        }
     }
 
     private void nuoviTurniAnnualiFidenza(Croce croce, List<LocalDate> feriali, List<LocalDate> festivi) {

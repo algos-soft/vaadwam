@@ -100,7 +100,6 @@ public class WamCost {
 
     public final static String USA_DAEMON_DEMO = "usaDaemonDemo";
 
-
     //    public final static String USA_DAEMON_FUNZIONI = "usaDaemonFunzioni";
     //
     //    public final static String USA_DAEMON_SERVIZI = "usaDaemonServizi";
@@ -210,5 +209,59 @@ public class WamCost {
     public final static String LUMO_PRIMARY_COLOR = "#1676F3";  // non riesco a reciperarlo dal context allora visto che so qual è lo ridefinisco qui
 
     public final static String BROWSER_TAB_TITLE = "WAM";
+
+    //--sigle dei tipi di turno in pubblica assistenza pianoro
+    public static String PAP_SERVIZIO_LUNVEN_NOTTE = "msa-notte";
+
+    public static String PAP_SERVIZIO_LUNVEN_MATTINA = "msa-mat";
+
+    public static String PAP_SERVIZIO_LUNVEN_POMERIGGIO = "msa-pom";
+
+    public static String PAP_SERVIZIO_LUNVEN_POMERIGGIOSERA = "msa-pomsera";
+
+    public static String PAP_SERVIZIO_LUNVEN_SERA = "msa-sera";
+
+    public static String PAP_SERVIZIO_SABDOM_NOTTE = "msa2-notte";
+
+    public static String PAP_SERVIZIO_SABDOM_MATTINA = "msa2-mat";
+
+    public static String PAP_SERVIZIO_SABDOM_POMERIGGIO = "msa2-pom";
+
+    public static String PAP_SERVIZIO_SABDOM_SERA = "msa2-sera";
+
+    //--sigle dei tipi di turno in croce rossa ponteTaro
+    public static String CRPT_SERVIZIO_AMBULANZA_MATTINO = "118-mat";
+
+    public static String CRPT_SERVIZIO_AMBULANZA_POMERIGGIO = "118-pom";
+
+    public static String CRPT_SERVIZIO_AMBULANZA_NOTTE = "118-notte";
+
+    public static String CRPT_SERVIZIO_DIALISI_UNO_ANDATA = "dia-1a";
+
+    public static String CRPT_SERVIZIO_DIALISI_UNO_RITORNO = "dia-1r";
+
+    public static String CRPT_SERVIZIO_DIALISI_DUE_ANDATA = "dia-2a";
+
+    public static String CRPT_SERVIZIO_DIALISI_DUE_RITORNO = "dia-2r";
+
+    public static String CRPT_SERVIZIO_ORDINARIO_OLD = "ord";
+
+    public static String CRPT_SERVIZIO_ORDINARIO_SINGOLO = "ord-uno";
+
+    public static String CRPT_SERVIZIO_ORDINARIO_DOPPIO = "ord-due";
+
+    public static String CRPT_SERVIZIO_EXTRA = "extra";
+
+    public static String CRPT_SERVIZIO_SERVIZI = "servizi";
+
+    public static String CRPT_SERVIZIO_EXTRA_MATTINO = "extra-118-mat";
+
+    public static String CRPT_SERVIZIO_EXTRA_POMERIGGIO = "extra-118-pom";
+
+    public static String CRPT_SERVIZIO_EXTRA_NOTTE = "extra-118-notte";
+
+    public static String CRPT_SERVIZIO_CENTRALINO_MATTINO = "cen-mat";
+
+    public static String CRPT_SERVIZIO_CENTRALINO_POMERIGGIO = "cen-pom";
 
 }// end of static class
