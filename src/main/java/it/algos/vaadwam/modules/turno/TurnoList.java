@@ -75,7 +75,6 @@ import static it.algos.vaadwam.application.WamCost.TAG_TUR;
 @AIView(vaadflow = false, menuName = "turni", menuIcon = VaadinIcon.SITEMAP, roleTypeVisibility = EARoleType.developer)
 public class TurnoList extends WamViewList {
 
-
     //    /**
     //     * Icona visibile nel menu (facoltativa)
     //     * Nella menuBar appare invece visibile il MENU_NAME, indicato qui
@@ -112,6 +111,12 @@ public class TurnoList extends WamViewList {
      */
     @Autowired
     private ServizioService servizioService;
+
+    /**
+     * Istanza (@Scope = 'singleton') inietta da Spring <br>
+     */
+    @Autowired
+    private NuoviTurniService nuoviTurniService;
 
     private AComboBox filtroServizi;
 
@@ -158,13 +163,15 @@ public class TurnoList extends WamViewList {
 
         if (wamLogin.isDeveloper()) {
             super.isEntityModificabile = true;
-        } else {
+        }
+        else {
             super.isEntityModificabile = false;
         }// end of if/else cycle
 
         if (wamLogin.isDeveloper() || login.isAdmin()) {
             super.usaPopupFiltro = true;
-        } else {
+        }
+        else {
             super.usaPopupFiltro = false;
         }// end of if/else cycle
     }// end of method
@@ -208,6 +215,12 @@ public class TurnoList extends WamViewList {
             fixDurata.addClassName("view-toolbar__button");
             fixDurata.addClickListener(e -> fixDurata());
             topPlaceholder.add(fixDurata);
+
+            Button creaTurni = new Button("Crea 2021", new Icon(VaadinIcon.WORKPLACE));
+            creaTurni.getElement().setAttribute("theme", "error");
+            creaTurni.addClassName("view-toolbar__button");
+            creaTurni.addClickListener(e -> creaTurni(2021));
+            topPlaceholder.add(creaTurni);
         }// end of if cycle
 
         //--Import non più usato/usabile
@@ -284,7 +297,8 @@ public class TurnoList extends WamViewList {
             if (esisteProblema) {
                 icon = new Icon(VaadinIcon.CLOSE);
                 icon.setColor("red");
-            } else {
+            }
+            else {
                 icon = new Icon(VaadinIcon.CHECK);
                 icon.setColor("green");
             }// end of if/else cycle
@@ -334,13 +348,19 @@ public class TurnoList extends WamViewList {
 
 
     /**
-     * Patch per regolare la durata effettiva di TUTTI i turni<br>
+     * Patch per regolare la durata effettiva di TUTTI i turni <br>
      * Può essere lanciato anche più volte, senza problemi <br>
      */
     protected void fixDurata() {
         ((TurnoService) service).fixDurata();
     }// end of method
 
+    /**
+     * Creazione dei turni per l' anno indicato <br>
+     */
+    protected void creaTurni(int anno) {
+        nuoviTurniService.nuoviTurniAnnuali(wamLogin.getCroce(), anno);
+    }// end of method
 
     public void updateFiltri() {
         super.updateFiltri();
@@ -385,7 +405,8 @@ public class TurnoList extends WamViewList {
 
             if (filtro == null || filtro == EAFiltroAnno.corrente) {
                 items = ((TurnoService) service).findAllAnnoCorrente();
-            } else {
+            }
+            else {
                 items = ((TurnoService) service).findAllByYear(annoCorrente - filtro.delta);
             }// end of if/else cycle
         }// end of if cycle
