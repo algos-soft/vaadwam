@@ -2,6 +2,7 @@ package it.algos.vaadwam.security;
 
 import it.algos.vaadflow.annotation.AIScript;
 import it.algos.vaadflow.application.FlowVar;
+import it.algos.vaadflow.modules.preferenza.PreferenzaService;
 import it.algos.vaadflow.modules.role.RoleService;
 import it.algos.vaadflow.modules.utente.Utente;
 import it.algos.vaadflow.modules.utente.UtenteService;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 import static it.algos.vaadflow.application.FlowVar.projectName;
+import static it.algos.vaadwam.application.WamCost.DISABILITA_LOGIN;
 
 /**
  * Implements the {@link UserDetailsService}.
@@ -62,6 +64,8 @@ public class AUserDetailsService implements UserDetailsService {
     @Autowired
     protected ABootService boot;
 
+    @Autowired
+    protected PreferenzaService pref;
 
     @Autowired
     public AUserDetailsService(UtenteService utenteService, MiliteService militeService, RoleService roleService, CroceService croceService) {
@@ -96,14 +100,15 @@ public class AUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
             if (milite != null) {
-                if (milite.enabled) {
-                    croce = milite.croce;
+                croce = milite.croce;
+                if (milite.enabled || pref.isBool(DISABILITA_LOGIN, croce.code)) {
                     passwordHash = passwordEncoder.encode(milite.getPassword());
                     authorities = roleService.getAuthorities(milite);
                     FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
-//                    logger.login(milite);
+                    //                    logger.login(milite);
                     return new User(username, passwordHash, authorities);
-                } else {
+                }
+                else {
                     throw new UsernameNotFoundException(username + " non è più attivo");
                 }
             } else {
