@@ -142,9 +142,9 @@ public class MiliteDialog extends WamViewDialog<Milite> {
         if (wamLogin != null && wamLogin.isAdminOrDev()) {
             //            if (wamLogin.getMilite() != null && wamLogin.getMilite().id.equals(((Milite) currentItem).id)) {
             if (((Milite) currentItem).admin) {
-                lista = array.getList("ordine,nome,cognome,username,password,telefono,mail,enabled,admin,infermiere,dipendente,creatoreTurni,managerTabellone,funzioni,noteWam");
+                lista = array.getList("ordine,nome,cognome,username,password,telefono,mail,enabled,admin,infermiere,dipendente,creatoreTurni,managerTabellone,esentato,funzioni,noteWam");
             } else {
-                lista = array.getList("ordine,nome,cognome,username,password,telefono,mail,enabled,admin,infermiere,dipendente,creatoreTurni,disabIscr,esentato,funzioni,noteWam");
+                lista = array.getList("ordine,nome,cognome,username,password,telefono,mail,enabled,admin,infermiere,dipendente,creatoreTurni,disabIscr,funzioni,noteWam");
             }
         } else {
             lista = array.getList("ordine,nome,cognome,username,password,telefono,mail,enabled,admin,infermiere,dipendente,creatoreTurni,funzioni,noteWam");
