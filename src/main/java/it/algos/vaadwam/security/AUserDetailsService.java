@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 import static it.algos.vaadflow.application.FlowVar.projectName;
-import static it.algos.vaadwam.application.WamCost.DISABILITA_LOGIN;
 
 /**
  * Implements the {@link UserDetailsService}.
@@ -98,10 +97,12 @@ public class AUserDetailsService implements UserDetailsService {
 
         if (milite == null && utente == null) {
             throw new UsernameNotFoundException("No user present with username: " + username);
-        } else {
+        }
+        else {
             if (milite != null) {
                 croce = milite.croce;
-                if (milite.enabled || pref.isBool(DISABILITA_LOGIN, croce.code)) {
+                //                if (milite.enabled || pref.isBool(DISABILITA_LOGIN, croce.code)) {
+                if (true) {
                     passwordHash = passwordEncoder.encode(milite.getPassword());
                     authorities = roleService.getAuthorities(milite);
                     FlowVar.layoutTitle = croce != null ? croce.getOrganizzazione().getDescrizione() + " - " + croce.getDescrizione() : projectName;
@@ -111,7 +112,8 @@ public class AUserDetailsService implements UserDetailsService {
                 else {
                     throw new UsernameNotFoundException(username + " non è più attivo");
                 }
-            } else {
+            }
+            else {
                 croce = (Croce) utente.company;
                 passwordHash = passwordEncoder.encode(utente.getPassword());
                 authorities = roleService.getAuthorities(utente);
