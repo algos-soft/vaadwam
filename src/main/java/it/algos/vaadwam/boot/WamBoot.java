@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -59,7 +60,7 @@ import java.util.List;
 @AIScript(sovrascrivibile = false)
 public class WamBoot extends ABoot {
 
-    private final static String PROJECT_NAME = "wam";
+    private final static String PROJECT_NAME = "WAM";
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
@@ -136,6 +137,10 @@ public class WamBoot extends ABoot {
         //        this.wamVers = wamVers;
     }// end of Spring constructor
 
+    @PostConstruct
+    private void init(){
+        log.info("Starting "+PROJECT_NAME+" version "+PROJECT_VERSION+" of "+VERSION_DATE);
+    }
 
     //    /**
     //     * Executed on container startup <br>
