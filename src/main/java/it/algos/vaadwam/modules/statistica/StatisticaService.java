@@ -1,41 +1,30 @@
 package it.algos.vaadwam.modules.statistica;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.backend.entity.AEntity;
-import it.algos.vaadflow.enumeration.EACompanyRequired;
-import it.algos.vaadflow.enumeration.EAOperation;
-import it.algos.vaadflow.enumeration.EATempo;
-import it.algos.vaadflow.enumeration.EATime;
-import it.algos.vaadflow.service.ADateService;
-import it.algos.vaadwam.enumeration.EAWamLogType;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.iscrizione.Iscrizione;
-import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
-import it.algos.vaadwam.modules.milite.Milite;
-import it.algos.vaadwam.modules.servizio.ServizioService;
-import it.algos.vaadwam.modules.turno.Turno;
-import it.algos.vaadwam.modules.turno.TurnoService;
-import it.algos.vaadwam.wam.WamLogin;
-import it.algos.vaadwam.wam.WamService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static it.algos.vaadflow.application.FlowCost.VIRGOLA;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
+import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaadflow.annotation.*;
+import static it.algos.vaadflow.application.FlowCost.*;
+import it.algos.vaadflow.backend.entity.*;
+import it.algos.vaadflow.enumeration.*;
+import it.algos.vaadflow.service.*;
 import static it.algos.vaadwam.application.WamCost.*;
+import it.algos.vaadwam.enumeration.*;
+import it.algos.vaadwam.modules.croce.*;
+import it.algos.vaadwam.modules.iscrizione.*;
+import it.algos.vaadwam.modules.milite.*;
+import it.algos.vaadwam.modules.servizio.*;
+import it.algos.vaadwam.modules.turno.*;
+import it.algos.vaadwam.wam.*;
+import lombok.extern.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.repository.*;
+
+import java.time.*;
+import java.util.*;
 
 /**
  * Project vaadwam <br>
@@ -541,7 +530,7 @@ public class StatisticaService extends WamService {
         int meseCorrente = date.getMeseCorrente();
         int turniRichiesti = numTurniMinimiMese * meseCorrente;
 
-        return numTurni > turniRichiesti;
+        return numTurni >= turniRichiesti;
     }// end of method
 
 

@@ -1,13 +1,11 @@
 package it.algos.vaadwam.enumeration;
 
 
-import it.algos.vaadflow.enumeration.EAPrefType;
-import it.algos.vaadflow.enumeration.IAEnum;
-import it.algos.vaadflow.modules.preferenza.IAPreferenza;
-import it.algos.vaadflow.modules.role.EARole;
-import it.algos.vaadwam.tabellone.EACancellazione;
-
+import it.algos.vaadflow.enumeration.*;
+import it.algos.vaadflow.modules.preferenza.*;
+import it.algos.vaadflow.modules.role.*;
 import static it.algos.vaadwam.application.WamCost.*;
+import it.algos.vaadwam.tabellone.*;
 
 /**
  * Project it.algos.vaadflow
@@ -73,7 +71,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "Il milite può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, false, true),
 
-    disabilitaLogin(DISABILITA_LOGIN, "Disabilitazione automatica del login se nelle statistiche il milite non raggiunge la frequenza di turni minima", EAPrefType.bool, EARole.admin, true, false, true),
+    disabilitaLogin(DISABILITA_LOGIN, "Blocco dell'accesso (login) se nelle statistiche il milite non raggiunge la frequenza di turni minima", EAPrefType.bool, EARole.admin, true, false, true),
 
     numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per convertire, nelle statistiche, un turno in ore", EAPrefType.integer, EARole.admin, true, 7, true),
 

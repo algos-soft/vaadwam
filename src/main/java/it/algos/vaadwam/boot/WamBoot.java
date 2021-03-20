@@ -1,39 +1,35 @@
 package it.algos.vaadwam.boot;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.FlowVar;
-import it.algos.vaadflow.backend.login.ALogin;
-import it.algos.vaadflow.boot.ABoot;
-import it.algos.vaadflow.modules.company.Company;
-import it.algos.vaadflow.modules.preferenza.PreferenzaList;
-import it.algos.vaadflow.modules.role.RoleService;
-import it.algos.vaadflow.modules.utente.UtenteService;
-import it.algos.vaadwam.application.WamVers;
-import it.algos.vaadwam.data.WamData;
-import it.algos.vaadwam.enumeration.EAPreferenzaWam;
-import it.algos.vaadwam.migration.ImportService;
-import it.algos.vaadwam.modules.croce.CroceList;
-import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.funzione.FunzioneList;
-import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.modules.log.WamLogList;
-import it.algos.vaadwam.modules.milite.MiliteList;
-import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.servizio.ServizioList;
-import it.algos.vaadwam.modules.servizio.ServizioService;
-import it.algos.vaadwam.modules.statistica.StatisticaList;
-import it.algos.vaadwam.modules.turno.TurnoList;
-import it.algos.vaadwam.tabellone.Tabellone;
-import it.algos.vaadwam.wam.WamLogin;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaadflow.annotation.*;
+import it.algos.vaadflow.application.*;
+import it.algos.vaadflow.backend.login.*;
+import it.algos.vaadflow.boot.*;
+import it.algos.vaadflow.modules.company.*;
+import it.algos.vaadflow.modules.preferenza.*;
+import it.algos.vaadflow.modules.role.*;
+import it.algos.vaadflow.modules.utente.*;
+import it.algos.vaadwam.application.*;
+import it.algos.vaadwam.data.*;
+import it.algos.vaadwam.enumeration.*;
+import it.algos.vaadwam.migration.*;
+import it.algos.vaadwam.modules.croce.*;
+import it.algos.vaadwam.modules.funzione.*;
+import it.algos.vaadwam.modules.log.*;
+import it.algos.vaadwam.modules.milite.*;
+import it.algos.vaadwam.modules.servizio.*;
+import it.algos.vaadwam.modules.statistica.*;
+import it.algos.vaadwam.modules.turno.*;
+import it.algos.vaadwam.tabellone.*;
+import it.algos.vaadwam.wam.*;
+import lombok.extern.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.util.List;
+import javax.annotation.*;
+import java.time.*;
+import java.util.*;
 
 
 /**
@@ -64,9 +60,9 @@ public class WamBoot extends ABoot {
 
     private final static String PROJECT_BANNER = "Gestione Ambulanze";
 
-    private final static double PROJECT_VERSION = 1.46;
+    private final static double PROJECT_VERSION = 1.49;
 
-    private final static LocalDate VERSION_DATE = LocalDate.of(2021, 1, 8);
+    private final static LocalDate VERSION_DATE = LocalDate.of(2021, 3, 20);
 
 
     /**
