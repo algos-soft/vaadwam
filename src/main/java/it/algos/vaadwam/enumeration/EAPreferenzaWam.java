@@ -71,7 +71,7 @@ public enum EAPreferenzaWam implements IAPreferenza {
 
     nuovoTurno(CREAZIONE_NUOVO_TURNO_DA_UTENTE, "Il milite può creare un nuovo turno vuoto", EAPrefType.bool, EARole.admin, true, false, true),
 
-    disabilitaLogin(DISABILITA_LOGIN, "Blocco dell'accesso (login) se nelle statistiche il milite non raggiunge la frequenza di turni minima", EAPrefType.bool, EARole.admin, true, false, true),
+    disabilitaLogin(DISABILITA_LOGIN, "Blocco dell'accesso (login) se nelle statistiche il milite non raggiunge la frequenza di turni minima (2 al mese). Può essere riabilitato per il singolo milite.", EAPrefType.bool, EARole.admin, true, false, true),
 
     numeroOreTurnoStandard(NUMERO_ORE_TURNO_STANDARD, "Ore convenzionali per convertire, nelle statistiche, un turno in ore", EAPrefType.integer, EARole.admin, true, 7, true),
 
