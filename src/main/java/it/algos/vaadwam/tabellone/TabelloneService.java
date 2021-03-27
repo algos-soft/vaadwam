@@ -1,50 +1,35 @@
 package it.algos.vaadwam.tabellone;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaadflow.annotation.AIScript;
-import it.algos.vaadflow.application.AContext;
-import it.algos.vaadflow.modules.preferenza.PreferenzaService;
-import it.algos.vaadflow.service.ADateService;
-import it.algos.vaadflow.service.AService;
-import it.algos.vaadflow.service.AVaadinService;
-import it.algos.vaadwam.enumeration.EAPreferenzaWam;
-import it.algos.vaadwam.enumeration.EAWamLogType;
-import it.algos.vaadwam.modules.croce.Croce;
-import it.algos.vaadwam.modules.croce.CroceService;
-import it.algos.vaadwam.modules.funzione.Funzione;
-import it.algos.vaadwam.modules.iscrizione.Iscrizione;
-import it.algos.vaadwam.modules.iscrizione.IscrizioneService;
-import it.algos.vaadwam.modules.log.WamLogService;
-import it.algos.vaadwam.modules.milite.Milite;
-import it.algos.vaadwam.modules.milite.MiliteService;
-import it.algos.vaadwam.modules.riga.Riga;
-import it.algos.vaadwam.modules.riga.RigaService;
-import it.algos.vaadwam.modules.servizio.Servizio;
-import it.algos.vaadwam.modules.servizio.ServizioService;
-import it.algos.vaadwam.modules.turno.Turno;
-import it.algos.vaadwam.modules.turno.TurnoRepository;
-import it.algos.vaadwam.modules.turno.TurnoService;
-import it.algos.vaadwam.wam.WamLogin;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaadflow.annotation.*;
+import it.algos.vaadflow.application.*;
+import static it.algos.vaadflow.application.FlowCost.*;
+import it.algos.vaadflow.modules.preferenza.*;
+import it.algos.vaadflow.service.*;
+import static it.algos.vaadwam.application.WamCost.*;
+import it.algos.vaadwam.enumeration.*;
+import it.algos.vaadwam.modules.croce.*;
+import it.algos.vaadwam.modules.funzione.*;
+import it.algos.vaadwam.modules.iscrizione.*;
+import it.algos.vaadwam.modules.log.*;
+import it.algos.vaadwam.modules.milite.*;
+import it.algos.vaadwam.modules.riga.*;
+import it.algos.vaadwam.modules.servizio.*;
+import it.algos.vaadwam.modules.turno.*;
+import it.algos.vaadwam.wam.*;
+import static java.time.temporal.ChronoUnit.*;
+import lombok.*;
+import lombok.extern.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.*;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.repository.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
-
-import static it.algos.vaadflow.application.FlowCost.A_CAPO;
-import static it.algos.vaadflow.application.FlowCost.VUOTA;
-import static it.algos.vaadwam.application.WamCost.TAG_TAB;
-import static it.algos.vaadwam.application.WamCost.TAG_TUR;
-import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * Project vaadwam
@@ -377,15 +362,22 @@ public class TabelloneService extends AService {
             return colore;
         }
 
+        if (turno.servizio.isDisponibile()) {
+            return EAWamColore.disponibile;
+        }
+
         if (iscrizioneService.isValida(iscrizione, turno.getServizio())) {
             colore = EAWamColore.normale;
-        } else {
+        }
+        else {
             if (mancaMenoDiGiorni(turno, critico)) {
                 colore = EAWamColore.critico;
-            } else {
+            }
+            else {
                 if (mancaMenoDiGiorni(turno, semicritico)) {
                     colore = EAWamColore.urgente;
-                } else {
+                }
+                else {
                     colore = EAWamColore.previsto;
                 }// end of if/else cycle
             }// end of if/else cycle
@@ -412,15 +404,22 @@ public class TabelloneService extends AService {
             return colore;
         }// end of if/else cycle
 
+        if (turno.servizio.isDisponibile()) {
+            return EAWamColore.disponibile;
+        }
+
         if (turnoService.isValido(turno)) {
             colore = EAWamColore.normale;
-        } else {
+        }
+        else {
             if (mancaMenoDiGiorni(turno, critico)) {
                 colore = EAWamColore.critico;
-            } else {
+            }
+            else {
                 if (mancaMenoDiGiorni(turno, semicritico)) {
                     colore = EAWamColore.urgente;
-                } else {
+                }
+                else {
                     colore = EAWamColore.previsto;
                 }// end of if/else cycle
             }// end of if/else cycle

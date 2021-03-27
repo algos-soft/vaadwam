@@ -1,25 +1,20 @@
 package it.algos.vaadwam.modules.servizio;
 
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.icon.*;
 import it.algos.vaadflow.annotation.*;
-import it.algos.vaadflow.enumeration.EACompanyRequired;
-import it.algos.vaadflow.enumeration.EAFieldType;
-import it.algos.vaadwam.modules.funzione.Funzione;
-import it.algos.vaadwam.modules.funzione.FunzioneService;
-import it.algos.vaadwam.wam.WamEntity;
+import it.algos.vaadflow.enumeration.*;
+import it.algos.vaadwam.modules.funzione.*;
+import it.algos.vaadwam.wam.*;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.annotation.*;
+import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.mapping.*;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.LocalTime;
-import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.time.*;
+import java.util.*;
 
 /**
  * Project vaadwam <br>
@@ -74,7 +69,7 @@ import java.util.Set;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "extra", "obbligatorie", "facoltative", "colore"})
-@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "extra", "obbligatorie", "facoltative"})
+@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "extra", "disponibile", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
@@ -161,7 +156,7 @@ public class Servizio extends WamEntity {
 
     /**
      * visibile nel tabellone
-     * al contrario è disabilitato dal tabellone, perchè non più utilizzato
+     * al contrario è disabilitato dal tabellone, perché non più utilizzato
      * sempre visibile nello storico per i periodi in cui è stato eventualmente utilizzato
      * (di default true)
      * colonna non visibile nella grid, perché la costruisce specifica in ServizioList
@@ -213,6 +208,13 @@ public class Servizio extends WamEntity {
     @AIColumn()
     public String colore;
 
+    /**
+     * servizio per disponibilità di un turno. NON utilizzato nelle statistiche. Di default false
+     */
+    @Field("arc")
+    @AIField(type = EAFieldType.checkbox, name = "Solo disponibilità. Non operativo e non utilizzato nelle statistiche")
+    @AIColumn(headerIcon = VaadinIcon.FILE_TREE)
+    public boolean disponibile;
 
     /**
      * @return a string representation of the object.

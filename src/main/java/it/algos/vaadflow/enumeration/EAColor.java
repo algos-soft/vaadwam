@@ -1,8 +1,8 @@
 package it.algos.vaadflow.enumeration;
 
-import it.algos.vaadwam.application.WamCost;
+import it.algos.vaadwam.application.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Project vaadflow
@@ -71,8 +71,11 @@ public enum EAColor {
     creabileTabellone("creabileTabellone", "#d3d4d9ff"),
     creabileTabelloneContrasto("creabileTabelloneContrasto", "#000000"),
 
+    disponibileTabellone("creabileTabellone", "#439A86"),
+    disponibileTabelloneContrasto("creabileTabelloneContrasto", "#fffdf0"),
+
     // colori per footer app
-    footerApp("footerAdmin",WamCost.LUMO_PRIMARY_COLOR),
+    footerApp("footerAdmin", WamCost.LUMO_PRIMARY_COLOR),
 
     ;
 

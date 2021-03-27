@@ -1,8 +1,8 @@
 package it.algos.vaadwam.tabellone;
 
-import it.algos.vaadflow.enumeration.EAColor;
+import it.algos.vaadflow.enumeration.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Project vaadwam
@@ -19,6 +19,7 @@ public enum EAWamColore {
     normale(EAColor.normaleTabellone, EAColor.normaleTabelloneContrasto, "normale", "", "Turno assegnato normale (funzioni obbligatorie coperte)", "Iscrizione assegnata"),  // verde
     previsto(EAColor.previstoTabellone, EAColor.previstoTabelloneContrasto, "previsto", "prevista", "Turno previsto e non ancora completamente assegnato", "Iscrizione prevista e non ancora assegnata"),  // blu chiaro
     creabile(EAColor.creabileTabellone, EAColor.creabileTabelloneContrasto, "creabile", "", "Turno creabile", ""),  // grigio
+    disponibile(EAColor.disponibileTabellone, EAColor.disponibileTabelloneContrasto, "disponibile", "", "Solo disponibilità ad eseguire il turno", ""),  // ?
     ;
 
 
