@@ -69,7 +69,7 @@ import java.util.*;
 @AIScript(sovrascrivibile = false)
 @AIEntity(company = EACompanyRequired.obbligatoria)
 @AIList(fields = {"ordine", "code", "descrizione", "orarioDefinito", "inizio", "fine", "durataPrevista", "visibile", "extra", "obbligatorie", "facoltative", "colore"})
-@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "extra", "disponibile", "obbligatorie", "facoltative"})
+@AIForm(fields = {"code", "descrizione", "orarioDefinito", "inizio", "fine", "visibile", "extra", "saltaStatistiche", "obbligatorie", "facoltative"})
 public class Servizio extends WamEntity {
 
 
@@ -209,12 +209,12 @@ public class Servizio extends WamEntity {
     public String colore;
 
     /**
-     * servizio per disponibilità di un turno. NON utilizzato nelle statistiche. Di default false
+     * NON utilizza questo servizio nelle statistiche. Di default false
      */
-    @Field("arc")
-    @AIField(type = EAFieldType.checkbox, name = "Solo disponibilità. Non operativo e non utilizzato nelle statistiche")
+    @Field("nostat")
+    @AIField(type = EAFieldType.checkbox, name = "Non operativo e non utilizzato nelle statistiche")
     @AIColumn(headerIcon = VaadinIcon.FILE_TREE)
-    public boolean disponibile;
+    public boolean saltaStatistiche;
 
     /**
      * @return a string representation of the object.

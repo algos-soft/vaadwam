@@ -362,7 +362,7 @@ public class TabelloneService extends AService {
             return colore;
         }
 
-        if (turno.servizio.isDisponibile()) {
+        if (turno.servizio.isSaltaStatistiche()) {
             return EAWamColore.disponibile;
         }
 
@@ -404,7 +404,7 @@ public class TabelloneService extends AService {
             return colore;
         }// end of if/else cycle
 
-        if (turno.servizio.isDisponibile()) {
+        if (turno.servizio.isSaltaStatistiche()) {
             return EAWamColore.disponibile;
         }
 

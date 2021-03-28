@@ -246,10 +246,12 @@ public class StatisticaService extends WamService {
         if (text.isValid(companyCode)) {
             annoTxt = ((Statistica) entityBean).anno + VUOTA;
             keyUnica = companyCode + annoTxt + text.primaMaiuscola(keyCode);
-        } else {
+        }
+        else {
             if (annotation.getCompanyRequired(entityClass) == EACompanyRequired.obbligatoria) {
                 keyUnica = null;
-            } else {
+            }
+            else {
                 keyUnica = keyCode;
             }// end of if/else cycle
         }// end of if/else cycle
@@ -354,7 +356,8 @@ public class StatisticaService extends WamService {
 
         if (anno == date.getAnnoCorrente()) {
             listaTurniCroce = turnoService.findAllByYearUntilNow(croce, anno);
-        } else {
+        }
+        else {
             listaTurniCroce = turnoService.findAllByYear(croce, anno);
             isAnnoCorrente = false;
         }
@@ -400,6 +403,8 @@ public class StatisticaService extends WamService {
         //        int numOreTurno = pref.getInt(NUMERO_ORE_TURNO_STANDARD, croce.code);
         int media;
         List<Iscrizione> iscrizioniTurno;
+        Servizio servizio;
+        boolean saltaStatistiche;
         StaTurnoIsc staTurnoIsc;
         List<StaTurnoIsc> iscrizioniMilite = new ArrayList<>();
         int ordine = 0;
@@ -407,8 +412,10 @@ public class StatisticaService extends WamService {
 
         for (Turno turno : listaTurniCroce) {
             iscrizioniTurno = turno.iscrizioni;
-            if (iscrizioniTurno != null) {
+            servizio = turno.servizio;
+            saltaStatistiche = servizio != null && servizio.saltaStatistiche;
 
+            if (iscrizioniTurno != null && !saltaStatistiche) {
                 for (Iscrizione iscriz : iscrizioniTurno) {
                     if (iscriz.milite != null) {
                         militeIscritto = iscriz.milite;
@@ -422,10 +429,12 @@ public class StatisticaService extends WamService {
 
                             if (durata == 0) {
                                 logger.warn("Durata nulla per il turno di " + turno.servizio.code + " del " + date.get(turno.giorno, EATime.standard.getPattern()), this.getClass(), "elaboraSingoloMilite");
-                            } else {
+                            }
+                            else {
                                 if (durata < 0) {
                                     logger.error("Durata turno negativa", this.getClass(), "elaboraSingoloMilite");
-                                } else {
+                                }
+                                else {
                                     minutiTotali += durata;
                                 }
                             }
@@ -551,7 +560,6 @@ public class StatisticaService extends WamService {
         pref.saveValue(lastImport, LocalDateTime.now(), croce.code);
         pref.saveValue(durataLastImport, eaTempoTypeImport.get(inizio), croce.code);
     }// end of method
-
 
     //    /**
     //     * Anni di selezione per il popup in Statistiche <br>
